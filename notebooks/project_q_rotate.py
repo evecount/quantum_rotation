@@ -198,7 +198,7 @@ def _():
     mo.callout(
         mo.md(f"""
         **Guppy Dynamic Circuit Compiled Successfully!**
-        * **HUGR Nodes**: {len(hugr.modules[0].descendants(hugr.modules[0].entrypoint))}
+        * **HUGR Nodes**: {len(list(hugr.modules[0].descendants(hugr.modules[0].entrypoint)))}
         * **QIR Bitcode Size**: {len(qir_bytes):,} bytes
         * **Hardware Operations**: `{hugr_stats}`
         * **Mid-Circuit Dynamic Feedback**: Native Ion QPU branching enabled

@@ -217,24 +217,29 @@ D:\Quantinuum_GrandChallenge\
 
 ---
 
-## 6. Getting Started
+## 6. Interactive Workbook Session & Getting Started
 
-### Environment Setup
-Activate the virtual environment:
+Experience Project Q-Rotate directly in your browser or local environment:
+
+* 📓 **[View Jupyter Notebook on GitHub](notebooks/project_q_rotate.ipynb)**: Native, instant rendering on GitHub displaying 3D coordinate parsing, phase spectra, Altair resonance curves, H2 rebased circuits, and HQC cost estimates.
+* 🌐 **[Interactive Marimo Web App](notebooks/project_q_rotate.py)**: Full-featured reactive dashboard with live sliders for rotation angle misalignment, Gaussian noise, interactive H2 native circuit tiles, and live job submission to the Quantinuum `nexus:H2-2E` emulator.
+* 📄 **[Standalone HTML Session](notebooks/project_q_rotate.html)**: Self-contained pre-rendered workbook session ready to view in any browser.
+
+### Launching the Live Workbook Session
 ```powershell
+# 1. Activate the environment
 .\.venv\Scripts\Activate.ps1
+
+# 2. Launch the reactive Marimo workbook
+marimo edit notebooks\project_q_rotate.py
+# Or run as a standalone web application:
+marimo run notebooks\project_q_rotate.py
 ```
 
 ### Running the Test Suite
 Verify all components (HPC bridge, unitary evolution, Pytket rebased circuits, Guppy HUGR/QIR compilation):
 ```powershell
 python tests\test_qrotate.py
-```
-
-### Launching the Interactive Marimo Dashboard
-Run the reactive Marimo application with live sliders and H2 native circuit rendering:
-```powershell
-marimo edit notebooks\project_q_rotate.py
 ```
 
 ---
