@@ -6,8 +6,8 @@
   *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
 * **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — **Frontend Lead & Systems Architect**, Eve Count  
   *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, and developer user experience.
-* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — **Venture Advisor & Go-To-Market (GTM) Strategist**, Mamba Partners  
-  *In charge of:* Venture capital strategy, global Go-To-Market (GTM) execution, pharma industry commercial partnerships, strategic network syndication, and investor positioning.
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com) / [LinkedIn (11k+)](https://www.linkedin.com/in/jamessun1/)) — **Founder @ Mamba Partners | Venture Advisor & GTM Strategist** (ex. Goldman Sachs, Blackstone, Microsoft)  
+  *In charge of:* Institutional venture capital strategy, global Go-To-Market (GTM) execution, biopharma commercial licensing ($120M–$280M roadmap), strategic network syndication, and investor positioning for the Grand Challenge finals.
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
