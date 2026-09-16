@@ -72,8 +72,7 @@ In Project Q-Rotate, we do something radically more elegant: we introduce a quan
 
 Look at the circuit architecture. We prepare the target pocket on one set of qubits, and the candidate drug on a second set. We then introduce a single helper qubit—our referee. We let the quantum wave of the drug interfere directly with the quantum wave of the pocket, and measure the referee.
 
-The equation on your screen shows the exact match probability:
-$$ P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right) $$
+The equation on your screen shows the exact match probability, which directly measures the quantum wave overlap between the drug and the target pocket.
 
 If the drug doesn't fit or clashes chemically, the quantum waves cancel each other out. The overlap drops, and the referee measures zero with only fifty percent probability—pure random coin-flip noise.
 
@@ -94,7 +93,7 @@ To make this tangible for researchers and judges, we implemented this entire hyb
 
 In this workbook, we don't just show static equations—we allow the user to interactively stress-test the quantum pipeline. You can adjust the number of active binding contact points from 2 to 6 sites. You can inject thermal coordinate perturbations from 0 to 0.2 Angstroms to simulate physiological body temperature in human tissue. And you can sweep the spatial misalignment angle from zero to 45 degrees.
 
-As you drag the misalignment slider, the workbook dynamically recomputes the zero-knowledge parity curve. At zero degrees misalignment, the fidelity is $1.0$ and the match probability is $100\%$. As the molecule tilts away from the active pocket, the curve smoothly traces the quantum resonance curve down to baseline. 
+As you drag the misalignment slider, the workbook dynamically recomputes the zero-knowledge parity curve. At zero degrees misalignment, the fidelity is one point zero and the match probability is 100 percent. As the molecule tilts away from the active pocket, the curve smoothly traces the quantum resonance curve down to baseline. 
 
 More importantly, the workbook automatically takes this circuit, passes it to the Pytket optimizing compiler, rebases every single gate into native Quantinuum trapped-ion pulses, and displays the exact HQC execution cost in real time before submitting to the hardware emulator.
 
@@ -147,11 +146,11 @@ Now we arrive at what is genuinely the technical crown jewel of Project Q-Rotate
 
 In classical computing or static quantum circuits, if an operation doesn't succeed on the first attempt, you have to discard the entire circuit, reset all qubits, and rerun from scratch. But Quantinuum trapped ions have a unique superpower that superconducting chips cannot match: real-time mid-circuit measurement and reset with classical conditional branching. 
 
-Look at the Python code on your screen. This is written in native `guppylang`. Inside the `qrotate_rus_loop`, we initialize our ancilla, execute the parity check, and measure the ancilla mid-circuit. We then immediately reset the ancilla while preserving the quantum coherence of the pocket and ligand registers!
+Look at the Python code on your screen. This is written in native Guppy language. Inside our feedback loop, we initialize our ancilla, execute the parity check, and measure the ancilla mid-circuit. We then immediately reset the ancilla while preserving the quantum coherence of the pocket and ligand registers!
 
-If the ancilla measures zero, we have achieved lock-and-key resonance, and the function terminates. But if the ancilla measures one—meaning the molecule is slightly out of phase—our classical logic controller catches the result in microseconds and dynamically applies a corrective phase kick (`ry(ligand_q, 0.15)`) before looping back to try again!
+If the ancilla measures zero, we have achieved lock-and-key resonance, and the function terminates. But if the ancilla measures one—meaning the molecule is slightly out of phase—our classical logic controller catches the result in microseconds and dynamically applies a corrective phase kick before looping back to try again!
 
-We compile this Guppy code through HUGR and lower it directly into QIR (Quantum Intermediate Representation) bitcode. This dynamic real-time feedback loop is only possible because of Quantinuum's millisecond ion coherence times and real-time classical logic engine.
+We compile this Guppy code through HUGR and lower it directly into QIR bitcode. This dynamic real-time feedback loop is only possible because of Quantinuum's millisecond ion coherence times and real-time classical logic engine.
 
 # The 6 Biomolecular Benchmarks
 - Validated across 6 diverse real-world therapeutic scenarios:
@@ -187,7 +186,7 @@ Now, let's address a crucial question: how do you take complex multidimensional 
 
 If you show an executive or a doctor a list of quantum state numbers, it's just abstract math on a screen. But when you translate that quantum telemetry into a living, three-dimensional space, the physics becomes intuitive.
 
-On your screen is **The Resonance Constellation**—our interactive 3D WebGL visualization engine that you can explore live at `evecount.github.io/quantum_rotation/constellation.html`.
+On your screen is **The Resonance Constellation**—our interactive 3D WebGL visualization engine that you can explore live in our open source repository.
 
 What this engine creates is a live visual bridge between quantum computing and human perception. As the quantum state evolves, the 3D Constellation renders the active pocket contact points as glowing orbital stars in space. When a candidate drug is misaligned, the orbits wobble with turbulence. But as our continuous quantum rotation brings the drug into alignment, the orbits smoothly lock together, creating constructive wave resonance in real time.
 
@@ -212,7 +211,7 @@ In the pharmaceutical sector, bringing a single therapeutic to market costs an a
 
 Project Q-Rotate solves this by acting as an ultra-precise, ultra-cheap quantum filter. Because our compiled circuit runs on Quantinuum hardware for just 11.5 Hardware Quantum Credits—a fraction of a single penny per candidate—pharma sponsors can pre-screen vast chemical libraries with quantum precision before ordering a single vial of chemical reagents.
 
-By partnering with enterprise biopharma on tiered co-development licenses ($120M to $280M per therapeutic campaign), Project Q-Rotate drastically accelerates the lead discovery timeline.
+By partnering with enterprise biopharma on tiered co-development licenses from 120 to 280 million dollars per therapeutic campaign, Project Q-Rotate drastically accelerates the lead discovery timeline.
 
 And here is the decisive commercial breakthrough that closes enterprise biopharma partnerships: our Zero-Knowledge Blind Parity protocol.
 
