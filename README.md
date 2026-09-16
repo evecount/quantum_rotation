@@ -1,11 +1,15 @@
 # Project Q-Rotate: Efficient Molecular Pattern Matching
 
 **Team:** Eve Count (`1ightray`)  
-**Core Team & Collaborators:**
-* **1ightray** — Quantum Algorithms & Architecture Lead, Eve Count
-* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — Frontend Lead & Systems, Eve Count
-* **Gwen** ([gwen@evecount.com](mailto:gwen@evecount.com)) — Operations & Execution, Eve Count
-* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — Venture Advisor, Mamba Partners
+**Core Team & Key Responsibilities:**
+* **1ightray** — **Quantum Algorithms & Architecture Lead**, Eve Count  
+  *In charge of:* Mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Hamiltonian Lie algebra mapping, Guppy/Pytket quantum kernels, and trapped-ion circuit compilation.
+* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — **Frontend Lead & UX Systems**, Eve Count  
+  *In charge of:* Frontend web applications, interactive 3D WebGL / Three.js data visualizations, Marimo dashboard integration, and developer user experience.
+* **Gwen** ([gwen@evecount.com](mailto:gwen@evecount.com)) — **Operations & Challenge Execution Lead**, Eve Count  
+  *In charge of:* Challenge execution, timeline logistics, submission compliance, documentation hub coordination, and roadmap tracking.
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — **Venture Advisor & Commercial Strategist**, Mamba Partners  
+  *In charge of:* Venture strategy, pharmaceutical industry commercialization, investment thesis, and Grand Challenge pitch positioning.
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
