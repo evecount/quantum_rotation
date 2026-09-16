@@ -2,14 +2,14 @@
 
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Key Responsibilities:**
-* **1ightray** — **Quantum Algorithms & Architecture Lead**, Eve Count  
-  *In charge of:* Mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Hamiltonian Lie algebra mapping, Guppy/Pytket quantum kernels, and trapped-ion circuit compilation.
-* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — **Frontend Lead & UX Systems**, Eve Count  
-  *In charge of:* Frontend web applications, interactive 3D WebGL / Three.js data visualizations, Marimo dashboard integration, and developer user experience.
+* **1ightray** — **Founder & Core Quantum Engine ("The Quantum Bunny")**, Eve Count  
+  *In charge of:* Scientific innovation and core quantum engine, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
+* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — **Frontend Lead & Systems Architect**, Eve Count  
+  *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, and developer UX.
 * **Gwen** ([gwen@evecount.com](mailto:gwen@evecount.com)) — **Operations & Challenge Execution Lead**, Eve Count  
-  *In charge of:* Challenge execution, timeline logistics, submission compliance, documentation hub coordination, and roadmap tracking.
-* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — **Venture Advisor & Commercial Strategist**, Mamba Partners  
-  *In charge of:* Venture strategy, pharmaceutical industry commercialization, investment thesis, and Grand Challenge pitch positioning.
+  *In charge of:* Grand Challenge operational logistics, milestone roadmap governance, team execution cadence, partner communication, and submission compliance.
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — **Venture Advisor & Go-To-Market (GTM) Strategist**, Mamba Partners  
+  *In charge of:* Venture capital strategy, global Go-To-Market (GTM) execution, pharma industry commercial partnerships, strategic network syndication, and investor positioning.
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
