@@ -14,23 +14,26 @@ But in nature, molecules don't compute in cubic grids. An enzyme and its ligand 
 
 Our mission with Project Q-Rotate is to bridge that gap on Quantinuum's trapped-ion processors, including the next-generation Helios architecture. By shifting from discrete grid searching to continuous Lie algebra rotations, we can help researchers test binding affinity directly, accurately, and with remarkable hardware efficiency.
 
-# Conceptual Genesis: Rethinking Molecular Orientation
-- Rethinking the Question: What if we never rotate physical coordinates at all?
-- Mapping spatial misalignment directly into Lie algebra generators ($SU(2)^{\otimes n}$)
-- High-Dimensional Geometric Intuition: Turning geometry into wave-state overlap
-- Built collaboratively for the Quantinuum trapped-ion community
+# Conceptual Genesis: The Mountain Hike vs. Lie Burrowing
+- **The Classical "Mountain Hike":**
+  * Brute-forces across a rugged 3D Cartesian potential energy landscape ($O(N^3)$)
+  * Trapped in local energy minima, slipping on rotational barriers, burning megawatts of cluster compute
+- **The Lie Group "Burrowing" (Our Approach):**
+  * Maps physical rotation directly into Lie algebra generators: $\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau \hat{H})$
+  * Never hikes the noisy surface—burrows straight through the manifold along the shortest geodesic path in wave space
+- **The Result:** All spatial orientations evaluated simultaneously via continuous quantum phase synchronization
 ---
-To solve this, we stepped back and asked a simple question that reshaped our entire approach:
+To understand why this approach is fundamentally different, imagine how classical computers look at molecular docking compared to quantum physics.
 
-Instead of rotating atomic coordinates in physical 3D space, what if we let quantum mechanics handle the rotation in wave space?
+Think of classical docking as a grueling "Mountain Hike." Traditional algorithms are forced to hike across a rugged, mountainous 3D Cartesian energy landscape. They step through cubic voxels angle by angle, frequently getting trapped in local energy valleys, slipping on rotational barriers, and burning megawatts of cluster compute just trying to climb over the potential energy terrain.
 
-In mathematics, rotations in three dimensions are governed by Lie groups. Rather than stepping a molecule angle by angle, we realized you can map both spatial misalignment and electrostatic contact discrepancies directly into the continuous generators of an SU(2) Lie algebra.
+In Project Q-Rotate, we asked a fundamentally different question: what if we don't hike over the mountain at all?
 
-When you express molecular binding as continuous Hamiltonian time-evolution rather than static Cartesian coordinates, the entire quantum state sweeps through all continuous rotational orientations simultaneously.
+Instead of fighting the surface terrain in physical space, we use Lie group "Burrowing." By mapping the spatial transformation directly into the continuous generators of an SU(2) Lie algebra, our unitary evolution operator—U-tube of tau—doesn't hike over the surface. It burrows straight through the state manifold along the shortest geodesic path in wave space.
 
-When the molecule and the protein pocket resonate, constructive quantum interference gives us an immediate, clear signature of alignment.
+Instead of testing one orientation at a time, the continuous quantum state sweeps through all continuous orientations simultaneously. And when the candidate molecule finds resonance with the protein pocket, constructive quantum interference signals a lock-and-key match in femtoseconds.
 
-This gives the scientific community a practical tool designed specifically for trapped-ion hardware—combining high-dimensional geometric intuition with the power of Quantinuum's all-to-all connectivity to help biopharma researchers move from weeks of simulation to instant quantum clarity.
+This is the geometric intuition at the heart of our engine: replacing an exponential classical mountain hike with an exact, continuous quantum tunnel on trapped ions.
 
 # Lie Algebra & The Tube Hamiltonian
 - The Continuous Phase Evolution Operator: $\hat{U}_{\text{tube}}(\tau)$

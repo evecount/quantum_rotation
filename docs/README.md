@@ -54,6 +54,14 @@ By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies li
 >   Neither the cloud platform nor the quantum hardware provider ever gains access to the underlying 3D molecular coordinates, unlocking sovereign, confidential quantum drug screening for global biopharma sponsors.
 
 
+### 🏔️ The Intuition: The Classical "Mountain Hike" vs. The Lie Group "Burrowing"
+
+To understand why Project Q-Rotate scales where classical supercomputers fail, consider how both paradigms traverse molecular binding:
+
+* **The Classical "Mountain Hike":** Traditional docking algorithms (AutoDock, Schrödinger, grid DFT) are forced to hike across a rugged, mountainous 3D Cartesian potential energy landscape ($O(N^3)$). They step through cubic voxels angle by angle, frequently getting trapped in local energy valleys, slipping on rotational barriers, and burning megawatts of cluster compute just trying to climb over the potential energy terrain.
+* **The Lie Group "Burrowing" (Our Quantum Approach):** By mapping the physical transformation directly into the continuous generators of an $SU(2)$ Lie algebra, our unitary evolution operator $\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau \hat{H})$ doesn't hike over the noisy surface. **It burrows straight through the state manifold along the shortest geodesic path in wave space.**
+* **The Result:** Instead of testing one orientation at a time, the continuous quantum state sweeps through all rotational and electronic orientations simultaneously on Quantinuum trapped ions, achieving lock-and-key resonance in femtoseconds.
+
 ### 🌌 Real-Time WebGL 3D Visualization: The Resonance Constellation
 
 [![The Resonance Constellation](assets/Screenshot%202026-09-16%20183504.png)](https://evecount.github.io/quantum_rotation/constellation.html)
