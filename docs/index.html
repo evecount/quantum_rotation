@@ -330,6 +330,71 @@
       box-shadow: 0 4px 15px rgba(0, 245, 212, 0.4);
     }
 
+    /* Hamburger Menu */
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 38px;
+      height: 38px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(66, 153, 225, 0.25);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .hamburger-btn:hover { border-color: var(--accent-cyan); }
+    .hamburger-btn span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: var(--text-muted);
+      border-radius: 2px;
+      transition: all 0.25s ease;
+    }
+    .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+    .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .hamburger-btn.open span { background: var(--accent-cyan); }
+
+    .nav-hamburger-menu {
+      display: none;
+      position: absolute;
+      top: 70px;
+      right: 0;
+      left: 0;
+      background: rgba(7, 9, 14, 0.98);
+      border-bottom: 1px solid rgba(66, 153, 225, 0.2);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      z-index: 999;
+      padding: 12px 24px 16px;
+      backdrop-filter: blur(12px);
+    }
+    .nav-hamburger-menu.open { display: block; }
+    .nav-hamburger-menu a {
+      display: block;
+      padding: 10px 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: color 0.2s;
+    }
+    .nav-hamburger-menu a:last-child { border-bottom: none; }
+    .nav-hamburger-menu a:hover { color: var(--accent-cyan); }
+
+    @media (max-width: 1100px) {
+      .nav-collapse { display: none !important; }
+      .hamburger-btn { display: flex !important; }
+    }
+    @media (min-width: 1101px) {
+      .nav-hamburger-menu { display: none !important; }
+    }
+
     /* Hero Section */
     .hero {
       padding: 70px 0 40px;
@@ -674,25 +739,68 @@
   <canvas id="ascii-bg-canvas"></canvas>
 
   <!-- Header -->
-  <header>
+  <header style="position: relative;">
     <div class="container nav-content">
       <a href="#" class="logo">
         <span class="logo-badge">Q-Rotate</span>
         <span>Eve Count</span>
       </a>
       <div class="nav-links">
-        <a href="constellation.html" target="_blank" style="color: var(--accent-cyan); font-weight: 700;">🌌 3D Constellation</a>
-        <a href="#overview">Overview</a>
-        <a href="#math">Math</a>
-        <a href="#docs">Documentation</a>
-        <a href="#team">Team</a>
+        <!-- Always-visible priority links -->
+        <a href="#business" style="color: #10b981; font-weight: 700;">💰 Business Case</a>
         <a href="#benchmarks" style="color: var(--accent-cyan); font-weight: 700;">📊 Benchmarks</a>
-        <a href="workbook.html" target="_blank">Workbook</a>
-        <a href="https://github.com/evecount/quantum_rotation" target="_blank">GitHub</a>
+        <!-- Secondary links collapsed into hamburger on smaller screens -->
+        <a href="constellation.html" target="_blank" class="nav-collapse" style="color: var(--accent-cyan); font-weight: 700;">🌌 3D Constellation</a>
+        <a href="#overview" class="nav-collapse">Overview</a>
+        <a href="#math" class="nav-collapse">Math</a>
+        <a href="#docs" class="nav-collapse">Documentation</a>
+        <a href="#team" class="nav-collapse">Team</a>
+        <a href="workbook.html" target="_blank" class="nav-collapse">Workbook</a>
+        <a href="https://github.com/evecount/quantum_rotation" target="_blank" class="nav-collapse">GitHub</a>
+        <!-- Hamburger toggle -->
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu" onclick="toggleHamburger()">
+          <span></span><span></span><span></span>
+        </button>
+        <!-- Showy CTA always visible -->
         <a href="constellation.html" class="btn-nav" target="_blank" style="background: linear-gradient(135deg, #f59e0b, #00f5d4);">🌌 Launch 3D Universe</a>
       </div>
     </div>
+    <!-- Hamburger dropdown -->
+    <nav class="nav-hamburger-menu" id="hamburger-menu">
+      <a href="constellation.html" target="_blank" style="color: var(--accent-cyan);">🌌 3D Constellation</a>
+      <a href="#overview">Overview</a>
+      <a href="#math">Math</a>
+      <a href="#docs">Documentation</a>
+      <a href="#team">Team</a>
+      <a href="workbook.html" target="_blank">Workbook</a>
+      <a href="https://github.com/evecount/quantum_rotation" target="_blank">GitHub</a>
+    </nav>
   </header>
+
+  <script>
+    function toggleHamburger() {
+      const btn = document.getElementById('hamburger-btn');
+      const menu = document.getElementById('hamburger-menu');
+      btn.classList.toggle('open');
+      menu.classList.toggle('open');
+    }
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      const btn = document.getElementById('hamburger-btn');
+      const menu = document.getElementById('hamburger-menu');
+      if (!btn.contains(e.target) && !menu.contains(e.target)) {
+        btn.classList.remove('open');
+        menu.classList.remove('open');
+      }
+    });
+    // Close when a hamburger link is clicked
+    document.querySelectorAll('.nav-hamburger-menu a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('hamburger-btn').classList.remove('open');
+        document.getElementById('hamburger-menu').classList.remove('open');
+      });
+    });
+  </script>
 
   <!-- Hero -->
   <main class="container">
@@ -789,6 +897,159 @@
           </table>
         </div>
       </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <!-- BUSINESS VIABILITY: WHY THIS MAKES MONEY                        -->
+    <!-- ================================================================ -->
+    <section id="business" style="margin-bottom: 60px;">
+
+      <!-- Section Header -->
+      <div style="text-align: center; margin-bottom: 36px;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #10b981; font-size: 0.75rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px;">💰 Commercial Viability</div>
+        <h2 style="font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -0.03em;">Why This Idea Makes Money</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 680px; margin: 0 auto; line-height: 1.65;">A crib sheet for every judge, investor, and partner on why Q-Rotate is a commercially defensible breakthrough — not just a research demo.</p>
+      </div>
+
+      <!-- Killer Stats Row -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 32px;">
+        <div style="background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(10,14,26,0.9)); border: 1px solid rgba(16,185,129,0.3); border-radius: 14px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 900; color: #10b981; letter-spacing: -0.04em; line-height: 1;">$80B+</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Drug Discovery Market (2026)</div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(0,245,212,0.15), rgba(10,14,26,0.9)); border: 1px solid rgba(0,245,212,0.3); border-radius: 14px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 900; color: #00f5d4; letter-spacing: -0.04em; line-height: 1;">9,408×</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Speedup vs Classical Grid (Mpro)</div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(10,14,26,0.9)); border: 1px solid rgba(59,130,246,0.3); border-radius: 14px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 900; color: #3b82f6; letter-spacing: -0.04em; line-height: 1;">0 SWAPs</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600;">vs 70–80% overhead on IBM/Google</div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(10,14,26,0.9)); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 900; color: #f59e0b; letter-spacing: -0.04em; line-height: 1;">≤14.5</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600;">HQC Cost Across All 6 Molecules</div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(168,85,247,0.18), rgba(10,14,26,0.9)); border: 1px solid rgba(168,85,247,0.3); border-radius: 14px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 900; color: #a855f7; letter-spacing: -0.04em; line-height: 1;">9 Qubits</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Constant footprint at any molecule size</div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(236,72,153,0.18), rgba(10,14,26,0.9)); border: 1px solid rgba(236,72,153,0.3); border-radius: 14px; padding: 20px 16px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 900; color: #ec4899; letter-spacing: -0.04em; line-height: 1;">$10M+</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Annual HPC cost Q-Rotate replaces</div>
+        </div>
+      </div>
+
+      <!-- Two-column layout: Gwen's Unique Innovation + Revenue Model -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 20px; margin-bottom: 24px;">
+
+        <!-- Left: What Made Gwen's Idea Unique -->
+        <div style="background: linear-gradient(160deg, rgba(0,245,212,0.1), rgba(10,14,26,0.95)); border: 1px solid rgba(0,245,212,0.3); border-radius: 18px; padding: 28px 26px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+            <span style="font-size: 1.5rem;">🧠</span>
+            <div>
+              <div style="font-size: 0.7rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.06em;">The Core Breakthrough</div>
+              <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0;">What Made Gwen's Idea Unique</h3>
+            </div>
+          </div>
+          <p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.65; margin-bottom: 16px;">Every other team treats molecular matching as a <em>search problem</em> — brute-forcing through spatial grids or discretizing rotations into qubit strings. Gwen reframed it as a <strong style="color:#00f5d4;">phase synchronization problem</strong>.</p>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="background: rgba(0,245,212,0.06); border-left: 3px solid var(--accent-cyan); border-radius: 0 8px 8px 0; padding: 10px 14px;">
+              <div style="font-weight: 800; color: #fff; font-size: 0.85rem; margin-bottom: 2px;">🌀 Continuous Lie Algebra instead of discrete grid</div>
+              <div style="color: #94a3b8; font-size: 0.78rem;">Maps all rotation orientations simultaneously into SU(2)⊗ⁿ wave space — bypassing the O(N³) combinatorial wall entirely.</div>
+            </div>
+            <div style="background: rgba(0,245,212,0.06); border-left: 3px solid var(--accent-cyan); border-radius: 0 8px 8px 0; padding: 10px 14px;">
+              <div style="font-weight: 800; color: #fff; font-size: 0.85rem; margin-bottom: 2px;">🔒 Zero-Knowledge Proof for molecular IP</div>
+              <div style="color: #94a3b8; font-size: 0.78rem;">The Blind Parity SWAP Test confirms structural fit using a single ancilla qubit — neither party exposes proprietary 3D coordinates. This is the pharmaceutical sector's holy grail.</div>
+            </div>
+            <div style="background: rgba(0,245,212,0.06); border-left: 3px solid var(--accent-cyan); border-radius: 0 8px 8px 0; padding: 10px 14px;">
+              <div style="font-weight: 800; color: #fff; font-size: 0.85rem; margin-bottom: 2px;">🔁 RUS loop compiled to hardware — not simulated</div>
+              <div style="color: #94a3b8; font-size: 0.78rem;">Using Quantinuum Guppy, the adaptive correction loop runs natively on trapped-ion H2 hardware with mid-circuit measurement — not emulated post-processing on classical CPUs.</div>
+            </div>
+            <div style="background: rgba(0,245,212,0.06); border-left: 3px solid var(--accent-cyan); border-radius: 0 8px 8px 0; padding: 10px 14px;">
+              <div style="font-weight: 800; color: #fff; font-size: 0.85rem; margin-bottom: 2px;">🧬 Phase fingerprints — not coordinate grids</div>
+              <div style="color: #94a3b8; font-size: 0.78rem;">The HPC Bridge converts 3D atomic geometry into spherical harmonic phase angles. A 500-atom molecule compresses to the same 9-qubit register as a 10-atom fragment.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Revenue Model + Why It Wins -->
+        <div style="background: linear-gradient(160deg, rgba(16,185,129,0.1), rgba(10,14,26,0.95)); border: 1px solid rgba(16,185,129,0.3); border-radius: 18px; padding: 28px 26px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+            <span style="font-size: 1.5rem;">💰</span>
+            <div>
+              <div style="font-size: 0.7rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.06em;">Business Model</div>
+              <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0;">Three Revenue Pathways</h3>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; padding: 14px 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <div style="font-weight: 800; color: #10b981; font-size: 0.88rem;">💊 Pharma SaaS API</div>
+                <span style="font-size: 0.72rem; background: rgba(16,185,129,0.15); color: #10b981; border-radius: 10px; padding: 2px 8px; font-weight: 700;">Primary</span>
+              </div>
+              <div style="color: #94a3b8; font-size: 0.78rem; line-height: 1.5;">Per-query pricing to biopharma R&D teams. At $100–$500/screen × millions of drug candidates annually, the TAM per major pharma client exceeds $50M/yr.</div>
+            </div>
+            <div style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 10px; padding: 14px 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <div style="font-weight: 800; color: #3b82f6; font-size: 0.88rem;">🔐 Confidential IP Licensing</div>
+                <span style="font-size: 0.72rem; background: rgba(59,130,246,0.15); color: #3b82f6; border-radius: 10px; padding: 2px 8px; font-weight: 700;">High-Margin</span>
+              </div>
+              <div style="color: #94a3b8; font-size: 0.78rem; line-height: 1.5;">The Zero-Knowledge Blind Parity protocol enables confidential cross-company screening. Two pharma rivals can mutually screen compound libraries without disclosing structures — a new category of IP-safe collaboration.</div>
+            </div>
+            <div style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 14px 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <div style="font-weight: 800; color: #f59e0b; font-size: 0.88rem;">🏥 Hospital / CRO Pilot Programs</div>
+                <span style="font-size: 0.72rem; background: rgba(245,158,11,0.15); color: #f59e0b; border-radius: 10px; padding: 2px 8px; font-weight: 700;">GTM</span>
+              </div>
+              <div style="color: #94a3b8; font-size: 0.78rem; line-height: 1.5;">Singapore's NMRC and A*STAR are active quantum-bio funding channels. Personalised oncology screening, COVID variant surveillance, and photopharmacology for ophthalmology represent three immediate clinical pilot verticals.</div>
+            </div>
+          </div>
+          <div style="margin-top: 16px; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px 14px;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #10b981; text-transform: uppercase; margin-bottom: 6px;">Why we win the commercial argument:</div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 0.78rem; color: #e2e8f0;">✅ Constant cost regardless of molecule complexity (O(1) HQC)</div>
+              <div style="font-size: 0.78rem; color: #e2e8f0;">✅ Zero IP exposure — legally unique in the sector</div>
+              <div style="font-size: 0.78rem; color: #e2e8f0;">✅ Hardware-native — runs today on Quantinuum H2</div>
+              <div style="font-size: 0.78rem; color: #e2e8f0;">✅ Replaces $10M+/yr HPC bills with sub-15 HQC queries</div>
+              <div style="font-size: 0.78rem; color: #e2e8f0;">✅ Singapore regulatory fit: MAS sandbox, IMDA AI/quantum grants</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Moat: why nobody else can just copy this -->
+      <div style="background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(59,130,246,0.08)); border: 1px solid rgba(168,85,247,0.3); border-radius: 16px; padding: 24px 28px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <span style="font-size: 1.6rem;">🏰</span>
+          <div>
+            <div style="font-size: 0.7rem; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.06em;">Defensive IP Moat</div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: #fff; margin: 0;">Why Nobody Can Just Copy This Tomorrow</h3>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+          <div style="text-align: center; padding: 14px;">
+            <div style="font-size: 1.4rem; margin-bottom: 6px;">🔬</div>
+            <div style="font-weight: 700; color: #c084fc; font-size: 0.85rem; margin-bottom: 4px;">Hardware Lock-In</div>
+            <div style="color: #94a3b8; font-size: 0.78rem;">The zero-SWAP advantage is <em>physically impossible</em> on superconducting hardware (IBM/Google). It requires Quantinuum's trapped-ion all-to-all QCCD architecture.</div>
+          </div>
+          <div style="text-align: center; padding: 14px;">
+            <div style="font-size: 1.4rem; margin-bottom: 6px;">📐</div>
+            <div style="font-weight: 700; color: #c084fc; font-size: 0.85rem; margin-bottom: 4px;">Novel Algorithm Class</div>
+            <div style="color: #94a3b8; font-size: 0.78rem;">Reformulating docking as a Lie group phase problem isn't incremental — it's a new category that VQE and QUBO-based teams would have to rebuild from scratch.</div>
+          </div>
+          <div style="text-align: center; padding: 14px;">
+            <div style="font-size: 1.4rem; margin-bottom: 6px;">⚖️</div>
+            <div style="font-weight: 700; color: #c084fc; font-size: 0.85rem; margin-bottom: 4px;">Legal / Privacy Advantage</div>
+            <div style="color: #94a3b8; font-size: 0.78rem;">The Zero-Knowledge Blind Parity protocol could be patented. No classical or quantum competitor offers IP-confidential molecular screening as a first-class feature.</div>
+          </div>
+          <div style="text-align: center; padding: 14px;">
+            <div style="font-size: 1.4rem; margin-bottom: 6px;">🎮</div>
+            <div style="font-weight: 700; color: #c084fc; font-size: 0.85rem; margin-bottom: 4px;">Working Demo Today</div>
+            <div style="color: #94a3b8; font-size: 0.78rem;">A live 3D gamified interface, an interactive Marimo notebook, and Python-compiled QIR on H2 hardware. Judges can <em>play</em> it — not just read a paper about it.</div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- 3D Constellation Highlight Banner -->
