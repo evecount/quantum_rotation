@@ -54,6 +54,22 @@
       background-attachment: fixed;
     }
 
+    #ascii-bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.65;
+    }
+
+    header, main, footer {
+      position: relative;
+      z-index: 1;
+    }
+
     /* Container */
     .container {
       max-width: 1200px;
@@ -464,6 +480,8 @@
   </style>
 </head>
 <body>
+  <!-- Scroll-Reactive Dancing ASCII Quantum Canvas -->
+  <canvas id="ascii-bg-canvas"></canvas>
 
   <!-- Header -->
   <header>
@@ -791,6 +809,136 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadChapter('01');
     });
+
+    // =========================================================================
+    // SCROLL-REACTIVE DANCING ASCII QUANTUM FIELD
+    // =========================================================================
+    (function() {
+      const asciiCanvas = document.getElementById('ascii-bg-canvas');
+      if (!asciiCanvas) return;
+      const ctx = asciiCanvas.getContext('2d');
+
+      let width = 0, height = 0;
+      let scrollY = window.scrollY;
+      let targetScrollY = window.scrollY;
+      let scrollVel = 0;
+      let mouse = { x: -1000, y: -1000, active: false };
+
+      const glyphs = ['|0⟩', '|1⟩', 'Ψ', 'Φ', 'Û', 'ω', 'Δ', '⨂', '∫', '∂', '·', ':', '+', '×', '◇', '○', '∿', '≈', '0', '1'];
+
+      function resize() {
+        width = asciiCanvas.width = window.innerWidth;
+        height = asciiCanvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      let lastScroll = window.scrollY;
+      window.addEventListener('scroll', () => {
+        targetScrollY = window.scrollY;
+        scrollVel = Math.abs(window.scrollY - lastScroll);
+        lastScroll = window.scrollY;
+      }, { passive: true });
+
+      window.addEventListener('pointermove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+      }, { passive: true });
+
+      let time = 0;
+      const spacing = 32; // Pixel grid spacing
+
+      function renderAscii() {
+        requestAnimationFrame(renderAscii);
+        time += 0.016;
+        
+        // Smooth scroll damping
+        const prevScroll = scrollY;
+        scrollY += (targetScrollY - scrollY) * 0.08;
+        scrollVel = Math.abs(scrollY - prevScroll);
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const cols = Math.ceil(width / spacing);
+        const rows = Math.ceil(height / spacing);
+        const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const scrollProgress = Math.min(Math.max(scrollY / docHeight, 0), 1);
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const baseX = c * spacing + spacing / 2;
+            const baseY = r * spacing + spacing / 2;
+
+            // Normalized coords from viewport center
+            const cx = baseX - width / 2;
+            const cy = baseY - height / 2;
+            const dist = Math.sqrt(cx * cx + cy * cy);
+            const angle = Math.atan2(cy, cx);
+
+            // Shape Morphing Driven by Scroll Position:
+            // 1. Vortex ring (Hero stage)
+            const vortexWeight = Math.max(0, 1.0 - scrollProgress * 3.0);
+            const vortex = Math.sin(dist * 0.018 - time * 2.2 + angle * 2.0) * vortexWeight;
+
+            // 2. Harmonic wave interference (Middle stages)
+            const waveWeight = Math.sin(scrollProgress * Math.PI);
+            const wave = (Math.sin(baseX * 0.02 + time * 1.5 + scrollY * 0.004) * 
+                          Math.cos(baseY * 0.02 - time * 1.2)) * waveWeight;
+
+            // 3. Converging geometric matrix (Bottom / Team stage)
+            const matrixWeight = Math.max(0, (scrollProgress - 0.5) * 2.0);
+            const matrix = Math.cos((baseX + baseY) * 0.012 + time * 2.5) * matrixWeight;
+
+            // Scroll velocity perturbation (letters dance faster when scrolling!)
+            const scrollJitter = Math.sin(time * 8 + c + r) * Math.min(scrollVel * 0.15, 6);
+
+            const totalWave = vortex * 1.5 + wave * 1.2 + matrix * 1.4;
+
+            // Mouse repulsion
+            const dx = baseX - mouse.x;
+            const dy = baseY - mouse.y;
+            const mouseDist = Math.sqrt(dx * dx + dy * dy);
+            let mxOffset = 0, myOffset = 0;
+            let mouseFactor = 0;
+            if (mouseDist < 130) {
+              mouseFactor = (1.0 - mouseDist / 130);
+              const mAngle = Math.atan2(dy, dx);
+              mxOffset = Math.cos(mAngle) * mouseFactor * 18;
+              myOffset = Math.sin(mAngle) * mouseFactor * 18;
+            }
+
+            // Pick glyph based on interference pattern
+            const glyphIdx = Math.abs(Math.floor((dist * 0.04 + totalWave * 5 + time * 2.5 + scrollProgress * 10) % glyphs.length));
+            const glyph = glyphs[glyphIdx];
+
+            // Color & Brightness styling
+            const baseBrightness = 0.05 + Math.abs(totalWave) * 0.07 + mouseFactor * 0.45;
+            const brightness = Math.min(Math.max(baseBrightness, 0.03), 0.55);
+
+            if (mouseFactor > 0.08) {
+              ctx.fillStyle = `rgba(0, 245, 212, ${brightness + 0.3})`;
+            } else if (vortexWeight > 0.4 && Math.abs(dist - 180) < 40) {
+              ctx.fillStyle = `rgba(245, 158, 11, ${brightness + 0.15})`; // Gold vortex ring
+            } else if (Math.sin(baseX * 0.01 + time) > 0.3) {
+              ctx.fillStyle = `rgba(168, 85, 247, ${brightness})`; // Purple
+            } else {
+              ctx.fillStyle = `rgba(59, 130, 246, ${brightness})`; // Cyan-Blue
+            }
+
+            const drawX = baseX + Math.cos(totalWave + time) * 5 + mxOffset;
+            const drawY = baseY + Math.sin(totalWave + time) * 5 + myOffset + scrollJitter;
+
+            ctx.fillText(glyph, drawX, drawY);
+          }
+        }
+      }
+
+      renderAscii();
+    })();
   </script>
 </body>
 </html>
