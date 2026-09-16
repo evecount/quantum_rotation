@@ -1,32 +1,36 @@
-# The Lock-and-Key Paradox
-- Classical Molecular Docking has reached a dead end
-- 3D Cartesian Grid Discretization: Exponential Combinatorial Explosion ($O(N^3)$)
-- Flexible active sites and photochemical transitions paralyze supercomputers
-- The trillion-dollar question: How do molecules recognize each other in femtoseconds?
+# The Shared Challenge: Bridging Biology & Quantum Physics
+- The Universal Goal: Accelerating therapeutic discovery for real human health
+- The Computational Wall: 3D spatial grids grow exponentially ($O(N^3)$) with system size
+- Why Nature Doesn't Use Grids: Molecules synchronize continuously in femtoseconds
+- The Helios Opportunity: Direct continuous Hamiltonian time-evolution on trapped ions
 ---
-Welcome to this technical masterclass on Project Q-Rotate, built for the Quantinuum Singapore Grand Challenge. Today, we are taking you behind the curtain of what might be the single most disruptive intersection of computational biophysics and trapped-ion quantum computing ever designed. 
+Hello everyone, and welcome to our walkthrough of Project Q-Rotate for the Quantinuum Singapore Grand Challenge.
 
-For the past forty years, the multi-billion-dollar computational chemistry and pharmaceutical industry has been living a lie. That lie is called classical molecular docking. When you open Schrödinger, AutoDock, or even modern deep learning tools, they all tackle molecular binding the exact same way: they take a three-dimensional Cartesian space, slice it into arbitrary cubic voxels, and attempt to physically rotate and translate a candidate drug molecule into a protein's active binding pocket. 
+If you work in computational biology, medicine, or quantum chemistry, you know the shared challenge we all face every day. Discovering a new therapeutic candidate—whether it is an antiviral protease inhibitor or a targeted cancer drug—is a race against time for patients who need answers.
 
-It sounds intuitive to human beings because we live in a three-dimensional world. But mathematically, it is a catastrophic dead end. The moment you introduce flexible side chains, photochemical isomerization like retinal in rhodopsin, or quantum electronic phase transitions, the degrees of freedom explode exponentially. A classical computer running Cartesian grid searches is forced to evaluate billions of rotational and translational poses, burning megawatts of supercomputing power just to find a single local energy minimum. 
+Yet for decades, computational docking has run into a frustrating computational wall. When we model how a drug fits into a flexible protein pocket on classical computers, we are forced to slice physical space into rigid 3D cubic grids. As molecules grow, the number of rotational and translational poses explodes, burning days or weeks of cluster compute just to test a single candidate.
 
-Yet inside the human body, enzymes and ligands do not search through three-dimensional Cartesian grids. A drug molecule binds to its target receptor in femtoseconds. Nature does not calculate cubic voxels. Nature uses continuous Hamiltonian time-evolution and quantum phase synchronization. Today, we are going to show you how we replaced forty years of brute-force grid searching with continuous Lie algebra unitary rotations on Quantinuum trapped ions.
+But in nature, molecules don't compute in cubic grids. An enzyme and its ligand find each other in femtoseconds through continuous quantum phase synchronization.
 
-# The Spark: Origin of the Quantum Bunny
-- The Human Intellectual Provenance of Project Q-Rotate
-- Founder Insight: Gwen Lim ("1ightray") — Applied Computing & Advanced AI/ML
-- Rejecting Cartesian Grids: "What if we never rotate the coordinates at all?"
-- The "Quantum Bunny" intuition: Turning spatial geometry into an information-theoretic overlap
+Our mission with Project Q-Rotate is to bridge that gap on Quantinuum's trapped-ion processors, including the next-generation Helios architecture. By shifting from discrete grid searching to continuous Lie algebra rotations, we can help researchers test binding affinity directly, accurately, and with remarkable hardware efficiency.
+
+# Conceptual Genesis: Rethinking Molecular Orientation
+- Rethinking the Question: What if we never rotate physical coordinates at all?
+- Mapping spatial misalignment directly into Lie algebra generators ($SU(2)^{\otimes n}$)
+- High-Dimensional Geometric Intuition: Turning geometry into wave-state overlap
+- Built collaboratively for the Quantinuum trapped-ion community
 ---
-Before we look at a single gate or equation, I want to talk about how this project was born, because in an era where everyone assumes AI writes all the code, the core intellectual breakthrough of Project Q-Rotate was 100% human mathematical intuition.
+To solve this, we stepped back and asked a simple question that reshaped our entire approach:
 
-The genesis of this project came from our founder and quantum architect, Gwen Lim—known online as 1ightray. Gwen holds a Bachelor of Science with Honours in Applied Computing from SIT and advanced machine learning credentials from NTU. While studying the failure modes of classical computational biology, Gwen asked an deceptively simple question that classical biochemists had overlooked for decades: 
+Instead of rotating atomic coordinates in physical 3D space, what if we let quantum mechanics handle the rotation in wave space?
 
-"Why are we wasting millions of classical compute cycles rotating atomic coordinates in physical 3D space, when quantum mechanics already gives us a continuous mathematical group specifically built for rotation?"
+In mathematics, rotations in three dimensions are governed by Lie groups. Rather than stepping a molecule angle by angle, we realized you can map both spatial misalignment and electrostatic contact discrepancies directly into the continuous generators of an SU(2) Lie algebra.
 
-That question was the birth of what we affectionately call "The Quantum Bunny." Instead of treating a protein pocket and a ligand as two rigid 3D point clouds that must be aligned with classical geometry, Gwen realized you can map the spatial misalignment and the electronic contact fields directly into the generators of a Lie algebra. 
+We call this approach "The Quantum Bunny" within our team—a playful reminder to stay curious and look at old problems through fresh geometric eyes. When you express molecular binding as continuous Hamiltonian time-evolution, the entire quantum state sweeps through all continuous orientations simultaneously.
 
-Think about what that means. If you translate spatial disorientation into an angular frequency vector, and you translate electrostatic and hydrogen-bonding variations into relative quantum phases, you no longer have to move a molecule through space. You can evolve the quantum state through an SU(2) tensor manifold. When the ligand aligns with the pocket, the quantum states undergo constructive interference. It wasn't an AI that came up with this—this was human geometric intuition solving a four-decade-old biophysics bottleneck. We used AI agents as engineering force multipliers to compile the circuits and optimize the bitcode, but the mathematical soul of Project Q-Rotate is human domain innovation.
+When the molecule and the protein pocket resonate, constructive quantum interference gives us an immediate, clear signature of alignment.
+
+This gives the scientific community a practical tool designed specifically for trapped-ion hardware—combining high-dimensional geometric intuition with the power of Quantinuum's all-to-all connectivity to help biopharma researchers move from weeks of simulation to instant quantum clarity.
 
 # Lie Algebra & The Tube Hamiltonian
 - The Continuous Phase Evolution Operator: $\hat{U}_{\text{tube}}(\tau)$
