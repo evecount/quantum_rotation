@@ -13,6 +13,8 @@
 **Event:** Quantinuum SG Grand Challenge 2026  
 **🌌 3D Resonance Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)  
 **Live Interactive Documentation:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)  
+**📜 Intellectual Genesis & Provenance:** [provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md)  
+**🤝 Human-AI Co-Creation Manifesto:** [provenance/HUMAN_AI_CO_CREATION_MANIFESTO.md](provenance/HUMAN_AI_CO_CREATION_MANIFESTO.md)  
 **Repository:** [github.com/evecount/quantum_rotation](https://github.com/evecount/quantum_rotation)  
 **Aqora Workspace:** [aqora.io/1ightray/sg-grand-challenge-evecount](https://aqora.io/1ightray/sg-grand-challenge-evecount)
 
@@ -28,7 +30,7 @@ This project is explicitly structured to satisfy the four official scoring dimen
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture & GTM Thesis](#7-commercial-architecture--market-value) ($120M–$280M Biopharma licensing roadmap, 100x cost reduction vs wet lab synthesis, James Sun / Mamba Partners). |
 | **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 4: Hardware Benchmarks](#4-hardware-compilation--quantinuum-native-execution) (7 Qubits, 47 `PhasedX`, 24 `ZZPhase`, 11.5 HQCs on Quantinuum H2, Guppy RUS dynamic loop, 6 benchmark active sites). |
-| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; Zero-Knowledge SWAP test; thermal perturbation analysis). |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; Zero-Knowledge SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
 ---
