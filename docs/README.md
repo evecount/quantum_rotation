@@ -32,9 +32,9 @@ Welcome to the **Project Q-Rotate** knowledge base. This documentation is delibe
 
 You don't just have to read about Q-Rotate—you can experiment with the quantum models in real time:
 
-* 📓 **[View Jupyter Notebook on GitHub](../notebooks/project_q_rotate.ipynb)**: Pre-rendered notebook on GitHub showing 3D coordinate parsing, phase spectra, resonance curves, and HQC costing.
-* 🌐 **[Interactive Marimo App](../notebooks/project_q_rotate.py)**: Full dashboard with sliders for rotation angles, noise levels, and one-click submission to the Quantinuum H2-2E emulator.
-* 📄 **[Standalone HTML Report](../notebooks/project_q_rotate.html)**: Open directly in your browser without installing Python or dependencies.
+* 📓 **[View Jupyter Notebook on GitHub](https://github.com/evecount/quantum_rotation/blob/main/notebooks/project_q_rotate.ipynb)**: Pre-rendered notebook on GitHub showing 3D coordinate parsing, phase spectra, resonance curves, and HQC costing.
+* 🌐 **[Interactive Marimo App](https://github.com/evecount/quantum_rotation/blob/main/notebooks/project_q_rotate.py)**: Full dashboard with sliders for rotation angles, noise levels, and one-click submission to the Quantinuum H2-2E emulator.
+* 📄 **[Live Standalone Web Workbook](workbook.html)**: Interactive workbook session running directly in your browser.
 
 ---
 
