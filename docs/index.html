@@ -1024,6 +1024,77 @@
             </span>
           </div>
 
+          
+          <!-- Official Aqora Workspace Submission Pipeline Card -->
+          <div style="background: linear-gradient(135deg, rgba(0, 245, 212, 0.12), rgba(123, 44, 191, 0.15)); border: 1px solid rgba(0, 245, 212, 0.35); border-radius: 14px; padding: 22px; margin-bottom: 24px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.5rem;">🌐</span>
+                <div>
+                  <h4 style="color: #fff; font-size: 1.15rem; margin: 0; font-weight: 800;">Official Aqora Workspace Submission Pipeline</h4>
+                  <div style="font-size: 0.8rem; color: var(--accent-cyan); font-family: var(--font-mono); margin-top: 2px;">
+                    Target: 1ightray / sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching
+                  </div>
+                </div>
+              </div>
+              <a href="https://aqora.io/1ightray/sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching" target="_blank" class="btn-primary" style="font-size: 0.85rem; padding: 8px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #00f5d4, #7b2cbf); color: #07090e; font-weight: 800;">
+                <span>Open Aqora Workspace ↗</span>
+              </a>
+            </div>
+
+            <p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px;">
+              Quantinuum and Aqora have configured this Grand Challenge track around <strong>Interactive Marimo Workspaces</strong> running on their cloud Kubernetes cluster (<code>kubimo</code>). To submit Project Q-Rotate, follow the official 3-step publishing lifecycle:
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 18px;">
+              <!-- Step 1 -->
+              <div style="background: rgba(10, 15, 29, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-bottom: 6px;">
+                  Step 1 • Initialize Draft
+                </div>
+                <div style="font-size: 0.86rem; color: #e2e8f0; line-height: 1.5;">
+                  The remote workspace currently has <code>versions: []</code> (empty). Click <strong>"Create draft version"</strong> on the Aqora web page to initialize the cloud kernel environment.
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div style="background: rgba(10, 15, 29, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 6px;">
+                  Step 2 • Sync / Edit Code
+                </div>
+                <div style="font-size: 0.86rem; color: #e2e8f0; line-height: 1.5;">
+                  <strong>Option A:</strong> In-browser via Aqora Marimo editor / Files tab.<br/>
+                  <strong>Option B:</strong> From local terminal using <code>aqora pair</code> to sync local files directly with the cloud kernel.
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div style="background: rgba(10, 15, 29, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #10b981; text-transform: uppercase; margin-bottom: 6px;">
+                  Step 3 • Publish & Submit
+                </div>
+                <div style="font-size: 0.86rem; color: #e2e8f0; line-height: 1.5;">
+                  Click <strong>"Publish version"</strong> (freezes code as <code>v0.1.0</code>). Then click <strong>"Submit to Track"</strong> to officially submit to the Quantinuum judging committee.
+                </div>
+              </div>
+            </div>
+
+            <!-- Terminal Commands Box -->
+            <div style="background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 245, 212, 0.2); border-radius: 8px; padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700;">
+                  💻 Local CLI Pairing Commands (Run in D:\Quantinuum_GrandChallenge)
+                </span>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">PowerShell / Bash</span>
+              </div>
+              <pre style="margin: 0; font-family: var(--font-mono); font-size: 0.82rem; color: #38bdf8; background: transparent; padding: 0; overflow-x: auto; line-height: 1.6;"><code># 1. Authenticate local CLI with Gwen's 1ightray account
+.venv\Scripts\aqora.exe login
+
+# 2. Pair local repo directly to the active cloud workspace
+.venv\Scripts\aqora.exe pair 1ightray/sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching</code></pre>
+            </div>
+          </div>
+
           <!-- Foundation Built by Gwen -->
           <div style="background: rgba(0, 245, 212, 0.08); border: 1px solid rgba(0, 245, 212, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
             <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">🛠️ Prototype Foundation Built by Gwen</div>
