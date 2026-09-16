@@ -182,6 +182,49 @@
       margin-bottom: 6px;
     }
 
+    /* James's No-Code Venture Workbook Styling */
+    .james-workbook {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    .james-input-group {
+      margin-bottom: 20px;
+    }
+    .james-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .james-sublabel {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .james-textarea {
+      width: 100%;
+      min-height: 90px;
+      background: rgba(6, 10, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #f1f5f9;
+      font-family: inherit;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .james-textarea:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -1181,6 +1224,78 @@
               </div>
             </label>
           </div>
+
+          <!-- James's Interactive No-Code Venture Workbook -->
+          <div class="james-workbook">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid rgba(168, 85, 247, 0.25); padding-bottom: 14px;">
+              <div>
+                <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 0.75rem; font-weight: 800; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; margin-bottom: 6px;">
+                  <span>✨ Zero Git / Terminal Required</span>
+                </div>
+                <h3 style="color: #fff; font-size: 1.25rem; font-weight: 800; margin: 0;">💼 James's Venture & GTM Fill-In Workbook</h3>
+              </div>
+              <div id="james-save-status" style="font-size: 0.78rem; color: #10b981; font-weight: 600;">
+                🟢 All entries auto-saved
+              </div>
+            </div>
+
+            <p style="font-size: 0.86rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+              James, you don't need to touch GitHub or use a terminal. Fill in your strategy notes directly into the 5 prompts below (aligned with the competition's <strong>30% Problem & Value</strong> judging criteria). Everything you write auto-saves instantly to your browser. When you're ready, click <strong>Copy Brief</strong> or <strong>Email to Gwen</strong> with one click!
+            </p>
+
+            <!-- Box 1 -->
+            <div class="james-input-group">
+              <label class="james-label" for="james-box-pitch">1. Executive Positioning & 2-Sentence Investor Hook</label>
+              <div class="james-sublabel">How should we pitch Project Q-Rotate in 30 seconds to sovereign wealth judges (SGInnovate/CQT) and biopharma venture scouts?</div>
+              <textarea id="james-box-pitch" class="james-textarea" placeholder="e.g. Project Q-Rotate introduces the first zero-knowledge molecular pattern matching engine on trapped-ion quantum hardware, replacing months of supercomputer spatial docking with instant O(1) quantum parity readout without exposing proprietary chemical IP..."></textarea>
+            </div>
+
+            <!-- Box 2 -->
+            <div class="james-input-group">
+              <label class="james-label" for="james-box-customers">2. Target Customers & Ideal Customer Profile (ICP)</label>
+              <div class="james-sublabel">Who are the high-value commercial customers who will pay for this technology?</div>
+              <textarea id="james-box-customers" class="james-textarea" placeholder="e.g. Tier-1 global biopharma (Novartis, Pfizer, Roche), AI-driven drug discovery biotechs (Recursion, Relay Therapeutics), and contract research organizations (CROs)..."></textarea>
+            </div>
+
+            <!-- Box 3 -->
+            <div class="james-input-group">
+              <label class="james-label" for="james-box-roi">3. Commercial ROI & Quantified Business Value (30% of Judging Score!)</label>
+              <div class="james-sublabel">What is the quantified savings in compute cost, screening time, or IP protection?</div>
+              <textarea id="james-box-roi" class="james-textarea" placeholder="e.g. Cuts initial virtual hit-screening compute costs from $250k on classical GPU clusters down to minutes of QPU time; eliminates multi-million dollar chemical IP leakage risks through blind zero-knowledge verification..."></textarea>
+            </div>
+
+            <!-- Box 4 -->
+            <div class="james-input-group">
+              <label class="james-label" for="james-box-partners">4. Prospective Biopharma Partners & Pilot Syndicates</label>
+              <div class="james-sublabel">Which enterprise contacts or venture syndicates in your network can we approach for an exploratory pilot or Letter of Intent (LOI)?</div>
+              <textarea id="james-box-partners" class="james-textarea" placeholder="e.g. Reaching out to biopharma venture scouts in Singapore, SGInnovate deeptech EIRs, and healthtech venture funds to test appetite for exploratory zero-knowledge docking pilot..."></textarea>
+            </div>
+
+            <!-- Box 5 -->
+            <div class="james-input-group">
+              <label class="james-label" for="james-box-finals">5. Singapore Grand Finals Presentation Notes (November 19)</label>
+              <div class="james-sublabel">What are the essential slide narrative beats or judge objection handlers we must nail on stage?</div>
+              <textarea id="james-box-finals" class="james-textarea" placeholder="e.g. Slide 1: The $50B docking bottleneck. Slide 2: Trapped-ion rotation breakthrough. Slide 3: Live 3D resonance demo. Slide 4: Zero-knowledge pharma licensing business model. Slide 5: The team & commercial roadmap..."></textarea>
+            </div>
+
+            <!-- Action Toolbar -->
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="btn-james-copy" class="btn-primary" style="font-size: 0.85rem; padding: 10px 18px; cursor: pointer; border: none; background: linear-gradient(135deg, #a855f7, #3b82f6);">
+                  <span>📋 Copy Full Brief to Clipboard</span>
+                </button>
+                <button id="btn-james-email" class="btn-secondary" style="font-size: 0.85rem; padding: 10px 18px; cursor: pointer; border-color: rgba(168, 85, 247, 0.4); color: #c084fc;">
+                  <span>✉️ Email Brief to Gwen</span>
+                </button>
+                <button id="btn-james-download" class="btn-secondary" style="font-size: 0.85rem; padding: 10px 18px; cursor: pointer;">
+                  <span>💾 Download .md File</span>
+                </button>
+              </div>
+              <button id="btn-james-clear" style="background: transparent; border: none; color: #64748b; font-size: 0.78rem; cursor: pointer; text-decoration: underline;">
+                Clear Form
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1473,6 +1588,104 @@
           const container = document.getElementById('ben-branch-activity');
           if (container) container.innerHTML = '<span style="color:var(--text-muted); font-size:0.82rem;">Checking GitHub for new branch pushes...</span>';
           fetchBenBranchActivity();
+        });
+      }
+
+      // =======================================================================
+      // James's Interactive Workbook Auto-Save & Export Logic
+      // =======================================================================
+      const jamesFields = [
+        { id: 'james-box-pitch', title: '1. Executive Positioning & 2-Sentence Hook' },
+        { id: 'james-box-customers', title: '2. Target Customers & Ideal Customer Profile (ICP)' },
+        { id: 'james-box-roi', title: '3. Commercial ROI & Quantified Value (30% Score)' },
+        { id: 'james-box-partners', title: '4. Prospective Partners & Pilot Syndicates' },
+        { id: 'james-box-finals', title: '5. Singapore Grand Finals Presentation Notes' }
+      ];
+
+      const saveStatusEl = document.getElementById('james-save-status');
+
+      function getJamesBriefMarkdown() {
+        let md = '# Project Q-Rotate: Venture & GTM Strategy Brief\n\n';
+        md += `**Author:** James Sun (Venture Advisor & GTM Strategist)\n`;
+        md += `**Email:** james@mambapartners.com\n`;
+        md += `**Timestamp:** ${new Date().toLocaleString()}\n\n---\n\n`;
+        jamesFields.forEach(f => {
+          const el = document.getElementById(f.id);
+          const val = el ? el.value.trim() : '';
+          md += `### ${f.title}\n\n${val || '_No input provided yet._'}\n\n`;
+        });
+        return md;
+      }
+
+      // Restore saved answers from localStorage
+      jamesFields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el) return;
+        const saved = localStorage.getItem(f.id);
+        if (saved) el.value = saved;
+
+        el.addEventListener('input', () => {
+          localStorage.setItem(f.id, el.value);
+          if (saveStatusEl) {
+            saveStatusEl.textContent = '🟢 Auto-saved to browser';
+            saveStatusEl.style.color = '#10b981';
+          }
+        });
+      });
+
+      // Copy Brief
+      const copyBtn = document.getElementById('btn-james-copy');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const text = getJamesBriefMarkdown();
+          navigator.clipboard.writeText(text).then(() => {
+            alert('✅ Full Venture & GTM Brief copied to your clipboard!');
+          }).catch(() => {
+            alert('Could not copy automatically. Use the "Email to Gwen" or "Download" buttons.');
+          });
+        });
+      }
+
+      // Email Brief
+      const emailBtn = document.getElementById('btn-james-email');
+      if (emailBtn) {
+        emailBtn.addEventListener('click', () => {
+          const text = getJamesBriefMarkdown();
+          const subject = encodeURIComponent('Project Q-Rotate: Venture & GTM Strategy Brief from James');
+          const body = encodeURIComponent(text);
+          window.location.href = `mailto:gwen@evecount.com?subject=${subject}&body=${body}`;
+        });
+      }
+
+      // Download Brief
+      const downloadBtn = document.getElementById('btn-james-download');
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+          const text = getJamesBriefMarkdown();
+          const blob = new Blob([text], { type: 'text/markdown' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'qrotate_gtm_brief_james.md';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      // Clear Form
+      const clearBtn = document.getElementById('btn-james-clear');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to clear your workbook entries?')) {
+            jamesFields.forEach(f => {
+              const el = document.getElementById(f.id);
+              if (el) el.value = '';
+              localStorage.removeItem(f.id);
+            });
+            if (saveStatusEl) saveStatusEl.textContent = '⚪ Form cleared';
+          }
         });
       }
     }
