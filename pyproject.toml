@@ -1,0 +1,31 @@
+[project]
+name = "sg-grand-challenge"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "aqora>=0.29.0",
+    "guppylang>=0.21.16",
+    "hugr-qir>=0.1.2",
+    "pytket>=2.18.1",
+]
+
+[dependency-groups]
+dev = [
+  "ruff",
+  "ty",
+  "watchdog",
+  "nbconvert",
+  "google-genai",
+  "anthropic",
+  "openai",
+]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.marimo.venv]
+path = "/home/me/venv"
+# marimo is already installed here; setting this true reinstalls it on every
+# kernel start. `uv add` works either way.
+writable = false
