@@ -861,13 +861,13 @@
           Enter your team passcode to access private deliverables, role-specific checklists, and roadmap action items.
         </p>
         <div class="passcode-input-wrap">
-          <input type="password" id="warroom-passcode-input" class="passcode-input" placeholder="Enter team passcode (e.g. evecount2026)" />
+          <input type="password" id="warroom-passcode-input" class="passcode-input" placeholder="Enter team passcode..." />
           <button id="btn-unlock-warroom" class="btn-primary" style="padding: 12px 22px; cursor: pointer; border: none;">
             <span>Unlock Dashboard →</span>
           </button>
         </div>
         <p style="font-size: 0.75rem; color: #64748b; margin-top: 12px;">
-          Passcode: <code style="color: var(--accent-cyan);">evecount2026</code> • State is saved locally in your browser.
+          🔒 Authorized Eve Count team members only • Session persists on your device.
         </p>
       </div>
 
@@ -1376,7 +1376,7 @@
         if (validPasscodes.includes(val)) {
           unlock();
         } else {
-          alert('Incorrect team passcode. Hint: evecount2026');
+          alert('Incorrect team passcode. Access restricted to authorized team members.');
         }
       }
 
