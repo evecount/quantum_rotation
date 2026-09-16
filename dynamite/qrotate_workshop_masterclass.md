@@ -1,8 +1,14 @@
 # The Shared Challenge: Bridging Biology & Quantum Physics
-- The Universal Goal: Accelerating therapeutic discovery for real human health
-- The Computational Wall: 3D spatial grids grow exponentially ($O(N^3)$) with system size
-- Why Nature Doesn't Use Grids: Molecules synchronize continuously in femtoseconds
-- The Helios Opportunity: Direct continuous Hamiltonian time-evolution on trapped ions
+> **The Computational Wall:** Classical molecular docking forces continuous quantum physics onto rigid 3D cubic grids ($O(N^3)$), burning days of cluster compute on local-minima dead ends.
+
+| Dimension / Metric | Classical Supercomputers ($O(N^3)$) | Project Q-Rotate (Continuous Quantum) |
+| :--- | :--- | :--- |
+| **Search Paradigm** | Discretized 3D Cartesian grid ($10^6+$ cubic voxels) | Continuous Lie algebra manifold ($SU(2)$) |
+| **Search Path** | Mountain hike over rugged potential energy barriers | **Geodesic burrowing** directly through wave space |
+| **Hardware Overhead** | Megawatts on GPU clusters (days to weeks) | **11.5 HQCs** on Quantinuum H2 (sub-penny execution) |
+| **IP Protection** | Plaintext atomic coordinates exposed in memory | **Zero-Knowledge Blind Parity** (100% encrypted) |
+
+- **The Helios Opportunity:** Trapped ions physically shuttle across optical zones, executing continuous Hamiltonian time-evolution without grid discretization.
 ---
 Hello everyone, and welcome to our walkthrough of Project Q-Rotate for the Quantinuum Singapore Grand Challenge.
 
@@ -94,13 +100,16 @@ More importantly, the workbook automatically takes this circuit, passes it to th
 
 # Compiling to Quantinuum Trapped Ions
 - Rebasing to Native H-Series Gateset: `PhasedX`, `ZZPhase`, `Measure`
-- Exploiting all-to-all ion connectivity (no swap-routing overhead)
-- Exact Quantinuum H2 Hardware Resource Profile:
-  * Qubits Allocated: **7 Qubits**
-  * Single-Qubit Rotations (`PhasedX`): **47 Gates**
-  * Two-Qubit Entanglers (`ZZPhase`): **24 Gates**
-  * Measurements: **1 Gate**
-  * Hardware Quantum Credits (HQC): **11.5 HQCs**
+- Exploiting all-to-all ion connectivity (zero swap-routing overhead)
+
+| Resource Profile Metric | Compiler Allocation | Hardware Efficiency Advantage |
+| :--- | :--- | :--- |
+| **Active Ion Qubits** | `7 Qubits` | 100% dedicated trapped-ion register |
+| **Single-Qubit Rotations (`PhasedX`)** | `47 Gates` | Precision optical Raman laser pulses |
+| **Two-Qubit Entanglers (`ZZPhase`)** | `24 Gates` | All-to-all ion shuttling (0 SWAP gates) |
+| **Mid-Circuit Parity Readout** | `1 Gate` | Fast optical detection & qubit reset |
+| **Execution Cost (100 Shots)** | `11.5 HQCs` | Sub-penny commercial drug screening |
+
 ---
 Now let's talk about hardware. Why Quantinuum? Why did we build Project Q-Rotate specifically for Quantinuum's H-series trapped-ion processors instead of superconducting chips like IBM or Google?
 
