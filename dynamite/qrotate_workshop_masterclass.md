@@ -3,7 +3,7 @@
 
 | Dimension / Metric | Classical Supercomputers ($O(N^3)$) | Project Q-Rotate (Continuous Quantum) |
 | :--- | :--- | :--- |
-| **Search Paradigm** | Discretized 3D Cartesian grid ($10^6+$ cubic voxels) | Continuous Lie algebra manifold ($SU(2)$) |
+| **Search Paradigm** | Discretized 3D Cartesian grid ($10^6+$ cubic voxels) | Continuous quantum rotation ($SU(2)$) |
 | **Search Path** | Mountain hike over rugged potential energy barriers | **Geodesic burrowing** directly through wave space |
 | **Hardware Overhead** | Megawatts on GPU clusters (days to weeks) | **11.5 HQCs** on Quantinuum H2 (sub-penny execution) |
 | **IP Protection** | Plaintext atomic coordinates exposed in memory | **Zero-Knowledge Blind Parity** (100% encrypted) |
@@ -14,49 +14,49 @@ Hello everyone, and welcome to our walkthrough of Project Q-Rotate for the Quant
 
 If you work in computational biology, medicine, or quantum chemistry, you know the shared challenge we all face every day. Discovering a new therapeutic candidate—whether it is an antiviral protease inhibitor or a targeted cancer drug—is a race against time for patients who need answers.
 
-Yet for decades, computational docking has run into a frustrating computational wall. When we model how a drug fits into a flexible protein pocket on classical computers, we are forced to slice physical space into rigid 3D cubic grids. As molecules grow, the number of rotational and translational poses explodes, burning days or weeks of cluster compute just to test a single candidate.
+Yet for decades, computational drug discovery has run into a frustrating computational wall. When we model how a drug candidate fits into a flexible protein pocket on classical computers, we are forced to slice physical space into rigid 3D cubic grids. As molecules grow, the number of possible positions and angles explodes exponentially, burning days or weeks of cluster compute just to test a single candidate.
 
-But in nature, molecules don't compute in cubic grids. An enzyme and its ligand find each other in femtoseconds through continuous quantum phase synchronization.
+But in nature, molecules don't compute in cubic grids. An enzyme and its binding partner find each other in femtoseconds through continuous, natural quantum resonance.
 
-Our mission with Project Q-Rotate is to bridge that gap on Quantinuum's trapped-ion processors, including the next-generation Helios architecture. By shifting from discrete grid searching to continuous Lie algebra rotations, we can help researchers test binding affinity directly, accurately, and with remarkable hardware efficiency.
+Our mission with Project Q-Rotate is to bridge that gap on Quantinuum's trapped-ion processors, including the next-generation Helios architecture. By shifting from rigid grid searching to smooth, continuous quantum rotations, we help researchers test molecular fit directly, accurately, and with remarkable hardware efficiency.
 
-# Conceptual Genesis: The Mountain Hike vs. Lie Burrowing
+# Conceptual Genesis: The Mountain Hike vs. Quantum Burrowing
 - **The Classical "Mountain Hike":**
   * Brute-forces across a rugged 3D Cartesian potential energy landscape ($O(N^3)$)
-  * Trapped in local energy minima, slipping on rotational barriers, burning megawatts of cluster compute
-- **The Lie Group "Burrowing" (Our Approach):**
-  * Maps physical rotation directly into Lie algebra generators: $\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau \hat{H})$
-  * Never hikes the noisy surface—burrows straight through the manifold along the shortest geodesic path in wave space
+  * Trapped in local energy valleys, slipping on rotational barriers, burning megawatts of cluster compute
+- **The Quantum "Burrowing" (Our Approach):**
+  * Maps physical rotation into a continuous quantum operator: $\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau \hat{H})$
+  * Never hikes the noisy surface—burrows straight through the state space along the shortest path
 - **The Result:** All spatial orientations evaluated simultaneously via continuous quantum phase synchronization
 ---
 To understand why this approach is fundamentally different, imagine how classical computers look at molecular docking compared to quantum physics.
 
-Think of classical docking as a grueling "Mountain Hike." Traditional algorithms are forced to hike across a rugged, mountainous 3D Cartesian energy landscape. They step through cubic voxels angle by angle, frequently getting trapped in local energy valleys, slipping on rotational barriers, and burning megawatts of cluster compute just trying to climb over the potential energy terrain.
+Think of classical docking as a grueling "Mountain Hike." Traditional algorithms are forced to hike across a rugged, mountainous 3D energy landscape. They step through cubic grid boxes angle by angle, frequently getting trapped in local valleys, slipping on barrier ridges, and burning megawatts of cluster compute just trying to climb over the rough terrain.
 
 In Project Q-Rotate, we asked a fundamentally different question: what if we don't hike over the mountain at all?
 
-Instead of fighting the surface terrain in physical space, we use Lie group "Burrowing." By mapping the spatial transformation directly into the continuous generators of an SU(2) Lie algebra, our unitary evolution operator—U-tube of tau—doesn't hike over the surface. It burrows straight through the state manifold along the shortest geodesic path in wave space.
+Instead of fighting the surface terrain, we use what we call Quantum "Burrowing." In physics, three-dimensional rotations are completely smooth and continuous. Instead of chopping a rotation into separate rigid steps, our continuous quantum operator tunnels straight through the quantum state space along the shortest possible path.
 
-Instead of testing one orientation at a time, the continuous quantum state sweeps through all continuous orientations simultaneously. And when the candidate molecule finds resonance with the protein pocket, constructive quantum interference signals a lock-and-key match in femtoseconds.
+Instead of testing one orientation at a time on a computer cluster, the quantum wave sweeps through all continuous angles simultaneously. And when the candidate drug finds that natural resonance with the protein pocket, the quantum waves lock together like a key in a lock—signaling a match in femtoseconds.
 
 This is the geometric intuition at the heart of our engine: replacing an exponential classical mountain hike with an exact, continuous quantum tunnel on trapped ions.
 
 # Lie Algebra & The Tube Hamiltonian
+### The Two Jobs: 3D Steering Wheel + Electronic Key Teeth
 - The Continuous Evolution Operator:
 $$ \hat{U}_{\text{tube}}(\tau) = \exp\left(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}})\right) $$
-- **$\hat{H}_{\text{rot}}$ (Spatial Steering / The "Steering Wheel"):** Smoothly rotates the molecule across 3D space ($SU(2)$) without rigid grid discretization.
-- **$\hat{H}_{\text{phase}}$ (Electronic Fit / The "Key Teeth"):** Encodes electrostatic charge matches ($\Delta \Phi$) across all binding pocket contact atoms.
-- **$\tau$ (Continuous Flow / The "Burrowing Path"):** Evolves all rotation angles and shape flexes simultaneously along the shortest quantum manifold.
+- **$\hat{H}_{\text{rot}}$ (The Steering Wheel):** Smoothly rotates the molecule across 3D space like a dial, without rigid grid boxes.
+- **$\hat{H}_{\text{phase}}$ (The Key Teeth):** Encodes electrostatic charge matches ($\Delta \Phi$) across all binding pocket contact atoms.
+- **$\tau$ (The Continuous Flow):** Sweeps all rotation angles and shape flexes simultaneously in a single quantum wave.
 ---
-Let's break down the core mathematics governing this breakthrough. On the canvas, you are looking at the foundational equation of Project Q-Rotate: the Tube Hamiltonian and its continuous unitary evolution operator, $\hat{U}_{\text{tube}}(\tau)$.
+Let's look at the simple intuition behind the mathematics on the screen. While the equation looks complex, it really just does two simple physical jobs at the same time.
 
-If you close your eyes, think of this equation as doing two simple physical jobs at the same time:
+First, think of H-rot as our 3D Steering Wheel. Instead of testing one angle at a time on a rigid grid, this operator smoothly steers and rotates the candidate molecule in three dimensions like a precision dial.
 
-First, $\hat{H}_{\text{rot}}$ is our spatial steering wheel. Instead of testing one angle at a time on a rigid grid, this continuous Lie algebra operator smoothly steers and rotates the candidate molecule through three-dimensional space along an $SU(2)$ manifold.
+Second, think of H-phase as the teeth on a physical key. In chemistry, positive and negative electrical charges have to line up between a drug and a protein pocket. Wherever the charges clash, our equation adds a phase penalty directly into the quantum state.
 
-Second, $\hat{H}_{\text{phase}}$ acts like the teeth on a physical key. Classical computing analyzes the electrostatic charges across the binding pocket. Wherever the charges between the drug and the pocket clash, this operator introduces a phase penalty—delta phi—mapping directly onto Pauli-Z spin operators.
+When you put the steering wheel and the key teeth together into our continuous operator, you create a quantum tunnel. In a single continuous flow, the quantum state sweeps through all possible angles and shapes simultaneously, searching for that natural electrostatic lock-and-key fit.
 
-When you combine them into U-tube of tau, you create a continuous quantum tunnel. As tau flows forward, the quantum state sweeps through all continuous rotation angles and conformational wobbles simultaneously, searching for natural resonance along the shortest geodesic path in wave space.
 
 # Zero-Knowledge Blind Parity
 - The Quantum Match Sensor Equation:
@@ -66,20 +66,20 @@ $$ P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{lig
 - **$P(0) = 0.5$ (Destructive Clashing):** Misaligned molecule; quantum waves cancel out into random 50/50 coin-flip noise.
 - **Zero-Knowledge Pharma Moat:** Proves binding match with mathematical certainty while keeping proprietary drug scaffolds 100% confidential.
 ---
-Now that our ligand state has evolved through this continuous rotation manifold, how do we actually verify whether it fits the pocket? In classical chemistry, you would compute root-mean-square deviation by comparing thousands of coordinate pairs—a slow, brute-force process.
+Now that our molecule has rotated through wave space, how do we actually verify whether it fits the target pocket? In classical chemistry, you would compare thousands of 3D coordinate pairs one by one—a slow, brute-force process.
 
 In Project Q-Rotate, we do something radically more elegant: we introduce a quantum "Blindfolded Referee."
 
-Look at the circuit architecture. We prepare the pocket reference state on one register of qubits, and the evolved ligand state on a second register. We then introduce a single ancilla qubit—our referee. We place the ancilla in an equal superposition, perform a controlled-SWAP between the pocket and ligand, and measure the ancilla.
+Look at the circuit architecture. We prepare the target pocket on one set of qubits, and the candidate drug on a second set. We then introduce a single helper qubit—our referee. We let the quantum wave of the drug interfere directly with the quantum wave of the pocket, and measure the referee.
 
 The equation on your screen shows the exact match probability:
 $$ P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right) $$
 
-If the ligand is misaligned or chemically incompatible, the quantum waves clash destructively. The overlap drops toward zero, and the ancilla measures zero with only fifty percent probability—pure random coin-flip noise.
+If the drug doesn't fit or clashes chemically, the quantum waves cancel each other out. The overlap drops, and the referee measures zero with only fifty percent probability—pure random coin-flip noise.
 
-But when the continuous rotation operator achieves perfect lock-and-key resonance, the quantum waves reinforce each other constructively. The fidelity reaches one hundred percent, and the ancilla referee measures zero with absolute certainty.
+But when the drug achieves a perfect lock-and-key fit, the quantum waves reinforce each other constructively. The fidelity reaches one hundred percent, and the referee measures zero with absolute certainty.
 
-And here is the decisive advantage for biopharma investors: the referee never learns or exposes the underlying three-dimensional atomic coordinates of the drug. The interference pattern alone proves the fit. This is Zero-Knowledge Blind Parity.
+And here is the decisive advantage for biopharma investors: the referee never learns or exposes the proprietary 3D coordinates of the drug. The wave interference alone proves the fit. This is Zero-Knowledge Blind Parity.
 
 # The Interactive Quantum Workbook
 - Live Marimo Notebook Execution & Dynamic Telemetry
@@ -94,7 +94,7 @@ To make this tangible for researchers and judges, we implemented this entire hyb
 
 In this workbook, we don't just show static equations—we allow the user to interactively stress-test the quantum pipeline. You can adjust the number of active binding contact points from 2 to 6 sites. You can inject thermal coordinate perturbations from 0 to 0.2 Angstroms to simulate physiological body temperature in human tissue. And you can sweep the spatial misalignment angle from zero to 45 degrees.
 
-As you drag the misalignment slider, the workbook dynamically recomputes the zero-knowledge parity curve. At zero degrees misalignment, the fidelity is $1.0$ and the match probability is $100\%$. As the molecule tilts away from the active pocket, the curve smoothly traces the cosine-squared Lie algebra manifold down to baseline. 
+As you drag the misalignment slider, the workbook dynamically recomputes the zero-knowledge parity curve. At zero degrees misalignment, the fidelity is $1.0$ and the match probability is $100\%$. As the molecule tilts away from the active pocket, the curve smoothly traces the quantum resonance curve down to baseline. 
 
 More importantly, the workbook automatically takes this circuit, passes it to the Pytket optimizing compiler, rebases every single gate into native Quantinuum trapped-ion pulses, and displays the exact HQC execution cost in real time before submitting to the hardware emulator.
 
@@ -172,7 +172,7 @@ Look at this list:
 5. **Heme Porphyrin Coordination**: The spin-state transition of iron upon oxygen binding, a multi-reference challenge that classical density functional theory notoriously miscalculates.
 6. **Diazepam at GABA-A**: An allosteric neuroreceptor site where conformational phase shifts dictate central nervous system sedation.
 
-Across all six distinct chemical environments, Project Q-Rotate successfully synthesized the required Lie algebra generators, compiled the corresponding trapped-ion circuits, and demonstrated distinct parity resonance curves. This is a general-purpose quantum biomolecular pattern matching engine.
+Across all six distinct chemical environments, Project Q-Rotate successfully mapped the continuous 3D molecular rotations, compiled the corresponding trapped-ion circuits, and demonstrated distinct parity resonance curves. This is a general-purpose quantum biomolecular pattern matching engine.
 
 # The 3D WebGL Resonance Constellation
 - Bridging the Gap: Transforming Quantum State Vectors into Human Intuition
@@ -183,13 +183,13 @@ Across all six distinct chemical environments, Project Q-Rotate successfully syn
   <iframe src="constellation.html?embed=1" allow="autoplay" title="3D WebGL Resonance Constellation"></iframe>
 </div>
 ---
-Now, let's address a crucial question: how do you take an 8-dimensional Lie group rotation on a trapped-ion quantum computer and make it understandable and usable for a computational chemist, a physician, or a quantum investor? 
+Now, let's address a crucial question: how do you take complex multidimensional quantum rotations on a trapped-ion computer and make them instantly understandable to a chemist, a doctor, or an investor?
 
-If you show an executive or a doctor a list of quantum state amplitudes, it's just numbers on a screen. But when you translate that quantum telemetry into a living, three-dimensional space, the physics becomes intuitive.
+If you show an executive or a doctor a list of quantum state numbers, it's just abstract math on a screen. But when you translate that quantum telemetry into a living, three-dimensional space, the physics becomes intuitive.
 
-On your screen is **The Resonance Constellation**—our interactive 3D WebGL and Three.js visualization engine that you can explore live at `evecount.github.io/quantum_rotation/constellation.html`.
+On your screen is **The Resonance Constellation**—our interactive 3D WebGL visualization engine that you can explore live at `evecount.github.io/quantum_rotation/constellation.html`.
 
-What this engine creates is a live visual bridge between quantum telemetry and human perception. As the Tube Hamiltonian evolves, the 3D Constellation renders the active pocket contact coordinates as glowing orbital nodes in space. When a candidate drug is misaligned, the orbital manifolds warp with phase turbulence. But as our continuous Lie rotation brings the ligand into alignment, the manifolds smoothly lock together, creating constructive wave interference in real time.
+What this engine creates is a live visual bridge between quantum computing and human perception. As the quantum state evolves, the 3D Constellation renders the active pocket contact points as glowing orbital stars in space. When a candidate drug is misaligned, the orbits wobble with turbulence. But as our continuous quantum rotation brings the drug into alignment, the orbits smoothly lock together, creating constructive wave resonance in real time.
 
 You can drag the angle slider, tilt the 3D pitch, and watch the exact moment the ancilla referee signals a perfect zero-parity match. It transforms an invisible quantum algorithm into an intuitive, enterprise-grade scientific instrument.
 
@@ -220,12 +220,12 @@ In drug development, novel molecular scaffolds are multi-billion-dollar trade se
 
 With Project Q-Rotate, that fear disappears. Our ancilla-mediated blind parity test mathematically proves whether a candidate drug achieves lock-and-key resonance with a target receptor without ever disclosing its underlying 3D atomic coordinates. You get mathematical proof of binding affinity with zero coordinate exposure.
 
-Furthermore, our intellectual property is fundamentally defensible: our continuous phase synchronization and dynamic trapped-ion RUS loops cannot be replicated on classical GPU clusters without running into the $O(N^3)$ Cartesian brick wall.
+Furthermore, our intellectual property is fundamentally defensible: our continuous quantum phase synchronization and dynamic trapped-ion loops cannot be replicated on classical GPU clusters without hitting that exponential three-dimensional brick wall.
 
 This is not just academic research. This is an institutional deep-tech venture built to win the Quantinuum Grand Challenge and scale globally.
 
 # Key Takeaways
-- **The Core Breakthrough:** Replaced $O(N^3)$ classical Cartesian grid docking with continuous Lie algebra unitary rotations $\hat{U}_{\text{tube}}(\tau)$.
+- **The Core Breakthrough:** Replaced $O(N^3)$ classical Cartesian grid docking with continuous quantum rotations $\hat{U}_{\text{tube}}(\tau)$.
 - **Zero-Knowledge Security:** Ancilla-mediated SWAP test verifies binding parity without leaking proprietary atomic coordinates.
 - **Sub-Penny Hardware Efficiency:** Rebased to Quantinuum H2 native gates (`PhasedX`, `ZZPhase`) executing at just 11.5 HQCs per test.
 - **Dynamic Superpower:** Native mid-circuit measurement and conditional reset feedback loop implemented in Quantinuum `guppylang`.
@@ -233,7 +233,7 @@ This is not just academic research. This is an institutional deep-tech venture b
 ---
 To summarize our entire presentation, here are the core takeaways of Project Q-Rotate:
 
-First, we attacked the fundamental bottleneck of computational drug discovery. We proved that spatial and electrostatic molecular binding does not require cubic grid discretization; it can be mapped into continuous Lie algebra rotations on an $SU(2)$ manifold, burrowing directly through wave space along the shortest quantum path.
+First, we solved the fundamental bottleneck of computational drug discovery. We proved that finding a molecular fit does not require brute-forcing rigid 3D cubic grids. By using smooth, continuous quantum rotations, our algorithm burrows straight through to the optimal fit along the shortest quantum path.
 
 Second, we introduced Zero-Knowledge Blind Parity, allowing pharmaceutical sponsors and quantum cloud providers to verify molecular fits without exposing confidential chemical coordinates.
 
