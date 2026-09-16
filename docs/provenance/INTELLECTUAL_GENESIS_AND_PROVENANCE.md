@@ -1,4 +1,4 @@
-# 🐰 Project Q-Rotate: Intellectual Genesis & Human Provenance
+# ⚛️ Project Q-Rotate: Intellectual Genesis & Human Provenance
 
 > *"Nature does not compute in cubic voxels. Nature evolves continuous quantum states through phase interference."*  
 > — **Gwendalynn (婉婷) Lim ("1ightray")**, Founder & Quantum Architect, Eve Count
@@ -26,7 +26,7 @@ While researching the failure modes of classical docking and photochemical trans
 
 > **"Why are we wasting millions of classical compute cycles rotating atomic coordinates in physical 3D space, when quantum mechanics already gives us a continuous mathematical group specifically built for rotation?"**
 
-This spark was the genesis of what the Eve Count team affectionately calls **"The Quantum Bunny"**:
+This spark was the genesis of the continuous Lie resonance engine:
 Instead of rotating physical atoms through Cartesian space, map the spatial disorientation vector $\vec{\omega}$ and electrostatic field discrepancies $\Delta \Phi_m$ directly into the generators of a Lie algebra:
 $$ \hat{U}_{\text{tube}}(\tau) = \exp\left(-i \tau \left( \sum_{k=1}^N \vec{\omega} \cdot \hat{\vec{\sigma}}_k + \sum_{m=1}^N \Delta \Phi_m \hat{Z}_m \right)\right) $$
 
