@@ -26,7 +26,7 @@ Instead of rotating atomic coordinates in physical 3D space, what if we let quan
 
 In mathematics, rotations in three dimensions are governed by Lie groups. Rather than stepping a molecule angle by angle, we realized you can map both spatial misalignment and electrostatic contact discrepancies directly into the continuous generators of an SU(2) Lie algebra.
 
-We call this approach "The Quantum Bunny" within our team—a playful reminder to stay curious and look at old problems through fresh geometric eyes. When you express molecular binding as continuous Hamiltonian time-evolution, the entire quantum state sweeps through all continuous orientations simultaneously.
+When you express molecular binding as continuous Hamiltonian time-evolution rather than static Cartesian coordinates, the entire quantum state sweeps through all continuous rotational orientations simultaneously.
 
 When the molecule and the protein pocket resonate, constructive quantum interference gives us an immediate, clear signature of alignment.
 

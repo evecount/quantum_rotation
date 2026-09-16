@@ -21,7 +21,7 @@ This manifesto provides full transparency regarding the **division of intellect,
 
 | Project Dimension | Human Originator (Gwen Lim / Eve Count) | Role of AI Engineering Assistants |
 | :--- | :--- | :--- |
-| **Core Scientific Hypothesis** | **100% Human.** Conception of "The Quantum Bunny": mapping 3D molecular misalignment into Lie algebra generators ($SU(2)^{\otimes n}$) to eliminate classical Cartesian grids. | Zero contribution. LLMs default to standard literature patterns (e.g., standard discrete grid docking). |
+| **Core Scientific Hypothesis** | **100% Human.** Conception of continuous Lie resonance architecture: mapping 3D molecular misalignment into Lie algebra generators ($SU(2)^{\otimes n}$) to eliminate classical Cartesian grids. | Zero contribution. LLMs default to standard literature patterns (e.g., standard discrete grid docking). |
 | **Algorithmic Architecture** | **100% Human.** Design of the continuous Tube Hamiltonian $\hat{U}_{\text{tube}}(\tau)$ and Zero-Knowledge Blind Parity SWAP test. | Mathematical formatting assistance (LaTeX syntax verification and KaTeX compatibility). |
 | **Hardware Specialization** | **100% Human.** Strategic decision to exploit Quantinuum H-Series trapped ions for their mid-circuit measurement and coherent qubit reset capabilities. | Syntax validation of `guppylang` decorators and HUGR compilation wrappers. |
 | **Dynamic RUS Feedback** | **100% Human.** Design of real-time classical conditional branching for phase-kick error correction. | Circuit decomposition scaffolding and Pytket gate count unit tests. |

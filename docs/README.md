@@ -2,17 +2,22 @@
 
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Key Responsibilities:**
-* **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO ("The Quantum Bunny")**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)  
-  *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
+* **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)  
+  *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.  
+  *Provenance Dossier:* [provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md)
 * **Benjamin Lim ("Sedilix")** ([ben@evecount.com](mailto:ben@evecount.com) / [LinkedIn](https://www.linkedin.com/in/sedilix/) / [GitHub](https://github.com/sedilix)) — **Co-Founder & Systems Architect**, Eve Count & Cybrdeck (1,500+ commits/yr)  
-  *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, reactive telemetry interfaces, and developer user experience.
+  *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, reactive telemetry interfaces, and developer user experience.  
+  *Role Brief:* [workspaces/BEN_SYSTEMS_ARCHITECTURE_BRIEF.md](workspaces/BEN_SYSTEMS_ARCHITECTURE_BRIEF.md)
 * **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com) / [LinkedIn (11k+)](https://www.linkedin.com/in/jamessun1/)) — **Founder @ Mamba Partners | Venture Advisor & GTM Strategist** (ex. Goldman Sachs, Blackstone, Microsoft)  
-  *In charge of:* Institutional venture capital strategy, global Go-To-Market (GTM) execution, biopharma commercial licensing ($120M–$280M roadmap), strategic network syndication, and investor positioning for the Grand Challenge finals.
+  *In charge of:* Institutional venture capital strategy, global Go-To-Market (GTM) execution, biopharma commercial licensing ($120M–$280M roadmap), strategic network syndication, and investor positioning for the Grand Challenge finals.  
+  *Role Brief:* [workspaces/JAMES_VENTURE_GTM_BRIEF.md](workspaces/JAMES_VENTURE_GTM_BRIEF.md)
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
 **🌌 3D Resonance Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)  
 **Live Interactive Documentation:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)  
+**📜 Intellectual Genesis & Provenance:** [provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md)  
+**🤝 Human-AI Co-Creation Manifesto:** [provenance/HUMAN_AI_CO_CREATION_MANIFESTO.md](provenance/HUMAN_AI_CO_CREATION_MANIFESTO.md)  
 **Repository:** [github.com/evecount/quantum_rotation](https://github.com/evecount/quantum_rotation)  
 **Aqora Workspace:** [aqora.io/1ightray/sg-grand-challenge-evecount](https://aqora.io/1ightray/sg-grand-challenge-evecount)
 
@@ -28,7 +33,7 @@ This project is explicitly structured to satisfy the four official scoring dimen
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture & GTM Thesis](#7-commercial-architecture--market-value) ($120M–$280M Biopharma licensing roadmap, 100x cost reduction vs wet lab synthesis, James Sun / Mamba Partners). |
 | **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 4: Hardware Benchmarks](#4-hardware-compilation--quantinuum-native-execution) (7 Qubits, 47 `PhasedX`, 24 `ZZPhase`, 11.5 HQCs on Quantinuum H2, Guppy RUS dynamic loop, 6 benchmark active sites). |
-| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; Zero-Knowledge SWAP test; thermal perturbation analysis). |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; Zero-Knowledge SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
 ---
@@ -38,6 +43,16 @@ This project is explicitly structured to satisfy the four official scoring dimen
 Project Q-Rotate replaces traditional, computationally expensive 3D spatial docking models with a quantum-native, information-theoretic approach. Standard computational docking and biomolecular simulations face severe scaling bottlenecks when modeling complex molecular geometries and photochemical active sites. Conventional classical methods (such as grid-based DFT or brute-force spatial sampling) scale poorly with system size, while multi-configurational methods (CASSCF, DMRG) hit an exponential wall when exploring multi-reference excited states.
 
 By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies ligand-protein structural and electronic alignment via a **blind parity test**, completely circumventing the need to compute massive overarching molecular geometries or discretize high-dimensional 3D spatial grids.
+
+> [!IMPORTANT]
+> ### 🛡️ Zero-Knowledge Proof for Pharma: The Decisive Commercial Moat
+> **By executing an ancilla-mediated blind parity test, Project Q-Rotate verifies whether a candidate ligand achieves lock-and-key resonance with a target protein active site without disclosing the exact 3D atomic coordinates. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, this coordinate-free zero-knowledge matching protocol provides an unassailable commercial advantage.**
+> 
+> * **The Commercial Bottleneck:** Enterprise biopharma companies invest hundreds of millions of dollars synthesizing and patenting novel molecular scaffolds. They are notoriously reluctant to transmit raw 3D atomic coordinates across external cloud computing environments due to the risk of IP exposure and corporate espionage.
+> * **The Quantum Mathematical Solution:** In Project Q-Rotate, the ancilla-mediated quantum SWAP test evaluates structural fit using quantum state overlap. The output is a single scalar interference parity metric:
+>   $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
+>   Neither the cloud platform nor the quantum hardware provider ever gains access to the underlying 3D molecular coordinates, unlocking sovereign, confidential quantum drug screening for global biopharma sponsors.
+
 
 ### 🌌 Real-Time WebGL 3D Visualization: The Resonance Constellation
 
@@ -309,5 +324,42 @@ To re-run the benchmark suite and reproduce all hardware metrics:
 python -m src.qrotate.metrics
 ```
 Structured JSON results are automatically exported to `benchmarks/showdown_results.json`.
+
+---
+
+## 9. 🏛️ About Eve Count & Leadership Bio
+
+### Organization Overview: Eve Count
+**Eve Count** is a Singapore-based DeepTech quantum research laboratory and venture studio pioneering coordinate-free biomolecular simulation and next-generation sovereign algorithmic systems. Combining human mathematical domain invention with high-performance WebGL visualization and institutional capital strategy, Eve Count engineers high-leverage computational engines designed natively for trapped-ion quantum architectures.
+
+* **Headquarters:** Singapore 🇸🇬
+* **Official Portal:** [https://evecount.com](https://evecount.com)
+* **Flagship Initiative:** Project Q-Rotate (Quantinuum Singapore Grand Challenge 2026)
+
+---
+
+### Core Leadership & Provenance
+
+#### ⚛️ Gwendalynn (婉婷) Lim ("1ightray") — Founder & DeepTech Venture CTO
+* **Role:** Lead Quantum Architect & Inventor of Project Q-Rotate Core Engine
+* **Credentials:** B.Sc. (Hons) in Applied Computing (Singapore Institute of Technology), Advanced Machine Learning & Deep Learning Credentials (NTU SCTP).
+* **Domain Focus:** Continuous Hamiltonian time-evolution, Lie group representations ($SU(2)^{\otimes n}$), Zero-Knowledge quantum parity verification, and native trapped-ion kernel compilation in Quantinuum `guppylang` and Pytket.
+* **Bio:** Gwendalynn is a Singaporean computer scientist, machine learning practitioner, and deep-tech founder. Rejecting four decades of classical Cartesian grid discretization ($O(N^3)$ computational bottlenecks in molecular docking), Gwendalynn formulated the continuous Tube Hamiltonian ($\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau(\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$), transforming spatial and electrostatic molecular binding into an analytical, coordinate-free Lie algebra resonance problem. Gwendalynn directs the core mathematical architecture, algorithmic proofs, and physical trapped-ion execution across Quantinuum H1/H2 systems.
+* **Direct Contact:** [gwen@evecount.com](mailto:gwen@evecount.com) | [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)
+
+#### ⚡ Benjamin Lim ("Sedilix") — Co-Founder & Systems Architect
+* **Role:** Systems Architect & Visual Computing Lead
+* **Affiliation:** Co-Founder @ Eve Count & Cybrdeck (1,500+ open-source contributions/year)
+* **Domain Focus:** High-performance 3D WebGL/Three.js rendering, reactive telemetry streams, Marimo reactive workbook integration, developer tooling, and user experience.
+* **Bio:** Benjamin is an elite systems builder and open-source contributor known in developer communities as *Sedilix*. On Project Q-Rotate, Benjamin engineered **The Resonance Constellation**—an interactive 3D WebGL visualization engine that translates 8-dimensional Lie group rotations and quantum state vectors into intuitive, real-time spatial topologies for computational chemists and biopharma researchers.
+* **Direct Contact:** [ben@evecount.com](mailto:ben@evecount.com) | [LinkedIn](https://www.linkedin.com/in/sedilix/) | [GitHub](https://github.com/sedilix)
+
+#### 💼 James Sun — Venture Advisor & Global GTM Strategist
+* **Role:** Commercial Architecture & Institutional Capital Lead
+* **Affiliation:** Founder @ Mamba Partners (ex-Goldman Sachs, Blackstone, Microsoft; 11,000+ industry network)
+* **Domain Focus:** Institutional venture capital syndication, sovereign deep-tech positioning, and biopharma co-development licensing ($120M–$280M roadmap).
+* **Bio:** James brings top-tier institutional finance and technology executive experience from Goldman Sachs, Blackstone, and Microsoft. As founder of Mamba Partners, James structures Project Q-Rotate's commercialization pipeline, IP defensibility moats, and enterprise pharma partnership models to ensure sovereign commercial viability and venture-backed scale beyond the Grand Challenge finals.
+* **Direct Contact:** [james@mambapartners.com](mailto:james@mambapartners.com) | [LinkedIn](https://www.linkedin.com/in/jamessun1/)
+
 
 

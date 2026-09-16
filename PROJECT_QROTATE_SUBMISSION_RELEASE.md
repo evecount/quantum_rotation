@@ -3,7 +3,7 @@
 **Track:** Quantinuum Singapore Grand Challenge 2026 — Chemistry & Biomolecular Simulation Track  
 **Team:** Eve Count (`1ightray`)  
 **Lead Inventors & Systems Architects:**
-* **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO ("The Quantum Bunny")**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)
+* **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)
 * **Benjamin Lim ("Sedilix")** ([ben@evecount.com](mailto:ben@evecount.com) / [LinkedIn](https://www.linkedin.com/in/sedilix/) / [GitHub](https://github.com/sedilix)) — **Co-Founder & Systems Architect**, Eve Count & Cybrdeck (1,500+ commits/yr)
 * **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com) / [LinkedIn (11k+)](https://www.linkedin.com/in/jamessun1/)) — **Founder @ Mamba Partners | Venture Advisor & GTM Strategist** (ex. Goldman Sachs, Blackstone, Microsoft)
 
@@ -17,7 +17,7 @@
   *Explore our $120M–$280M biopharma licensing roadmap, structural defensibility thesis, and team credentials.*
 * 🐙 **Open-Source GitHub Repository:** [https://github.com/evecount/quantum_rotation](https://github.com/evecount/quantum_rotation)  
   *Complete modular architecture (`src/qrotate/`), unit tests, Pytket compilation passes, and reproducible benchmarks.*
-* 🎬 **Workshop Masterclass Video Presentation:** Full DYNAMITE Studio script documenting the mathematical provenance of the "Quantum Bunny" Lie algebra intuition and dynamic mid-circuit loops.
+* 🎬 **Workshop Masterclass Video Presentation:** Full DYNAMITE Studio script documenting the mathematical provenance of the continuous Lie algebra resonance intuition and dynamic mid-circuit loops.
 
 ---
 

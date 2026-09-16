@@ -2,7 +2,7 @@
 
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Key Responsibilities:**
-* **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO ("The Quantum Bunny")**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)  
+* **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)  
   *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.  
   *Provenance Dossier:* [provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md)
 * **Benjamin Lim ("Sedilix")** ([ben@evecount.com](mailto:ben@evecount.com) / [LinkedIn](https://www.linkedin.com/in/sedilix/) / [GitHub](https://github.com/sedilix)) — **Co-Founder & Systems Architect**, Eve Count & Cybrdeck (1,500+ commits/yr)  
@@ -340,8 +340,8 @@ Structured JSON results are automatically exported to `benchmarks/showdown_resul
 
 ### Core Leadership & Provenance
 
-#### 🐰 Gwendalynn (婉婷) Lim ("1ightray") — Founder & DeepTech Venture CTO
-* **Role:** Lead Quantum Architect & Inventor of Project Q-Rotate ("The Quantum Bunny")
+#### ⚛️ Gwendalynn (婉婷) Lim ("1ightray") — Founder & DeepTech Venture CTO
+* **Role:** Lead Quantum Architect & Inventor of Project Q-Rotate Core Engine
 * **Credentials:** B.Sc. (Hons) in Applied Computing (Singapore Institute of Technology), Advanced Machine Learning & Deep Learning Credentials (NTU SCTP).
 * **Domain Focus:** Continuous Hamiltonian time-evolution, Lie group representations ($SU(2)^{\otimes n}$), Zero-Knowledge quantum parity verification, and native trapped-ion kernel compilation in Quantinuum `guppylang` and Pytket.
 * **Bio:** Gwendalynn is a Singaporean computer scientist, machine learning practitioner, and deep-tech founder. Rejecting four decades of classical Cartesian grid discretization ($O(N^3)$ computational bottlenecks in molecular docking), Gwendalynn formulated the continuous Tube Hamiltonian ($\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau(\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$), transforming spatial and electrostatic molecular binding into an analytical, coordinate-free Lie algebra resonance problem. Gwendalynn directs the core mathematical architecture, algorithmic proofs, and physical trapped-ion execution across Quantinuum H1/H2 systems.
