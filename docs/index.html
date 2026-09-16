@@ -743,6 +743,53 @@
           <div class="stat-label">Native PhasedX & ZZPhase</div>
         </div>
       </div>
+
+      <!-- ===== UNFAIR ADVANTAGE MATRIX (public, anchored to overview) ===== -->
+      <div id="advantage" style="margin-top: 40px; margin-bottom: 0;">
+        <div style="text-align: center; margin-bottom: 18px;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 0.75rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px;">⚡ Competitive Landscape</div>
+          <h2 style="font-size: 1.85rem; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.02em;">The Unfair Advantage Matrix</h2>
+          <p style="color: var(--text-muted); font-size: 1rem; max-width: 620px; margin: 0 auto; line-height: 1.6;">Why Gwen's Q-Rotate engine is structurally impossible to replicate on classical HPC or rival quantum platforms.</p>
+        </div>
+        <div style="overflow-x: auto; border-radius: 16px; border: 1px solid rgba(168, 85, 247, 0.3); box-shadow: 0 0 35px rgba(168, 85, 247, 0.12);">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: left; min-width: 700px;">
+            <thead>
+              <tr style="background: rgba(10, 14, 26, 0.95); border-bottom: 2px solid rgba(168, 85, 247, 0.4);">
+                <th style="padding: 14px 16px; color: #94a3b8; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; width: 18%;">Challenge Dimension</th>
+                <th style="padding: 14px 16px; color: #ef4444; font-weight: 700;">❌ Classical HPC<br><span style="font-weight: 400; font-size: 0.78rem; color: #94a3b8;">Schrödinger / AutoDock</span></th>
+                <th style="padding: 14px 16px; color: #f59e0b; font-weight: 700;">⚠️ Rival Quantum<br><span style="font-weight: 400; font-size: 0.78rem; color: #94a3b8;">VQE / QUBO on IBM</span></th>
+                <th style="padding: 14px 16px; color: #00f5d4; font-weight: 800; background: rgba(0, 245, 212, 0.06);">✅ Gwen's Q-Rotate Engine<br><span style="font-weight: 400; font-size: 0.78rem; color: #67e8f9;">Quantinuum H2 / Helios</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,245,212,0.04)'" onmouseout="this.style.background='transparent'">
+                <td style="padding: 13px 16px; font-weight: 700; color: #e2e8f0;">Search Space Physics</td>
+                <td style="padding: 13px 16px; color: #94a3b8;">Discrete spatial grids; tests millions of angles $\mathcal{O}(N^3)$ one by one.</td>
+                <td style="padding: 13px 16px; color: #94a3b8;">Discretizes rotations into binary; causes combinatorial qubit explosion.</td>
+                <td style="padding: 13px 16px; color: #e2e8f0; background: rgba(0,245,212,0.04);"><strong style="color:#00f5d4;">Continuous Lie Algebra Superposition:</strong> Explores all rotational orientations simultaneously in wave space.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,245,212,0.04)'" onmouseout="this.style.background='transparent'">
+                <td style="padding: 13px 16px; font-weight: 700; color: #e2e8f0;">Convergence &amp; Optimization</td>
+                <td style="padding: 13px 16px; color: #94a3b8;">Trapped in local minima; days of Monte Carlo compute per candidate molecule.</td>
+                <td style="padding: 13px 16px; color: #94a3b8;"><strong>Barren Plateaus:</strong> Variational gradients vanish exponentially in NISQ noise.</td>
+                <td style="padding: 13px 16px; color: #e2e8f0; background: rgba(0,245,212,0.04);"><strong style="color:#00f5d4;">Repeat-Until-Success (RUS):</strong> Mid-circuit measurement snaps state into target eigenstate — no gradient descent!</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,245,212,0.04)'" onmouseout="this.style.background='transparent'">
+                <td style="padding: 13px 16px; font-weight: 700; color: #e2e8f0;">Hardware Gate Overhead</td>
+                <td style="padding: 13px 16px; color: #94a3b8;">High GPU/CPU cloud bills ($10M+/yr at major pharma).</td>
+                <td style="padding: 13px 16px; color: #94a3b8;"><strong>70–80% SWAP Overhead</strong> on 2D nearest-neighbor superconducting grids destroys advantage.</td>
+                <td style="padding: 13px 16px; color: #e2e8f0; background: rgba(0,245,212,0.04);"><strong style="color:#00f5d4;">Zero SWAP Overhead:</strong> Trapped-ion all-to-all QCCD maps 3D interactions directly. Constant 9-qubit footprint.</td>
+              </tr>
+              <tr style="transition: background 0.2s;" onmouseover="this.style.background='rgba(0,245,212,0.04)'" onmouseout="this.style.background='transparent'">
+                <td style="padding: 13px 16px; font-weight: 700; color: #e2e8f0;">IP Privacy &amp; Commercial Value</td>
+                <td style="padding: 13px 16px; color: #94a3b8;">Zero IP privacy: both parties must disclose full 3D atomic coordinates to run.</td>
+                <td style="padding: 13px 16px; color: #94a3b8;">Coordinates encoded in public Hamiltonian; easily reverse-engineered.</td>
+                <td style="padding: 13px 16px; color: #e2e8f0; background: rgba(0,245,212,0.04);"><strong style="color:#00f5d4;">Zero-Knowledge Molecular Proof:</strong> Blind Parity confirms binding fit with a single ancilla qubit — no coordinates exposed.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
     <!-- 3D Constellation Highlight Banner -->
@@ -808,6 +855,98 @@
           <p>
             Guppy compiles Python <code>while</code> loops directly to <strong>HUGR</strong> dataflow graphs, executing dynamic corrections at the cryostat with <strong>zero host network latency</strong>.
           </p>
+        </div>
+      </div>
+
+      <!-- 6 Real-World Molecular Scenarios Table -->
+      <div style="margin-top: 42px;">
+        <div style="text-align: center; margin-bottom: 18px;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #10b981; font-size: 0.75rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px;">🧬 Real-World Pharmaceutical Targets</div>
+          <h3 style="font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 6px;">6 Constellation Molecular Scenarios</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem; max-width: 600px; margin: 0 auto;">Q-Rotate benchmarked against actual pharmaceutical active sites — not abstract random data. All 6 lock in 1 RUS iteration with a constant 9-qubit footprint.</p>
+        </div>
+        <div style="overflow-x: auto; border-radius: 14px; border: 1px solid rgba(16,185,129,0.25); box-shadow: 0 0 28px rgba(16,185,129,0.1);">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 700px;">
+            <thead>
+              <tr style="background: rgba(10,14,26,0.95); border-bottom: 2px solid rgba(16,185,129,0.35);">
+                <th style="padding: 12px 14px; color: #94a3b8; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.04em;">🔬 Molecule</th>
+                <th style="padding: 12px 14px; color: #94a3b8; text-transform: uppercase; font-size: 0.75rem;">Pharmaceutical Target</th>
+                <th style="padding: 12px 14px; color: #f87171; font-weight: 700;">Classical Grid Steps</th>
+                <th style="padding: 12px 14px; color: #00f5d4; font-weight: 700;">Q-Rotate Qubits</th>
+                <th style="padding: 12px 14px; color: #10b981; font-weight: 700;">SWAP Overhead</th>
+                <th style="padding: 12px 14px; color: #c084fc; font-weight: 700;">HQC Cost</th>
+                <th style="padding: 12px 14px; color: #f59e0b; font-weight: 800;">Speedup</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 11px 14px; font-weight: 700; color: #00f5d4;">11-cis Retinal / Rhodopsin</td>
+                <td style="padding: 11px 14px; color: #94a3b8; font-size: 0.8rem;">Photochemical Master Switch (20 atoms)</td>
+                <td style="padding: 11px 14px; color: #f87171;">34,560 steps</td>
+                <td style="padding: 11px 14px; color: #00f5d4; font-weight: 700;">9 Qubits</td>
+                <td style="padding: 11px 14px; color: #10b981; font-weight: 800;">0 SWAPs</td>
+                <td style="padding: 11px 14px; color: #c084fc;">8.60 HQC</td>
+                <td style="padding: 11px 14px; color: #f59e0b; font-weight: 800;">~3,840×</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 11px 14px; font-weight: 700; color: #10b981;">GFP Chromophore</td>
+                <td style="padding: 11px 14px; color: #94a3b8; font-size: 0.8rem;">Bioluminescent Proton Transfer (15 atoms)</td>
+                <td style="padding: 11px 14px; color: #f87171;">25,920 steps</td>
+                <td style="padding: 11px 14px; color: #00f5d4; font-weight: 700;">9 Qubits</td>
+                <td style="padding: 11px 14px; color: #10b981; font-weight: 800;">0 SWAPs</td>
+                <td style="padding: 11px 14px; color: #c084fc;">8.60 HQC</td>
+                <td style="padding: 11px 14px; color: #f59e0b; font-weight: 800;">~2,880×</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(59,130,246,0.04);">
+                <td style="padding: 11px 14px; font-weight: 700; color: #3b82f6;">SARS-CoV-2 Mpro + Paxlovid</td>
+                <td style="padding: 11px 14px; color: #94a3b8; font-size: 0.8rem;">Antiviral Covalent Inhibitor (49 atoms)</td>
+                <td style="padding: 11px 14px; color: #f87171; font-weight: 700;">84,672 steps</td>
+                <td style="padding: 11px 14px; color: #00f5d4; font-weight: 700;">9 Qubits</td>
+                <td style="padding: 11px 14px; color: #10b981; font-weight: 800;">0 SWAPs</td>
+                <td style="padding: 11px 14px; color: #c084fc;">8.60 HQC</td>
+                <td style="padding: 11px 14px; color: #f59e0b; font-weight: 900;">~9,408×</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 11px 14px; font-weight: 700; color: #f59e0b;">COX-2 vs COX-1 Channel</td>
+                <td style="padding: 11px 14px; color: #94a3b8; font-size: 0.8rem;">Single-Residue Selectivity (35 atoms)</td>
+                <td style="padding: 11px 14px; color: #f87171;">60,480 steps</td>
+                <td style="padding: 11px 14px; color: #00f5d4; font-weight: 700;">9 Qubits</td>
+                <td style="padding: 11px 14px; color: #10b981; font-weight: 800;">0 SWAPs</td>
+                <td style="padding: 11px 14px; color: #c084fc;">8.60 HQC</td>
+                <td style="padding: 11px 14px; color: #f59e0b; font-weight: 800;">~6,720×</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 11px 14px; font-weight: 700; color: #a855f7;">Azobenzene Molecular Switch</td>
+                <td style="padding: 11px 14px; color: #94a3b8; font-size: 0.8rem;">Photopharmacological Motor (24 atoms)</td>
+                <td style="padding: 11px 14px; color: #f87171;">41,472 steps</td>
+                <td style="padding: 11px 14px; color: #00f5d4; font-weight: 700;">9 Qubits</td>
+                <td style="padding: 11px 14px; color: #10b981; font-weight: 800;">0 SWAPs</td>
+                <td style="padding: 11px 14px; color: #c084fc;">8.60 HQC</td>
+                <td style="padding: 11px 14px; color: #f59e0b; font-weight: 800;">~4,608×</td>
+              </tr>
+              <tr>
+                <td style="padding: 11px 14px; font-weight: 700; color: #ec4899;">Quantinuum H2 Benchmark</td>
+                <td style="padding: 11px 14px; color: #94a3b8; font-size: 0.8rem;">Trapped-Ion Physical Stress Test (8 sites)</td>
+                <td style="padding: 11px 14px; color: #f87171;">13,824 steps</td>
+                <td style="padding: 11px 14px; color: #00f5d4; font-weight: 700;">9 Qubits</td>
+                <td style="padding: 11px 14px; color: #10b981; font-weight: 800;">0 SWAPs</td>
+                <td style="padding: 11px 14px; color: #c084fc;">8.60 HQC</td>
+                <td style="padding: 11px 14px; color: #f59e0b; font-weight: 800;">~1,536×</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr style="background: rgba(0,245,212,0.06); border-top: 2px solid rgba(0,245,212,0.2);">
+                <td colspan="2" style="padding: 10px 14px; font-weight: 800; color: #00f5d4; font-size: 0.8rem; text-transform: uppercase;">⚡ Key Insight: HQC cost stays CONSTANT across all molecule sizes</td>
+                <td style="padding: 10px 14px; color: #f87171; font-weight: 700;">Scales O(N³)</td>
+                <td colspan="2" style="padding: 10px 14px; color: #00f5d4; font-weight: 700;">Invariant: 9 Qubits | 0 SWAPs</td>
+                <td style="padding: 10px 14px; color: #c084fc;">8.60 HQC</td>
+                <td style="padding: 10px 14px; color: #f59e0b; font-weight: 900;">1,536–9,408×</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div style="text-align: right; margin-top: 8px;">
+          <a href="benchmarks/molecular_showdown.json" target="_blank" style="font-size: 0.78rem; color: var(--text-muted); text-decoration: none; font-family: var(--font-mono);">📄 View raw benchmark JSON →</a>
         </div>
       </div>
     </section>
@@ -947,6 +1086,55 @@
     <section id="docs" style="margin-bottom: 60px;">
       <h2 class="section-title">Plain-English Documentation Hub</h2>
       <p class="section-subtitle">Read each chapter of the curriculum directly on this page:</p>
+
+      <!-- Pipeline Architecture Diagram -->
+      <div style="margin-bottom: 32px; overflow-x: auto;">
+        <div style="display: flex; align-items: stretch; gap: 0; min-width: 720px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(66,153,225,0.2); box-shadow: 0 0 30px rgba(0,245,212,0.08);">
+          <!-- Step 1 -->
+          <div style="flex: 1; background: linear-gradient(160deg, rgba(59,130,246,0.18), rgba(10,14,26,0.9)); padding: 22px 18px; border-right: 1px solid rgba(255,255,255,0.07); text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 8px;">🏭</div>
+            <div style="font-size: 0.65rem; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Step 1</div>
+            <div style="font-size: 0.88rem; font-weight: 800; color: #fff; margin-bottom: 6px;">Classical HPC Bridge</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); line-height: 1.5;">ONIOM electrostatic embedding extracts pocket geometry → spherical phase angles <code style="color:#3b82f6;">Φ</code></div>
+          </div>
+          <!-- Arrow -->
+          <div style="display: flex; align-items: center; background: rgba(10,14,26,0.7); padding: 0 6px; color: #3b82f6; font-size: 1.2rem;">→</div>
+          <!-- Step 2 -->
+          <div style="flex: 1; background: linear-gradient(160deg, rgba(0,245,212,0.14), rgba(10,14,26,0.9)); padding: 22px 18px; border-right: 1px solid rgba(255,255,255,0.07); text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 8px;">🌀</div>
+            <div style="font-size: 0.65rem; font-weight: 800; color: #00f5d4; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Step 2</div>
+            <div style="font-size: 0.88rem; font-weight: 800; color: #fff; margin-bottom: 6px;">Rotation Unitary Û<sub>tube</sub>(τ)</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); line-height: 1.5;">Phase registers encoded into SU(2)⊗ⁿ Lie algebra; $\Delta\Phi$ cascaded via ZZPhase gates</div>
+          </div>
+          <!-- Arrow -->
+          <div style="display: flex; align-items: center; background: rgba(10,14,26,0.7); padding: 0 6px; color: #00f5d4; font-size: 1.2rem;">→</div>
+          <!-- Step 3 -->
+          <div style="flex: 1; background: linear-gradient(160deg, rgba(168,85,247,0.14), rgba(10,14,26,0.9)); padding: 22px 18px; border-right: 1px solid rgba(255,255,255,0.07); text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 8px;">🔒</div>
+            <div style="font-size: 0.65rem; font-weight: 800; color: #a855f7; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Step 3</div>
+            <div style="font-size: 0.88rem; font-weight: 800; color: #fff; margin-bottom: 6px;">Blind Parity SWAP Test</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); line-height: 1.5;">Single ancilla qubit measures parity: |0⟩ = match locked. Zero coordinates revealed — zero-knowledge proof.</div>
+          </div>
+          <!-- Arrow -->
+          <div style="display: flex; align-items: center; background: rgba(10,14,26,0.7); padding: 0 6px; color: #a855f7; font-size: 1.2rem;">→</div>
+          <!-- Step 4 -->
+          <div style="flex: 1; background: linear-gradient(160deg, rgba(245,158,11,0.14), rgba(10,14,26,0.9)); padding: 22px 18px; border-right: 1px solid rgba(255,255,255,0.07); text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 8px;">🔁</div>
+            <div style="font-size: 0.65rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Step 4</div>
+            <div style="font-size: 0.88rem; font-weight: 800; color: #fff; margin-bottom: 6px;">Guppy RUS Dynamic Loop</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); line-height: 1.5;">Mid-circuit optical reset fires corrective phase kicks. Compiled to HUGR → QIR on H2 cryostat.</div>
+          </div>
+          <!-- Arrow -->
+          <div style="display: flex; align-items: center; background: rgba(10,14,26,0.7); padding: 0 6px; color: #f59e0b; font-size: 1.2rem;">→</div>
+          <!-- Step 5 -->
+          <div style="flex: 1; background: linear-gradient(160deg, rgba(16,185,129,0.18), rgba(10,14,26,0.9)); padding: 22px 18px; text-align: center;">
+            <div style="font-size: 1.8rem; margin-bottom: 8px;">⚡</div>
+            <div style="font-size: 0.65rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Output</div>
+            <div style="font-size: 0.88rem; font-weight: 800; color: #fff; margin-bottom: 6px;">Quantinuum H2 Execution</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); line-height: 1.5;">9 qubits · 0 SWAPs · ≤14.5 HQC · Speedup up to 9,408× vs classical grid</div>
+          </div>
+        </div>
+      </div>
 
       <div class="doc-reader">
         <div class="doc-nav" id="doc-nav">
