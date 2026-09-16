@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Resonance Constellation | Project Q-Rotate</title>
+  <meta name="description" content="An interactive 3D multidimensional biomolecular universe for Project Q-Rotate, Quantinuum Singapore Grand Challenge 2026." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Three.js and OrbitControls via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #05070d;
+      --accent-cyan: #00f5d4;
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --glass-bg: rgba(10, 15, 29, 0.75);
+      --glass-border: rgba(66, 153, 225, 0.25);
+      --font-ui: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      font-family: var(--font-ui);
+      color: var(--text-main);
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Vignette and scanline overlay */
+    .vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(circle at center, transparent 45%, rgba(4, 6, 12, 0.75) 100%);
+    }
+
+    /* Top HUD */
+    .hud-top {
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .hud-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      pointer-events: auto;
+    }
+
+    .hud-logo {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #040814;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+    }
+
+    .hud-title h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+
+    .hud-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .hud-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .hud-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .hud-btn:hover {
+      background: rgba(20, 30, 55, 0.9);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 245, 212, 0.25);
+    }
+
+    .hud-btn.primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #040814;
+      border: none;
+      font-weight: 700;
+    }
+
+    .hud-btn.primary:hover {
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.6);
+    }
+
+    /* Telemetry HUD Left */
+    .telemetry-box {
+      position: absolute;
+      top: 100px;
+      left: 24px;
+      z-index: 10;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      padding: 16px 20px;
+      border-radius: 14px;
+      width: 260px;
+      pointer-events: none;
+    }
+
+    .telemetry-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .telemetry-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      font-family: var(--font-mono);
+    }
+
+    .telemetry-label {
+      color: var(--text-muted);
+    }
+
+    .telemetry-val {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Bottom Galaxy Selector Carousel */
+    .galaxy-selector {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(8, 12, 22, 0.85);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      padding: 10px 16px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      max-width: 95vw;
+      overflow-x: auto;
+    }
+
+    .galaxy-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .galaxy-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .galaxy-btn.active {
+      background: rgba(0, 245, 212, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
+    }
+
+    .galaxy-btn .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Molecular Inspection Drawer (Right Side) */
+    .inspector-drawer {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      bottom: 24px;
+      width: 440px;
+      max-width: calc(100vw - 48px);
+      z-index: 20;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(120%);
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -15px 0 40px rgba(0, 0, 0, 0.6);
+      overflow-y: auto;
+    }
+
+    .inspector-drawer.open {
+      transform: translateX(0);
+    }
+
+    .inspector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .inspector-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    .inspector-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+    }
+
+    .btn-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: background 0.2s ease;
+    }
+
+    .btn-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .inspector-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* Phase bar display */
+    .card-box {
+      background: rgba(6, 10, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .qubit-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .qubit-tile {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .qubit-tile.locked {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 245, 212, 0.1);
+    }
+
+    .qubit-id {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .qubit-phi {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    /* U_tube Rotation Slider */
+    .slider-wrap {
+      margin-bottom: 22px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .slider-val {
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+    }
+
+    input[type=range] {
+      width: 100%;
+      -webkit-appearance: none;
+      background: rgba(30, 41, 59, 0.8);
+      height: 8px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--accent-cyan);
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Parity Pulse Trigger Button */
+    .btn-fire-parity {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #030712;
+      font-family: var(--font-ui);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 20px rgba(0, 245, 212, 0.35);
+      margin-bottom: 14px;
+    }
+
+    .btn-fire-parity:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 245, 212, 0.55);
+    }
+
+    .parity-result-box {
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+      margin-bottom: 18px;
+    }
+
+    .parity-result-box.pass {
+      background: rgba(0, 245, 212, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .parity-result-box.fail {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    /* Guide instructions overlay */
+    .guide-hint {
+      position: absolute;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(10, 15, 28, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      animation: fadeInOut 6s forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -10px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      85% { opacity: 1; }
+      100% { opacity: 0; pointer-events: none; }
+    }
+
+    /* Quantum Hero WASD Keypad & Scope */
+    .arcade-card {
+      background: rgba(6, 10, 20, 0.9);
+      border: 1px solid rgba(0, 245, 212, 0.35);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .arcade-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .arcade-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scope-box {
+      background: #03060e;
+      border: 1px solid rgba(0, 245, 212, 0.25);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .scope-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .scope-canvas {
+      width: 100%;
+      height: 65px;
+      display: block;
+      border-radius: 6px;
+      background: rgba(4, 8, 18, 0.95);
+    }
+
+    .scope-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      margin-top: 6px;
+    }
+
+    .legend-pocket { color: #f59e0b; }
+    .legend-ligand { color: #00f5d4; }
+
+    .resonance-meter-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #ef4444, #f59e0b, #00f5d4);
+      transition: width 0.1s ease;
+    }
+
+    .keypad-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 0;
+    }
+
+    .key-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .key-btn {
+      width: 64px;
+      height: 50px;
+      background: rgba(16, 24, 44, 0.9);
+      border: 1px solid rgba(66, 153, 225, 0.35);
+      border-bottom: 3px solid rgba(66, 153, 225, 0.7);
+      border-radius: 9px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.08s ease;
+      user-select: none;
+    }
+
+    .key-btn:hover {
+      background: rgba(28, 40, 72, 0.95);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .key-btn:active, .key-btn.active {
+      background: rgba(0, 245, 212, 0.25);
+      border-color: var(--accent-cyan);
+      border-bottom-width: 1px;
+      transform: translateY(2px);
+      box-shadow: 0 0 16px rgba(0, 245, 212, 0.6);
+    }
+
+    .key-char {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .key-action {
+      font-size: 0.62rem;
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+      margin-top: 2px;
+    }
+
+    .space-key-btn {
+      width: 100%;
+      height: 42px;
+      flex-direction: row;
+      gap: 8px;
+      border-color: rgba(245, 158, 11, 0.4);
+      border-bottom: 3px solid rgba(245, 158, 11, 0.8);
+      background: rgba(26, 20, 10, 0.9);
+    }
+
+    .space-key-btn .key-char {
+      color: #f59e0b;
+      font-size: 0.88rem;
+    }
+
+    .space-key-btn .key-action {
+      color: #fbbf24;
+      font-size: 0.72rem;
+      margin-top: 0;
+    }
+
+    .space-key-btn:hover {
+      border-color: #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+    }
+
+    .space-key-btn:active, .space-key-btn.active {
+      border-bottom-width: 1px;
+      transform: translateY(2px);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+    }
+
+    .gate-ticker {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      background: rgba(10, 18, 34, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
+      padding: 6px 10px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .gate-ticker span.highlight {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    /* Layman Modal Dialog */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 6, 12, 0.88);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, rgba(14, 20, 38, 0.96), rgba(8, 12, 24, 0.98));
+      border: 1px solid rgba(0, 245, 212, 0.35);
+      border-radius: 20px;
+      max-width: 660px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px 28px;
+      box-shadow: 0 0 50px rgba(0, 245, 212, 0.25);
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+  <div class="vignette"></div>
+
+  <!-- Top Navigation HUD -->
+  <div class="hud-top">
+    <div class="hud-brand">
+      <div class="hud-logo">Q-Rotate</div>
+      <div class="hud-title">
+        <h1>The Resonance Constellation</h1>
+        <p>Starry Night Biomolecular Quantum Landscape</p>
+      </div>
+    </div>
+    <div class="hud-nav">
+      <button class="hud-btn" id="btn-how-to-play" style="border-color: var(--accent-gold); color: #f59e0b;">
+        <span>🎮 How to Play</span>
+      </button>
+      <button class="hud-btn" id="btn-toggle-sound">
+        <span id="sound-label">🔊 Audio: ON</span>
+      </button>
+      <a href="index.html" class="hud-btn">
+        <span>← Documentation</span>
+      </a>
+      <a href="workbook.html" class="hud-btn primary" target="_blank">
+        <span>⚡ Open Workbook</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Telemetry HUD Left -->
+  <div class="telemetry-box">
+    <div class="telemetry-title">
+      <span>Quantum Telemetry</span>
+      <div class="telemetry-pulse"></div>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Hilbert Space</span>
+      <span class="telemetry-val">SU(2)<sup>⊗n</sup> Lie Algebra</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Active System</span>
+      <span class="telemetry-val" id="active-star-name">Rhodopsin / Retinal</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Phase Error ΔΦ</span>
+      <span class="telemetry-val" id="telemetry-delta-phi" style="color: var(--accent-cyan);">0.14 rad</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">HQC Estimate</span>
+      <span class="telemetry-val" id="telemetry-hqc">9.44 HQC</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Hardware Target</span>
+      <span class="telemetry-val" style="color: #fff;">Quantinuum H2-2E</span>
+    </div>
+  </div>
+
+  <!-- Interaction Guide Hint -->
+  <div class="guide-hint">
+    ✨ Click any celestial cluster to enter the active site • Drag to rotate view • Scroll to zoom
+  </div>
+
+  <!-- Bottom Galaxy Destination Selector -->
+  <div class="galaxy-selector" id="galaxy-selector">
+    <button class="galaxy-btn active" data-idx="0">
+      <span class="dot" style="background: #00f5d4; box-shadow: 0 0 8px #00f5d4;"></span>
+      <span>01. Rhodopsin (Vision)</span>
+    </button>
+    <button class="galaxy-btn" data-idx="1">
+      <span class="dot" style="background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
+      <span>02. GFP Chromophore</span>
+    </button>
+    <button class="galaxy-btn" data-idx="2">
+      <span class="dot" style="background: #3b82f6; box-shadow: 0 0 8px #3b82f6;"></span>
+      <span>03. SARS-CoV-2 Mpro</span>
+    </button>
+    <button class="galaxy-btn" data-idx="3">
+      <span class="dot" style="background: #f59e0b; box-shadow: 0 0 8px #f59e0b;"></span>
+      <span>04. COX-2 Precision</span>
+    </button>
+    <button class="galaxy-btn" data-idx="4">
+      <span class="dot" style="background: #a855f7; box-shadow: 0 0 8px #a855f7;"></span>
+      <span>05. Azobenzene Switch</span>
+    </button>
+    <button class="galaxy-btn" data-idx="5">
+      <span class="dot" style="background: #ec4899; box-shadow: 0 0 8px #ec4899;"></span>
+      <span>06. H2 Ion Benchmark</span>
+    </button>
+  </div>
+
+  <!-- Inspector Drawer -->
+  <div class="inspector-drawer" id="inspector-drawer">
+    <div class="inspector-header">
+      <div>
+        <span class="inspector-tag" id="drawer-tag">Photochemical Active Site</span>
+        <h2 class="inspector-title" id="drawer-title">11-cis Retinal in Rhodopsin</h2>
+      </div>
+      <button class="btn-close" id="btn-close-drawer">✕</button>
+    </div>
+
+    <p class="inspector-desc" id="drawer-desc">
+      The gold standard photochemical master switch in human vision. As light strikes the chromophore, 11-cis retinal photoisomerizes into all-trans retinal within a tightly constrained opsin pocket.
+    </p>
+
+    <!-- Qubit Phase Spectrum -->
+    <div class="card-box">
+      <div class="card-label">
+        <span>Qubit Phase Spectrum (Half-Turns)</span>
+        <span style="color: var(--accent-cyan);">4 Qubits</span>
+      </div>
+      <div class="qubit-grid" id="qubit-grid">
+        <div class="qubit-tile locked">
+          <div class="qubit-id">q0 (Lys296)</div>
+          <div class="qubit-phi" id="q0-val">+0.12π</div>
+        </div>
+        <div class="qubit-tile">
+          <div class="qubit-id">q1 (Glu113)</div>
+          <div class="qubit-phi" id="q1-val">-0.45π</div>
+        </div>
+        <div class="qubit-tile">
+          <div class="qubit-id">q2 (Phe212)</div>
+          <div class="qubit-phi" id="q2-val">+0.88π</div>
+        </div>
+        <div class="qubit-tile">
+          <div class="qubit-id">q3 (Trp265)</div>
+          <div class="qubit-phi" id="q3-val">-0.22π</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quantum Hero Resonance Oscilloscope & WASD Keypad -->
+    <div class="arcade-card">
+      <div class="arcade-header">
+        <div class="arcade-title">
+          <span>🎸 Quantum Hero: Resonance Scope</span>
+        </div>
+        <span id="scope-synchrony" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-cyan); font-weight: 700;">50% SYNCHRONY</span>
+      </div>
+
+      <!-- Live Oscilloscope Scope -->
+      <div class="scope-box">
+        <div class="scope-header">
+          <span>WAVEFORM INTERFERENCE SCOPE</span>
+          <span style="color: #94a3b8;">4 Qubit Active Manifold</span>
+        </div>
+        <canvas id="resonance-scope" width="380" height="65" class="scope-canvas"></canvas>
+        <div class="scope-legend">
+          <span class="legend-pocket">● Gold: Pocket Target |ψ<sub>P</sub>⟩</span>
+          <span class="legend-ligand">● Cyan: Drug Ligand |ψ<sub>L</sub>⟩</span>
+        </div>
+        <div style="background: rgba(255,255,255,0.08); border-radius: 2px; height: 4px; margin-top: 6px; overflow: hidden;">
+          <div id="resonance-meter-bar" class="resonance-meter-bar" style="width: 50%;"></div>
+        </div>
+      </div>
+
+      <!-- WASD Gate Simulation Keypad -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Trapped-Ion Gate Keypad</span>
+        <span style="font-size: 0.65rem; color: var(--accent-cyan); font-family: var(--font-mono);">Use WASD or Keys</span>
+      </div>
+
+      <div class="keypad-grid">
+        <div class="key-row">
+          <button class="key-btn" data-key="w" id="key-btn-w">
+            <span class="key-char">W</span>
+            <span class="key-action">Rx +5°</span>
+          </button>
+        </div>
+        <div class="key-row">
+          <button class="key-btn" data-key="a" id="key-btn-a">
+            <span class="key-char">A</span>
+            <span class="key-action">Rz -5°</span>
+          </button>
+          <button class="key-btn" data-key="s" id="key-btn-s">
+            <span class="key-char">S</span>
+            <span class="key-action">Rx -5°</span>
+          </button>
+          <button class="key-btn" data-key="d" id="key-btn-d">
+            <span class="key-char">D</span>
+            <span class="key-action">Rz +5°</span>
+          </button>
+        </div>
+        <div class="key-row" style="width: 100%;">
+          <button class="key-btn space-key-btn" data-key="space" id="key-btn-space">
+            <span class="key-char">SPACEBAR</span>
+            <span class="key-action">⚛️ Fire Blind Parity SWAP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Gate Execution Ticker -->
+      <div class="gate-ticker">
+        <span>Laser Gate: <span class="highlight" id="ticker-gate-name">IDLE</span></span>
+        <span id="ticker-gate-status" style="color: var(--accent-cyan);">Ready to Pulse</span>
+      </div>
+    </div>
+
+    <!-- Analog Fine-Tune Slider (Linked with A/D) -->
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span>Analog Fine-Tune: Û<sub>tube</sub>(τ) Angle (ω<sub>z</sub>)</span>
+        <span class="slider-val" id="angle-display">0.0°</span>
+      </div>
+      <input type="range" id="angle-slider" min="-180" max="180" value="0" />
+      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+        <span>-180° (Turbulent Mismatch)</span>
+        <span style="color:var(--accent-cyan);">Resonance Lock: 0.0°</span>
+        <span>+180°</span>
+      </div>
+    </div>
+
+    <!-- Parity Test Trigger -->
+    <button class="btn-fire-parity" id="btn-fire-parity">
+      <span>⚛️ Fire Blind Parity Test (SWAP) [SPACE]</span>
+    </button>
+
+    <div class="parity-result-box" id="parity-result">
+      <!-- Dynamic outcome message -->
+    </div>
+
+    <!-- External Link -->
+    <a href="workbook.html" target="_blank" class="hud-btn" style="text-align:center; justify-content:center;">
+      <span>📖 Open Interactive Notebook for This System →</span>
+    </a>
+  </div>
+
+  <!-- How to Play Layman Modal Dialog -->
+  <div class="modal-backdrop" id="how-to-play-modal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px;">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+            The 60-Second Layman Guide
+          </div>
+          <h2 style="font-size: 1.7rem; font-weight: 800; color: #fff; line-height: 1.2;">🎮 How to Play: Quantum Hero</h2>
+        </div>
+        <button class="btn-close" id="btn-close-modal">✕</button>
+      </div>
+
+      <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px;">
+        Think of your drug candidate like an <strong>electric guitar</strong> tuning into resonance with an amplifier (the protein pocket). Instead of checking billions of tiny 3D grid points, Quantinuum trapped ions use laser rotation pulses to match wave frequencies!
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px;">
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 245, 212, 0.3); border-radius: 12px; padding: 14px;">
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: var(--accent-cyan); margin-bottom: 4px;">
+            [A] & [D] (or ← / →)
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Quantum Phase Shift (Rz Gate)</div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+            Steps the dimensional rotation angle Û<sub>tube</sub>(τ). Watch the Cyan wave on the oscilloscope slide until it lines up directly with the Gold wave!
+          </p>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 14px;">
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #60a5fa; margin-bottom: 4px;">
+            [W] & [S] (or ↑ / ↓)
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Spatial Pitch Tilt (Rx Gate)</div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+            Twists the 3D molecular orientation in physical space so the key aligns with the protein crevice.
+          </p>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 14px; grid-column: 1 / -1;">
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #f59e0b; margin-bottom: 4px;">
+            [SPACEBAR] (or Click Parity Button)
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Blind Parity Test (SWAP Test)</div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+            Interferes both states into a single spectator qubit (the <strong>ancilla</strong>). If it reads <strong>|0⟩ (Zero-Parity Match)</strong>, the lock clicks shut! You've verified structural and electronic fit with <strong>zero exposure of proprietary 3D coordinates</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div style="background: rgba(0, 245, 212, 0.1); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 1.6rem;">🎯</span>
+        <div style="font-size: 0.82rem; color: #e2e8f0; line-height: 1.5;">
+          <strong>Your Goal:</strong> Achieve 100% Wave Synchrony and lock in all <strong>6 biomolecular star clusters</strong> across the galaxy (Rhodopsin, GFP, COVID-19 Mpro, COX-2, Azobenzene, and H2).
+        </div>
+      </div>
+
+      <button class="btn-fire-parity" id="btn-modal-start" style="width: 100%; margin: 0;">
+        <span>🚀 Ready to Play! Fire Trapped-Ion Lasers →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Three.js Constellation Core Logic -->
+  <script>
+    // =========================================================================
+    // 1. DATASET: 6 Real-World Biomolecular Case Studies
+    // =========================================================================
+    const systems = [
+      {
+        id: "rhodopsin",
+        name: "11-cis Retinal / Rhodopsin",
+        tag: "Photochemical Master Switch",
+        desc: "Human visual photoreceptor chromophore. Referenced in Yamamoto et al. (arXiv:2601.15677). Models excited-state potential energy surfaces during ultrafast photoisomerization.",
+        pos: new THREE.Vector3(-45, 15, -20),
+        color: 0x00f5d4, // Cyan
+        baseDeltaPhi: [0.12, -0.45, 0.88, -0.22],
+        hqcCost: "9.44 HQC",
+        optimalAngle: 0.0,
+      },
+      {
+        id: "gfp",
+        name: "GFP Chromophore",
+        tag: "Bioluminescent Proton Transfer",
+        desc: "The Ser65-Tyr66-Gly67 tripeptide inside the β-barrel. Exhibits rapid excited-state proton transfer (ESPT) between phenol oxygen and catalytic water network.",
+        pos: new THREE.Vector3(40, 25, -35),
+        color: 0x10b981, // Emerald
+        baseDeltaPhi: [-0.62, 0.31, 0.15, -0.08],
+        hqcCost: "11.20 HQC",
+        optimalAngle: 35.0,
+      },
+      {
+        id: "mpro",
+        name: "SARS-CoV-2 Mpro + Paxlovid",
+        tag: "Antiviral Covalent Inhibitor",
+        desc: "Main viral 3CL protease with Nirmatrelvir. Catalytic dyad Cys145 and His41 coordinate with the pyrrolidone ring with zero geometric tolerance.",
+        pos: new THREE.Vector3(60, -20, 10),
+        color: 0x3b82f6, // Electric Blue
+        baseDeltaPhi: [0.44, 0.92, -0.38, 0.19],
+        hqcCost: "12.80 HQC",
+        optimalAngle: -50.0,
+      },
+      {
+        id: "cox2",
+        name: "COX-2 vs COX-1 Channel",
+        tag: "Single-Residue Selectivity",
+        desc: "Discriminating a single residue substitution (Val523 in COX-2 vs Ile523 in COX-1) opening a secondary binding pocket for targeted NSAIDs without stomach toxicity.",
+        pos: new THREE.Vector3(-55, -25, 25),
+        color: 0xf59e0b, // Amber Gold
+        baseDeltaPhi: [-0.18, 0.25, 0.73, -0.54],
+        hqcCost: "10.15 HQC",
+        optimalAngle: 80.0,
+      },
+      {
+        id: "azobenzene",
+        name: "Azobenzene Molecular Switch",
+        tag: "Photopharmacological Motor",
+        desc: "Synthetic light-activated molecular actuator. Under UV light, the N=N double bond switches from planar trans to bent cis, functioning as a reversible quantum key.",
+        pos: new THREE.Vector3(10, 45, 30),
+        color: 0xa855f7, // Purple
+        baseDeltaPhi: [0.78, -0.81, 0.35, -0.42],
+        hqcCost: "8.60 HQC",
+        optimalAngle: -115.0,
+      },
+      {
+        id: "h2bench",
+        name: "Quantinuum H2 Benchmark",
+        tag: "Trapped-Ion Physical Stress Test",
+        desc: "Native H-series trapped-ion gate-level benchmark. Evaluates PhasedX, ZZPhase, and mid-circuit optical reset across 4-site and 8-site stress manifolds.",
+        pos: new THREE.Vector3(0, -45, -30),
+        color: 0xec4899, // Pink
+        baseDeltaPhi: [0.15, -0.10, 0.20, -0.05],
+        hqcCost: "14.50 HQC",
+        optimalAngle: 15.0,
+      }
+    ];
+
+    let currentSystemIdx = 0;
+
+    // =========================================================================
+    // 2. THREE.JS SCENE SETUP
+    // =========================================================================
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x05070d, 0.007);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 30, 110);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxDistance = 250;
+    controls.minDistance = 15;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.4;
+
+    // Ambient and Point Lights
+    scene.add(new THREE.AmbientLight(0x1a243a, 1.5));
+
+    // =========================================================================
+    // 3. STARRY NIGHT VORTEX: 3,500 Swirling Turbulent Stardust Particles
+    // =========================================================================
+    const particleCount = 3500;
+    const particleGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const originalPositions = new Float32Array(particleCount * 3);
+
+    const colorPalette = [
+      new THREE.Color(0x00f5d4), // Cyan
+      new THREE.Color(0xf59e0b), // Van Gogh Gold
+      new THREE.Color(0x3b82f6), // Deep Blue
+      new THREE.Color(0xa855f7), // Purple
+      new THREE.Color(0xffffff)  // White Starlight
+    ];
+
+    for (let i = 0; i < particleCount; i++) {
+      // Swirling logarithmic spiral distribution (Kolmogorov turbulence simulation)
+      const theta = Math.random() * Math.PI * 2;
+      const r = Math.pow(Math.random(), 0.8) * 160 + 10;
+      const height = (Math.sin(r * 0.08) + Math.cos(theta * 3)) * 25 + (Math.random() - 0.5) * 30;
+
+      const x = r * Math.cos(theta);
+      const y = height;
+      const z = r * Math.sin(theta);
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      originalPositions[i * 3] = x;
+      originalPositions[i * 3 + 1] = y;
+      originalPositions[i * 3 + 2] = z;
+
+      const col = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      colors[i * 3] = col.r;
+      colors[i * 3 + 1] = col.g;
+      colors[i * 3 + 2] = col.b;
+    }
+
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    // Custom glowing particle texture
+    function createParticleTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 64;
+      cvs.height = 64;
+      const ctx = cvs.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255,255,255,1)');
+      grad.addColorStop(0.3, 'rgba(0,245,212,0.8)');
+      grad.addColorStop(0.6, 'rgba(59,130,246,0.3)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(cvs);
+    }
+
+    const particleMat = new THREE.PointsMaterial({
+      size: 2.2,
+      map: createParticleTexture(),
+      vertexColors: true,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+
+    const starParticles = new THREE.Points(particleGeo, particleMat);
+    scene.add(starParticles);
+
+    // =========================================================================
+    // 4. CELESTIAL STAR SYSTEMS (Biomolecular Nodes)
+    // =========================================================================
+    const systemNodes = [];
+    const raycastMeshes = [];
+
+    systems.forEach((sys, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(sys.pos);
+
+      // 1. Central Pulsing Star Core
+      const coreGeo = new THREE.SphereGeometry(2.4, 24, 24);
+      const coreMat = new THREE.MeshBasicMaterial({ color: sys.color, wireframe: false });
+      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      group.add(coreMesh);
+
+      // 2. Halo Outer Glow Shell
+      const haloGeo = new THREE.SphereGeometry(4.2, 24, 24);
+      const haloMat = new THREE.MeshBasicMaterial({
+        color: sys.color,
+        transparent: true,
+        opacity: 0.25,
+        wireframe: true,
+      });
+      const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+      group.add(haloMesh);
+
+      // 3. Orbital Resonance Rings
+      const ringGeo = new THREE.RingGeometry(5.5, 6.2, 32);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: sys.color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.45,
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2 + Math.random() * 0.4;
+      group.add(ringMesh);
+
+      // 4. 3D Mini Molecular Wireframe Cluster (Simulating Pocket Active Site)
+      const ligandGroup = new THREE.Group();
+      const nAtoms = 5;
+      for (let a = 0; a < nAtoms; a++) {
+        const atomGeo = new THREE.SphereGeometry(0.6, 12, 12);
+        const atomMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const atomMesh = new THREE.Mesh(atomGeo, atomMat);
+        const phi = (a / nAtoms) * Math.PI * 2;
+        atomMesh.position.set(Math.cos(phi) * 3, Math.sin(phi) * 1.5, Math.sin(phi * 2) * 1.2);
+        ligandGroup.add(atomMesh);
+      }
+      group.add(ligandGroup);
+
+      // Invisible larger hit box for easy clicking
+      const hitGeo = new THREE.SphereGeometry(8.0, 12, 12);
+      const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+      const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+      hitMesh.userData = { systemIndex: idx };
+      group.add(hitMesh);
+      raycastMeshes.push(hitMesh);
+
+      scene.add(group);
+      systemNodes.push({ group, coreMesh, haloMesh, ringMesh, ligandGroup, data: sys });
+    });
+
+    // =========================================================================
+    // 5. INTERACTIVE RAYCASTING & INSPECTION DRAWER
+    // =========================================================================
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const drawer = document.getElementById('inspector-drawer');
+    const drawerTag = document.getElementById('drawer-tag');
+    const drawerTitle = document.getElementById('drawer-title');
+    const drawerDesc = document.getElementById('drawer-desc');
+    const activeStarName = document.getElementById('active-star-name');
+    const telemetryDeltaPhi = document.getElementById('telemetry-delta-phi');
+    const telemetryHqc = document.getElementById('telemetry-hqc');
+    const angleSlider = document.getElementById('angle-slider');
+    const angleDisplay = document.getElementById('angle-display');
+    const parityResult = document.getElementById('parity-result');
+    const btnFireParity = document.getElementById('btn-fire-parity');
+    const btnCloseDrawer = document.getElementById('btn-close-drawer');
+    const galaxyButtons = document.querySelectorAll('.galaxy-btn');
+
+    function selectSystem(index) {
+      currentSystemIdx = index;
+      const sys = systems[index];
+
+      // Update HUD
+      activeStarName.innerText = sys.name;
+      telemetryHqc.innerText = sys.hqcCost;
+      drawerTag.innerText = sys.tag;
+      drawerTitle.innerText = sys.name;
+      drawerDesc.innerText = sys.desc;
+
+      // Update Qubit display
+      document.getElementById('q0-val').innerText = `${sys.baseDeltaPhi[0]}π`;
+      document.getElementById('q1-val').innerText = `${sys.baseDeltaPhi[1]}π`;
+      document.getElementById('q2-val').innerText = `${sys.baseDeltaPhi[2]}π`;
+      document.getElementById('q3-val').innerText = `${sys.baseDeltaPhi[3]}π`;
+
+      // Reset slider & parity
+      angleSlider.value = sys.optimalAngle - 45; // Start with intentional misalignment
+      updateAngleRotation(angleSlider.value);
+      parityResult.style.display = 'none';
+
+      // Update active button styling
+      galaxyButtons.forEach(b => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`.galaxy-btn[data-idx="${index}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Smooth Camera Flight to System
+      const targetPos = sys.pos.clone().add(new THREE.Vector3(14, 10, 24));
+      new TWEEN.Tween(camera.position)
+        .to({ x: targetPos.x, y: targetPos.y, z: targetPos.z }, 1400)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+
+      new TWEEN.Tween(controls.target)
+        .to({ x: sys.pos.x, y: sys.pos.y, z: sys.pos.z }, 1400)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+
+      // Open drawer
+      drawer.classList.add('open');
+      controls.autoRotate = false; // Pause auto spin while inspecting
+    }
+
+    // =========================================================================
+    // 6. AUDIO SYNTHESIZER (WEB AUDIO API)
+    // =========================================================================
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playPulseSound(type, synchronyRatio) {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      try {
+        const now = audioCtx.currentTime;
+        if (type === 'gate') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          // Frequency rises from 320 Hz to 860 Hz as synchrony approaches 1.0
+          const baseFreq = 320 + (synchronyRatio || 0.5) * 540;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(baseFreq, now);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.25, now + 0.08);
+
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'lock') {
+          // Major Harmonic Chord: C5 (523Hz), E5 (659Hz), G5 (784Hz), C6 (1046Hz)
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.05);
+
+            gain.gain.setValueAtTime(0.16, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.7);
+
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.7);
+          });
+        } else if (type === 'fail') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.exponentialRampToValueAtTime(105, now + 0.22);
+
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+          osc.start(now);
+          osc.stop(now + 0.22);
+        }
+      } catch (e) {
+        console.warn('Audio notice:', e);
+      }
+    }
+
+    // =========================================================================
+    // 7. QUANTUM HERO WASD CONTROLS & GATE SIMULATION
+    // =========================================================================
+    let currentPitch = 0.0; // 3D Pitch tilt (W / S)
+    const tickerGateName = document.getElementById('ticker-gate-name');
+    const tickerGateStatus = document.getElementById('ticker-gate-status');
+    const scopeSynchrony = document.getElementById('scope-synchrony');
+    const resonanceMeterBar = document.getElementById('resonance-meter-bar');
+
+    function logGatePulse(gateName, details) {
+      if (tickerGateName) tickerGateName.innerText = gateName;
+      if (tickerGateStatus) tickerGateStatus.innerText = details;
+    }
+
+    function stepGate(key) {
+      initAudio();
+      const sys = systems[currentSystemIdx];
+      const node = systemNodes[currentSystemIdx];
+      let curAngle = parseFloat(angleSlider.value);
+      let keyBtnId = null;
+
+      if (key === 'a' || key === 'arrowleft') {
+        keyBtnId = 'key-btn-a';
+        curAngle -= 5.0;
+        if (curAngle < -180) curAngle = -180;
+        angleSlider.value = curAngle;
+        updateAngleRotation(curAngle);
+        logGatePulse('Rz(-5.0°)', `Phase shifted to ${curAngle.toFixed(1)}°`);
+      } else if (key === 'd' || key === 'arrowright') {
+        keyBtnId = 'key-btn-d';
+        curAngle += 5.0;
+        if (curAngle > 180) curAngle = 180;
+        angleSlider.value = curAngle;
+        updateAngleRotation(curAngle);
+        logGatePulse('Rz(+5.0°)', `Phase shifted to ${curAngle.toFixed(1)}°`);
+      } else if (key === 'w' || key === 'arrowup') {
+        keyBtnId = 'key-btn-w';
+        currentPitch += 5.0;
+        if (currentPitch > 50) currentPitch = 50;
+        node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
+        logGatePulse('Rx(+5.0°)', `3D Pitch tilted to ${currentPitch.toFixed(1)}°`);
+      } else if (key === 's' || key === 'arrowdown') {
+        keyBtnId = 'key-btn-s';
+        currentPitch -= 5.0;
+        if (currentPitch < -50) currentPitch = -50;
+        node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
+        logGatePulse('Rx(-5.0°)', `3D Pitch tilted to ${currentPitch.toFixed(1)}°`);
+      }
+
+      // Visual button feedback
+      if (keyBtnId) {
+        const btn = document.getElementById(keyBtnId);
+        if (btn) {
+          btn.classList.add('active');
+          setTimeout(() => btn.classList.remove('active'), 120);
+        }
+      }
+
+      // Calculate synchrony for pitch tone
+      const errorDiff = Math.abs(curAngle - sys.optimalAngle);
+      const synchronyRatio = Math.max(0, Math.cos(THREE.MathUtils.degToRad(errorDiff) / 2));
+      playPulseSound('gate', synchronyRatio);
+    }
+
+    // Slider Drag logic: Rotates ligand in 3D & evaluates phase error
+    function updateAngleRotation(val) {
+      angleDisplay.innerText = `${parseFloat(val).toFixed(1)}°`;
+      const sys = systems[currentSystemIdx];
+      const node = systemNodes[currentSystemIdx];
+
+      // Rotate the 3D ligand wireframe
+      const rad = THREE.MathUtils.degToRad(val);
+      node.ligandGroup.rotation.y = rad;
+      node.ligandGroup.rotation.z = rad * 0.4;
+      node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
+
+      // Calculate phase error discrepancy
+      const errorDiff = Math.abs(parseFloat(val) - sys.optimalAngle);
+      const normalizedError = (errorDiff / 180.0) * Math.PI;
+      telemetryDeltaPhi.innerText = `${normalizedError.toFixed(2)} rad`;
+
+      // Quantum state fidelity synchrony: cos^2(theta / 2)
+      const fidelity = Math.cos(THREE.MathUtils.degToRad(errorDiff) / 2) ** 2;
+      const pct = Math.max(0, Math.min(100, Math.round(fidelity * 100)));
+
+      if (scopeSynchrony) {
+        scopeSynchrony.innerText = `${pct}% SYNCHRONY`;
+        scopeSynchrony.style.color = pct >= 95 ? '#00f5d4' : (pct >= 70 ? '#f59e0b' : '#ef4444');
+      }
+      if (resonanceMeterBar) {
+        resonanceMeterBar.style.width = `${pct}%`;
+      }
+
+      // Visual feedback on halo & particle turbulence
+      if (errorDiff < 6.0) {
+        // Aligned ground state!
+        telemetryDeltaPhi.style.color = '#00f5d4';
+        node.haloMesh.material.color.setHex(0x00f5d4);
+        node.ringMesh.material.opacity = 0.95;
+      } else {
+        telemetryDeltaPhi.style.color = '#f59e0b';
+        node.haloMesh.material.color.setHex(sys.color);
+        node.ringMesh.material.opacity = 0.4;
+      }
+    }
+
+    angleSlider.addEventListener('input', (e) => {
+      initAudio();
+      updateAngleRotation(e.target.value);
+      logGatePulse('Ûtube Slider', `Continuous tune: ${parseFloat(e.target.value).toFixed(1)}°`);
+    });
+
+    // Fire Parity Test (SWAP Test)
+    function triggerParityTest() {
+      initAudio();
+      const sys = systems[currentSystemIdx];
+      const errorDiff = Math.abs(parseFloat(angleSlider.value) - sys.optimalAngle);
+
+      // Highlight Space button
+      const spaceBtn = document.getElementById('key-btn-space');
+      if (spaceBtn) {
+        spaceBtn.classList.add('active');
+        setTimeout(() => spaceBtn.classList.remove('active'), 160);
+      }
+
+      // Trigger pulse wave on camera target
+      const node = systemNodes[currentSystemIdx];
+      const originalScale = node.ringMesh.scale.x;
+      new TWEEN.Tween(node.ringMesh.scale)
+        .to({ x: 2.3, y: 2.3, z: 2.3 }, 260)
+        .yoyo(true)
+        .repeat(1)
+        .start();
+
+      parityResult.style.display = 'block';
+      if (errorDiff < 6.0) {
+        parityResult.className = 'parity-result-box pass';
+        parityResult.innerHTML = `
+          <strong>✨ ZERO-PARITY LOCKED (P=0.00)</strong><br />
+          Ancilla Readout: |0⟩ • Ground State Synchronized!<br />
+          <span style="font-size:0.75rem;">Structural & electronic fit verified without exposing 3D coordinates.</span>
+        `;
+        logGatePulse('SWAP Ancilla: |0⟩', '✨ ZERO-PARITY LOCK ACHIEVED!');
+        playPulseSound('lock');
+      } else {
+        const failProb = (0.5 * (1 - Math.cos(THREE.MathUtils.degToRad(errorDiff)))).toFixed(2);
+        parityResult.className = 'parity-result-box fail';
+        parityResult.innerHTML = `
+          <strong>⚠️ PARITY MISMATCH (P=${failProb})</strong><br />
+          Ancilla Readout: |1⟩ • Phase Cascading Error Detected.<br />
+          <span style="font-size:0.75rem;">Use [A]/[D] to tune toward ${sys.optimalAngle.toFixed(1)}° for lock.</span>
+        `;
+        logGatePulse('SWAP Ancilla: |1⟩', `Mismatch P(fail)=${failProb}`);
+        playPulseSound('fail');
+      }
+    }
+
+    btnFireParity.addEventListener('click', triggerParityTest);
+
+    // Keyboard WASD Controls
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      const key = e.key.toLowerCase();
+
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+        e.preventDefault();
+        stepGate(key);
+      } else if (key === ' ' || key === 'enter') {
+        e.preventDefault();
+        triggerParityTest();
+      }
+    });
+
+    // Click/Tap Handlers on On-Screen Buttons
+    document.querySelectorAll('.key-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const k = btn.dataset.key;
+        if (k === 'space') {
+          triggerParityTest();
+        } else {
+          stepGate(k);
+        }
+      });
+    });
+
+    // Close drawer button
+    btnCloseDrawer.addEventListener('click', () => {
+      drawer.classList.remove('open');
+      controls.autoRotate = true;
+    });
+
+    // Galaxy button selectors
+    galaxyButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectSystem(parseInt(btn.dataset.idx, 10));
+      });
+    });
+
+    // Audio Mute Toggle Button
+    const btnToggleSound = document.getElementById('btn-toggle-sound');
+    const soundLabel = document.getElementById('sound-label');
+    btnToggleSound.addEventListener('click', () => {
+      initAudio();
+      soundEnabled = !soundEnabled;
+      soundLabel.innerText = soundEnabled ? '🔊 Audio: ON' : '🔇 Audio: OFF';
+    });
+
+    // How to Play Modal Handlers
+    const howToPlayModal = document.getElementById('how-to-play-modal');
+    const btnHowToPlay = document.getElementById('btn-how-to-play');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnModalStart = document.getElementById('btn-modal-start');
+
+    function openModal() {
+      initAudio();
+      howToPlayModal.classList.add('active');
+    }
+
+    function closeModal() {
+      howToPlayModal.classList.remove('active');
+    }
+
+    btnHowToPlay.addEventListener('click', openModal);
+    btnCloseModal.addEventListener('click', closeModal);
+    btnModalStart.addEventListener('click', closeModal);
+
+    howToPlayModal.addEventListener('click', (e) => {
+      if (e.target === howToPlayModal) closeModal();
+    });
+
+    // Canvas click detection (Raycasting)
+    window.addEventListener('pointerdown', (e) => {
+      // Ignore if clicking on HUD elements
+      if (e.target.closest('.hud-top') || e.target.closest('.telemetry-box') || 
+          e.target.closest('.galaxy-selector') || e.target.closest('.inspector-drawer') ||
+          e.target.closest('.modal-content')) {
+        return;
+      }
+
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(raycastMeshes);
+
+      if (intersects.length > 0) {
+        const sysIndex = intersects[0].object.userData.systemIndex;
+        selectSystem(sysIndex);
+      }
+    });
+
+    // Window resize handling
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // =========================================================================
+    // 8. OSCILLOSCOPE WAVEFORM RENDERER
+    // =========================================================================
+    const scopeCanvas = document.getElementById('resonance-scope');
+    const scopeCtx = scopeCanvas ? scopeCanvas.getContext('2d') : null;
+
+    function renderScope(time) {
+      if (!scopeCtx) return;
+      const w = scopeCanvas.width;
+      const h = scopeCanvas.height;
+      const midY = h / 2;
+
+      scopeCtx.clearRect(0, 0, w, h);
+
+      // Subtle background grid
+      scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      scopeCtx.lineWidth = 1;
+      scopeCtx.beginPath();
+      for (let x = 0; x < w; x += 35) {
+        scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, h);
+      }
+      for (let y = 0; y < h; y += 16) {
+        scopeCtx.moveTo(0, y); scopeCtx.lineTo(w, y);
+      }
+      scopeCtx.stroke();
+
+      const sys = systems[currentSystemIdx];
+      const curAngle = parseFloat(angleSlider.value);
+      const errorDiff = Math.abs(curAngle - sys.optimalAngle);
+      const phaseShift = THREE.MathUtils.degToRad(curAngle - sys.optimalAngle);
+
+      // Target Pocket Wave (Gold)
+      scopeCtx.strokeStyle = '#f59e0b';
+      scopeCtx.lineWidth = 2;
+      scopeCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const y = midY + Math.sin(x * 0.05 + time * 3.5) * 16;
+        if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
+
+      // Tunable Ligand Wave (Cyan)
+      scopeCtx.strokeStyle = '#00f5d4';
+      scopeCtx.lineWidth = 2;
+      scopeCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const y = midY + Math.sin(x * 0.05 + time * 3.5 + phaseShift) * 16;
+        if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
+
+      // If nearly locked, draw glowing interference halo
+      if (errorDiff < 6.0) {
+        scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        scopeCtx.lineWidth = 3;
+        scopeCtx.shadowColor = '#00f5d4';
+        scopeCtx.shadowBlur = 10;
+        scopeCtx.beginPath();
+        for (let x = 0; x < w; x++) {
+          const y = midY + Math.sin(x * 0.05 + time * 3.5) * 19;
+          if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+        }
+        scopeCtx.stroke();
+        scopeCtx.shadowBlur = 0;
+      }
+    }
+
+    // =========================================================================
+    // 9. ANIMATION LOOP: Turbulent Swirling Vortex + Scope
+    // =========================================================================
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      TWEEN.update();
+      controls.update();
+
+      const time = clock.getElapsedTime();
+
+      // Render Oscilloscope
+      renderScope(time);
+
+      // Swirl stardust particles in turbulent eddies
+      const posAttr = particleGeo.attributes.position;
+      for (let i = 0; i < particleCount; i++) {
+        const ox = originalPositions[i * 3];
+        const oy = originalPositions[i * 3 + 1];
+        const oz = originalPositions[i * 3 + 2];
+
+        // Angular rotation velocity decreases with radius
+        const r = Math.sqrt(ox * ox + oz * oz);
+        const speed = 0.25 / (1.0 + r * 0.02);
+        const curTheta = Math.atan2(oz, ox) + speed * time;
+
+        posAttr.array[i * 3] = r * Math.cos(curTheta);
+        posAttr.array[i * 3 + 1] = oy + Math.sin(time * 2 + i) * 1.5;
+        posAttr.array[i * 3 + 2] = r * Math.sin(curTheta);
+      }
+      posAttr.needsUpdate = true;
+
+      // Pulse and rotate celestial nodes
+      systemNodes.forEach((node, idx) => {
+        node.coreMesh.rotation.y += 0.01;
+        node.haloMesh.rotation.y -= 0.008;
+        node.haloMesh.rotation.x += 0.005;
+        node.ringMesh.rotation.z += 0.006;
+
+        // Subtle breathing scale
+        const scale = 1.0 + Math.sin(time * 2.5 + idx) * 0.08;
+        node.coreMesh.scale.set(scale, scale, scale);
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Start by focusing on Rhodopsin (after initial camera pan)
+    setTimeout(() => {
+      selectSystem(0);
+    }, 1200);
+  </script>
+</body>
+</html>
