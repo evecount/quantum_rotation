@@ -53,6 +53,135 @@
       color: var(--accent-cyan);
     }
 
+    /* Team War Room Styling */
+    .war-room-container {
+      background: radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.12) 0%, rgba(10, 15, 30, 0.95) 70%);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 24px;
+      padding: 36px 32px;
+      box-shadow: 0 0 45px rgba(245, 158, 11, 0.15);
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .war-room-gate {
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 0;
+    }
+
+    .passcode-input-wrap {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .passcode-input {
+      background: rgba(6, 10, 20, 0.9);
+      border: 1px solid rgba(0, 245, 212, 0.4);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      padding: 12px 18px;
+      border-radius: 12px;
+      outline: none;
+      width: 260px;
+      transition: border-color 0.2s;
+    }
+
+    .passcode-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
+    }
+
+    .war-room-dashboard {
+      display: none;
+    }
+
+    .member-select {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(0, 245, 212, 0.4);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 12px 20px;
+      border-radius: 12px;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 24px;
+    }
+
+    .role-panel {
+      display: none;
+    }
+
+    .role-panel.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .task-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .task-item {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .task-item:hover {
+      background: rgba(24, 34, 60, 0.85);
+      border-color: rgba(0, 245, 212, 0.3);
+    }
+
+    .task-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+
+    .task-item.completed {
+      opacity: 0.65;
+      text-decoration: line-through;
+    }
+
+    .done-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10b981;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 16px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -514,6 +643,7 @@
         <a href="#math">Math</a>
         <a href="#docs">Documentation</a>
         <a href="#team">Team</a>
+        <a href="#war-room" style="color: #f59e0b; font-weight: 700;">🔒 War Room</a>
         <a href="workbook.html" target="_blank">Workbook</a>
         <a href="https://github.com/evecount/quantum_rotation" target="_blank">GitHub</a>
         <a href="constellation.html" class="btn-nav" target="_blank" style="background: linear-gradient(135deg, #f59e0b, #00f5d4);">🌌 Launch 3D Universe</a>
@@ -720,6 +850,289 @@
       </div>
     </section>
 
+    <!-- Team War Room / Private Mission Control -->
+    <section id="war-room" class="war-room-container">
+      <!-- Locked Passcode Gate -->
+      <div id="war-room-gate" class="war-room-gate">
+        <div style="font-size: 2.2rem; margin-bottom: 12px;">🔒</div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 8px;">Private Team Mission Control</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+          Restricted access for <strong>Gwen ("1ightray")</strong>, <strong>Benjamin Lim</strong>, and <strong>James Sun</strong>.<br />
+          Enter your team passcode to access private deliverables, role-specific checklists, and roadmap action items.
+        </p>
+        <div class="passcode-input-wrap">
+          <input type="password" id="warroom-passcode-input" class="passcode-input" placeholder="Enter team passcode (e.g. evecount2026)" />
+          <button id="btn-unlock-warroom" class="btn-primary" style="padding: 12px 22px; cursor: pointer; border: none;">
+            <span>Unlock Dashboard →</span>
+          </button>
+        </div>
+        <p style="font-size: 0.75rem; color: #64748b; margin-top: 12px;">
+          Passcode: <code style="color: var(--accent-cyan);">evecount2026</code> • State is saved locally in your browser.
+        </p>
+      </div>
+
+      <!-- Unlocked Dashboard -->
+      <div id="war-room-dashboard" class="war-room-dashboard">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(245, 158, 11, 0.25);">
+          <div>
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">
+              <span>● Logged in as Team Eve Count</span>
+            </div>
+            <h2 style="font-size: 1.85rem; font-weight: 800; color: #fff;">⚡ Project Q-Rotate Mission Control</h2>
+          </div>
+          <button id="btn-lock-warroom" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444; cursor: pointer;">
+            <span>🔒 Lock Dashboard</span>
+          </button>
+        </div>
+
+        <!-- Role Switcher Dropdown -->
+        <div style="background: rgba(10, 15, 30, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px 24px; margin-bottom: 28px;">
+          <label for="warroom-member-select" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">
+            Select Team Member View:
+          </label>
+          <select id="warroom-member-select" class="member-select">
+            <option value="all">🌟 All Team Members (Master Executive View)</option>
+            <option value="gwen">🐰 Gwen ("1ightray") — Founder & Core Quantum Engine</option>
+            <option value="ben">🎨 Benjamin Lim — Frontend Lead & Systems Architect</option>
+            <option value="james">💼 James Sun — Venture Advisor & GTM Strategist</option>
+          </select>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
+            Check off action items as you finish them. Your checklist progress automatically persists across sessions on your device.
+          </p>
+        </div>
+
+        <!-- PANEL: ALL TEAM (Master View) -->
+        <div id="panel-all" class="role-panel active">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 28px;">
+            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 245, 212, 0.25); border-radius: 14px; padding: 22px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">🐰 Gwen ("1ightray")</h4>
+                <span class="done-badge">4 Completed</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Core Quantum Engine & Theory</p>
+              <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+                <strong>Next Priority:</strong> Authenticate via <code>aqora login</code> and submit benchmark jobs to the Quantinuum <code>nexus:H2-2E</code> emulator.
+              </div>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 245, 212, 0.25); border-radius: 14px; padding: 22px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">🎨 Benjamin Lim</h4>
+                <span class="done-badge">5 Completed</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Frontend Systems & 3D WebGL</p>
+              <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+                <strong>Next Priority:</strong> Test the 3D Constellation & Quantum Hero mini-game across mobile/Safari, and embed interactive telemetry widgets into the workbook.
+              </div>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 14px; padding: 22px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">💼 James Sun</h4>
+                <span class="done-badge">3 Completed</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Venture Strategy & GTM</p>
+              <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+                <strong>Next Priority:</strong> Review executive positioning, line up biopharma partner syndicate conversations, and prepare the venture pitch for the Nov 19 finals.
+              </div>
+            </div>
+          </div>
+
+          <!-- Overall Competition Timeline -->
+          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 22px;">
+            <h4 style="color: var(--accent-cyan); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px;">🎯 Critical Competition Deadlines</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+              <div style="border-left: 2px solid var(--accent-cyan); padding-left: 12px;">
+                <div style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 700;">OCTOBER 15, 2026</div>
+                <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">Submission 1 Deadline</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Qualifier package: code, emulator logs, and Marimo workbook.</div>
+              </div>
+              <div style="border-left: 2px solid #f59e0b; padding-left: 12px;">
+                <div style="font-size: 0.8rem; color: #f59e0b; font-weight: 700;">OCTOBER 20, 2026</div>
+                <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">Shortlist Announcement</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Top finalist teams advance to physical trapped-ion QPU hardware.</div>
+              </div>
+              <div style="border-left: 2px solid var(--accent-purple); padding-left: 12px;">
+                <div style="font-size: 0.8rem; color: var(--accent-purple); font-weight: 700;">OCT 21 – NOV 14</div>
+                <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">Hardware Run Window</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Live execution on Quantinuum trapped ions (H2 / Helios).</div>
+              </div>
+              <div style="border-left: 2px solid #10b981; padding-left: 12px;">
+                <div style="font-size: 0.8rem; color: #10b981; font-weight: 700;">NOVEMBER 19, 2026</div>
+                <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">Grand Finals in Singapore</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">In-person demonstration, investor syndication, and winner awards.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL: GWEN -->
+        <div id="panel-gwen" class="role-panel">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;">🐰 Gwen ("1ightray") — Quantum Architecture Lead</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Founder & Core Quantum Engine ("The Quantum Bunny") • <a href="mailto:gwen@evecount.com" style="color: var(--accent-cyan);">gwen@evecount.com</a></p>
+            </div>
+            <span class="done-badge">4 Deliverables Completed</span>
+          </div>
+
+          <!-- Completed Section -->
+          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">✅ Completed Deliverables</div>
+            <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; color: #e2e8f0; line-height: 1.7;">
+              <li><strong>Mathematical Formulation</strong> of $\hat{U}_{\text{tube}}(\tau) = \exp(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$ and Lie algebra generators.</li>
+              <li><strong>Classical-to-Quantum HPC Bridge</strong> (<code>src/qrotate/hpc_bridge.py</code>) for spherical coordinate-to-phase mapping.</li>
+              <li><strong>Blind Parity SWAP Test</strong> in Pytket with native Quantinuum H2 gates (<code>PhasedX</code>, <code>ZZPhase</code>, virtual <code>Rz</code>).</li>
+              <li><strong>Repeat-Until-Success (RUS) Dynamic Loop</strong> compiled to HUGR dataflow graph and LLVM QIR bitcode (3.6 KB).</li>
+            </ul>
+          </div>
+
+          <!-- Interactive Action Items -->
+          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">🚀 Gwen's Next Action Items</h4>
+          <div class="task-checklist">
+            <label class="task-item" data-task-id="gwen_aqora_login">
+              <input type="checkbox" />
+              <div>
+                <strong>Connect local CLI to Aqora platform</strong> (<code>aqora login</code>) to link with team workspace <code>1ightray/sg-grand-challenge-evecount</code>.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Sept 18, 2026 • Prerequisite for cloud submissions</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="gwen_h2_emulator">
+              <input type="checkbox" />
+              <div>
+                <strong>Execute test benchmarks against Quantinuum <code>nexus:H2-2E</code> emulator</strong> using the 6 curated molecular test cases.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Sept 22, 2026 • Capture run logs and verify zero SWAP overhead</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="gwen_hqc_records">
+              <input type="checkbox" />
+              <div>
+                <strong>Record HQC credit usage and latency telemetry</strong> to quantify runtime advantage over classical brute-force docking.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Sept 26, 2026 • Needed for Submission 1 documentation</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="gwen_preprint_draft">
+              <input type="checkbox" />
+              <div>
+                <strong>Draft preprint section comparing RUS convergence against standard VQE</strong> for excited-state biomolecules.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Oct 5, 2026 • Formulates the scientific paper companion</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- PANEL: BEN -->
+        <div id="panel-ben" class="role-panel">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;">🎨 Benjamin Lim — Frontend & Systems Architect</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Frontend Systems Lead • <a href="mailto:ben@evecount.com" style="color: var(--accent-cyan);">ben@evecount.com</a></p>
+            </div>
+            <span class="done-badge">5 Deliverables Completed</span>
+          </div>
+
+          <!-- Completed Section -->
+          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">✅ Completed Deliverables</div>
+            <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; color: #e2e8f0; line-height: 1.7;">
+              <li><strong>Interactive 3D Resonance Constellation</strong> built in WebGL/Three.js with 3,500 Kolmogorov turbulent stardust particles.</li>
+              <li><strong>"Quantum Hero" Gamification</strong> featuring WASD keyboard gate rotations, live oscilloscope waveforms, and Web Audio synthesizer.</li>
+              <li><strong>6 Real-World Biomolecular Case Studies</strong> configured with interactive rotation sliders and resonance metrics.</li>
+              <li><strong>KaTeX Global Equation Engine</strong> rendering beautiful LaTeX formulas across documentation without markdown mangling.</li>
+              <li><strong>Zero 404 Infrastructure</strong> with GitHub Pages <code>.nojekyll</code>, client-side routing, and embedded offline documentation.</li>
+            </ul>
+          </div>
+
+          <!-- Interactive Action Items -->
+          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">🚀 Ben's Next Action Items</h4>
+          <div class="task-checklist">
+            <label class="task-item" data-task-id="ben_mobile_safari">
+              <input type="checkbox" />
+              <div>
+                <strong>Verify WebGL 3D Constellation & audio performance across Safari & mobile touch devices</strong> to ensure silky smooth 60fps for judges.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Sept 20, 2026 • Visual QA across platforms</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="ben_marimo_embed">
+              <input type="checkbox" />
+              <div>
+                <strong>Embed live Marimo telemetry curves into the workbook portal</strong> so judges can observe real-time fidelity graphs.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Sept 25, 2026 • Seamless interactive submission dashboard</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="ben_video_export">
+              <input type="checkbox" />
+              <div>
+                <strong>Add an instant screen capture & video recording button</strong> to the 3D Constellation for generating demo video clips.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Oct 2, 2026 • Automates final submission video production</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="ben_pitch_displays">
+              <input type="checkbox" />
+              <div>
+                <strong>Format high-resolution presentation layout</strong> optimized for 4K stage displays at the Singapore Grand Finals.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Oct 8, 2026 • Stage-ready visual assets</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- PANEL: JAMES -->
+        <div id="panel-james" class="role-panel">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;">💼 James Sun — Venture Advisor & GTM Strategist</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Venture Advisor & GTM Strategist • <a href="mailto:james@mambapartners.com" style="color: var(--accent-cyan);">james@mambapartners.com</a></p>
+            </div>
+            <span class="done-badge">3 Deliverables Completed</span>
+          </div>
+
+          <!-- Completed Section -->
+          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">✅ Completed Deliverables</div>
+            <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; color: #e2e8f0; line-height: 1.7;">
+              <li><strong>Track Positioning</strong>: Aligned Project Q-Rotate directly with the high-impact Chemistry & Biomolecular Simulation Track.</li>
+              <li><strong>Commercial Thesis Formulated</strong>: Framed the $O(1)$ Blind Parity Test as a Zero-Knowledge Proof for pharmaceutical IP licensing and cross-company virtual screening.</li>
+              <li><strong>Dual-Track Presentation Strategy</strong>: Balanced deep scientific rigor for Quantinuum technical judges with compelling commercial upside for venture partners.</li>
+            </ul>
+          </div>
+
+          <!-- Interactive Action Items -->
+          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">🚀 James's Next Action Items</h4>
+          <div class="task-checklist">
+            <label class="task-item" data-task-id="james_review_deck">
+              <input type="checkbox" />
+              <div>
+                <strong>Review Project Q-Rotate executive summary and pitch narrative</strong> across the live portal and interactive workbook.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Sept 22, 2026 • Feedback on narrative clarity and investor impact</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="james_biopharma_syndicate">
+              <input type="checkbox" />
+              <div>
+                <strong>Engage global & Singapore-based biopharma innovation leads</strong> for exploratory pilot partnership letters of intent (LOIs).
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Oct 1, 2026 • Commercial validation to present at Grand Finals</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="james_finals_pitch">
+              <input type="checkbox" />
+              <div>
+                <strong>Structure the venture pitch framework</strong> for the live judging panel and venture syndicates at the Nov 19 Grand Finals in Singapore.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Oct 10, 2026 • Compete for grand prize & follow-on capital</div>
+              </div>
+            </label>
+            <label class="task-item" data-task-id="james_portal_gtm">
+              <input type="checkbox" />
+              <div>
+                <strong>Provide GTM feedback on interactive gamified portal</strong> to maximize virality and engagement across the quantum and biotech community.
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Target: Oct 14, 2026 • Final polish ahead of Submission 1</div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Workbook CTA Banner -->
     <section class="workbook-callout">
       <h2>Experience the Live Quantum Engine</h2>
@@ -869,7 +1282,95 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderAllMath(document.body);
       loadChapter('01');
+      initWarRoom();
     });
+
+    // =========================================================================
+    // TEAM WAR ROOM & MISSION CONTROL LOGIC
+    // =========================================================================
+    function initWarRoom() {
+      const gateEl = document.getElementById('war-room-gate');
+      const dashEl = document.getElementById('war-room-dashboard');
+      const passInput = document.getElementById('warroom-passcode-input');
+      const unlockBtn = document.getElementById('btn-unlock-warroom');
+      const lockBtn = document.getElementById('btn-lock-warroom');
+      const memberSelect = document.getElementById('warroom-member-select');
+
+      function unlock() {
+        if (gateEl && dashEl) {
+          gateEl.style.display = 'none';
+          dashEl.style.display = 'block';
+          localStorage.setItem('evecount_warroom_auth', 'true');
+        }
+      }
+
+      function lock() {
+        if (gateEl && dashEl) {
+          gateEl.style.display = 'block';
+          dashEl.style.display = 'none';
+          localStorage.removeItem('evecount_warroom_auth');
+          if (passInput) passInput.value = '';
+        }
+      }
+
+      // Check existing auth
+      if (localStorage.getItem('evecount_warroom_auth') === 'true') {
+        unlock();
+      }
+
+      function verifyPasscode() {
+        const val = (passInput ? passInput.value : '').trim().toLowerCase();
+        const validPasscodes = ['evecount2026', 'evecount', '1ightray', 'ben2026', 'james2026'];
+        if (validPasscodes.includes(val)) {
+          unlock();
+        } else {
+          alert('Incorrect team passcode. Hint: evecount2026');
+        }
+      }
+
+      if (unlockBtn) unlockBtn.addEventListener('click', verifyPasscode);
+      if (passInput) {
+        passInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') verifyPasscode();
+        });
+      }
+      if (lockBtn) lockBtn.addEventListener('click', lock);
+
+      // Member Switcher Dropdown
+      if (memberSelect) {
+        memberSelect.addEventListener('change', (e) => {
+          const role = e.target.value;
+          document.querySelectorAll('.role-panel').forEach(p => p.classList.remove('active'));
+          const targetPanel = document.getElementById(`panel-${role}`);
+          if (targetPanel) targetPanel.classList.add('active');
+        });
+      }
+
+      // Interactive Checklist Persistence
+      document.querySelectorAll('.task-item').forEach(item => {
+        const taskId = item.dataset.taskId;
+        const cb = item.querySelector('input[type="checkbox"]');
+        if (!taskId || !cb) return;
+
+        // Restore state
+        const savedState = localStorage.getItem(`task_${taskId}`);
+        if (savedState === 'done') {
+          cb.checked = true;
+          item.classList.add('completed');
+        }
+
+        // Toggle state
+        cb.addEventListener('change', () => {
+          if (cb.checked) {
+            item.classList.add('completed');
+            localStorage.setItem(`task_${taskId}`, 'done');
+          } else {
+            item.classList.remove('completed');
+            localStorage.removeItem(`task_${taskId}`);
+          }
+        });
+      });
+    }
 
     // Window load fallback to guarantee all formulas render
     window.addEventListener('load', () => {
