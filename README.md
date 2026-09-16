@@ -9,6 +9,7 @@
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
+**🌌 3D Resonance Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)  
 **Live Interactive Documentation:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)  
 **Repository:** [github.com/evecount/quantum_rotation](https://github.com/evecount/quantum_rotation)  
 **Aqora Workspace:** [aqora.io/1ightray/sg-grand-challenge-evecount](https://aqora.io/1ightray/sg-grand-challenge-evecount)
@@ -228,6 +229,7 @@ D:\Quantinuum_GrandChallenge\
 
 Experience Project Q-Rotate directly in your browser or local environment:
 
+* 🌌 **[3D Resonance Constellation Universe](https://evecount.github.io/quantum_rotation/constellation.html)**: Interactive Starry Night celestial map featuring 3,500 turbulent stardust particles across 6 real-world biomolecular case studies with live 3D ligand rotation and blind parity testing.
 * 📓 **[View Jupyter Notebook on GitHub](notebooks/project_q_rotate.ipynb)**: Native, instant rendering on GitHub displaying 3D coordinate parsing, phase spectra, Altair resonance curves, H2 rebased circuits, and HQC cost estimates.
 * 🌐 **[Interactive Marimo Web App](notebooks/project_q_rotate.py)**: Full-featured reactive dashboard with live sliders for rotation angle misalignment, Gaussian noise, interactive H2 native circuit tiles, and live job submission to the Quantinuum `nexus:H2-2E` emulator.
 * 📄 **[Standalone HTML Session](notebooks/project_q_rotate.html)**: Self-contained pre-rendered workbook session ready to view in any browser.

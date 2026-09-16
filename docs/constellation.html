@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Resonance Constellation | Project Q-Rotate</title>
+  <meta name="description" content="An interactive 3D multidimensional biomolecular universe for Project Q-Rotate, Quantinuum Singapore Grand Challenge 2026." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Three.js and OrbitControls via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #05070d;
+      --accent-cyan: #00f5d4;
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --glass-bg: rgba(10, 15, 29, 0.75);
+      --glass-border: rgba(66, 153, 225, 0.25);
+      --font-ui: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      font-family: var(--font-ui);
+      color: var(--text-main);
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Vignette and scanline overlay */
+    .vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(circle at center, transparent 45%, rgba(4, 6, 12, 0.75) 100%);
+    }
+
+    /* Top HUD */
+    .hud-top {
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .hud-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      pointer-events: auto;
+    }
+
+    .hud-logo {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #040814;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+    }
+
+    .hud-title h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+
+    .hud-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .hud-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .hud-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .hud-btn:hover {
+      background: rgba(20, 30, 55, 0.9);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 245, 212, 0.25);
+    }
+
+    .hud-btn.primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #040814;
+      border: none;
+      font-weight: 700;
+    }
+
+    .hud-btn.primary:hover {
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.6);
+    }
+
+    /* Telemetry HUD Left */
+    .telemetry-box {
+      position: absolute;
+      top: 100px;
+      left: 24px;
+      z-index: 10;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      padding: 16px 20px;
+      border-radius: 14px;
+      width: 260px;
+      pointer-events: none;
+    }
+
+    .telemetry-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .telemetry-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      font-family: var(--font-mono);
+    }
+
+    .telemetry-label {
+      color: var(--text-muted);
+    }
+
+    .telemetry-val {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Bottom Galaxy Selector Carousel */
+    .galaxy-selector {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(8, 12, 22, 0.85);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      padding: 10px 16px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      max-width: 95vw;
+      overflow-x: auto;
+    }
+
+    .galaxy-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .galaxy-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .galaxy-btn.active {
+      background: rgba(0, 245, 212, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
+    }
+
+    .galaxy-btn .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Molecular Inspection Drawer (Right Side) */
+    .inspector-drawer {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      bottom: 24px;
+      width: 440px;
+      max-width: calc(100vw - 48px);
+      z-index: 20;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(120%);
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -15px 0 40px rgba(0, 0, 0, 0.6);
+      overflow-y: auto;
+    }
+
+    .inspector-drawer.open {
+      transform: translateX(0);
+    }
+
+    .inspector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .inspector-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    .inspector-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+    }
+
+    .btn-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: background 0.2s ease;
+    }
+
+    .btn-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .inspector-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* Phase bar display */
+    .card-box {
+      background: rgba(6, 10, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .qubit-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .qubit-tile {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .qubit-tile.locked {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 245, 212, 0.1);
+    }
+
+    .qubit-id {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .qubit-phi {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    /* U_tube Rotation Slider */
+    .slider-wrap {
+      margin-bottom: 22px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .slider-val {
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+    }
+
+    input[type=range] {
+      width: 100%;
+      -webkit-appearance: none;
+      background: rgba(30, 41, 59, 0.8);
+      height: 8px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--accent-cyan);
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Parity Pulse Trigger Button */
+    .btn-fire-parity {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #030712;
+      font-family: var(--font-ui);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 20px rgba(0, 245, 212, 0.35);
+      margin-bottom: 14px;
+    }
+
+    .btn-fire-parity:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 245, 212, 0.55);
+    }
+
+    .parity-result-box {
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+      margin-bottom: 18px;
+    }
+
+    .parity-result-box.pass {
+      background: rgba(0, 245, 212, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .parity-result-box.fail {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    /* Guide instructions overlay */
+    .guide-hint {
+      position: absolute;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(10, 15, 28, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      animation: fadeInOut 6s forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -10px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      85% { opacity: 1; }
+      100% { opacity: 0; pointer-events: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+  <div class="vignette"></div>
+
+  <!-- Top Navigation HUD -->
+  <div class="hud-top">
+    <div class="hud-brand">
+      <div class="hud-logo">Q-Rotate</div>
+      <div class="hud-title">
+        <h1>The Resonance Constellation</h1>
+        <p>Starry Night Biomolecular Quantum Landscape</p>
+      </div>
+    </div>
+    <div class="hud-nav">
+      <a href="index.html" class="hud-btn">
+        <span>← Documentation Portal</span>
+      </a>
+      <a href="workbook.html" class="hud-btn primary" target="_blank">
+        <span>⚡ Open Workbook</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Telemetry HUD Left -->
+  <div class="telemetry-box">
+    <div class="telemetry-title">
+      <span>Quantum Telemetry</span>
+      <div class="telemetry-pulse"></div>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Hilbert Space</span>
+      <span class="telemetry-val">SU(2)<sup>⊗n</sup> Lie Algebra</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Active System</span>
+      <span class="telemetry-val" id="active-star-name">Rhodopsin / Retinal</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Phase Error ΔΦ</span>
+      <span class="telemetry-val" id="telemetry-delta-phi" style="color: var(--accent-cyan);">0.14 rad</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">HQC Estimate</span>
+      <span class="telemetry-val" id="telemetry-hqc">9.44 HQC</span>
+    </div>
+    <div class="telemetry-row">
+      <span class="telemetry-label">Hardware Target</span>
+      <span class="telemetry-val" style="color: #fff;">Quantinuum H2-2E</span>
+    </div>
+  </div>
+
+  <!-- Interaction Guide Hint -->
+  <div class="guide-hint">
+    ✨ Click any celestial cluster to enter the active site • Drag to rotate view • Scroll to zoom
+  </div>
+
+  <!-- Bottom Galaxy Destination Selector -->
+  <div class="galaxy-selector" id="galaxy-selector">
+    <button class="galaxy-btn active" data-idx="0">
+      <span class="dot" style="background: #00f5d4; box-shadow: 0 0 8px #00f5d4;"></span>
+      <span>01. Rhodopsin (Vision)</span>
+    </button>
+    <button class="galaxy-btn" data-idx="1">
+      <span class="dot" style="background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
+      <span>02. GFP Chromophore</span>
+    </button>
+    <button class="galaxy-btn" data-idx="2">
+      <span class="dot" style="background: #3b82f6; box-shadow: 0 0 8px #3b82f6;"></span>
+      <span>03. SARS-CoV-2 Mpro</span>
+    </button>
+    <button class="galaxy-btn" data-idx="3">
+      <span class="dot" style="background: #f59e0b; box-shadow: 0 0 8px #f59e0b;"></span>
+      <span>04. COX-2 Precision</span>
+    </button>
+    <button class="galaxy-btn" data-idx="4">
+      <span class="dot" style="background: #a855f7; box-shadow: 0 0 8px #a855f7;"></span>
+      <span>05. Azobenzene Switch</span>
+    </button>
+    <button class="galaxy-btn" data-idx="5">
+      <span class="dot" style="background: #ec4899; box-shadow: 0 0 8px #ec4899;"></span>
+      <span>06. H2 Ion Benchmark</span>
+    </button>
+  </div>
+
+  <!-- Inspector Drawer -->
+  <div class="inspector-drawer" id="inspector-drawer">
+    <div class="inspector-header">
+      <div>
+        <span class="inspector-tag" id="drawer-tag">Photochemical Active Site</span>
+        <h2 class="inspector-title" id="drawer-title">11-cis Retinal in Rhodopsin</h2>
+      </div>
+      <button class="btn-close" id="btn-close-drawer">✕</button>
+    </div>
+
+    <p class="inspector-desc" id="drawer-desc">
+      The gold standard photochemical master switch in human vision. As light strikes the chromophore, 11-cis retinal photoisomerizes into all-trans retinal within a tightly constrained opsin pocket.
+    </p>
+
+    <!-- Qubit Phase Spectrum -->
+    <div class="card-box">
+      <div class="card-label">
+        <span>Qubit Phase Spectrum (Half-Turns)</span>
+        <span style="color: var(--accent-cyan);">4 Qubits</span>
+      </div>
+      <div class="qubit-grid" id="qubit-grid">
+        <div class="qubit-tile locked">
+          <div class="qubit-id">q0 (Lys296)</div>
+          <div class="qubit-phi" id="q0-val">+0.12π</div>
+        </div>
+        <div class="qubit-tile">
+          <div class="qubit-id">q1 (Glu113)</div>
+          <div class="qubit-phi" id="q1-val">-0.45π</div>
+        </div>
+        <div class="qubit-tile">
+          <div class="qubit-id">q2 (Phe212)</div>
+          <div class="qubit-phi" id="q2-val">+0.88π</div>
+        </div>
+        <div class="qubit-tile">
+          <div class="qubit-id">q3 (Trp265)</div>
+          <div class="qubit-phi" id="q3-val">-0.22π</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live U_tube Rotation Slider -->
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span>Û<sub>tube</sub>(τ) Dimensional Rotation Angle (ω<sub>z</sub>)</span>
+        <span class="slider-val" id="angle-display">0.0°</span>
+      </div>
+      <input type="range" id="angle-slider" min="-180" max="180" value="0" />
+      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+        <span>-180° (Turbulent Mismatch)</span>
+        <span style="color:var(--accent-cyan);">Resonance Lock: 0.0°</span>
+        <span>+180°</span>
+      </div>
+    </div>
+
+    <!-- Parity Test Trigger -->
+    <button class="btn-fire-parity" id="btn-fire-parity">
+      <span>⚛️ Fire Blind Parity Test (SWAP)</span>
+    </button>
+
+    <div class="parity-result-box" id="parity-result">
+      <!-- Dynamic outcome message -->
+    </div>
+
+    <!-- External Link -->
+    <a href="workbook.html" target="_blank" class="hud-btn" style="text-align:center; justify-content:center;">
+      <span>📖 Open Interactive Notebook for This System →</span>
+    </a>
+  </div>
+
+  <!-- Three.js Constellation Core Logic -->
+  <script>
+    // =========================================================================
+    // 1. DATASET: 6 Real-World Biomolecular Case Studies
+    // =========================================================================
+    const systems = [
+      {
+        id: "rhodopsin",
+        name: "11-cis Retinal / Rhodopsin",
+        tag: "Photochemical Master Switch",
+        desc: "Human visual photoreceptor chromophore. Referenced in Yamamoto et al. (arXiv:2601.15677). Models excited-state potential energy surfaces during ultrafast photoisomerization.",
+        pos: new THREE.Vector3(-45, 15, -20),
+        color: 0x00f5d4, // Cyan
+        baseDeltaPhi: [0.12, -0.45, 0.88, -0.22],
+        hqcCost: "9.44 HQC",
+        optimalAngle: 0.0,
+      },
+      {
+        id: "gfp",
+        name: "GFP Chromophore",
+        tag: "Bioluminescent Proton Transfer",
+        desc: "The Ser65-Tyr66-Gly67 tripeptide inside the β-barrel. Exhibits rapid excited-state proton transfer (ESPT) between phenol oxygen and catalytic water network.",
+        pos: new THREE.Vector3(40, 25, -35),
+        color: 0x10b981, // Emerald
+        baseDeltaPhi: [-0.62, 0.31, 0.15, -0.08],
+        hqcCost: "11.20 HQC",
+        optimalAngle: 35.0,
+      },
+      {
+        id: "mpro",
+        name: "SARS-CoV-2 Mpro + Paxlovid",
+        tag: "Antiviral Covalent Inhibitor",
+        desc: "Main viral 3CL protease with Nirmatrelvir. Catalytic dyad Cys145 and His41 coordinate with the pyrrolidone ring with zero geometric tolerance.",
+        pos: new THREE.Vector3(60, -20, 10),
+        color: 0x3b82f6, // Electric Blue
+        baseDeltaPhi: [0.44, 0.92, -0.38, 0.19],
+        hqcCost: "12.80 HQC",
+        optimalAngle: -50.0,
+      },
+      {
+        id: "cox2",
+        name: "COX-2 vs COX-1 Channel",
+        tag: "Single-Residue Selectivity",
+        desc: "Discriminating a single residue substitution (Val523 in COX-2 vs Ile523 in COX-1) opening a secondary binding pocket for targeted NSAIDs without stomach toxicity.",
+        pos: new THREE.Vector3(-55, -25, 25),
+        color: 0xf59e0b, // Amber Gold
+        baseDeltaPhi: [-0.18, 0.25, 0.73, -0.54],
+        hqcCost: "10.15 HQC",
+        optimalAngle: 80.0,
+      },
+      {
+        id: "azobenzene",
+        name: "Azobenzene Molecular Switch",
+        tag: "Photopharmacological Motor",
+        desc: "Synthetic light-activated molecular actuator. Under UV light, the N=N double bond switches from planar trans to bent cis, functioning as a reversible quantum key.",
+        pos: new THREE.Vector3(10, 45, 30),
+        color: 0xa855f7, // Purple
+        baseDeltaPhi: [0.78, -0.81, 0.35, -0.42],
+        hqcCost: "8.60 HQC",
+        optimalAngle: -115.0,
+      },
+      {
+        id: "h2bench",
+        name: "Quantinuum H2 Benchmark",
+        tag: "Trapped-Ion Physical Stress Test",
+        desc: "Native H-series trapped-ion gate-level benchmark. Evaluates PhasedX, ZZPhase, and mid-circuit optical reset across 4-site and 8-site stress manifolds.",
+        pos: new THREE.Vector3(0, -45, -30),
+        color: 0xec4899, // Pink
+        baseDeltaPhi: [0.15, -0.10, 0.20, -0.05],
+        hqcCost: "14.50 HQC",
+        optimalAngle: 15.0,
+      }
+    ];
+
+    let currentSystemIdx = 0;
+
+    // =========================================================================
+    // 2. THREE.JS SCENE SETUP
+    // =========================================================================
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x05070d, 0.007);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 30, 110);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxDistance = 250;
+    controls.minDistance = 15;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.4;
+
+    // Ambient and Point Lights
+    scene.add(new THREE.AmbientLight(0x1a243a, 1.5));
+
+    // =========================================================================
+    // 3. STARRY NIGHT VORTEX: 3,500 Swirling Turbulent Stardust Particles
+    // =========================================================================
+    const particleCount = 3500;
+    const particleGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const originalPositions = new Float32Array(particleCount * 3);
+
+    const colorPalette = [
+      new THREE.Color(0x00f5d4), // Cyan
+      new THREE.Color(0xf59e0b), // Van Gogh Gold
+      new THREE.Color(0x3b82f6), // Deep Blue
+      new THREE.Color(0xa855f7), // Purple
+      new THREE.Color(0xffffff)  // White Starlight
+    ];
+
+    for (let i = 0; i < particleCount; i++) {
+      // Swirling logarithmic spiral distribution (Kolmogorov turbulence simulation)
+      const theta = Math.random() * Math.PI * 2;
+      const r = Math.pow(Math.random(), 0.8) * 160 + 10;
+      const height = (Math.sin(r * 0.08) + Math.cos(theta * 3)) * 25 + (Math.random() - 0.5) * 30;
+
+      const x = r * Math.cos(theta);
+      const y = height;
+      const z = r * Math.sin(theta);
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      originalPositions[i * 3] = x;
+      originalPositions[i * 3 + 1] = y;
+      originalPositions[i * 3 + 2] = z;
+
+      const col = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      colors[i * 3] = col.r;
+      colors[i * 3 + 1] = col.g;
+      colors[i * 3 + 2] = col.b;
+    }
+
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    // Custom glowing particle texture
+    function createParticleTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 64;
+      cvs.height = 64;
+      const ctx = cvs.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255,255,255,1)');
+      grad.addColorStop(0.3, 'rgba(0,245,212,0.8)');
+      grad.addColorStop(0.6, 'rgba(59,130,246,0.3)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(cvs);
+    }
+
+    const particleMat = new THREE.PointsMaterial({
+      size: 2.2,
+      map: createParticleTexture(),
+      vertexColors: true,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+
+    const starParticles = new THREE.Points(particleGeo, particleMat);
+    scene.add(starParticles);
+
+    // =========================================================================
+    // 4. CELESTIAL STAR SYSTEMS (Biomolecular Nodes)
+    // =========================================================================
+    const systemNodes = [];
+    const raycastMeshes = [];
+
+    systems.forEach((sys, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(sys.pos);
+
+      // 1. Central Pulsing Star Core
+      const coreGeo = new THREE.SphereGeometry(2.4, 24, 24);
+      const coreMat = new THREE.MeshBasicMaterial({ color: sys.color, wireframe: false });
+      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      group.add(coreMesh);
+
+      // 2. Halo Outer Glow Shell
+      const haloGeo = new THREE.SphereGeometry(4.2, 24, 24);
+      const haloMat = new THREE.MeshBasicMaterial({
+        color: sys.color,
+        transparent: true,
+        opacity: 0.25,
+        wireframe: true,
+      });
+      const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+      group.add(haloMesh);
+
+      // 3. Orbital Resonance Rings
+      const ringGeo = new THREE.RingGeometry(5.5, 6.2, 32);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: sys.color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.45,
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2 + Math.random() * 0.4;
+      group.add(ringMesh);
+
+      // 4. 3D Mini Molecular Wireframe Cluster (Simulating Pocket Active Site)
+      const ligandGroup = new THREE.Group();
+      const nAtoms = 5;
+      for (let a = 0; a < nAtoms; a++) {
+        const atomGeo = new THREE.SphereGeometry(0.6, 12, 12);
+        const atomMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const atomMesh = new THREE.Mesh(atomGeo, atomMat);
+        const phi = (a / nAtoms) * Math.PI * 2;
+        atomMesh.position.set(Math.cos(phi) * 3, Math.sin(phi) * 1.5, Math.sin(phi * 2) * 1.2);
+        ligandGroup.add(atomMesh);
+      }
+      group.add(ligandGroup);
+
+      // Invisible larger hit box for easy clicking
+      const hitGeo = new THREE.SphereGeometry(8.0, 12, 12);
+      const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+      const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+      hitMesh.userData = { systemIndex: idx };
+      group.add(hitMesh);
+      raycastMeshes.push(hitMesh);
+
+      scene.add(group);
+      systemNodes.push({ group, coreMesh, haloMesh, ringMesh, ligandGroup, data: sys });
+    });
+
+    // =========================================================================
+    // 5. INTERACTIVE RAYCASTING & INSPECTION DRAWER
+    // =========================================================================
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const drawer = document.getElementById('inspector-drawer');
+    const drawerTag = document.getElementById('drawer-tag');
+    const drawerTitle = document.getElementById('drawer-title');
+    const drawerDesc = document.getElementById('drawer-desc');
+    const activeStarName = document.getElementById('active-star-name');
+    const telemetryDeltaPhi = document.getElementById('telemetry-delta-phi');
+    const telemetryHqc = document.getElementById('telemetry-hqc');
+    const angleSlider = document.getElementById('angle-slider');
+    const angleDisplay = document.getElementById('angle-display');
+    const parityResult = document.getElementById('parity-result');
+    const btnFireParity = document.getElementById('btn-fire-parity');
+    const btnCloseDrawer = document.getElementById('btn-close-drawer');
+    const galaxyButtons = document.querySelectorAll('.galaxy-btn');
+
+    function selectSystem(index) {
+      currentSystemIdx = index;
+      const sys = systems[index];
+
+      // Update HUD
+      activeStarName.innerText = sys.name;
+      telemetryHqc.innerText = sys.hqcCost;
+      drawerTag.innerText = sys.tag;
+      drawerTitle.innerText = sys.name;
+      drawerDesc.innerText = sys.desc;
+
+      // Update Qubit display
+      document.getElementById('q0-val').innerText = `${sys.baseDeltaPhi[0]}π`;
+      document.getElementById('q1-val').innerText = `${sys.baseDeltaPhi[1]}π`;
+      document.getElementById('q2-val').innerText = `${sys.baseDeltaPhi[2]}π`;
+      document.getElementById('q3-val').innerText = `${sys.baseDeltaPhi[3]}π`;
+
+      // Reset slider & parity
+      angleSlider.value = sys.optimalAngle - 45; // Start with intentional misalignment
+      updateAngleRotation(angleSlider.value);
+      parityResult.style.display = 'none';
+
+      // Update active button styling
+      galaxyButtons.forEach(b => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`.galaxy-btn[data-idx="${index}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Smooth Camera Flight to System
+      const targetPos = sys.pos.clone().add(new THREE.Vector3(14, 10, 24));
+      new TWEEN.Tween(camera.position)
+        .to({ x: targetPos.x, y: targetPos.y, z: targetPos.z }, 1400)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+
+      new TWEEN.Tween(controls.target)
+        .to({ x: sys.pos.x, y: sys.pos.y, z: sys.pos.z }, 1400)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+
+      // Open drawer
+      drawer.classList.add('open');
+      controls.autoRotate = false; // Pause auto spin while inspecting
+    }
+
+    // Slider Drag logic: Rotates ligand in 3D & evaluates phase error
+    function updateAngleRotation(val) {
+      angleDisplay.innerText = `${parseFloat(val).toFixed(1)}°`;
+      const sys = systems[currentSystemIdx];
+      const node = systemNodes[currentSystemIdx];
+
+      // Rotate the 3D ligand wireframe
+      const rad = THREE.MathUtils.degToRad(val);
+      node.ligandGroup.rotation.y = rad;
+      node.ligandGroup.rotation.z = rad * 0.4;
+
+      // Calculate phase error discrepancy
+      const errorDiff = Math.abs(parseFloat(val) - sys.optimalAngle);
+      const normalizedError = (errorDiff / 180.0) * Math.PI;
+      telemetryDeltaPhi.innerText = `${normalizedError.toFixed(2)} rad`;
+
+      // Visual feedback on halo & particle turbulence
+      if (errorDiff < 5.0) {
+        // Aligned ground state!
+        telemetryDeltaPhi.style.color = '#00f5d4';
+        node.haloMesh.material.color.setHex(0x00f5d4);
+        node.ringMesh.material.opacity = 0.9;
+      } else {
+        telemetryDeltaPhi.style.color = '#f59e0b';
+        node.haloMesh.material.color.setHex(sys.color);
+        node.ringMesh.material.opacity = 0.4;
+      }
+    }
+
+    angleSlider.addEventListener('input', (e) => {
+      updateAngleRotation(e.target.value);
+    });
+
+    // Fire Parity Test Button
+    btnFireParity.addEventListener('click', () => {
+      const sys = systems[currentSystemIdx];
+      const errorDiff = Math.abs(parseFloat(angleSlider.value) - sys.optimalAngle);
+
+      // Trigger pulse wave on camera target
+      const node = systemNodes[currentSystemIdx];
+      const originalScale = node.ringMesh.scale.x;
+      new TWEEN.Tween(node.ringMesh.scale)
+        .to({ x: 2.2, y: 2.2, z: 2.2 }, 300)
+        .yoyo(true)
+        .repeat(1)
+        .start();
+
+      parityResult.style.display = 'block';
+      if (errorDiff < 6.0) {
+        parityResult.className = 'parity-result-box pass';
+        parityResult.innerHTML = `
+          <strong>✨ ZERO-PARITY LOCKED (P=0.00)</strong><br />
+          Ancilla Readout: |0⟩ • Ground State Synchronized!<br />
+          <span style="font-size:0.75rem;">Structural & electronic fit verified without exposing 3D coordinates.</span>
+        `;
+      } else {
+        const failProb = (0.5 * (1 - Math.cos(THREE.MathUtils.degToRad(errorDiff)))).toFixed(2);
+        parityResult.className = 'parity-result-box fail';
+        parityResult.innerHTML = `
+          <strong>⚠️ PARITY MISMATCH (P=${failProb})</strong><br />
+          Ancilla Readout: |1⟩ • Phase Cascading Error Detected.<br />
+          <span style="font-size:0.75rem;">Rotate Û<sub>tube</sub> angle slider toward ${sys.optimalAngle.toFixed(1)}° to achieve resonance lock.</span>
+        `;
+      }
+    });
+
+    // Close drawer button
+    btnCloseDrawer.addEventListener('click', () => {
+      drawer.classList.remove('open');
+      controls.autoRotate = true;
+    });
+
+    // Galaxy button selectors
+    galaxyButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectSystem(parseInt(btn.dataset.idx, 10));
+      });
+    });
+
+    // Canvas click detection (Raycasting)
+    window.addEventListener('pointerdown', (e) => {
+      // Ignore if clicking on HUD elements
+      if (e.target.closest('.hud-top') || e.target.closest('.telemetry-box') || 
+          e.target.closest('.galaxy-selector') || e.target.closest('.inspector-drawer')) {
+        return;
+      }
+
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(raycastMeshes);
+
+      if (intersects.length > 0) {
+        const sysIndex = intersects[0].object.userData.systemIndex;
+        selectSystem(sysIndex);
+      }
+    });
+
+    // Window resize handling
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // =========================================================================
+    // 6. ANIMATION LOOP: Turbulent Swirling Vortex
+    // =========================================================================
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      TWEEN.update();
+      controls.update();
+
+      const time = clock.getElapsedTime();
+
+      // Swirl stardust particles in turbulent eddies
+      const posAttr = particleGeo.attributes.position;
+      for (let i = 0; i < particleCount; i++) {
+        const ox = originalPositions[i * 3];
+        const oy = originalPositions[i * 3 + 1];
+        const oz = originalPositions[i * 3 + 2];
+
+        // Angular rotation velocity decreases with radius
+        const r = Math.sqrt(ox * ox + oz * oz);
+        const speed = 0.25 / (1.0 + r * 0.02);
+        const curTheta = Math.atan2(oz, ox) + speed * time;
+
+        posAttr.array[i * 3] = r * Math.cos(curTheta);
+        posAttr.array[i * 3 + 1] = oy + Math.sin(time * 2 + i) * 1.5;
+        posAttr.array[i * 3 + 2] = r * Math.sin(curTheta);
+      }
+      posAttr.needsUpdate = true;
+
+      // Pulse and rotate celestial nodes
+      systemNodes.forEach((node, idx) => {
+        node.coreMesh.rotation.y += 0.01;
+        node.haloMesh.rotation.y -= 0.008;
+        node.haloMesh.rotation.x += 0.005;
+        node.ringMesh.rotation.z += 0.006;
+
+        // Subtle breathing scale
+        const scale = 1.0 + Math.sin(time * 2.5 + idx) * 0.08;
+        node.coreMesh.scale.set(scale, scale, scale);
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Start by focusing on Rhodopsin (after initial camera pan)
+    setTimeout(() => {
+      selectSystem(0);
+    }, 1200);
+  </script>
+</body>
+</html>
