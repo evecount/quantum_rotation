@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Q-Rotate | Quantum-HPC Hybrid Biomolecular Simulation</title>
+  <meta name="description" content="Project Q-Rotate: Efficient Molecular Pattern Matching for Quantinuum Singapore Grand Challenge 2026 by Team Eve Count." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- KaTeX for Math Equations -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Marked.js for Markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-card: rgba(16, 22, 36, 0.75);
+      --bg-card-hover: rgba(24, 32, 54, 0.9);
+      --border-color: rgba(66, 153, 225, 0.2);
+      --border-glow: rgba(0, 245, 212, 0.4);
+      --accent-cyan: #00f5d4;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-heading);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(0, 245, 212, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 60%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header Nav */
+    header {
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(16px);
+      background: rgba(7, 9, 14, 0.8);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+    .logo-badge {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover {
+      color: var(--accent-cyan);
+    }
+    .btn-nav {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #050811 !important;
+      font-weight: 700 !important;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .btn-nav:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 245, 212, 0.4);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 70px 0 40px;
+      text-align: center;
+    }
+    .hero-banner-wrap {
+      max-width: 900px;
+      margin: 0 auto 36px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+    .hero-banner-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .event-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 30px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p.subtitle {
+      max-width: 780px;
+      margin: 0 auto 32px;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #030712;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 245, 212, 0.4);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(16, 22, 36, 0.8);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 1.05rem;
+      padding: 14px 26px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(24, 32, 54, 0.9);
+      border-color: var(--accent-cyan);
+      transform: translateY(-3px);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 60px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-cyan);
+    }
+    .stat-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+      font-family: var(--font-mono);
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Section Cards */
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    /* Architecture Grid */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    .arch-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .arch-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-glow);
+    }
+    .arch-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(0, 245, 212, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 245, 212, 0.2);
+    }
+    .arch-card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .arch-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Interactive Documentation Reader */
+    .doc-reader {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 60px;
+      backdrop-filter: blur(14px);
+    }
+    .doc-nav {
+      display: flex;
+      overflow-x: auto;
+      background: rgba(11, 15, 25, 0.9);
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 12px;
+      gap: 8px;
+    }
+    .doc-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .doc-tab:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .doc-tab.active {
+      color: #030712;
+      background: var(--accent-cyan);
+      font-weight: 700;
+    }
+    .doc-content {
+      padding: 36px;
+      min-height: 380px;
+      max-height: 700px;
+      overflow-y: auto;
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .doc-content h1, .doc-content h2, .doc-content h3 {
+      color: #fff;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+    .doc-content h1:first-child {
+      margin-top: 0;
+    }
+    .doc-content p {
+      margin-bottom: 16px;
+    }
+    .doc-content code {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--accent-cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+    }
+    .doc-content pre {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 18px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 18px 0;
+    }
+    .doc-content pre code {
+      background: transparent;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+    }
+    .doc-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .doc-content th, .doc-content td {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .doc-content th {
+      background: rgba(15, 23, 42, 0.8);
+      color: #fff;
+    }
+
+    /* Workbook Callout */
+    .workbook-callout {
+      background: linear-gradient(135deg, rgba(16, 24, 40, 0.9), rgba(20, 30, 50, 0.95));
+      border: 1px solid var(--accent-cyan);
+      border-radius: 18px;
+      padding: 40px;
+      margin-bottom: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.15);
+    }
+    .workbook-callout h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .workbook-callout p {
+      max-width: 680px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(7, 9, 14, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(66, 153, 225, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 245, 212, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-content">
+      <a href="#" class="logo">
+        <span class="logo-badge">Q-Rotate</span>
+        <span>Eve Count</span>
+      </a>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#math">Math</a>
+        <a href="#docs">Documentation</a>
+        <a href="workbook.html" target="_blank">Workbook</a>
+        <a href="https://github.com/evecount/quantum_rotation" target="_blank">GitHub</a>
+        <a href="workbook.html" class="btn-nav" target="_blank">Launch App</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="container">
+    <section class="hero" id="overview">
+      <div class="hero-banner-wrap">
+        <img src="assets/qrotate_banner.jpg" alt="Project Q-Rotate Banner" />
+      </div>
+      <div class="event-tag">
+        <span>Quantinuum SG Grand Challenge 2026</span> • <span>Chemistry Track</span>
+      </div>
+      <h1>Efficient Molecular Pattern Matching</h1>
+      <p class="subtitle">
+        Replacing brute-force 3D spatial docking with a quantum-native, information-theoretic dimensional rotation operator on Quantinuum trapped ions.
+      </p>
+
+      <div class="hero-cta">
+        <a href="workbook.html" class="btn-primary" target="_blank">
+          <span>⚡ Launch Interactive Workbook</span>
+        </a>
+        <a href="https://github.com/evecount/quantum_rotation/blob/main/notebooks/project_q_rotate.ipynb" class="btn-secondary" target="_blank">
+          <span>📓 View Jupyter Notebook</span>
+        </a>
+        <a href="https://aqora.io/1ightray/sg-grand-challenge-evecount" class="btn-secondary" target="_blank">
+          <span>☁️ Aqora Workspace</span>
+        </a>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val">O(1)</div>
+          <div class="stat-label">Parity Ancilla Readout</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">Zero SWAP</div>
+          <div class="stat-label">All-to-All Ion Routing</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">3.6 KB</div>
+          <div class="stat-label">QIR Dynamic Bitcode</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">H2 / Helios</div>
+          <div class="stat-label">Native PhasedX & ZZPhase</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture & Math Highlights -->
+    <section id="math" style="margin-bottom: 60px;">
+      <h2 class="section-title">The Three Pillars of Project Q-Rotate</h2>
+      <p class="section-subtitle">Bridging classical supercomputing with trapped-ion quantum firmware.</p>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-icon">🌀</div>
+          <h3>1. Dimensional Rotation Operator</h3>
+          <p>
+            Replaces exponential 3D grid docking with the unitary evolution operator:
+          </p>
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--accent-cyan); margin: 8px 0;">
+            $$\hat{U}_{\text{tube}}(\tau) = \exp(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$$
+          </div>
+          <p>
+            Spatial alignment and electrostatic features collapse phase error $\Delta \Phi \to 0$, locking the system into ground-state synchrony.
+          </p>
+        </div>
+
+        <div class="arch-card">
+          <div class="arch-icon">🔒</div>
+          <h3>2. Blind Parity SWAP Test</h3>
+          <p>
+            Acts as a zero-knowledge proof for structural complementarity. By measuring a single parity ancilla:
+          </p>
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--accent-cyan); margin: 8px 0;">
+            $$P(\text{fail}) = \frac{1 - |\langle \psi_P | \psi_L \rangle|^2}{2}$$
+          </div>
+          <p>
+            Verifies lock-and-key matching without revealing underlying proprietary atomic coordinates.
+          </p>
+        </div>
+
+        <div class="arch-card">
+          <div class="arch-icon">🔁</div>
+          <h3>3. Guppy RUS Dynamic Loop</h3>
+          <p>
+            Leverages Quantinuum's trapped ions to execute mid-circuit measurement and optical reset in real time.
+          </p>
+          <p>
+            Guppy compiles Python <code>while</code> loops directly to <strong>HUGR</strong> dataflow graphs, executing dynamic corrections at the cryostat with <strong>zero host network latency</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Documentation Hub -->
+    <section id="docs" style="margin-bottom: 60px;">
+      <h2 class="section-title">Plain-English Documentation Hub</h2>
+      <p class="section-subtitle">Read each chapter of the curriculum directly on this page:</p>
+
+      <div class="doc-reader">
+        <div class="doc-nav" id="doc-nav">
+          <button class="doc-tab active" data-chapter="01">01. Big Picture</button>
+          <button class="doc-tab" data-chapter="02">02. Math Demystified</button>
+          <button class="doc-tab" data-chapter="03">03. Blind Parity</button>
+          <button class="doc-tab" data-chapter="04">04. RUS in Guppy</button>
+          <button class="doc-tab" data-chapter="05">05. Hybrid HPC</button>
+          <button class="doc-tab" data-chapter="06">06. Roadmap</button>
+        </div>
+        <div class="doc-content" id="doc-content">
+          <p>Loading chapter content...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workbook CTA Banner -->
+    <section class="workbook-callout">
+      <h2>Experience the Live Quantum Engine</h2>
+      <p>
+        Test the mathematical resonance curves, adjust 3D misalignment sliders, inspect rebased H2 gate counts, and prepare job submissions to the Quantinuum H2-2E emulator.
+      </p>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+        <a href="workbook.html" class="btn-primary" target="_blank">
+          <span>🚀 Open Standalone Interactive Workbook</span>
+        </a>
+        <a href="https://github.com/evecount/quantum_rotation/blob/main/notebooks/project_q_rotate.ipynb" class="btn-secondary" target="_blank">
+          <span>📖 Open GitHub Notebook</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p><strong>Project Q-Rotate</strong> • Team Eve Count (<code>1ightray</code>)</p>
+      <p style="margin-top: 6px; font-size: 0.85rem;">
+        Developed for the <strong>Quantinuum Singapore Grand Challenge 2026</strong> (Chemistry Track).
+      </p>
+      <p style="margin-top: 8px;">
+        <a href="https://github.com/evecount/quantum_rotation" target="_blank">GitHub Repository</a> • 
+        <a href="https://aqora.io/1ightray/sg-grand-challenge-evecount" target="_blank">Aqora Workspace</a> • 
+        <a href="workbook.html" target="_blank">Live Web Workbook</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Script for Tab Navigation and Math Rendering -->
+  <script>
+    const chapters = {
+      '01': '01_the_big_picture.md',
+      '02': '02_the_math_demystified.md',
+      '03': '03_the_blind_parity_test.md',
+      '04': '04_the_rus_loop_in_guppy.md',
+      '05': '05_quantum_hpc_hybrid.md',
+      '06': '06_roadmap_and_submission.md'
+    };
+
+    async function loadChapter(chId) {
+      const fileName = chapters[chId];
+      const contentEl = document.getElementById('doc-content');
+      try {
+        const res = await fetch(fileName);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const mdText = await res.text();
+        contentEl.innerHTML = marked.parse(mdText);
+      } catch (err) {
+        // Fallback if local browser file:// security blocks fetch
+        contentEl.innerHTML = `<h3>Chapter ${chId} Preview</h3><p>To read the full chapter offline, explore <a href="${fileName}" style="color:var(--accent-cyan);" target="_blank">${fileName}</a> in the docs folder, or view on <a href="https://github.com/evecount/quantum_rotation/tree/main/docs/${fileName}" style="color:var(--accent-cyan);" target="_blank">GitHub</a>.</p>`;
+      }
+      
+      // Render KaTeX Math
+      if (window.renderMathInElement) {
+        renderMathInElement(contentEl, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // Set up tabs
+    const tabs = document.querySelectorAll('.doc-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        loadChapter(tab.dataset.chapter);
+      });
+    });
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadChapter('01');
+    });
+  </script>
+</body>
+</html>

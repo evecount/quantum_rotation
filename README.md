@@ -3,6 +3,7 @@
 **Team:** Eve Count (`1ightray`)  
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
+**Live Interactive Documentation:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)  
 **Repository:** [github.com/evecount/quantum_rotation](https://github.com/evecount/quantum_rotation)  
 **Aqora Workspace:** [aqora.io/1ightray/sg-grand-challenge-evecount](https://aqora.io/1ightray/sg-grand-challenge-evecount)
 
