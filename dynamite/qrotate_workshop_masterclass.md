@@ -36,11 +36,11 @@ Instead of testing one orientation at a time, the continuous quantum state sweep
 This is the geometric intuition at the heart of our engine: replacing an exponential classical mountain hike with an exact, continuous quantum tunnel on trapped ions.
 
 # Lie Algebra & The Tube Hamiltonian
-- The Continuous Phase Evolution Operator: $\hat{U}_{\text{tube}}(\tau)$
-- Spatial Orientation mapped to Lie algebra generators: $\hat{H}_{\text{rot}} = \vec{\omega} \cdot \sum_{k=1}^N \hat{\vec{\sigma}}_k$
-- Contact site phase cascading: $\hat{H}_{\text{phase}} = \sum_{m=1}^N \Delta \Phi_m \hat{Z}_m$
-- Combined continuous Hamiltonian time-evolution:
+- The Continuous Evolution Operator:
 $$ \hat{U}_{\text{tube}}(\tau) = \exp\left(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}})\right) $$
+- **$\hat{H}_{\text{rot}}$ (Spatial Steering / The "Steering Wheel"):** Smoothly rotates the molecule across 3D space ($SU(2)$) without rigid grid discretization.
+- **$\hat{H}_{\text{phase}}$ (Electronic Fit / The "Key Teeth"):** Encodes electrostatic charge matches ($\Delta \Phi$) across all binding pocket contact atoms.
+- **$\tau$ (Continuous Flow / The "Burrowing Path"):** Evolves all rotation angles and shape flexes simultaneously along the shortest quantum manifold.
 ---
 Let's break down the exact mathematics governing this breakthrough. On the canvas, you are looking at the foundational equation of Project Q-Rotate: the Tube Hamiltonian and its continuous unitary evolution operator, $\hat{U}_{\text{tube}}(\tau)$.
 
@@ -56,11 +56,12 @@ $$ \hat{H}_{\text{phase}} = \sum_{m=1}^N \Delta \Phi_m \hat{Z}_m $$
 When you combine them, $\hat{U}_{\text{tube}}(\tau) = \exp(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$ produces a continuous trajectory on an $SU(2)^{\otimes n}$ manifold. As the parameter $\tau$ evolves, the quantum state of the candidate ligand sweeps through all continuous rotational and conformational phase states simultaneously.
 
 # Zero-Knowledge Blind Parity
-- The Ancilla-Mediated SWAP Test
-- Verifying molecular lock-and-key fit without coordinate disclosure
-- Parity Measurement Probability:
+- The Quantum Match Sensor Equation:
 $$ P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right) $$
-- Destructive vs. Constructive Interference as a Binding Sensor
+- **The Ancilla Qubit (The "Blindfolded Referee"):** Evaluates binding resonance without ever learning or exposing private 3D atomic coordinates.
+- **$P(0) = 1.0$ (Constructive Resonance):** Perfect lock-and-key fit; quantum waves reinforce each other, returning $|0\rangle$ with 100% certainty.
+- **$P(0) = 0.5$ (Destructive Clashing):** Misaligned molecule; quantum waves cancel out into random 50/50 coin-flip noise.
+- **Zero-Knowledge Pharma Moat:** Proves binding match with mathematical certainty while keeping proprietary drug scaffolds 100% confidential.
 ---
 Now that we have evolved our ligand state through the continuous rotation manifold, how do we actually verify whether it fits the pocket? In classical chemistry, you would compute root-mean-square deviation (RMSD) by comparing thousands of coordinate pairs. 
 
