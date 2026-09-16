@@ -310,4 +310,41 @@ python -m src.qrotate.metrics
 ```
 Structured JSON results are automatically exported to `benchmarks/showdown_results.json`.
 
+---
+
+## 9. 🏛️ About Eve Count & Leadership Bio
+
+### Organization Overview: Eve Count
+**Eve Count** is a Singapore-based DeepTech quantum research laboratory and venture studio pioneering coordinate-free biomolecular simulation and next-generation sovereign algorithmic systems. Combining human mathematical domain invention with high-performance WebGL visualization and institutional capital strategy, Eve Count engineers high-leverage computational engines designed natively for trapped-ion quantum architectures.
+
+* **Headquarters:** Singapore 🇸🇬
+* **Official Portal:** [https://evecount.com](https://evecount.com)
+* **Flagship Initiative:** Project Q-Rotate (Quantinuum Singapore Grand Challenge 2026)
+
+---
+
+### Core Leadership & Provenance
+
+#### 🐰 Gwendalynn (婉婷) Lim ("1ightray") — Founder & DeepTech Venture CTO
+* **Role:** Lead Quantum Architect & Inventor of Project Q-Rotate ("The Quantum Bunny")
+* **Credentials:** B.Sc. (Hons) in Applied Computing (Singapore Institute of Technology), Advanced Machine Learning & Deep Learning Credentials (NTU SCTP).
+* **Domain Focus:** Continuous Hamiltonian time-evolution, Lie group representations ($SU(2)^{\otimes n}$), Zero-Knowledge quantum parity verification, and native trapped-ion kernel compilation in Quantinuum `guppylang` and Pytket.
+* **Bio:** Gwendalynn is a Singaporean computer scientist, machine learning practitioner, and deep-tech founder. Rejecting four decades of classical Cartesian grid discretization ($O(N^3)$ computational bottlenecks in molecular docking), Gwendalynn formulated the continuous Tube Hamiltonian ($\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau(\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$), transforming spatial and electrostatic molecular binding into an analytical, coordinate-free Lie algebra resonance problem. Gwendalynn directs the core mathematical architecture, algorithmic proofs, and physical trapped-ion execution across Quantinuum H1/H2 systems.
+* **Direct Contact:** [gwen@evecount.com](mailto:gwen@evecount.com) | [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)
+
+#### ⚡ Benjamin Lim ("Sedilix") — Co-Founder & Systems Architect
+* **Role:** Systems Architect & Visual Computing Lead
+* **Affiliation:** Co-Founder @ Eve Count & Cybrdeck (1,500+ open-source contributions/year)
+* **Domain Focus:** High-performance 3D WebGL/Three.js rendering, reactive telemetry streams, Marimo reactive workbook integration, developer tooling, and user experience.
+* **Bio:** Benjamin is an elite systems builder and open-source contributor known in developer communities as *Sedilix*. On Project Q-Rotate, Benjamin engineered **The Resonance Constellation**—an interactive 3D WebGL visualization engine that translates 8-dimensional Lie group rotations and quantum state vectors into intuitive, real-time spatial topologies for computational chemists and biopharma researchers.
+* **Direct Contact:** [ben@evecount.com](mailto:ben@evecount.com) | [LinkedIn](https://www.linkedin.com/in/sedilix/) | [GitHub](https://github.com/sedilix)
+
+#### 💼 James Sun — Venture Advisor & Global GTM Strategist
+* **Role:** Commercial Architecture & Institutional Capital Lead
+* **Affiliation:** Founder @ Mamba Partners (ex-Goldman Sachs, Blackstone, Microsoft; 11,000+ industry network)
+* **Domain Focus:** Institutional venture capital syndication, sovereign deep-tech positioning, and biopharma co-development licensing ($120M–$280M roadmap).
+* **Bio:** James brings top-tier institutional finance and technology executive experience from Goldman Sachs, Blackstone, and Microsoft. As founder of Mamba Partners, James structures Project Q-Rotate's commercialization pipeline, IP defensibility moats, and enterprise pharma partnership models to ensure sovereign commercial viability and venture-backed scale beyond the Grand Challenge finals.
+* **Direct Contact:** [james@mambapartners.com](mailto:james@mambapartners.com) | [LinkedIn](https://www.linkedin.com/in/jamessun1/)
+
+
 
