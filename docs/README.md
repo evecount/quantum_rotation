@@ -20,6 +20,19 @@
 
 ---
 
+## 🏆 Official Evaluation & Scoring Alignment (Aqora Rubric)
+
+This project is explicitly structured to satisfy the four official scoring dimensions evaluated by the Grand Challenge Jury (**Irfan Khan** and **Megan**):
+
+| Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
+| :--- | :---: | :--- | :--- |
+| **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture & GTM Thesis](#7-commercial-architecture--market-value) ($120M–$280M Biopharma licensing roadmap, 100x cost reduction vs wet lab synthesis, James Sun / Mamba Partners). |
+| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 4: Hardware Benchmarks](#4-hardware-compilation--quantinuum-native-execution) (7 Qubits, 47 `PhasedX`, 24 `ZZPhase`, 11.5 HQCs on Quantinuum H2, Guppy RUS dynamic loop, 6 benchmark active sites). |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; Zero-Knowledge SWAP test; thermal perturbation analysis). |
+| **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
+
+---
+
 ## 1. Overview
 
 Project Q-Rotate replaces traditional, computationally expensive 3D spatial docking models with a quantum-native, information-theoretic approach. Standard computational docking and biomolecular simulations face severe scaling bottlenecks when modeling complex molecular geometries and photochemical active sites. Conventional classical methods (such as grid-based DFT or brute-force spatial sampling) scale poorly with system size, while multi-configurational methods (CASSCF, DMRG) hit an exponential wall when exploring multi-reference excited states.
