@@ -387,13 +387,9 @@
     .nav-hamburger-menu a:last-child { border-bottom: none; }
     .nav-hamburger-menu a:hover { color: var(--accent-cyan); }
 
-    @media (max-width: 1100px) {
-      .nav-collapse { display: none !important; }
-      .hamburger-btn { display: flex !important; }
-    }
-    @media (min-width: 1101px) {
-      .nav-hamburger-menu { display: none !important; }
-    }
+    /* Nav secondary links always hidden — hamburger always visible */
+    .nav-collapse { display: none !important; }
+    .hamburger-btn { display: flex !important; }
 
     /* Hero Section */
     .hero {
