@@ -13,8 +13,8 @@
 
   <!-- KaTeX for Math Equations -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
   <!-- Marked.js for Markdown parsing -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -33,6 +33,24 @@
       --text-muted: #94a3b8;
       --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    /* KaTeX Math Styling Enhancements */
+    .katex {
+      font-size: 1.05em;
+    }
+    .katex-display {
+      margin: 14px 0 !important;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 6px 0;
+    }
+    .katex-display > .katex {
+      white-space: normal;
+      text-align: center;
+    }
+    .arch-card .katex {
+      color: var(--accent-cyan);
     }
 
     * {
@@ -585,7 +603,7 @@
           <p>
             Replaces exponential 3D grid docking with the unitary evolution operator:
           </p>
-          <div style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--accent-cyan); margin: 8px 0;">
+          <div style="font-size: 1.05rem; color: var(--accent-cyan); margin: 12px 0; text-align: center; overflow-x: auto;">
             $$\hat{U}_{\text{tube}}(\tau) = \exp(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$$
           </div>
           <p>
@@ -599,7 +617,7 @@
           <p>
             Acts as a zero-knowledge proof for structural complementarity. By measuring a single parity ancilla:
           </p>
-          <div style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--accent-cyan); margin: 8px 0;">
+          <div style="font-size: 1.05rem; color: var(--accent-cyan); margin: 12px 0; text-align: center; overflow-x: auto;">
             $$P(\text{fail}) = \frac{1 - |\langle \psi_P | \psi_L \rangle|^2}{2}$$
           </div>
           <p>
@@ -752,6 +770,59 @@
       '06': '06_roadmap_and_submission.md'
     };
 
+    // =========================================================================
+    // KATEX MATH & MARKDOWN CONFIGURATION
+    // =========================================================================
+    function renderAllMath(target) {
+      const el = target || document.body;
+      if (window.renderMathInElement) {
+        try {
+          renderMathInElement(el, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false },
+              { left: '\\(', right: '\\)', display: false },
+              { left: '\\[', right: '\\]', display: true }
+            ],
+            throwOnError: false,
+            errorColor: '#ef4444',
+            ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+          });
+        } catch (err) {
+          console.warn('KaTeX render notice:', err);
+        }
+      }
+    }
+
+    // Protect math from marked.js underscore/bracket markdown mangling
+    function renderMarkdownWithMath(mdText) {
+      const placeholders = [];
+
+      // 1. Protect block math $$ ... $$
+      let protectedText = mdText.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
+        const ph = `@@MATH_DISP_${placeholders.length}@@`;
+        placeholders.push({ ph, raw: match });
+        return ph;
+      });
+
+      // 2. Protect inline math $ ... $
+      protectedText = protectedText.replace(/\$([^\$\n\r]+?)\$/g, (match) => {
+        const ph = `@@MATH_INL_${placeholders.length}@@`;
+        placeholders.push({ ph, raw: match });
+        return ph;
+      });
+
+      // 3. Parse Markdown with marked.js
+      let html = marked.parse(protectedText);
+
+      // 4. Restore original LaTeX strings safely (avoiding JavaScript replacement string $ substitution)
+      for (const item of placeholders) {
+        html = html.replace(item.ph, () => item.raw);
+      }
+
+      return html;
+    }
+
     async function loadChapter(chId) {
       const fileName = chapters[chId];
       const contentEl = document.getElementById('doc-content');
@@ -759,22 +830,14 @@
         const res = await fetch(fileName);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const mdText = await res.text();
-        contentEl.innerHTML = marked.parse(mdText);
+        contentEl.innerHTML = renderMarkdownWithMath(mdText);
       } catch (err) {
         // Fallback if local browser file:// security blocks fetch
         contentEl.innerHTML = `<h3>Chapter ${chId} Preview</h3><p>To read the full chapter offline, explore <a href="${fileName}" style="color:var(--accent-cyan);" target="_blank">${fileName}</a> in the docs folder, or view on <a href="https://github.com/evecount/quantum_rotation/tree/main/docs/${fileName}" style="color:var(--accent-cyan);" target="_blank">GitHub</a>.</p>`;
       }
       
-      // Render KaTeX Math
-      if (window.renderMathInElement) {
-        renderMathInElement(contentEl, {
-          delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '$', right: '$', display: false}
-          ],
-          throwOnError: false
-        });
-      }
+      // Render KaTeX Math in chapter content
+      renderAllMath(contentEl);
     }
 
     // Set up tabs
@@ -787,9 +850,15 @@
       });
     });
 
-    // Initial load
+    // Initial load: render static math on whole page, then load chapter 01
     document.addEventListener('DOMContentLoaded', () => {
+      renderAllMath(document.body);
       loadChapter('01');
+    });
+
+    // Window load fallback to guarantee all formulas render
+    window.addEventListener('load', () => {
+      renderAllMath(document.body);
     });
 
     // =========================================================================
