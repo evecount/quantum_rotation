@@ -164,6 +164,9 @@ Across all six distinct chemical environments, Project Q-Rotate successfully syn
 - Co-Founder @ Eve Count & Cybrdeck (1,500+ Commits/year)
 - Interactive Three.js WebGL Engine: Real-time manifold rendering
 - Try it live: `evecount.github.io/quantum_rotation/constellation.html`
+<div style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(0, 245, 212, 0.4); box-shadow: 0 8px 32px rgba(0, 245, 212, 0.2); margin-top: 14px; background: #05070d; height: 380px;">
+  <iframe src="constellation.html" style="width: 100%; height: 100%; border: none;" allow="autoplay" title="3D WebGL Resonance Constellation"></iframe>
+</div>
 ---
 Now, let's address a crucial question: how do you take an 8-dimensional Lie group rotation on a trapped-ion quantum computer and make it understandable and usable for a computational chemist or a pharmaceutical executive? 
 
