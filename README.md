@@ -2,8 +2,10 @@
 
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Collaborators:**
-* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — Eve Count
-* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — Mamba Partners
+* **1ightray** — Quantum Algorithms & Architecture Lead, Eve Count
+* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — Frontend Lead & Systems, Eve Count
+* **Gwen** ([gwen@evecount.com](mailto:gwen@evecount.com)) — Operations & Execution, Eve Count
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — Venture Advisor, Mamba Partners
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  

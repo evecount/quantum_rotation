@@ -1,9 +1,11 @@
 # Project Q-Rotate: Documentation Hub
 ### Demystifying Quantum Biomolecular Pattern Matching for Everyone
 
-**Team Eve Count:**
-* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — Eve Count
-* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — Mamba Partners
+**Team Eve Count & Collaborators:**
+* **1ightray** — Quantum Algorithms & Architecture Lead, Eve Count
+* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — Frontend Lead & Systems, Eve Count
+* **Gwen** ([gwen@evecount.com](mailto:gwen@evecount.com)) — Operations & Execution, Eve Count
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — Venture Advisor, Mamba Partners
 
 > *"If you can't explain it simply, you don't understand it well enough."*
 
