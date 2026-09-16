@@ -1,6 +1,10 @@
 # Project Q-Rotate: Documentation Hub
 ### Demystifying Quantum Biomolecular Pattern Matching for Everyone
 
+**Team Eve Count:**
+* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — Eve Count
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — Mamba Partners
+
 > *"If you can't explain it simply, you don't understand it well enough."*
 
 Welcome to the **Project Q-Rotate** knowledge base. This documentation is deliberately written so that anyone—software engineers, competition judges, investors, or curious innovators without a PhD in molecular biology or quantum physics—can understand **what problem we are solving, why classical computers struggle, and how quantum trapped ions unlock a brand-new approach.**

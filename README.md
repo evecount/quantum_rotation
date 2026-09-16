@@ -1,6 +1,10 @@
 # Project Q-Rotate: Efficient Molecular Pattern Matching
 
 **Team:** Eve Count (`1ightray`)  
+**Core Team & Collaborators:**
+* **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — Eve Count
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — Mamba Partners
+
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
 **Live Interactive Documentation:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)  
