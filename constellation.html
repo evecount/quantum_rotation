@@ -296,6 +296,72 @@
       transform: translateX(0);
     }
 
+    /* Embedded Mode in Presentation Slides (Zero Clipping) */
+    body.is-embedded .hud-top {
+      top: 10px;
+      left: 14px;
+      right: 14px;
+    }
+    body.is-embedded .hud-logo {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+    }
+    body.is-embedded .hud-btn {
+      padding: 5px 10px;
+      font-size: 0.72rem;
+    }
+    body.is-embedded .telemetry-box {
+      top: 54px;
+      left: 14px;
+      padding: 10px 14px;
+      width: 210px;
+      border-radius: 10px;
+    }
+    body.is-embedded .telemetry-title {
+      font-size: 0.7rem;
+      margin-bottom: 5px;
+    }
+    body.is-embedded .telemetry-row {
+      font-size: 0.72rem;
+      margin-bottom: 3px;
+    }
+    body.is-embedded .galaxy-selector {
+      bottom: 10px;
+      padding: 6px 12px;
+      gap: 8px;
+      border-radius: 14px;
+    }
+    body.is-embedded .galaxy-btn {
+      padding: 5px 10px;
+      font-size: 0.75rem;
+      border-radius: 8px;
+    }
+    body.is-embedded .inspector-drawer {
+      top: 10px;
+      right: 14px;
+      bottom: 12px;
+      width: 330px;
+      padding: 18px;
+      border-radius: 16px;
+      backdrop-filter: blur(20px);
+    }
+    body.is-embedded .inspector-title {
+      font-size: 1.15rem;
+    }
+    body.is-embedded .inspector-desc {
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    body.is-embedded .card-box {
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+    }
+    body.is-embedded .keypad-grid {
+      margin: 6px 0;
+    }
+
     .inspector-header {
       display: flex;
       justify-content: space-between;
@@ -1281,9 +1347,12 @@
     const parityResult = document.getElementById('parity-result');
     const btnFireParity = document.getElementById('btn-fire-parity');
     const btnCloseDrawer = document.getElementById('btn-close-drawer');
-    const galaxyButtons = document.querySelectorAll('.galaxy-btn');
+    const isEmbedded = (window.self !== window.top) || new URLSearchParams(window.location.search).has('embed');
+    if (isEmbedded) {
+      document.body.classList.add('is-embedded');
+    }
 
-    function selectSystem(index) {
+    function selectSystem(index, openDrawer = true) {
       currentSystemIdx = index;
       const sys = systems[index];
 
@@ -1322,9 +1391,13 @@
         .easing(TWEEN.Easing.Cubic.Out)
         .start();
 
-      // Open drawer
-      drawer.classList.add('open');
-      controls.autoRotate = false; // Pause auto spin while inspecting
+      // Open drawer if requested
+      if (openDrawer) {
+        drawer.classList.add('open');
+        controls.autoRotate = false; // Pause auto spin while inspecting
+      } else {
+        controls.autoRotate = true;
+      }
     }
 
     // =========================================================================
@@ -1784,7 +1857,7 @@
 
     // Start by focusing on Rhodopsin (after initial camera pan)
     setTimeout(() => {
-      selectSystem(0);
+      selectSystem(0, !isEmbedded);
     }, 1200);
   </script>
 </body>
