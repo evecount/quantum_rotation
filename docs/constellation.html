@@ -513,6 +513,227 @@
       85% { opacity: 1; }
       100% { opacity: 0; pointer-events: none; }
     }
+
+    /* Quantum Hero WASD Keypad & Scope */
+    .arcade-card {
+      background: rgba(6, 10, 20, 0.9);
+      border: 1px solid rgba(0, 245, 212, 0.35);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .arcade-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .arcade-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scope-box {
+      background: #03060e;
+      border: 1px solid rgba(0, 245, 212, 0.25);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .scope-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .scope-canvas {
+      width: 100%;
+      height: 65px;
+      display: block;
+      border-radius: 6px;
+      background: rgba(4, 8, 18, 0.95);
+    }
+
+    .scope-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      margin-top: 6px;
+    }
+
+    .legend-pocket { color: #f59e0b; }
+    .legend-ligand { color: #00f5d4; }
+
+    .resonance-meter-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #ef4444, #f59e0b, #00f5d4);
+      transition: width 0.1s ease;
+    }
+
+    .keypad-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 0;
+    }
+
+    .key-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .key-btn {
+      width: 64px;
+      height: 50px;
+      background: rgba(16, 24, 44, 0.9);
+      border: 1px solid rgba(66, 153, 225, 0.35);
+      border-bottom: 3px solid rgba(66, 153, 225, 0.7);
+      border-radius: 9px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.08s ease;
+      user-select: none;
+    }
+
+    .key-btn:hover {
+      background: rgba(28, 40, 72, 0.95);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .key-btn:active, .key-btn.active {
+      background: rgba(0, 245, 212, 0.25);
+      border-color: var(--accent-cyan);
+      border-bottom-width: 1px;
+      transform: translateY(2px);
+      box-shadow: 0 0 16px rgba(0, 245, 212, 0.6);
+    }
+
+    .key-char {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .key-action {
+      font-size: 0.62rem;
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+      margin-top: 2px;
+    }
+
+    .space-key-btn {
+      width: 100%;
+      height: 42px;
+      flex-direction: row;
+      gap: 8px;
+      border-color: rgba(245, 158, 11, 0.4);
+      border-bottom: 3px solid rgba(245, 158, 11, 0.8);
+      background: rgba(26, 20, 10, 0.9);
+    }
+
+    .space-key-btn .key-char {
+      color: #f59e0b;
+      font-size: 0.88rem;
+    }
+
+    .space-key-btn .key-action {
+      color: #fbbf24;
+      font-size: 0.72rem;
+      margin-top: 0;
+    }
+
+    .space-key-btn:hover {
+      border-color: #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+    }
+
+    .space-key-btn:active, .space-key-btn.active {
+      border-bottom-width: 1px;
+      transform: translateY(2px);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+    }
+
+    .gate-ticker {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      background: rgba(10, 18, 34, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
+      padding: 6px 10px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .gate-ticker span.highlight {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    /* Layman Modal Dialog */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 6, 12, 0.88);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, rgba(14, 20, 38, 0.96), rgba(8, 12, 24, 0.98));
+      border: 1px solid rgba(0, 245, 212, 0.35);
+      border-radius: 20px;
+      max-width: 660px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px 28px;
+      box-shadow: 0 0 50px rgba(0, 245, 212, 0.25);
+      position: relative;
+    }
   </style>
 </head>
 <body>
@@ -531,8 +752,14 @@
       </div>
     </div>
     <div class="hud-nav">
+      <button class="hud-btn" id="btn-how-to-play" style="border-color: var(--accent-gold); color: #f59e0b;">
+        <span>🎮 How to Play</span>
+      </button>
+      <button class="hud-btn" id="btn-toggle-sound">
+        <span id="sound-label">🔊 Audio: ON</span>
+      </button>
       <a href="index.html" class="hud-btn">
-        <span>← Documentation Portal</span>
+        <span>← Documentation</span>
       </a>
       <a href="workbook.html" class="hud-btn primary" target="_blank">
         <span>⚡ Open Workbook</span>
@@ -641,10 +868,77 @@
       </div>
     </div>
 
-    <!-- Live U_tube Rotation Slider -->
+    <!-- Quantum Hero Resonance Oscilloscope & WASD Keypad -->
+    <div class="arcade-card">
+      <div class="arcade-header">
+        <div class="arcade-title">
+          <span>🎸 Quantum Hero: Resonance Scope</span>
+        </div>
+        <span id="scope-synchrony" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-cyan); font-weight: 700;">50% SYNCHRONY</span>
+      </div>
+
+      <!-- Live Oscilloscope Scope -->
+      <div class="scope-box">
+        <div class="scope-header">
+          <span>WAVEFORM INTERFERENCE SCOPE</span>
+          <span style="color: #94a3b8;">4 Qubit Active Manifold</span>
+        </div>
+        <canvas id="resonance-scope" width="380" height="65" class="scope-canvas"></canvas>
+        <div class="scope-legend">
+          <span class="legend-pocket">● Gold: Pocket Target |ψ<sub>P</sub>⟩</span>
+          <span class="legend-ligand">● Cyan: Drug Ligand |ψ<sub>L</sub>⟩</span>
+        </div>
+        <div style="background: rgba(255,255,255,0.08); border-radius: 2px; height: 4px; margin-top: 6px; overflow: hidden;">
+          <div id="resonance-meter-bar" class="resonance-meter-bar" style="width: 50%;"></div>
+        </div>
+      </div>
+
+      <!-- WASD Gate Simulation Keypad -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Trapped-Ion Gate Keypad</span>
+        <span style="font-size: 0.65rem; color: var(--accent-cyan); font-family: var(--font-mono);">Use WASD or Keys</span>
+      </div>
+
+      <div class="keypad-grid">
+        <div class="key-row">
+          <button class="key-btn" data-key="w" id="key-btn-w">
+            <span class="key-char">W</span>
+            <span class="key-action">Rx +5°</span>
+          </button>
+        </div>
+        <div class="key-row">
+          <button class="key-btn" data-key="a" id="key-btn-a">
+            <span class="key-char">A</span>
+            <span class="key-action">Rz -5°</span>
+          </button>
+          <button class="key-btn" data-key="s" id="key-btn-s">
+            <span class="key-char">S</span>
+            <span class="key-action">Rx -5°</span>
+          </button>
+          <button class="key-btn" data-key="d" id="key-btn-d">
+            <span class="key-char">D</span>
+            <span class="key-action">Rz +5°</span>
+          </button>
+        </div>
+        <div class="key-row" style="width: 100%;">
+          <button class="key-btn space-key-btn" data-key="space" id="key-btn-space">
+            <span class="key-char">SPACEBAR</span>
+            <span class="key-action">⚛️ Fire Blind Parity SWAP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Gate Execution Ticker -->
+      <div class="gate-ticker">
+        <span>Laser Gate: <span class="highlight" id="ticker-gate-name">IDLE</span></span>
+        <span id="ticker-gate-status" style="color: var(--accent-cyan);">Ready to Pulse</span>
+      </div>
+    </div>
+
+    <!-- Analog Fine-Tune Slider (Linked with A/D) -->
     <div class="slider-wrap">
       <div class="slider-header">
-        <span>Û<sub>tube</sub>(τ) Dimensional Rotation Angle (ω<sub>z</sub>)</span>
+        <span>Analog Fine-Tune: Û<sub>tube</sub>(τ) Angle (ω<sub>z</sub>)</span>
         <span class="slider-val" id="angle-display">0.0°</span>
       </div>
       <input type="range" id="angle-slider" min="-180" max="180" value="0" />
@@ -657,7 +951,7 @@
 
     <!-- Parity Test Trigger -->
     <button class="btn-fire-parity" id="btn-fire-parity">
-      <span>⚛️ Fire Blind Parity Test (SWAP)</span>
+      <span>⚛️ Fire Blind Parity Test (SWAP) [SPACE]</span>
     </button>
 
     <div class="parity-result-box" id="parity-result">
@@ -668,6 +962,68 @@
     <a href="workbook.html" target="_blank" class="hud-btn" style="text-align:center; justify-content:center;">
       <span>📖 Open Interactive Notebook for This System →</span>
     </a>
+  </div>
+
+  <!-- How to Play Layman Modal Dialog -->
+  <div class="modal-backdrop" id="how-to-play-modal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px;">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+            The 60-Second Layman Guide
+          </div>
+          <h2 style="font-size: 1.7rem; font-weight: 800; color: #fff; line-height: 1.2;">🎮 How to Play: Quantum Hero</h2>
+        </div>
+        <button class="btn-close" id="btn-close-modal">✕</button>
+      </div>
+
+      <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px;">
+        Think of your drug candidate like an <strong>electric guitar</strong> tuning into resonance with an amplifier (the protein pocket). Instead of checking billions of tiny 3D grid points, Quantinuum trapped ions use laser rotation pulses to match wave frequencies!
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px;">
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 245, 212, 0.3); border-radius: 12px; padding: 14px;">
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: var(--accent-cyan); margin-bottom: 4px;">
+            [A] & [D] (or ← / →)
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Quantum Phase Shift (Rz Gate)</div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+            Steps the dimensional rotation angle Û<sub>tube</sub>(τ). Watch the Cyan wave on the oscilloscope slide until it lines up directly with the Gold wave!
+          </p>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 14px;">
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #60a5fa; margin-bottom: 4px;">
+            [W] & [S] (or ↑ / ↓)
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Spatial Pitch Tilt (Rx Gate)</div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+            Twists the 3D molecular orientation in physical space so the key aligns with the protein crevice.
+          </p>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 14px; grid-column: 1 / -1;">
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #f59e0b; margin-bottom: 4px;">
+            [SPACEBAR] (or Click Parity Button)
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Blind Parity Test (SWAP Test)</div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+            Interferes both states into a single spectator qubit (the <strong>ancilla</strong>). If it reads <strong>|0⟩ (Zero-Parity Match)</strong>, the lock clicks shut! You've verified structural and electronic fit with <strong>zero exposure of proprietary 3D coordinates</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div style="background: rgba(0, 245, 212, 0.1); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 1.6rem;">🎯</span>
+        <div style="font-size: 0.82rem; color: #e2e8f0; line-height: 1.5;">
+          <strong>Your Goal:</strong> Achieve 100% Wave Synchrony and lock in all <strong>6 biomolecular star clusters</strong> across the galaxy (Rhodopsin, GFP, COVID-19 Mpro, COX-2, Azobenzene, and H2).
+        </div>
+      </div>
+
+      <button class="btn-fire-parity" id="btn-modal-start" style="width: 100%; margin: 0;">
+        <span>🚀 Ready to Play! Fire Trapped-Ion Lasers →</span>
+      </button>
+    </div>
   </div>
 
   <!-- Three.js Constellation Core Logic -->
@@ -971,6 +1327,150 @@
       controls.autoRotate = false; // Pause auto spin while inspecting
     }
 
+    // =========================================================================
+    // 6. AUDIO SYNTHESIZER (WEB AUDIO API)
+    // =========================================================================
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playPulseSound(type, synchronyRatio) {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      try {
+        const now = audioCtx.currentTime;
+        if (type === 'gate') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          // Frequency rises from 320 Hz to 860 Hz as synchrony approaches 1.0
+          const baseFreq = 320 + (synchronyRatio || 0.5) * 540;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(baseFreq, now);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.25, now + 0.08);
+
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'lock') {
+          // Major Harmonic Chord: C5 (523Hz), E5 (659Hz), G5 (784Hz), C6 (1046Hz)
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.05);
+
+            gain.gain.setValueAtTime(0.16, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.7);
+
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.7);
+          });
+        } else if (type === 'fail') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.exponentialRampToValueAtTime(105, now + 0.22);
+
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+          osc.start(now);
+          osc.stop(now + 0.22);
+        }
+      } catch (e) {
+        console.warn('Audio notice:', e);
+      }
+    }
+
+    // =========================================================================
+    // 7. QUANTUM HERO WASD CONTROLS & GATE SIMULATION
+    // =========================================================================
+    let currentPitch = 0.0; // 3D Pitch tilt (W / S)
+    const tickerGateName = document.getElementById('ticker-gate-name');
+    const tickerGateStatus = document.getElementById('ticker-gate-status');
+    const scopeSynchrony = document.getElementById('scope-synchrony');
+    const resonanceMeterBar = document.getElementById('resonance-meter-bar');
+
+    function logGatePulse(gateName, details) {
+      if (tickerGateName) tickerGateName.innerText = gateName;
+      if (tickerGateStatus) tickerGateStatus.innerText = details;
+    }
+
+    function stepGate(key) {
+      initAudio();
+      const sys = systems[currentSystemIdx];
+      const node = systemNodes[currentSystemIdx];
+      let curAngle = parseFloat(angleSlider.value);
+      let keyBtnId = null;
+
+      if (key === 'a' || key === 'arrowleft') {
+        keyBtnId = 'key-btn-a';
+        curAngle -= 5.0;
+        if (curAngle < -180) curAngle = -180;
+        angleSlider.value = curAngle;
+        updateAngleRotation(curAngle);
+        logGatePulse('Rz(-5.0°)', `Phase shifted to ${curAngle.toFixed(1)}°`);
+      } else if (key === 'd' || key === 'arrowright') {
+        keyBtnId = 'key-btn-d';
+        curAngle += 5.0;
+        if (curAngle > 180) curAngle = 180;
+        angleSlider.value = curAngle;
+        updateAngleRotation(curAngle);
+        logGatePulse('Rz(+5.0°)', `Phase shifted to ${curAngle.toFixed(1)}°`);
+      } else if (key === 'w' || key === 'arrowup') {
+        keyBtnId = 'key-btn-w';
+        currentPitch += 5.0;
+        if (currentPitch > 50) currentPitch = 50;
+        node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
+        logGatePulse('Rx(+5.0°)', `3D Pitch tilted to ${currentPitch.toFixed(1)}°`);
+      } else if (key === 's' || key === 'arrowdown') {
+        keyBtnId = 'key-btn-s';
+        currentPitch -= 5.0;
+        if (currentPitch < -50) currentPitch = -50;
+        node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
+        logGatePulse('Rx(-5.0°)', `3D Pitch tilted to ${currentPitch.toFixed(1)}°`);
+      }
+
+      // Visual button feedback
+      if (keyBtnId) {
+        const btn = document.getElementById(keyBtnId);
+        if (btn) {
+          btn.classList.add('active');
+          setTimeout(() => btn.classList.remove('active'), 120);
+        }
+      }
+
+      // Calculate synchrony for pitch tone
+      const errorDiff = Math.abs(curAngle - sys.optimalAngle);
+      const synchronyRatio = Math.max(0, Math.cos(THREE.MathUtils.degToRad(errorDiff) / 2));
+      playPulseSound('gate', synchronyRatio);
+    }
+
     // Slider Drag logic: Rotates ligand in 3D & evaluates phase error
     function updateAngleRotation(val) {
       angleDisplay.innerText = `${parseFloat(val).toFixed(1)}°`;
@@ -981,18 +1481,31 @@
       const rad = THREE.MathUtils.degToRad(val);
       node.ligandGroup.rotation.y = rad;
       node.ligandGroup.rotation.z = rad * 0.4;
+      node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
 
       // Calculate phase error discrepancy
       const errorDiff = Math.abs(parseFloat(val) - sys.optimalAngle);
       const normalizedError = (errorDiff / 180.0) * Math.PI;
       telemetryDeltaPhi.innerText = `${normalizedError.toFixed(2)} rad`;
 
+      // Quantum state fidelity synchrony: cos^2(theta / 2)
+      const fidelity = Math.cos(THREE.MathUtils.degToRad(errorDiff) / 2) ** 2;
+      const pct = Math.max(0, Math.min(100, Math.round(fidelity * 100)));
+
+      if (scopeSynchrony) {
+        scopeSynchrony.innerText = `${pct}% SYNCHRONY`;
+        scopeSynchrony.style.color = pct >= 95 ? '#00f5d4' : (pct >= 70 ? '#f59e0b' : '#ef4444');
+      }
+      if (resonanceMeterBar) {
+        resonanceMeterBar.style.width = `${pct}%`;
+      }
+
       // Visual feedback on halo & particle turbulence
-      if (errorDiff < 5.0) {
+      if (errorDiff < 6.0) {
         // Aligned ground state!
         telemetryDeltaPhi.style.color = '#00f5d4';
         node.haloMesh.material.color.setHex(0x00f5d4);
-        node.ringMesh.material.opacity = 0.9;
+        node.ringMesh.material.opacity = 0.95;
       } else {
         telemetryDeltaPhi.style.color = '#f59e0b';
         node.haloMesh.material.color.setHex(sys.color);
@@ -1001,19 +1514,29 @@
     }
 
     angleSlider.addEventListener('input', (e) => {
+      initAudio();
       updateAngleRotation(e.target.value);
+      logGatePulse('Ûtube Slider', `Continuous tune: ${parseFloat(e.target.value).toFixed(1)}°`);
     });
 
-    // Fire Parity Test Button
-    btnFireParity.addEventListener('click', () => {
+    // Fire Parity Test (SWAP Test)
+    function triggerParityTest() {
+      initAudio();
       const sys = systems[currentSystemIdx];
       const errorDiff = Math.abs(parseFloat(angleSlider.value) - sys.optimalAngle);
+
+      // Highlight Space button
+      const spaceBtn = document.getElementById('key-btn-space');
+      if (spaceBtn) {
+        spaceBtn.classList.add('active');
+        setTimeout(() => spaceBtn.classList.remove('active'), 160);
+      }
 
       // Trigger pulse wave on camera target
       const node = systemNodes[currentSystemIdx];
       const originalScale = node.ringMesh.scale.x;
       new TWEEN.Tween(node.ringMesh.scale)
-        .to({ x: 2.2, y: 2.2, z: 2.2 }, 300)
+        .to({ x: 2.3, y: 2.3, z: 2.3 }, 260)
         .yoyo(true)
         .repeat(1)
         .start();
@@ -1026,15 +1549,47 @@
           Ancilla Readout: |0⟩ • Ground State Synchronized!<br />
           <span style="font-size:0.75rem;">Structural & electronic fit verified without exposing 3D coordinates.</span>
         `;
+        logGatePulse('SWAP Ancilla: |0⟩', '✨ ZERO-PARITY LOCK ACHIEVED!');
+        playPulseSound('lock');
       } else {
         const failProb = (0.5 * (1 - Math.cos(THREE.MathUtils.degToRad(errorDiff)))).toFixed(2);
         parityResult.className = 'parity-result-box fail';
         parityResult.innerHTML = `
           <strong>⚠️ PARITY MISMATCH (P=${failProb})</strong><br />
           Ancilla Readout: |1⟩ • Phase Cascading Error Detected.<br />
-          <span style="font-size:0.75rem;">Rotate Û<sub>tube</sub> angle slider toward ${sys.optimalAngle.toFixed(1)}° to achieve resonance lock.</span>
+          <span style="font-size:0.75rem;">Use [A]/[D] to tune toward ${sys.optimalAngle.toFixed(1)}° for lock.</span>
         `;
+        logGatePulse('SWAP Ancilla: |1⟩', `Mismatch P(fail)=${failProb}`);
+        playPulseSound('fail');
       }
+    }
+
+    btnFireParity.addEventListener('click', triggerParityTest);
+
+    // Keyboard WASD Controls
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      const key = e.key.toLowerCase();
+
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+        e.preventDefault();
+        stepGate(key);
+      } else if (key === ' ' || key === 'enter') {
+        e.preventDefault();
+        triggerParityTest();
+      }
+    });
+
+    // Click/Tap Handlers on On-Screen Buttons
+    document.querySelectorAll('.key-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const k = btn.dataset.key;
+        if (k === 'space') {
+          triggerParityTest();
+        } else {
+          stepGate(k);
+        }
+      });
     });
 
     // Close drawer button
@@ -1050,11 +1605,44 @@
       });
     });
 
+    // Audio Mute Toggle Button
+    const btnToggleSound = document.getElementById('btn-toggle-sound');
+    const soundLabel = document.getElementById('sound-label');
+    btnToggleSound.addEventListener('click', () => {
+      initAudio();
+      soundEnabled = !soundEnabled;
+      soundLabel.innerText = soundEnabled ? '🔊 Audio: ON' : '🔇 Audio: OFF';
+    });
+
+    // How to Play Modal Handlers
+    const howToPlayModal = document.getElementById('how-to-play-modal');
+    const btnHowToPlay = document.getElementById('btn-how-to-play');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnModalStart = document.getElementById('btn-modal-start');
+
+    function openModal() {
+      initAudio();
+      howToPlayModal.classList.add('active');
+    }
+
+    function closeModal() {
+      howToPlayModal.classList.remove('active');
+    }
+
+    btnHowToPlay.addEventListener('click', openModal);
+    btnCloseModal.addEventListener('click', closeModal);
+    btnModalStart.addEventListener('click', closeModal);
+
+    howToPlayModal.addEventListener('click', (e) => {
+      if (e.target === howToPlayModal) closeModal();
+    });
+
     // Canvas click detection (Raycasting)
     window.addEventListener('pointerdown', (e) => {
       // Ignore if clicking on HUD elements
       if (e.target.closest('.hud-top') || e.target.closest('.telemetry-box') || 
-          e.target.closest('.galaxy-selector') || e.target.closest('.inspector-drawer')) {
+          e.target.closest('.galaxy-selector') || e.target.closest('.inspector-drawer') ||
+          e.target.closest('.modal-content')) {
         return;
       }
 
@@ -1078,7 +1666,74 @@
     });
 
     // =========================================================================
-    // 6. ANIMATION LOOP: Turbulent Swirling Vortex
+    // 8. OSCILLOSCOPE WAVEFORM RENDERER
+    // =========================================================================
+    const scopeCanvas = document.getElementById('resonance-scope');
+    const scopeCtx = scopeCanvas ? scopeCanvas.getContext('2d') : null;
+
+    function renderScope(time) {
+      if (!scopeCtx) return;
+      const w = scopeCanvas.width;
+      const h = scopeCanvas.height;
+      const midY = h / 2;
+
+      scopeCtx.clearRect(0, 0, w, h);
+
+      // Subtle background grid
+      scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      scopeCtx.lineWidth = 1;
+      scopeCtx.beginPath();
+      for (let x = 0; x < w; x += 35) {
+        scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, h);
+      }
+      for (let y = 0; y < h; y += 16) {
+        scopeCtx.moveTo(0, y); scopeCtx.lineTo(w, y);
+      }
+      scopeCtx.stroke();
+
+      const sys = systems[currentSystemIdx];
+      const curAngle = parseFloat(angleSlider.value);
+      const errorDiff = Math.abs(curAngle - sys.optimalAngle);
+      const phaseShift = THREE.MathUtils.degToRad(curAngle - sys.optimalAngle);
+
+      // Target Pocket Wave (Gold)
+      scopeCtx.strokeStyle = '#f59e0b';
+      scopeCtx.lineWidth = 2;
+      scopeCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const y = midY + Math.sin(x * 0.05 + time * 3.5) * 16;
+        if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
+
+      // Tunable Ligand Wave (Cyan)
+      scopeCtx.strokeStyle = '#00f5d4';
+      scopeCtx.lineWidth = 2;
+      scopeCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const y = midY + Math.sin(x * 0.05 + time * 3.5 + phaseShift) * 16;
+        if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
+
+      // If nearly locked, draw glowing interference halo
+      if (errorDiff < 6.0) {
+        scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        scopeCtx.lineWidth = 3;
+        scopeCtx.shadowColor = '#00f5d4';
+        scopeCtx.shadowBlur = 10;
+        scopeCtx.beginPath();
+        for (let x = 0; x < w; x++) {
+          const y = midY + Math.sin(x * 0.05 + time * 3.5) * 19;
+          if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+        }
+        scopeCtx.stroke();
+        scopeCtx.shadowBlur = 0;
+      }
+    }
+
+    // =========================================================================
+    // 9. ANIMATION LOOP: Turbulent Swirling Vortex + Scope
     // =========================================================================
     let clock = new THREE.Clock();
 
@@ -1088,6 +1743,9 @@
       controls.update();
 
       const time = clock.getElapsedTime();
+
+      // Render Oscilloscope
+      renderScope(time);
 
       // Swirl stardust particles in turbulent eddies
       const posAttr = particleGeo.attributes.position;
