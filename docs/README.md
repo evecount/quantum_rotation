@@ -39,6 +39,12 @@ Project Q-Rotate replaces traditional, computationally expensive 3D spatial dock
 
 By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies ligand-protein structural and electronic alignment via a **blind parity test**, completely circumventing the need to compute massive overarching molecular geometries or discretize high-dimensional 3D spatial grids.
 
+### 🌌 Real-Time WebGL 3D Visualization: The Resonance Constellation
+
+[![The Resonance Constellation](assets/Screenshot%202026-09-16%20183504.png)](https://evecount.github.io/quantum_rotation/constellation.html)
+
+*Figure 1: The interactive 3D Resonance Constellation client interface rendering real-time quantum telemetry, 11-cis Retinal / Rhodopsin active site orbital manifolds, and trapped-ion gate controls. Try it live in your browser: [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html).*
+
 ---
 
 ## 2. The Mathematical Core
