@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Official Competition Brief | Quantinuum SG Grand Challenge 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-card: rgba(16, 22, 36, 0.85);
+      --accent-cyan: #00f5d4;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-gold: #f59e0b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: rgba(66, 153, 225, 0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Outfit', -apple-system, sans-serif;
+      line-height: 1.65;
+      padding-bottom: 80px;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(0, 245, 212, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 60%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+    header {
+      background: rgba(7, 9, 14, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 36px auto 0;
+      padding: 0 24px;
+    }
+    .brief-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(0, 245, 212, 0.25);
+      border-radius: 20px;
+      padding: 44px;
+      box-shadow: 0 0 45px rgba(0, 0, 0, 0.6);
+    }
+    h1, h2, h3, h4 { color: #fff; margin-top: 32px; margin-bottom: 14px; font-weight: 800; }
+    h1 { font-size: 2.2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 14px; margin-top: 0; color: var(--accent-cyan); }
+    h2 { font-size: 1.5rem; color: #fff; border-left: 4px solid var(--accent-cyan); padding-left: 12px; }
+    h3 { font-size: 1.2rem; color: var(--accent-gold); }
+    p { margin-bottom: 16px; color: #cbd5e1; font-size: 1rem; }
+    ul, ol { margin-bottom: 18px; padding-left: 24px; color: #cbd5e1; }
+    li { margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.92rem; }
+    th, td { border: 1px solid rgba(255, 255, 255, 0.12); padding: 12px 16px; text-align: left; }
+    th { background: rgba(15, 23, 42, 0.95); color: var(--accent-cyan); font-weight: 700; }
+    code { font-family: 'JetBrains Mono', monospace; background: rgba(0, 0, 0, 0.4); padding: 2px 6px; border-radius: 4px; color: var(--accent-cyan); font-size: 0.9em; }
+    a { color: var(--accent-cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); text-decoration: none; }
+    .btn-back { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; }
+    .btn-warroom { background: linear-gradient(135deg, #f59e0b, #00f5d4); color: #07090e; font-weight: 800; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="index.html#war-room" class="btn btn-back">← Back to War Room</a>
+        <span style="color:var(--text-muted); font-size:0.85rem;">Official Brief: <strong>Competition.md</strong></span>
+      </div>
+      <div>
+        <a href="index.html#war-room" class="btn btn-warroom">🔒 Mission Control</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="brief-card">
+      <div id="content">Loading document...</div>
+    </div>
+  </main>
+
+  <script>
+    const markdown = "Quantinuum Singapore Grand Challenge\nWhy this challenge exists?\nThis track is designed to help participants explore how quantum computing can be applied to meaningful, real-world challenges while also building readiness for the arrival of Helios in Singapore. Over the course of the challenge, teams will move from problem exploration to solution development, using Quantinuum software, tools, resources, and mentor guidance to test ideas, build prototypes, and gain hands-on experience with practical quantum-enabled approaches.\nThe goal is not only to identify strong technical solutions, but also to help participants develop the software familiarity, workflow experience, and applied quantum skills needed to take advantage of next-generation quantum hardware as it becomes available in Singapore. This track is also intended to strengthen collaboration and contribute to a growing quantum innovation ecosystem in Singapore and beyond.\nWho is this track for?\nThis track is open to students, researchers, developers, startups, and innovators who are interested in applying quantum computing to real-world problems. Participants may come from backgrounds such as quantum information, computer science, engineering, chemistry, optimization, AI, finance, logistics, or other applied domains.\nYou do not need to be a quantum expert to participate. Teams with a mix of technical, domain, and product perspectives are encouraged, especially those who are eager to learn, experiment, and build practical solutions with support from mentors and available challenge resources.\nHow to get started?\nReview the challenge details, form a team, choose a problem to tackle, and begin developing your quantum-enabled solution. Participants are encouraged to use available learning resources, mentor sessions, and platform tools throughout the challenge. Final submission requirements and key dates will be shared in the challenge timeline.\nR&D Themes\nQuantum Primitives\nHamiltonian simulation methods to find strongly correlated ground states for physics-based models.\nChemistry\nElectronic structure simulation methods to predict chemical properties in battery development and drug development that frustrate classical computers.\nAI for Quantum\nGenerative AI methods to improve hardware utilization, resource requirements and time/quality to solution.\nQEC\nEnabler for reliable quantum computation by improving (correcting) defects (errors) in quantum compute. This is required firmware for fault-tolerance.\nOptimization\nEnables industries such as finance, logistics, and energy to more efficiently solve complex decision problems, for example portfolio allocation, routing, and scheduling.\nOpen Innovation\nBring your own use case: any industrially relevant challenge where quantum computing could make a difference.\nYour own industry problem\nNovel applications of Quantinuum systems\nCross-disciplinary ideas\nFull challenge briefs and supporting materials are available to registered participants.\nProblem Statements\nConcrete problems teams can tackle within the R&D themes above. Each statement gives the scientific context, the question to answer, and the reference literature to start from.\nX-ray Absorption Spectroscopy\nTheme: Chemistry\nAccurate simulation of X-ray absorption spectra (XAS), particularly transition-metal L\u2082,\u2083-edge spectra, requires modelling strong electron-correlation effects that are difficult for conventional methods such as Density Functional Theory (DFT) and multiple-scattering approaches. Existing classical methods struggle to scale while maintaining chemical accuracy for strongly correlated systems. The challenge is to develop and experimentally demonstrate a quantum-computing workflow capable of computing XAS spectra with manageable resource requirements and robustness to quantum hardware noise.\nChallenge: Can Quantum Phase Estimation (QPE), combined with qubit-efficient circuits and error-detection techniques, accurately reproduce XAS spectra on current trapped-ion quantum hardware?\nReferences:\narxiv.org/html/2505.08612v2\narxiv.org/html/2509.24664v1\nQuantum-HPC Hybrid Biomolecular Simulation\nTheme: Chemistry\nMany biologically important photochemical processes depend on excited electronic states that are difficult to model because the number of relevant electron configurations grows rapidly with system size.\nChallenge: Can quantum computers and classical supercomputers work together to efficiently capture these complex electronic effects and improve the accuracy of biomolecular simulations?\nReferences:\narxiv.org/pdf/2601.15677\narxiv.org/pdf/2605.01138v1\nError-Corrected Quantum Chemistry\nThemes: QEC, Chemistry\nQuantum Phase Estimation offers an asymptotically efficient route to molecular energy calculations, but its deep circuits are highly sensitive to noise and exceed the capabilities of unprotected quantum hardware. While quantum error correction (QEC) is widely recognized as essential for scalable quantum chemistry, end-to-end demonstrations of a quantum chemistry workflow using fully encoded logical qubits remain limited.\nChallenge: Demonstrate that QPE can be executed within a practical QEC framework and deliver chemically meaningful molecular energy estimates. Specifically, can logical qubits protected by quantum error correction improve computational fidelity sufficiently to enable accurate molecular energy calculations on current trapped-ion quantum processors?\nReferences:\narxiv.org/pdf/2505.09133\narxiv.org/pdf/2306.16608\nQuantum Search\nTheme: Quantum Primitives\nCan a quantum computer uncover a hidden pattern in a black-box function exponentially faster than any known classical algorithm (Simon's Algorithm)? Given a black-box function containing a hidden XOR relationship, how can we efficiently uncover the secret bit string that links pairs of inputs producing identical outputs?\nChallenge: Classical algorithms require exponentially many function evaluations, while Simon's quantum algorithm solves the problem in polynomial time.\nEvent Timeline\nRegistration | July 20th to August 15th | Announcement, challenge format, judges and mentor selection.\nEducation & Problem Formulation | July 20th to August 30th | Technical collateral for self-onboarding and platform education, mentor consultations, problem formulation.\nOnboarding Delivery | August 19th to August 28th | Deliver virtual onboarding webinars with recordings available post-webinar.\nPlatform Utilization | July 20th to October 15th | Emulator access, Guppy usage, Aqora datasets.\nSubmission 1 | October 15th | Submission for grand finale. Judges will shortlist teams for the grand finale.\nShortlist Teams | October 20th | Finalists announced for the grand finals.\nGrand Finale | October 21st | Hardware access and further solution refinement.\nSubmission 2 | November 14th | Submission for grand finale.\nFinals | November 19th | In-person presentations and winner announced.\nOnboarding Webinars\nEight virtual sessions covering the platforms, the tooling, and each R&D theme. Each session runs 1h 30m unless stated otherwise. Registration is open to all participants, and no prior quantum experience is assumed for the platform sessions.\nHere you will find the links to the PDF of the presentations for each session: Presentation slides (Google Drive)\nAugust 19th, 09:00 SGT | Platforms | Quantinuum Platform Overview | Irfan | Watch the recording\nAugust 20th, 15:30 SGT | Guppy + Pytket | Guppy, Selene, H2 Integration: Zero to Hero | Melf | Watch the recording\nAugust 21st, 15:30 SGT | AI for Quantum | Discovering Quantum Algorithms with AI | Freddy | Watch the recording\nPostponed due to unforeseen issues | QEC | QEC in Practice: Writing logical circuits with Guppy | Shival |\nAugust 25th, 09:00 SGT | Quantum Primitives | Quantum Magnetism / HTC Paper | Watch the recording\nAugust 26th, 15:30 SGT | Chemistry | Big Chemistry | Riku, Carlo | Watch the recording\nAugust 27th, 15:30 SGT | Optimization | Title to be announced | Alexandre Krajenbrink | Watch the recording\nAugust 28th, 16:00 SGT | Aqora Platform | What is Aqora's platform and how to use it? | Julian | Watch the recording\nMentors\nMentors are grouped by R&D theme. Some mentors support more than one theme and appear in each relevant section.\nBook a mentor session: Mentor booking page\nQuantum Primitives\nIrfan Khan, Lead Applications Engineer, Quantinuum\nEtienne Granet, Lead R&D Scientist, Quantinuum\nChemistry\nKentaro Yamamoto, Principal R&D Scientist, Quantinuum\nIrfan Khan, Lead Applications Engineer, Quantinuum\nAI\nJem Guhit, Advanced R&D Scientist, Quantinuum\nChen-Yu Liu, Advanced R&D Scientist, Quantinuum\nJacob Swain, Sr Advanced R&D Scientist, Quantinuum\nQEC\nNatalie Brown, Sr Advanced QEC Scientist, Quantinuum\nElijah Durso Sabina, QEC Scientist II, Quantinuum\nOptimization\nAlexandre Krajenbrink, Lead R&D Scientist, Quantinuum\nIfan Williams, Sr R&D Scientist, Quantinuum\nPlatform Support\nQuantinuum Platform\nIrfan Khan, Lead Applications Engineer, Quantinuum\nCallum MacPherson, Advanced Software Engineer III, Quantinuum\nAqora Platform\nJulian Popescu, Sr Full Stack Software Engineer, Aqora\nAntoine Chauvin, Sr Full Stack Software Engineer, Aqora\nJudges\nOur judging panel will include experts from Quantinuum and the broader quantum ecosystem. Additional details will be shared as the challenge progresses.\nJudging Framework\n4 criteria + one common 0\u20135 scale; every score traces to an artifact and rationale.\nProblem & Value \u2014 30%\nJudge on: need clarity; solution fit; quantified customer or business value\nEvidence to cite: problem/user validation; use-case evidence; business case or ROI\nTechnical Performance & Hardware Use \u2014 30%\nJudge on: correctness; benchmark gains; scalability; hardware utilization\nEvidence to cite: benchmark data; run logs; job metadata; demo results\nScientific Merit \u2014 20%\nJudge on: novelty; methodological rigor; improvement versus a baseline\nEvidence to cite: algorithm rationale; baseline comparison; error and validation analysis\nEngineering & Reproducibility \u2014 20%\nJudge on: code structure; testing; documentation; repeatable setup\nEvidence to cite: repository; README; test results; reproduction record\nCommon evidence scale (0\u20135)\nWeighted points = rating \u00f7 5 \u00d7 criterion weight\n0 \u2014 No evidence\n1 \u2014 Assertion only\n2 \u2014 Plausible; limited proof\n3 \u2014 Demonstrated with direct evidence\n4 \u2014 Measured and repeatable\n5 \u2014 Validated against a benchmark, user need, or external reference\nPrizes & Outcomes\nSelected teams will have the opportunity to advance through the challenge, receive mentor support, and showcase their work during the final stage of the program. Finalists may also receive access to quantum hardware and/or related resources to help develop and test their solutions ahead of final judging.\nPrizes and recognition will be awarded to top-performing teams based on the judging criteria, which includes solution relevance, hardware utilization, commercial impact, source code quality, and scientific impact. Additional prize details and finalist opportunities will be announced as the challenge progresses.\nTools & Platforms\nGuppy\nQuantinuum's next-generation quantum programming language, embedded in Python, designed to make quantum software development more intuitive, safe, and scalable. It enables developers to build complex quantum-classical applications using familiar Python-like syntax while supporting advanced capabilities such as real-time feedback, adaptive algorithms, and quantum error correction workflows.\ndocs.quantinuum.com/guppy\nNexus\nAn integrated quantum computing platform that provides a unified environment for developing, running, tracking, and managing quantum workloads. It offers seamless access to Quantinuum hardware, emulators, software tools, and third-party backends through a cloud-based workspace, enabling researchers and developers to accelerate quantum experimentation and application development.\ndocs.quantinuum.com/nexus\nH2\nQuantinuum's trapped-ion quantum computing system, designed to deliver high-fidelity, fully connected quantum processing for advanced research and commercial applications. Featuring industry-leading performance, error-correction capabilities, and scalable architecture, H2 enables users to explore complex quantum algorithms across domains such as chemistry, optimization, logistics, and finance.\ndocs.quantinuum.com/systems\nAqora\nAqora is a collaborative quantum computing platform that connects enterprises, researchers, developers, and students through real-world quantum challenges, datasets, competitions, and algorithm development tools. It helps organizations explore practical quantum use cases while enabling the quantum community to showcase expertise, solve industry problems, and accelerate adoption of quantum technologies.\naqora.io\nDocs\nFull Quantinuum documentation, including Guppy, Nexus, and systems guides: docs.quantinuum.com\nOnboarding webinar sign-up links and, after the sessions, the recordings will be published in this tab.\n";
+    document.getElementById('content').innerHTML = marked.parse(markdown);
+  </script>
+</body>
+</html>
