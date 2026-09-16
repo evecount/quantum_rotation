@@ -3,11 +3,14 @@
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Key Responsibilities:**
 * **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO ("The Quantum Bunny")**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)  
-  *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
+  *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.  
+  *Provenance Dossier:* [provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md)
 * **Benjamin Lim ("Sedilix")** ([ben@evecount.com](mailto:ben@evecount.com) / [LinkedIn](https://www.linkedin.com/in/sedilix/) / [GitHub](https://github.com/sedilix)) — **Co-Founder & Systems Architect**, Eve Count & Cybrdeck (1,500+ commits/yr)  
-  *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, reactive telemetry interfaces, and developer user experience.
+  *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, reactive telemetry interfaces, and developer user experience.  
+  *Role Brief:* [workspaces/BEN_SYSTEMS_ARCHITECTURE_BRIEF.md](workspaces/BEN_SYSTEMS_ARCHITECTURE_BRIEF.md)
 * **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com) / [LinkedIn (11k+)](https://www.linkedin.com/in/jamessun1/)) — **Founder @ Mamba Partners | Venture Advisor & GTM Strategist** (ex. Goldman Sachs, Blackstone, Microsoft)  
-  *In charge of:* Institutional venture capital strategy, global Go-To-Market (GTM) execution, biopharma commercial licensing ($120M–$280M roadmap), strategic network syndication, and investor positioning for the Grand Challenge finals.
+  *In charge of:* Institutional venture capital strategy, global Go-To-Market (GTM) execution, biopharma commercial licensing ($120M–$280M roadmap), strategic network syndication, and investor positioning for the Grand Challenge finals.  
+  *Role Brief:* [workspaces/JAMES_VENTURE_GTM_BRIEF.md](workspaces/JAMES_VENTURE_GTM_BRIEF.md)
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
@@ -42,11 +45,11 @@ Project Q-Rotate replaces traditional, computationally expensive 3D spatial dock
 By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies ligand-protein structural and electronic alignment via a **blind parity test**, completely circumventing the need to compute massive overarching molecular geometries or discretize high-dimensional 3D spatial grids.
 
 > [!IMPORTANT]
-> ### 🛡️ Zero-Knowledge Proof for Pharma (The Sleeper Hit)
-> **"Zero-Knowledge Proof for Pharma: This is the sleeper hit of your idea. By running a blind parity test, you are proving that a ligand fits a protein without exposing the exact coordinates. In the pharmaceutical industry, where molecular structures are highly guarded intellectual property, a zero-knowledge matching protocol is a massive commercial advantage."**
+> ### 🛡️ Zero-Knowledge Proof for Pharma: The Decisive Commercial Moat
+> **By executing an ancilla-mediated blind parity test, Project Q-Rotate verifies whether a candidate ligand achieves lock-and-key resonance with a target protein active site without disclosing the exact 3D atomic coordinates. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, this coordinate-free zero-knowledge matching protocol provides an unassailable commercial advantage.**
 > 
-> * **The Commercial Moat:** Enterprise biopharma companies spend hundreds of millions synthesizing and patenting proprietary candidate lead molecules. They are notoriously reluctant to transmit raw 3D atomic coordinates across external cloud APIs for fear of intellectual property leakage or corporate espionage.
-> * **The Mathematical Solution:** In Project Q-Rotate, the ancilla-mediated quantum SWAP test evaluates structural fit using quantum state overlap. The output is a single scalar interference parity metric:
+> * **The Commercial Bottleneck:** Enterprise biopharma companies invest hundreds of millions of dollars synthesizing and patenting novel molecular scaffolds. They are notoriously reluctant to transmit raw 3D atomic coordinates across external cloud computing environments due to the risk of IP exposure and corporate espionage.
+> * **The Quantum Mathematical Solution:** In Project Q-Rotate, the ancilla-mediated quantum SWAP test evaluates structural fit using quantum state overlap. The output is a single scalar interference parity metric:
 >   $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
 >   Neither the cloud platform nor the quantum hardware provider ever gains access to the underlying 3D molecular coordinates, unlocking sovereign, confidential quantum drug screening for global biopharma sponsors.
 
