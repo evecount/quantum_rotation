@@ -2,7 +2,7 @@
 
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Key Responsibilities:**
-* **Gwen ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com)) — **Founder & Core Quantum Engine ("The Quantum Bunny")**, Eve Count  
+* **Gwendalynn (婉婷) Lim ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)) — **Founder & DeepTech Venture CTO ("The Quantum Bunny")**, Eve Count (B.Sc. Hons Applied Computing SIT, NTU SCTP Advanced AI/ML)  
   *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
 * **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — **Frontend Lead & Systems Architect**, Eve Count  
   *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, and developer user experience.
