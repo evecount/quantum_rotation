@@ -2,12 +2,10 @@
 ### Demystifying Quantum Biomolecular Pattern Matching for Everyone
 
 **Core Team & Key Responsibilities:**
-* **1ightray** — **Founder & Core Quantum Engine ("The Quantum Bunny")**, Eve Count  
-  *In charge of:* Scientific innovation and core quantum engine, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
+* **Gwen ("1ightray")** ([gwen@evecount.com](mailto:gwen@evecount.com)) — **Founder & Core Quantum Engine ("The Quantum Bunny")**, Eve Count  
+  *In charge of:* Overall architecture and core quantum engine innovation, mathematical formulation of $\hat{U}_{\text{tube}}(\tau)$, Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
 * **Benjamin Lim** ([ben@evecount.com](mailto:ben@evecount.com)) — **Frontend Lead & Systems Architect**, Eve Count  
-  *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, and developer UX.
-* **Gwen** ([gwen@evecount.com](mailto:gwen@evecount.com)) — **Operations & Challenge Execution Lead**, Eve Count  
-  *In charge of:* Grand Challenge operational logistics, milestone roadmap governance, team execution cadence, partner communication, and submission compliance.
+  *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, and developer user experience.
 * **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com)) — **Venture Advisor & Go-To-Market (GTM) Strategist**, Mamba Partners  
   *In charge of:* Venture capital strategy, global Go-To-Market (GTM) execution, pharma industry commercial partnerships, strategic network syndication, and investor positioning.
 
