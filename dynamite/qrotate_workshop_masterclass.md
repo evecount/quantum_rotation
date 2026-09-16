@@ -1,11 +1,11 @@
 # The Shared Challenge: Bridging Biology & Quantum Physics
 > **The Computational Wall:** Classical molecular docking forces continuous quantum physics onto rigid 3D cubic grids ($O(N^3)$), burning days of cluster compute on local-minima dead ends.
 
-| Dimension / Metric | Classical Supercomputers ($O(N^3)$) | Project Q-Rotate (Continuous Quantum) |
+| Metric | Classical Supercomputers ($O(N^3)$) | Project Q-Rotate (Trapped Ions) |
 | :--- | :--- | :--- |
-| **Search Paradigm** | Discretized 3D Cartesian grid ($10^6+$ cubic voxels) | Continuous quantum rotation ($SU(2)$) |
+| **Search Paradigm** | Discretized 3D Cartesian grid ($10^6+$ voxels) | Continuous Lie algebra manifold ($SU(2)$) |
 | **Search Path** | Mountain hike over rugged potential energy barriers | **Geodesic burrowing** directly through wave space |
-| **Hardware Overhead** | Megawatts on GPU clusters (days to weeks) | **11.5 HQCs** on Quantinuum H2 (sub-penny execution) |
+| **Hardware Overhead** | Megawatts on GPU clusters (days to weeks) | **11.5 HQCs** on Quantinuum H2 (sub-penny) |
 | **IP Protection** | Plaintext atomic coordinates exposed in memory | **Zero-Knowledge Blind Parity** (100% encrypted) |
 
 - **The Helios Opportunity:** Trapped ions physically shuttle across optical zones, executing continuous Hamiltonian time-evolution without grid discretization.
