@@ -51,26 +51,26 @@ When the ligand and pocket topologies are a perfect structural and electronic ma
 
 ---
 
-## 4. Usage & HPC-to-Guppy Data Flow
+## 4. Usage & HPC Bridge
 
-How do raw 3D atomic coordinates from a classical supercomputer reach the trapped-ion quantum compiler? Project Q-Rotate implements a clean, deterministic 4-stage pipeline:
+Project Q-Rotate operates as a hybrid quantum-classical pipeline. We do not encode raw 3D atomic coordinates into the quantum state. Instead, we use classical High-Performance Computing (HPC) to parse the geometry and extract specific rotational and phase-mismatch parameters to feed into the Guppy quantum functions.
 
 ```
 ┌─────────────────────────┐      ┌───────────────────────────┐      ┌───────────────────────────┐      ┌─────────────────────────┐
 │  Classical HPC (Slurm)  │      │  HPC Bridge               │      │  Guppy Compiler           │      │  Quantinuum H2 QPU      │
-│  - 3D PDB/XYZ Coords    │ ===> │  - Spherical Projection   │ ===> │  - Normalize to Halfturns │ ===> │  - U_tube Evolution     │
-│  - Partial Charges (q)  │      │  - Phase Vector Φ ∈ [-π,π]│      │  - HUGR / QIR Generation  │      │  - Blind Parity Readout │
+│  - 3D PDB/XYZ Coords    │ ===> │  - Target Manifold (ω)    │ ===> │  - HUGR Graph Generation  │ ===> │  - U_tube Evolution     │
+│  - Partial Charges (q)  │      │  - Error Field (ΔΦ)       │      │  - QIR LLVM Bitcode       │      │  - Real-Time RUS Loop   │
 └─────────────────────────┘      └───────────────────────────┘      └───────────────────────────┘      └─────────────────────────┘
 ```
 
-### Step 1: Classical 3D Feature Extraction (`hpc_bridge.py`)
+### 1. Classical Pre-Processing (HPC Bridge)
 
-The classical supercomputer loads the atomic coordinates and electrostatic charges, computes the center-of-geometry, and extracts spherical coordinates $(r_i, \theta_i, \phi_i)$:
+The classical bridge (located in `src/qrotate/hpc_bridge.py`) is responsible for reading standard chemical data formats (like PDB or SDF files) and converting them into mathematical arguments:
 
-$$r_i = \|\vec{x}_i - \vec{x}_{\text{COM}}\|, \quad \theta_i = \arccos(z_i / r_i), \quad \phi_i = \text{atan2}(y_i, x_i)$$
+* **The Target Manifold:** The pocket geometry is processed to extract the collective angular momentum required to orient the active site. This yields the classical rotation variables: $\vec{\omega} = (\omega_x, \omega_y, \omega_z)$.
+* **The Error Field:** The ligand geometry is compared against the pocket's complementary manifold to calculate the initial discrete phase discrepancy at each orbital contact site, producing an array of classical floats: `initial_delta_phi`.
 
-The azimuthal orientation is coupled with partial electrostatic charge polarity into a compact phase angle for each contact site:
-
+Under the hood, spherical coordinates $(r_i, \theta_i, \phi_i)$ are coupled with partial electrostatic charge polarity into compact phase angles:
 $$\Phi_m = \left( \langle \phi \rangle_m + \alpha \langle q \rangle_m \right) \pmod{2\pi}, \quad \Phi_m \in [-\pi, \pi]$$
 
 ```python
@@ -89,20 +89,29 @@ pocket_phases = pocket_ligand_to_qubit_phases(pocket_geo, n_qubits=4)
 # pocket_phases -> [-0.245, 1.102, -2.851, 0.418] in radians
 ```
 
-### Step 2: Half-Turn Normalization for Trapped-Ion Rotation Primitives
+### 2. Parameter Injection into Guppy
 
-Quantinuum physical gates (`Rz`, `PhasedX`, `ZZPhase`) and the Guppy `angle` standard library represent rotational arguments in **half-turns** (units of $\pi$ radians, where $1.0 = \pi$). 
+Guppy programs are defined and compiled within a host Python script. Because Guppy compiles statically, we pass the classical variables calculated by the HPC bridge directly as arguments into the decorated `@guppy` functions.
 
-$$\theta_{\text{halfturns}} = \frac{\Phi}{\pi} \in [-1.0, 1.0]$$
+For example, the engine accepts classical `float` values and lists of `float` values alongside the quantum registers:
 
 ```python
-# Convert radians to Guppy / Quantinuum half-turns
-pocket_halfturns = [phi / 3.141592653589793 for phi in pocket_phases]
+@guppy(module)
+def qrotate_rus_engine(
+    pocket: list[qubit], 
+    ligand: list[qubit], 
+    ancilla: qubit,
+    tau: float,                     # Time-evolution step
+    omega: list[float],             # Classical spatial angles (Target Manifold)
+    initial_delta_phi: list[float], # Classical phase mismatches (Error Field)
+    max_retries: int                # Classical loop bounds
+) -> bool:
+    ...
 ```
 
-### Step 3: Injection into Guppy Quantum Modules (`circuits.py`)
+*Note: In Guppy, Python types like `float`, `int`, and `bool` are natively supported and type-checked during compilation.*
 
-In Guppy, parameters are injected directly into quantum kernels using `from guppylang.std.angles import angle`:
+Parameters are converted to half-turns ($\theta_{\text{halfturns}} = \Phi / \pi \in [-1.0, 1.0]$) and passed to rotation primitives using `guppylang.std.angles.angle`:
 
 ```python
 from guppylang import guppy
@@ -118,10 +127,10 @@ def qrotate_kernel() -> None:
 
     # Parameterized state preparation from HPC phases (half-turns)
     h(q_pocket)
-    rz(q_pocket, angle(0.25))  # Derived from pocket_halfturns[0]
+    rz(q_pocket, angle(0.25))
 
     h(q_ligand)
-    rz(q_ligand, angle(0.35))  # Derived from ligand_halfturns[0]
+    rz(q_ligand, angle(0.35))
 
     # Apply U_tube rotational evolution
     ry(q_ligand, angle(0.10))
@@ -142,9 +151,11 @@ def qrotate_kernel() -> None:
     measure(q_ligand)
 ```
 
-### Step 4: HUGR / QIR Static Compilation and Execution
+### 3. Compilation to HUGR & Hardware Execution
 
-The Guppy kernel is statically compiled into a HUGR dataflow graph and QIR bitcode:
+When the Guppy engine is executed, it does not run through the standard Python interpreter. Instead, the `@guppy` decorator triggers the compiler to lower the quantum operations, the classical parameters, and the `while` loop logic into **HUGR (Hierarchical Unified Graph Representation)**.
+
+HUGR is a dataflow graph representation that encodes both classical logic (like our adaptive phase dampening: `current_phi[idx] * 0.5`) and quantum operations into a single cohesive structure. This is crucial because it allows the Quantinuum trapped-ion hardware to execute the Repeat-Until-Success protocol in real-time, leveraging mid-circuit measurements and classical feedback without having to wait for the host computer to process the logic over the network.
 
 ```python
 from qrotate.circuits import guppy_qrotate_rus_demo

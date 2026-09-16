@@ -55,7 +55,66 @@ Our workflow directly builds on the two landmark preprints defining this competi
 ### 3. How Q-Rotate Fits In
 
 In Project Q-Rotate:
-1. **Classical HPC** performs the ground-state geometry optimization, computes the electrostatic potential in the binding pocket, and extracts the 1-electron/2-electron integrals.
-2. **HPC Bridge (`hpc_bridge.py`)** compresses these electrostatic and spatial features into compact phase registers.
-3. **Quantinuum H2 (`circuits.py`)** runs the Q-Rotate blind parity check and dynamic RUS loop to solve the non-perturbative alignment and phase lock.
-4. **Classical Post-Processing (`metrics.py`)** takes the measured output distributions and reconstructs the binding affinity and resonance curve.
+1. **Classical HPC (Supercomputer / Fugaku / Slurm cluster)**: Performs the ground-state geometry optimization, computes the electrostatic potential in the binding pocket, and extracts atomic coordinates and partial charges.
+2. **HPC Bridge (`src/qrotate/hpc_bridge.py`)**: Reads standard chemical data formats (PDB/SDF) and extracts two critical mathematical arguments:
+   - **The Target Manifold ($\vec{\omega}$)**: The pocket geometry is processed to extract the collective angular momentum required to orient the active site: $\vec{\omega} = (\omega_x, \omega_y, \omega_z)$.
+   - **The Error Field (`initial_delta_phi`)**: The ligand geometry is compared against the pocket's complementary manifold to calculate the initial discrete phase discrepancy at each orbital contact site.
+3. **Parameter Injection into Guppy**: Classical `float` and `list[float]` variables calculated by the HPC bridge are passed directly as compile-time/runtime parameters into `@guppy` functions.
+4. **HUGR Dataflow Graph Compilation**: Guppy lowers both quantum gates and classical control flow (`while`, `if/else`, adaptive dampening) into a unified **HUGR (Hierarchical Unified Graph Representation)** and LLVM QIR bitcode.
+5. **Quantinuum H2 / Helios Execution**: The trapped-ion hardware executes the Repeat-Until-Success protocol in real time right at the cryostat, leveraging mid-circuit measurement and ion reset with **zero network latency** back to the classical host.
+6. **Classical Post-Processing (`src/qrotate/metrics.py`)**: Takes the measured output distributions and reconstructs the binding affinity and resonance curve.
+
+---
+
+### 4. The End-to-End Dataflow Diagram
+
+```
+       CLASSICAL HPC LAYER (Slurm / Fugaku)
+  ┌───────────────────────────────────────────────────────────┐
+  │ 10,000+ Atoms (Solvent + Protein Scaffold + Ligand)       │
+  │ Classical Force Field / DFT / Electrostatic Potential     │
+  └─────────────────────────────┬─────────────────────────────┘
+                                │ PDB / SDF Coordinates & Charges
+                                ▼
+       HPC BRIDGE (src/qrotate/hpc_bridge.py)
+  ┌───────────────────────────────────────────────────────────┐
+  │ - Radial & polar spherical decomposition: (r, θ, φ)       │
+  │ - Target Manifold extraction: ω = (ω_x, ω_y, ω_z)         │
+  │ - Error Field calculation: initial_delta_phi              │
+  │ - Half-turn normalization: θ_halfturns = Φ / π ∈ [-1, 1]  │
+  └─────────────────────────────┬─────────────────────────────┘
+                                │ Classical Floats (tau, omega, initial_delta_phi)
+                                ▼
+       GUPPY COMPILER & HUGR LOWERING (src/qrotate/circuits.py)
+  ┌───────────────────────────────────────────────────────────┐
+  │ - Static compilation of @guppy(module) functions          │
+  │ - Unification of quantum gates and classical while-loops  │
+  │ - Generation of LLVM QIR bitcode payload                  │
+  └─────────────────────────────┬─────────────────────────────┘
+                                │ QIR Bitcode (3.6 KB)
+                                ▼
+       QUANTINUUM H2 / HELIOS TRAPPED-ION QPU
+  ┌───────────────────────────────────────────────────────────┐
+  │ - State Preparation: Rz(θ_halfturns)                      │
+  │ - Dimensional Rotation: Û_tube(τ)                         │
+  │ - Blind Parity Test (CSWAP)                               │
+  │ - Real-Time Mid-Circuit Measure & Optical Reset Loop      │
+  │ - Ancilla Readout: 0 = Match, 1 = Mismatch                │
+  └───────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 5. Why the HUGR Dataflow Graph Matters
+
+In conventional hybrid algorithms (like standard VQE):
+* The quantum computer measures qubits.
+* The numbers travel across the internet / datacenter network to a classical CPU.
+* The CPU runs an optimizer like COBYLA or BFGS.
+* The CPU sends a new parameter list back to the QPU.
+
+This roundtrip latency kills performance and allows environmental decoherence to destroy quantum states.
+
+**With Guppy and HUGR:**
+The classical feedback logic (e.g. `current_phi[idx] = current_phi[idx] * 0.5`) is compiled **directly into the QPU's real-time controller**. The Quantinuum ion trap executes the loop autonomously in microseconds while ion coherence times last tens of seconds. That is the true power of trapped-ion hybrid computing.
+
