@@ -1347,6 +1347,7 @@
     const parityResult = document.getElementById('parity-result');
     const btnFireParity = document.getElementById('btn-fire-parity');
     const btnCloseDrawer = document.getElementById('btn-close-drawer');
+    const galaxyButtons = document.querySelectorAll('.galaxy-btn');
     const isEmbedded = (window.self !== window.top) || new URLSearchParams(window.location.search).has('embed');
     if (isEmbedded) {
       document.body.classList.add('is-embedded');
