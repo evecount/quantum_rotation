@@ -16,3 +16,14 @@ __marimo__/
 # aqora
 .aqora
 __aqora__/
+
+# DYNAMITE Video Recordings & Media Exports
+videos/
+recordings/
+Final Recordings/
+*.mp4
+*.webm
+*.mov
+*.avi
+*.mkv
+*.wav

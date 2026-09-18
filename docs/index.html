@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#01040c" />
   <title>Project Q-Rotate | Quantum-HPC Hybrid Biomolecular Simulation</title>
   <meta name="description" content="Project Q-Rotate: Efficient Molecular Pattern Matching for Quantinuum Singapore Grand Challenge 2026 by Team Eve Count." />
 
@@ -55,13 +56,15 @@
 
     /* Team War Room Styling */
     .war-room-container {
-      background: radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.12) 0%, rgba(10, 15, 30, 0.95) 70%);
-      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(8, 12, 22, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 24px;
       padding: 36px 32px;
-      box-shadow: 0 0 45px rgba(245, 158, 11, 0.15);
+      box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.75),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.06);
       margin-bottom: 60px;
       position: relative;
+      backdrop-filter: blur(20px);
     }
 
     .war-room-gate {
@@ -237,11 +240,8 @@
       font-family: var(--font-heading);
       line-height: 1.6;
       overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 15% 20%, rgba(0, 245, 212, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 60%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 50% 90%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
-      background-attachment: fixed;
+      /* Clean deep void ground - zero gradient spots */
+      background-color: var(--bg-dark);
     }
 
     #ascii-bg-canvas {
@@ -268,66 +268,199 @@
     }
 
     /* Header Nav */
-    header {
-      border-bottom: 1px solid var(--border-color);
-      backdrop-filter: blur(16px);
-      background: rgba(7, 9, 14, 0.8);
+    /* Liquid Glass Navigation Header */
+    .liquid-header {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 200;
+      background: rgba(4, 7, 16, 0.70);
+      backdrop-filter: blur(28px) saturate(1.8) contrast(1.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 12px 36px rgba(0, 0, 0, 0.45);
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
-    .nav-content {
+    .nav-shell {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 70px;
+      height: 64px;
     }
-    .logo {
+    .brand-link {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 1.25rem;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-monogram {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px rgba(0, 245, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+    .brand-link:hover .brand-monogram {
+      transform: scale(1.06);
+      box-shadow: 0 0 24px rgba(0, 245, 212, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    .brand-text-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .brand-name {
+      font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: -0.02em;
-      color: var(--text-main);
-      text-decoration: none;
+      color: #ffffff;
     }
-    .logo-badge {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      color: #000;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      background: rgba(0, 245, 212, 0.08);
+      border: 1px solid rgba(0, 245, 212, 0.25);
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
     }
-    .nav-links {
+
+    /* Sliding Magnetic Glass Nav Menu */
+    .nav-cluster {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 2px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 4px 6px;
+      border-radius: 9999px;
+      backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.95rem;
+    .nav-magnetic-pill {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(12px);
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                  width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .nav-item {
+      position: relative;
+      z-index: 2;
+      padding: 6px 13px;
+      font-size: 0.82rem;
       font-weight: 500;
-      transition: color 0.2s ease;
+      color: rgba(241, 245, 249, 0.72);
+      text-decoration: none;
+      border-radius: 9999px;
+      transition: color 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
     }
-    .nav-links a:hover {
+    .nav-item:hover {
+      color: #ffffff;
+    }
+    .nav-item.active-accent {
       color: var(--accent-cyan);
     }
-    .btn-nav {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      color: #050811 !important;
-      font-weight: 700 !important;
-      padding: 8px 16px;
-      border-radius: 8px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+
+    /* CybrDeck Liquid Glass CTA Pill */
+    .glass-cta-pill {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 18px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 9999px;
+      background: rgba(12, 19, 36, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(20px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
     }
-    .btn-nav:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 245, 212, 0.4);
+    .glass-cta-pill::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: rgba(0, 245, 212, 0.4);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.45;
+      transition: opacity 0.25s ease;
+    }
+    .glass-cta-pill:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.6), 0 12px 28px rgba(0, 245, 212, 0.3);
+      color: #ffffff;
+    }
+    .glass-cta-pill:hover::before {
+      opacity: 0.95;
+    }
+    .glass-cta-pill:active {
+      transform: translateY(1px) scale(0.97);
+    }
+
+    /* Hero Glass CTA Buttons */
+    .hero-glass-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 26px;
+      border-radius: 9999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      text-decoration: none;
+      background: rgba(10, 16, 32, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(20px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hero-glass-btn.primary {
+      background: rgba(0, 245, 212, 0.14);
+      border-color: rgba(0, 245, 212, 0.5);
+      color: #ffffff;
+      box-shadow: 0 0 24px rgba(0, 245, 212, 0.25), inset 0 1.5px 0 rgba(255, 255, 255, 0.5);
+    }
+    .hero-glass-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      color: #ffffff;
+    }
+    .hero-glass-btn.primary:hover {
+      box-shadow: 0 0 36px rgba(0, 245, 212, 0.45), inset 0 1.5px 0 rgba(255, 255, 255, 0.7);
+    }
+    .hero-glass-btn:active {
+      transform: translateY(1px) scale(0.97);
     }
 
     /* Hero Section */
@@ -369,9 +502,7 @@
       letter-spacing: -0.03em;
       line-height: 1.15;
       margin-bottom: 18px;
-      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffffff;
     }
     .hero p.subtitle {
       max-width: 780px;
@@ -391,7 +522,7 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      background: var(--accent-cyan);
       color: #030712;
       font-weight: 700;
       font-size: 1.05rem;
@@ -616,7 +747,7 @@
 
     /* Workbook Callout */
     .workbook-callout {
-      background: linear-gradient(135deg, rgba(16, 24, 40, 0.9), rgba(20, 30, 50, 0.95));
+      background: rgba(10, 15, 28, 0.9);
       border: 1px solid var(--accent-cyan);
       border-radius: 18px;
       padding: 40px;
@@ -667,30 +798,138 @@
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(0, 245, 212, 0.5);
     }
+  
+    .q-brand-emblem {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+      filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.4));
+      margin-right: 8px;
+    }
+    .q-logo-svg {
+      display: block;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-brand:hover .q-logo-svg {
+      transform: scale(1.1) rotate(10deg);
+    }
+
+  
+    /* ══════════════════════════════════════════════════════════════════════════
+       ThreeUI-Inspired Quantum Wavefront Lattice (Canvas 2D Port)
+       Attribution: Direct reference implementation derived from ThreeUI
+       (neuform-isolated/signal-particles & predictive-arc, Meng To, MIT)
+       ══════════════════════════════════════════════════════════════════════════ */
+    #quantum-wavefront-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.72;
+      mask-image: radial-gradient(ellipse 75% 58% at 50% 36%, black 30%, transparent 82%);
+      -webkit-mask-image: radial-gradient(ellipse 75% 58% at 50% 36%, black 30%, transparent 82%);
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero > *:not(#quantum-wavefront-canvas) {
+      position: relative;
+      z-index: 2;
+    }
+
+  
+    /* Responsive Horizontal Scroll for Navigation Bar */
+    @media (max-width: 992px) {
+      .nav-cluster {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: calc(100vw - 220px);
+        scrollbar-width: none;
+      }
+      .nav-cluster::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    @media (max-width: 640px) {
+      .nav-cluster {
+        max-width: calc(100vw - 120px);
+      }
+    }
+
   </style>
 </head>
 <body>
-  <!-- Scroll-Reactive Dancing ASCII Quantum Canvas -->
-  <canvas id="ascii-bg-canvas"></canvas>
+  
 
   <!-- Header -->
-  <header>
-    <div class="container nav-content">
-      <a href="#" class="logo">
-        <span class="logo-badge">Q-Rotate</span>
-        <span>Eve Count</span>
+    <!-- Liquid Glass Navigation Header -->
+  <header class="liquid-header">
+    <div class="container nav-shell">
+      <a href="#" class="brand-link" data-haptic="light">
+        <div class="brand-text-wrap">
+          <span class="q-brand-emblem" aria-hidden="true">
+        <svg class="q-logo-svg" viewBox="0 0 36 36" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="qBrandGrad" x1="2" y1="4" x2="34" y2="32" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00f5d4" />
+              <stop offset="50%" stop-color="#38bdf8" />
+              <stop offset="100%" stop-color="#818cf8" />
+            </linearGradient>
+            <radialGradient id="qBrandCoreGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#00f5d4" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="#00f5d4" stop-opacity="0" />
+            </radialGradient>
+            <filter id="qBrandFilter" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <circle cx="18" cy="18" r="15" stroke="rgba(255, 255, 255, 0.18)" stroke-width="1" stroke-dasharray="2 2.5" />
+          <circle cx="18" cy="3" r="1.3" fill="#00f5d4" />
+          <circle cx="33" cy="18" r="1.3" fill="#38bdf8" />
+          <circle cx="18" cy="33" r="1.3" fill="#818cf8" />
+          <circle cx="3" cy="18" r="1.3" fill="#f59e0b" />
+          <ellipse class="q-orbit-primary" cx="18" cy="18" rx="14.5" ry="6.2" transform="rotate(-28 18 18)" stroke="url(#qBrandGrad)" stroke-width="1.4" stroke-dasharray="18 4 8 4" stroke-linecap="round" filter="url(#qBrandFilter)" />
+          <ellipse class="q-orbit-secondary" cx="18" cy="18" rx="14.5" ry="6.2" transform="rotate(35 18 18)" stroke="rgba(0, 245, 212, 0.45)" stroke-width="1" stroke-dasharray="12 6" />
+          <circle cx="28" cy="13" r="1.8" fill="#ffffff" filter="url(#qBrandFilter)" />
+          <circle cx="28" cy="13" r="1.0" fill="#00f5d4" />
+          <circle cx="18" cy="18" r="7" stroke="url(#qBrandGrad)" stroke-width="1.8" />
+          <path d="M22 22L28 28" stroke="url(#qBrandGrad)" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="18" cy="18" r="2.8" fill="#ffffff" />
+          <circle cx="18" cy="18" r="1.5" fill="#00f5d4" />
+        </svg>
+      </span>
+        <span class="brand-name">Q-Rotate</span>
+          <span class="brand-badge">Quantinuum H2</span>
+        </div>
       </a>
-      <div class="nav-links">
-        <a href="constellation.html" target="_blank" style="color: var(--accent-cyan); font-weight: 700;">🌌 3D Constellation</a>
-        <a href="#overview">Overview</a>
-        <a href="#math">Math</a>
-        <a href="#docs">Documentation</a>
-        <a href="#team">Team</a>
-        <a href="#benchmarks" style="color: var(--accent-cyan); font-weight: 700;">📊 Benchmarks</a>
-        <a href="#war-room" style="color: #f59e0b; font-weight: 700;">🔒 War Room</a>
-        <a href="workbook.html" target="_blank">Workbook</a>
-        <a href="https://github.com/evecount/quantum_rotation" target="_blank">GitHub</a>
-        <a href="constellation.html" class="btn-nav" target="_blank" style="background: linear-gradient(135deg, #f59e0b, #00f5d4);">🌌 Launch 3D Universe</a>
+
+      <!-- Sliding Glass Nav -->
+      <nav class="nav-cluster" aria-label="Primary Navigation">
+        <div class="nav-magnetic-pill" id="magneticPill" aria-hidden="true"></div>
+        <!-- 1. Conceptual Foundation -->
+        <a href="#overview" class="nav-item active-accent" data-haptic="light">Overview</a>
+        <a href="#math" class="nav-item" data-haptic="light">Math</a>
+        <a href="#benchmarks" class="nav-item" data-haptic="light">Benchmarks</a>
+        <a href="#docs" class="nav-item" data-haptic="light">Docs</a>
+        <!-- 2. Interactive Discovery -->
+        <a href="simulation.html" class="nav-item" data-haptic="light">Simulation</a>
+        <a href="constellation.html" class="nav-item" data-haptic="light">Constellation</a>
+        <!-- 3. Validation & Dossier -->
+        <a href="workbook.html" target="_blank" class="nav-item" data-haptic="light">Workbook</a>
+        <a href="#war-room" class="nav-item" data-haptic="light">War Room</a>
+        <a href="https://github.com/evecount/quantum_rotation" target="_blank" class="nav-item" data-haptic="light">GitHub</a>
+      </nav>
+
+      <!-- CybrDeck Liquid Glass CTA -->
+      <div class="nav-cta-cluster">
+        <a href="simulation.html" class="glass-cta-pill" data-haptic="medium">
+          <span class="cta-text">Launch Simulation</span>
+        </a>
       </div>
     </div>
   </header>
@@ -698,6 +937,7 @@
   <!-- Hero -->
   <main class="container">
     <section class="hero" id="overview">
+      <canvas id="quantum-wavefront-canvas" aria-hidden="true"></canvas>
       <div class="hero-banner-wrap">
         <img src="assets/qrotate_banner.jpg" alt="Project Q-Rotate Banner" />
       </div>
@@ -709,18 +949,15 @@
         Replacing brute-force 3D spatial docking with a quantum-native, information-theoretic dimensional rotation operator on Quantinuum trapped ions.
       </p>
 
-      <div class="hero-cta">
-        <a href="constellation.html" class="btn-primary" target="_blank" style="background: linear-gradient(135deg, #f59e0b, #00f5d4); box-shadow: 0 0 25px rgba(0, 245, 212, 0.4);">
-          <span>🌌 Explore 3D Constellation Universe</span>
+            <div class="hero-cta">
+        <a href="simulation.html" class="hero-glass-btn primary" data-haptic="medium">
+          <span>Launch Pipeline Simulation</span>
         </a>
-        <a href="workbook.html" class="btn-secondary" target="_blank">
-          <span>⚡ Interactive Workbook</span>
+        <a href="constellation.html" class="hero-glass-btn" target="_blank" data-haptic="medium">
+          <span>Explore 3D Constellation</span>
         </a>
-        <a href="https://github.com/evecount/quantum_rotation/blob/main/notebooks/project_q_rotate.ipynb" class="btn-secondary" target="_blank">
-          <span>📓 GitHub Notebook</span>
-        </a>
-        <a href="https://aqora.io/1ightray/sg-grand-challenge-evecount" class="btn-secondary" target="_blank">
-          <span>☁️ Aqora Workspace</span>
+        <a href="workbook.html" class="hero-glass-btn" target="_blank" data-haptic="light">
+          <span>Interactive Workbook</span>
         </a>
       </div>
 
@@ -747,10 +984,10 @@
 
     <!-- 3D Constellation Highlight Banner -->
     <section style="margin-bottom: 60px;">
-      <div style="background: radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.15) 0%, rgba(6, 10, 20, 0.9) 60%), linear-gradient(135deg, rgba(16, 24, 40, 0.9), rgba(11, 16, 32, 0.95)); border: 1px solid rgba(0, 245, 212, 0.35); border-radius: 20px; padding: 36px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; box-shadow: 0 0 35px rgba(0, 245, 212, 0.15);">
+      <div style="background: rgba(8, 14, 26, 0.92); border: 1px solid rgba(0, 245, 212, 0.25); border-radius: 20px; padding: 36px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.65);">
         <div style="max-width: 650px;">
           <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">
-            <span>✨ The Starry Night Biomolecular Universe</span>
+            <span> The Starry Night Biomolecular Universe</span>
           </div>
           <h2 style="font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 10px; letter-spacing: -0.02em;">The Resonance Constellation</h2>
           <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">
@@ -758,8 +995,8 @@
           </p>
         </div>
         <div>
-          <a href="constellation.html" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #f59e0b, #00f5d4); font-size: 1.1rem; padding: 16px 28px; box-shadow: 0 8px 30px rgba(0, 245, 212, 0.45);">
-            <span>🌌 Launch Fullscreen 3D Map →</span>
+          <a href="constellation.html" target="_blank" class="btn-primary" style="background: #00f5d4; color: #01040c; font-size: 1.1rem; padding: 16px 28px; box-shadow: 0 8px 30px rgba(0, 245, 212, 0.45);">
+            <span> Launch Fullscreen 3D Map →</span>
           </a>
         </div>
       </div>
@@ -772,7 +1009,7 @@
 
       <div class="arch-grid">
         <div class="arch-card">
-          <div class="arch-icon">🌀</div>
+          <div class="arch-icon"></div>
           <h3>1. Dimensional Rotation Operator</h3>
           <p>
             Replaces exponential 3D grid docking with the unitary evolution operator:
@@ -786,7 +1023,7 @@
         </div>
 
         <div class="arch-card">
-          <div class="arch-icon">🔒</div>
+          <div class="arch-icon"></div>
           <h3>2. Blind Parity SWAP Test</h3>
           <p>
             Acts as a zero-knowledge proof for structural complementarity. By measuring a single parity ancilla:
@@ -800,7 +1037,7 @@
         </div>
 
         <div class="arch-card">
-          <div class="arch-icon">🔁</div>
+          <div class="arch-icon"></div>
           <h3>3. Guppy RUS Dynamic Loop</h3>
           <p>
             Leverages Quantinuum's trapped ions to execute mid-circuit measurement and optical reset in real time.
@@ -818,14 +1055,14 @@
       <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
         <div>
           <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 245, 212, 0.12); border: 1px solid rgba(0, 245, 212, 0.3); color: var(--accent-cyan); font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">
-            <span>⚡ Official Qualifier Benchmark Telemetry</span>
+            <span> Official Qualifier Benchmark Telemetry</span>
           </div>
           <h2 class="section-title" style="margin-bottom: 6px;">Hardware Resource & Performance Benchmarks</h2>
           <p class="section-subtitle" style="margin: 0;">Classical 3D Spatial Grid-Search vs. Q-Rotate RUS on Quantinuum H2</p>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <a href="benchmarks/showdown_results.json" target="_blank" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;">
-            <span>📄 View Raw JSON Telemetry ↗</span>
+            <span> View Raw JSON Telemetry ↗</span>
           </a>
         </div>
       </div>
@@ -963,64 +1200,154 @@
       </div>
     </section>
 
-    <!-- Team & Collaborators -->
+        <!-- Team & Research Collaborators -->
     <section id="team" style="margin-bottom: 60px;">
       <h2 class="section-title">Team & Research Collaborators</h2>
       <p class="section-subtitle">Driving Project Q-Rotate for the Quantinuum Singapore Grand Challenge 2026.</p>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
         <!-- Gwen ("1ightray") -->
-        <div class="stat-card" style="text-align: left; padding: 28px; border-left: 3px solid var(--accent-cyan); display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="stat-card" style="text-align: left; padding: 28px; border-left: 3px solid var(--accent-cyan); display: flex; flex-direction: column; justify-content: space-between; background: rgba(10, 15, 29, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-left: 3px solid var(--accent-cyan); border-radius: 14px;">
           <div>
-            <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Founder & Core Quantum Engine</div>
-            <div style="font-size: 1.45rem; font-weight: 800; color: #fff; margin-bottom: 2px;">Gwen <span style="font-size: 0.95rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 600;">("1ightray")</span></div>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px;">Founder & Lead Quantum Architect ("The Quantum Bunny") • Eve Count</p>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px;">
+              <div style="font-size: 0.72rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.08em; background: rgba(0, 245, 212, 0.12); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(0, 245, 212, 0.3);">
+                Founder & Lead Quantum Architect
+              </div>
+              <img src="assets/gwen_headshot.jpeg" alt="Gwendalynn Lim" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-cyan);" />
+            </div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 2px;">
+              Gwendalynn (婉婷) Lim <span style="font-size: 0.85rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 600;">("1ightray")</span> <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 400;">(They/Them)</span>
+            </div>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px; font-weight: 500;">
+              Founder & DeepTech CTO @ <strong style="color: #fff;">Eve Count</strong> • Quantum Software R&D • Forwarding Autonomous AI
+            </p>
+
+            <!-- Academic & Technical Pedigree Badges -->
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
+              <span style="font-size: 0.7rem; font-weight: 700; color: #67e8f9; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.35); padding: 2px 7px; border-radius: 5px;">B.Sc. (Hons) Applied Computing (SIT)</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #a5f3fc; background: rgba(8, 145, 178, 0.15); border: 1px solid rgba(8, 145, 178, 0.35); padding: 2px 7px; border-radius: 5px;">Advanced AI & ML SCTP (NTU)</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #86efac; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.35); padding: 2px 7px; border-radius: 5px;">Quantum Systems R&D</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #cbd5e1; background: rgba(148, 163, 184, 0.15); border: 1px solid rgba(148, 163, 184, 0.35); padding: 2px 7px; border-radius: 5px;">Singapore • 500+ Connections</span>
+            </div>
+
+            <!-- Profile Writeup -->
+            <p style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 14px;">
+              Founder & DeepTech CTO of <strong>Eve Count</strong> and primary inventor of Project Q-Rotate's Lie-algebra coordinate-free pattern matching engine. Holding a <strong>B.Sc. (Hons) in Applied Computing from SIT</strong> and advanced AI/Machine Learning credentials from <strong>NTU</strong>, Gwendalynn translated classical 3D molecular grid docking into unitary Lie algebra rotations Û<sub>tube</sub>(τ). They lead core quantum architecture, dynamic Guppy/Pytket kernel synthesis, and trapped-ion physical execution on Quantinuum hardware.
+            </p>
+
             <div style="background: rgba(15, 23, 42, 0.6); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; border: 1px solid rgba(255, 255, 255, 0.06);">
               <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 4px;">In Charge Of:</div>
-              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+              <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5; margin: 0;">
                 Overall architecture and core quantum engine innovation, mathematical formulation of Û<sub>tube</sub>(τ), Lie algebra generators, dynamic Guppy/Pytket quantum kernels, and trapped-ion physical execution.
               </p>
             </div>
           </div>
-          <a href="mailto:gwen@evecount.com" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.85rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 6px;">
-            <span>✉️ gwen@evecount.com</span>
-          </a>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px;">
+            <a href="mailto:gwen@evecount.com" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.82rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 6px;">
+              <span>gwen@evecount.com</span>
+            </a>
+            <a href="https://www.linkedin.com/in/gwendalynnlim/" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.82rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 4px;">
+              <span>LinkedIn Profile ↗</span>
+            </a>
+          </div>
         </div>
 
         <!-- Benjamin Lim -->
-        <div class="stat-card" style="text-align: left; padding: 28px; border-left: 3px solid var(--accent-cyan); display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="stat-card" style="text-align: left; padding: 28px; border-left: 3px solid #f59e0b; display: flex; flex-direction: column; justify-content: space-between; background: rgba(10, 15, 29, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-left: 3px solid #f59e0b; border-radius: 14px;">
           <div>
-            <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Frontend & Web Systems</div>
-            <div style="font-size: 1.45rem; font-weight: 800; color: #fff; margin-bottom: 2px;">Benjamin Lim</div>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px;">Frontend Lead & Systems Architect • Eve Count</p>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px;">
+              <div style="font-size: 0.72rem; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(245, 158, 11, 0.12); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                Co-Founder & Systems Architect
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="assets/cybrdeck_logo.png" alt="Cybrdeck" style="height: 24px; opacity: 0.9; object-fit: contain;" />
+                <img src="assets/ben_headshot.jpg" alt="Benjamin Lim" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #f59e0b;" />
+              </div>
+            </div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 2px;">
+              Benjamin Lim <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #f59e0b; font-weight: 600;">("Sedilix")</span> <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 400;">(He/Him)</span>
+            </div>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px; font-weight: 500;">
+              Co-Founder @ <strong style="color: #fff;">Eve Count</strong> & <strong style="color: #fff;">Cybrdeck</strong> • Systems Architect • Community Builder
+            </p>
+
+            <!-- Technical Badges -->
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
+              <span style="font-size: 0.7rem; font-weight: 700; color: #fcd34d; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); padding: 2px 7px; border-radius: 5px;">Co-Founder @ Cybrdeck</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #86efac; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.35); padding: 2px 7px; border-radius: 5px;">1,500+ GitHub Commits/yr</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #67e8f9; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.35); padding: 2px 7px; border-radius: 5px;">Three.js & WebGL Systems</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #cbd5e1; background: rgba(148, 163, 184, 0.15); border: 1px solid rgba(148, 163, 184, 0.35); padding: 2px 7px; border-radius: 5px;">Singapore • Active Builder</span>
+            </div>
+
+            <!-- Profile Writeup -->
+            <p style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 14px;">
+              Co-Founder of <strong>Eve Count</strong> and <strong>Cybrdeck</strong> (an AI venture studio and multi-model platform builder), Benjamin is a full-stack systems architect with over 1,500 open-source contributions in the past year. On Project Q-Rotate, he architects the real-time client platform, translating complex quantum state vectors and Hamiltonian time-evolution manifolds into high-performance Three.js / WebGL 3D visualizations (The Resonance Constellation), interactive Marimo notebooks, and responsive developer tooling.
+            </p>
+
             <div style="background: rgba(15, 23, 42, 0.6); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; border: 1px solid rgba(255, 255, 255, 0.06);">
-              <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 4px;">In Charge Of:</div>
-              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
-                Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, and developer user experience.
+              <div style="font-size: 0.75rem; font-weight: 700; color: #f59e0b; text-transform: uppercase; margin-bottom: 4px;">In Charge Of:</div>
+              <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5; margin: 0;">
+                Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, reactive telemetry interfaces, and developer user experience.
               </p>
             </div>
           </div>
-          <a href="mailto:ben@evecount.com" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.85rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 6px;">
-            <span>✉️ ben@evecount.com</span>
-          </a>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px;">
+            <a href="mailto:ben@evecount.com" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.82rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 6px;">
+              <span>ben@evecount.com</span>
+            </a>
+            <a href="https://www.linkedin.com/in/sedilix/" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.82rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 4px;">
+              <span>LinkedIn Profile ↗</span>
+            </a>
+            <a href="https://github.com/sedilix" target="_blank" rel="noopener noreferrer" style="color: #cbd5e1; text-decoration: none; font-size: 0.82rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 4px;">
+              <span>GitHub (1.5k+) ↗</span>
+            </a>
+          </div>
         </div>
 
         <!-- James Sun -->
-        <div class="stat-card" style="text-align: left; padding: 28px; border-left: 3px solid var(--accent-blue); display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="stat-card" style="text-align: left; padding: 28px; border-left: 3px solid #a855f7; display: flex; flex-direction: column; justify-content: space-between; background: rgba(10, 15, 29, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-left: 3px solid #a855f7; border-radius: 14px;">
           <div>
-            <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Venture & GTM Strategist</div>
-            <div style="font-size: 1.45rem; font-weight: 800; color: #fff; margin-bottom: 2px;">James Sun</div>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px;">Venture Advisor & GTM Strategist • Mamba Partners</p>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px;">
+              <div style="font-size: 0.72rem; font-weight: 700; color: #c084fc; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(168, 85, 247, 0.12); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(168, 85, 247, 0.3);">
+                Venture & GTM Strategist
+              </div>
+              <img src="assets/mamba_logo.png" alt="Mamba Partners" style="height: 36px; max-width: 120px; object-fit: contain; border-radius: 4px;" />
+            </div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 2px;">
+              James Sun <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 400;">(He/Him)</span>
+            </div>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px; font-weight: 500;">
+              Founder @ <strong style="color: #fff;">Mamba Partners</strong> • Venture Innovator • Community Champion
+            </p>
+
+            <!-- Pedigree badges -->
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
+              <span style="font-size: 0.7rem; font-weight: 700; color: #93c5fd; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); padding: 2px 7px; border-radius: 5px;">ex. Goldman Sachs</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #c4b5fd; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.35); padding: 2px 7px; border-radius: 5px;">ex. Blackstone</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #6ee7b7; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); padding: 2px 7px; border-radius: 5px;">ex. Microsoft</span>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #cbd5e1; background: rgba(148, 163, 184, 0.15); border: 1px solid rgba(148, 163, 184, 0.35); padding: 2px 7px; border-radius: 5px;">Singapore • 11K+ Followers</span>
+            </div>
+
+            <!-- Profile Writeup -->
+            <p style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 14px;">
+              Founder of <strong>Mamba Partners</strong>, a premier venture advisory firm providing fractional leadership across operations, HR, strategy, corporate growth, and executive positioning. With an institutional background spanning <strong>Goldman Sachs</strong>, <strong>Blackstone</strong>, and <strong>Microsoft</strong>, James bridges the gap between frontier quantum science and commercial capital. On Project Q-Rotate, he steers our commercialization roadmap, investor syndication, and enterprise biopharma partnerships for the Quantinuum Grand Challenge.
+            </p>
+
             <div style="background: rgba(15, 23, 42, 0.6); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; border: 1px solid rgba(255, 255, 255, 0.06);">
-              <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 4px;">In Charge Of:</div>
-              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
-                Venture capital strategy, global Go-To-Market (GTM) execution, pharma industry commercial partnerships, strategic network syndication, and investor positioning.
+              <div style="font-size: 0.75rem; font-weight: 700; color: #c084fc; text-transform: uppercase; margin-bottom: 4px;">In Charge Of:</div>
+              <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5; margin: 0;">
+                Venture capital strategy, institutional fundraising syndication, biopharma enterprise commercialization, Tier-1 pharma partnership outreach, and investor positioning for the Grand Challenge finals.
               </p>
             </div>
           </div>
-          <a href="mailto:james@mambapartners.com" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.85rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 6px;">
-            <span>✉️ james@mambapartners.com</span>
-          </a>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px;">
+            <a href="mailto:james@mambapartners.com" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.82rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 6px;">
+              <span>james@mambapartners.com</span>
+            </a>
+            <a href="https://www.linkedin.com/in/jamessun1/" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.82rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 4px;">
+              <span>LinkedIn Profile (11k+) ↗</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -1029,7 +1356,7 @@
     <section id="war-room" class="war-room-container">
       <!-- Locked Passcode Gate -->
       <div id="war-room-gate" class="war-room-gate">
-        <div style="font-size: 2.2rem; margin-bottom: 12px;">🔒</div>
+        <div style="font-size: 2.2rem; margin-bottom: 12px;"></div>
         <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 8px;">Private Team Mission Control</h2>
         <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
           Restricted access for <strong>Gwen ("1ightray")</strong>, <strong>Benjamin Lim</strong>, and <strong>James Sun</strong>.<br />
@@ -1042,7 +1369,7 @@
           </button>
         </div>
         <p style="font-size: 0.75rem; color: #64748b; margin-top: 12px;">
-          🔒 Authorized Eve Count team members only • Session persists on your device.
+           Authorized Eve Count team members only • Session persists on your device.
         </p>
       </div>
 
@@ -1053,10 +1380,10 @@
             <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">
               <span>● Logged in as Team Eve Count</span>
             </div>
-            <h2 style="font-size: 1.85rem; font-weight: 800; color: #fff;">⚡ Project Q-Rotate Mission Control</h2>
+            <h2 style="font-size: 1.85rem; font-weight: 800; color: #fff;"> Project Q-Rotate Mission Control</h2>
           </div>
           <button id="btn-lock-warroom" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444; cursor: pointer;">
-            <span>🔒 Lock Dashboard</span>
+            <span> Lock Dashboard</span>
           </button>
         </div>
 
@@ -1066,10 +1393,10 @@
             Select Team Member View:
           </label>
           <select id="warroom-member-select" class="member-select">
-            <option value="all">🌟 All Team Members (Master Executive View)</option>
-            <option value="gwen">🐰 Gwen ("1ightray") — Founder & Core Quantum Engine</option>
-            <option value="ben">🎨 Benjamin Lim — Frontend Lead & Systems Architect</option>
-            <option value="james">💼 James Sun — Venture Advisor & GTM Strategist</option>
+            <option value="all"> All Team Members (Master Executive View)</option>
+            <option value="gwen"> Gwen ("1ightray") — Founder & Core Quantum Engine</option>
+            <option value="ben"> Benjamin Lim — Frontend Lead & Systems Architect</option>
+            <option value="james"> James Sun — Venture Advisor & GTM Strategist</option>
           </select>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
             Check off action items as you finish them. Your checklist progress automatically persists across sessions on your device.
@@ -1082,7 +1409,7 @@
             <!-- Gwen -->
             <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 245, 212, 0.25); border-radius: 14px; padding: 22px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">🐰 Gwen ("1ightray")</h4>
+                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;"> Gwen ("1ightray")</h4>
                 <span style="font-size: 0.72rem; font-weight: 700; color: var(--accent-cyan); background: rgba(0, 245, 212, 0.12); border: 1px solid rgba(0, 245, 212, 0.3); padding: 3px 8px; border-radius: 12px; text-transform: uppercase;">Prototype v1.0 Built</span>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Founder & Core Quantum Engine Lead</p>
@@ -1094,7 +1421,7 @@
             <!-- Ben -->
             <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 22px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">🎨 Benjamin Lim</h4>
+                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;"> Benjamin Lim</h4>
                 <span style="font-size: 0.72rem; font-weight: 700; color: #f59e0b; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); padding: 3px 8px; border-radius: 12px; text-transform: uppercase;">Branch: ben/frontend-systems</span>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Frontend Lead & Systems Architect</p>
@@ -1106,7 +1433,7 @@
             <!-- James -->
             <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 14px; padding: 22px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">💼 James Sun</h4>
+                <h4 style="color: #fff; font-size: 1.1rem; margin: 0;"> James Sun</h4>
                 <span style="font-size: 0.72rem; font-weight: 700; color: #c084fc; background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.3); padding: 3px 8px; border-radius: 12px; text-transform: uppercase;">Scope of Work Assigned</span>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Venture Advisor & GTM Strategist</p>
@@ -1118,7 +1445,7 @@
 
           <!-- Overall Competition Timeline -->
           <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 22px;">
-            <h4 style="color: var(--accent-cyan); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px;">🎯 Critical Competition Deadlines</h4>
+            <h4 style="color: var(--accent-cyan); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px;"> Critical Competition Deadlines</h4>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
               <div style="border-left: 2px solid var(--accent-cyan); padding-left: 12px;">
                 <div style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 700;">OCTOBER 15, 2026</div>
@@ -1148,7 +1475,7 @@
         <div id="panel-gwen" class="role-panel">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
             <div>
-              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;">🐰 Gwen ("1ightray") — Quantum Architecture Lead</h3>
+              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;"> Gwen ("1ightray") — Quantum Architecture Lead</h3>
               <p style="color: var(--text-muted); font-size: 0.9rem;">Founder & Core Quantum Engine ("The Quantum Bunny") • <a href="mailto:gwen@evecount.com" style="color: var(--accent-cyan);">gwen@evecount.com</a></p>
             </div>
             <span style="font-size: 0.78rem; font-weight: 700; color: var(--accent-cyan); background: rgba(0, 245, 212, 0.12); border: 1px solid rgba(0, 245, 212, 0.3); padding: 4px 12px; border-radius: 16px; text-transform: uppercase;">
@@ -1158,10 +1485,10 @@
 
           
           <!-- Official Aqora Workspace Submission Pipeline Card -->
-          <div style="background: linear-gradient(135deg, rgba(0, 245, 212, 0.12), rgba(123, 44, 191, 0.15)); border: 1px solid rgba(0, 245, 212, 0.35); border-radius: 14px; padding: 22px; margin-bottom: 24px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);">
+          <div style="background: rgba(12, 18, 34, 0.9); border: 1px solid rgba(0, 245, 212, 0.22); border-radius: 14px; padding: 22px; margin-bottom: 24px; box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
               <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 1.5rem;">🌐</span>
+                <span style="font-size: 1.5rem;"></span>
                 <div>
                   <h4 style="color: #fff; font-size: 1.15rem; margin: 0; font-weight: 800;">Official Aqora Workspace Submission Pipeline</h4>
                   <div style="font-size: 0.8rem; color: var(--accent-cyan); font-family: var(--font-mono); margin-top: 2px;">
@@ -1169,7 +1496,7 @@
                   </div>
                 </div>
               </div>
-              <a href="https://aqora.io/1ightray/sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching" target="_blank" class="btn-primary" style="font-size: 0.85rem; padding: 8px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #00f5d4, #7b2cbf); color: #07090e; font-weight: 800;">
+              <a href="https://aqora.io/1ightray/sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching" target="_blank" class="btn-primary" style="font-size: 0.85rem; padding: 8px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: #00f5d4; color: #01040c; font-weight: 700;">
                 <span>Open Aqora Workspace ↗</span>
               </a>
             </div>
@@ -1215,7 +1542,7 @@
             <div style="background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 245, 212, 0.2); border-radius: 8px; padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700;">
-                  💻 Local CLI Pairing Commands (Run in D:\Quantinuum_GrandChallenge)
+                   Local CLI Pairing Commands (Run in D:\Quantinuum_GrandChallenge)
                 </span>
                 <span style="font-size: 0.72rem; color: var(--text-muted);">PowerShell / Bash</span>
               </div>
@@ -1229,7 +1556,7 @@
 
           <!-- Foundation Built by Gwen -->
           <div style="background: rgba(0, 245, 212, 0.08); border: 1px solid rgba(0, 245, 212, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
-            <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">🛠️ Prototype Foundation Built by Gwen</div>
+            <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">️ Prototype Foundation Built by Gwen</div>
             <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; color: #e2e8f0; line-height: 1.7;">
               <li><strong>Mathematical Formulation</strong> of $\hat{U}_{\text{tube}}(\tau) = \exp(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$ and Lie algebra generators.</li>
               <li><strong>Classical-to-Quantum HPC Bridge</strong> (<code>src/qrotate/hpc_bridge.py</code>) for spherical coordinate-to-phase mapping.</li>
@@ -1239,7 +1566,7 @@
           </div>
 
           <!-- Interactive Action Items -->
-          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">🚀 Gwen's Next Action Items</h4>
+          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;"> Gwen's Next Action Items</h4>
           <div class="task-checklist">
             <label class="task-item" data-task-id="gwen_aqora_login">
               <input type="checkbox" />
@@ -1276,7 +1603,7 @@
         <div id="panel-ben" class="role-panel">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
             <div>
-              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;">🎨 Benjamin Lim — Frontend & Systems Architect</h3>
+              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;"> Benjamin Lim — Frontend & Systems Architect</h3>
               <p style="color: var(--text-muted); font-size: 0.9rem;">Frontend Systems Lead • <a href="mailto:ben@evecount.com" style="color: var(--accent-cyan);">ben@evecount.com</a></p>
             </div>
             <span style="font-size: 0.78rem; font-weight: 700; color: #f59e0b; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); padding: 4px 12px; border-radius: 16px; text-transform: uppercase;">
@@ -1285,10 +1612,10 @@
           </div>
 
           <!-- Official Competition Document Viewer Callout (for Ben) -->
-          <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(0, 245, 212, 0.12)); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 18px 22px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);">
+          <div style="background: rgba(12, 18, 34, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 18px 22px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);">
             <div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <span style="font-size: 1.2rem;">📄</span>
+                <span style="font-size: 1.2rem;"></span>
                 <strong style="color: #fff; font-size: 1.05rem;">Official Challenge Brief: <code>Competition.md</code></strong>
               </div>
               <p style="color: #cbd5e1; font-size: 0.86rem; margin: 0; line-height: 1.5;">
@@ -1296,8 +1623,8 @@
               </p>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <button class="btn-open-comp-modal-trigger btn-primary" style="font-size: 0.85rem; padding: 9px 18px; cursor: pointer; border: none; background: linear-gradient(135deg, #f59e0b, #00f5d4); color: #07090e; font-weight: 800;">
-                <span>📖 Read Challenge Document</span>
+              <button class="btn-open-comp-modal-trigger btn-primary" style="font-size: 0.85rem; padding: 9px 18px; cursor: pointer; border: none; background: #00f5d4; color: #01040c; font-weight: 700;">
+                <span> Read Challenge Document</span>
               </button>
               <a href="competition.html" target="_blank" class="btn-secondary" style="font-size: 0.85rem; padding: 9px 14px;">
                 <span>Open in New Tab ↗</span>
@@ -1307,10 +1634,10 @@
 
           
           <!-- Architecture Guide for Ben: Why Gwen's Idea is Visually & Architecturally Unique -->
-          <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(6, 182, 212, 0.12)); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 22px; margin-bottom: 22px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);">
+          <div style="background: rgba(12, 18, 34, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 22px; margin-bottom: 22px; box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(245, 158, 11, 0.2); padding-bottom: 10px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.3rem;">💡</span>
+                <span style="font-size: 1.3rem;"></span>
                 <div>
                   <h4 style="color: #fff; font-size: 1.1rem; margin: 0; font-weight: 800;">Ben's Guide: How Gwen's Algorithm Dictates the 3D Frontend</h4>
                   <div style="font-size: 0.78rem; color: #f59e0b; font-weight: 600;">The scientific uniqueness behind Q-Rotate and how to visually showcase it in Three.js</div>
@@ -1338,7 +1665,7 @@
               <div style="background: rgba(10, 15, 29, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px;">
                 <div style="font-size: 0.76rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 4px;">2. WASD Tunes Lie Algebra Generators</div>
                 <div style="font-size: 0.84rem; color: #94a3b8; line-height: 1.5;">
-                  The "Quantum Hero" WASD keyboard controls are not just a video game gimmick—they represent interactive tuning of the $L_x, L_y, L_z$ angular momentum generators in real-time, letting judges feel the quantum phase synchronization.
+                  The interactive trapped-ion continuous rotation controls are not just a video game gimmick—they represent interactive tuning of the $L_x, L_y, L_z$ angular momentum generators in real-time, letting judges feel the quantum phase synchronization.
                 </div>
               </div>
 
@@ -1353,9 +1680,9 @@
 
           <!-- Status & Handover Note -->
           <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
-            <div style="font-size: 0.8rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">📌 Project Status & Handover Note for Ben</div>
+            <div style="font-size: 0.8rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;"> Project Status & Handover Note for Ben</div>
             <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 10px;">
-              Gwen built the foundational v1.0 prototype—including the initial Three.js 3D Constellation, the "Quantum Hero" WASD gate mechanic, and KaTeX math rendering—to provide a working demonstration. 
+              Gwen built the foundational v1.0 prototype—including the initial Three.js 3D Constellation, the interactive Lie-algebra gate alignment controls, and KaTeX math rendering—to provide a working demonstration. 
               <strong>Ben is now assigned to take ownership of the frontend codebase on his dedicated branch to refine, optimize, and build out production systems.</strong>
             </p>
             <div style="font-size: 0.82rem; color: #94a3b8;">
@@ -1367,11 +1694,11 @@
           <div style="background: rgba(10, 15, 30, 0.85); border: 1px solid rgba(0, 245, 212, 0.3); border-radius: 14px; padding: 20px 22px; margin-bottom: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.1rem;">🌿</span>
+                <span style="font-size: 1.1rem;"></span>
                 <span style="font-size: 0.95rem; font-weight: 700; color: #fff;">Live Branch Activity: <code style="color: var(--accent-cyan);">ben/frontend-systems</code></span>
               </div>
               <button id="btn-refresh-ben-branch" class="btn-secondary" style="font-size: 0.75rem; padding: 5px 12px; cursor: pointer;">
-                <span>🔄 Check Branch Pushes</span>
+                <span> Check Branch Pushes</span>
               </button>
             </div>
             
@@ -1392,16 +1719,16 @@
 
             <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px;">
               <a href="https://github.com/evecount/quantum_rotation/tree/ben/frontend-systems" target="_blank" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 14px;">
-                <span>📂 View Branch on GitHub →</span>
+                <span> View Branch on GitHub →</span>
               </a>
               <a href="https://github.com/evecount/quantum_rotation/compare/main...ben/frontend-systems?expand=1" target="_blank" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 14px; border-color: rgba(0, 245, 212, 0.4); color: var(--accent-cyan);">
-                <span>🔀 Open Pull Request to Main →</span>
+                <span> Open Pull Request to Main →</span>
               </a>
             </div>
           </div>
 
           <!-- Assigned Scope of Work Checklist -->
-          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">📋 Ben's Assigned Scope of Work & Action Items</h4>
+          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;"> Ben's Assigned Scope of Work & Action Items</h4>
           <div class="task-checklist">
             <label class="task-item" data-task-id="ben_clone_branch">
               <input type="checkbox" />
@@ -1445,7 +1772,7 @@
         <div id="panel-james" class="role-panel">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
             <div>
-              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;">💼 James Sun — Venture Advisor & GTM Strategist</h3>
+              <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px;"> James Sun — Venture Advisor & GTM Strategist</h3>
               <p style="color: var(--text-muted); font-size: 0.9rem;">Venture Advisor & GTM Strategist • <a href="mailto:james@mambapartners.com" style="color: var(--accent-cyan);">james@mambapartners.com</a></p>
             </div>
             <span data-james-badge style="font-size: 0.78rem; font-weight: 700; color: #c084fc; background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.3); padding: 4px 12px; border-radius: 16px; text-transform: uppercase;">
@@ -1454,10 +1781,10 @@
           </div>
 
           <!-- Official Competition Document Viewer Callout -->
-          <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(168, 85, 247, 0.12)); border: 1px solid rgba(0, 245, 212, 0.35); border-radius: 14px; padding: 18px 22px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);">
+          <div style="background: rgba(12, 18, 34, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 18px 22px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);">
             <div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <span style="font-size: 1.2rem;">📄</span>
+                <span style="font-size: 1.2rem;"></span>
                 <strong style="color: #fff; font-size: 1.05rem;">Official Challenge Brief: <code>Competition.md</code></strong>
               </div>
               <p style="color: #cbd5e1; font-size: 0.86rem; margin: 0; line-height: 1.5;">
@@ -1465,8 +1792,8 @@
               </p>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <button id="btn-open-comp-modal" class="btn-primary" style="font-size: 0.85rem; padding: 9px 18px; cursor: pointer; border: none; background: linear-gradient(135deg, #00f5d4, #3b82f6); color: #07090e; font-weight: 800;">
-                <span>📖 Read Challenge Document</span>
+              <button id="btn-open-comp-modal" class="btn-primary" style="font-size: 0.85rem; padding: 9px 18px; cursor: pointer; border: none; background: #00f5d4; color: #01040c; font-weight: 700;">
+                <span> Read Challenge Document</span>
               </button>
               <a href="competition.html" target="_blank" class="btn-secondary" style="font-size: 0.85rem; padding: 9px 14px;">
                 <span>Open in New Tab ↗</span>
@@ -1475,23 +1802,23 @@
           </div>
 
           <!-- THE "WHY WE WIN" ELEVATOR PITCH FOR JAMES -->
-          <div style="background: radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.18) 0%, rgba(13, 19, 36, 0.95) 70%); border: 1px solid rgba(168, 85, 247, 0.45); border-radius: 18px; padding: 26px 28px; margin-bottom: 24px; box-shadow: 0 0 35px rgba(168, 85, 247, 0.18);">
+          <div style="background: rgba(12, 18, 34, 0.92); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 18px; padding: 26px 28px; margin-bottom: 24px; box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.65);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; border-bottom: 1px solid rgba(168, 85, 247, 0.25); padding-bottom: 12px;">
               <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 1.5rem;">🏆</span>
+                <span style="font-size: 1.5rem;"></span>
                 <div>
                   <h3 style="color: #fff; font-size: 1.25rem; font-weight: 800; margin: 0;">James's "Why We Win" Elevator Pitch</h3>
                   <div style="font-size: 0.78rem; color: #c084fc; font-weight: 600;">What we are making, why it is genius, and why judges will score us #1</div>
                 </div>
               </div>
               <button id="btn-copy-pitch" class="btn-secondary" style="font-size: 0.8rem; padding: 7px 16px; cursor: pointer; border-color: rgba(168, 85, 247, 0.4); color: #c084fc; background: rgba(168, 85, 247, 0.1);">
-                <span>📋 Copy 30-Sec Pitch</span>
+                <span> Copy 30-Sec Pitch</span>
               </button>
             </div>
 
             <!-- 30-Sec Spoken Pitch -->
             <div style="background: rgba(6, 10, 20, 0.88); border-left: 3px solid #c084fc; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px;">
-              <div style="font-size: 0.75rem; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">🎙️ The 30-Second Spoken Pitch (Say this to judges & biopharma leads):</div>
+              <div style="font-size: 0.75rem; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">️ The 30-Second Spoken Pitch (Say this to judges & biopharma leads):</div>
               <p id="pitch-text" style="font-size: 0.93rem; color: #f1f5f9; line-height: 1.6; font-style: italic; margin: 0;">
                 "Today, testing if a drug fits a disease protein requires supercomputers running for months on massive 3D grids—and if two pharma companies collaborate, someone risks leaking multi-million dollar chemical IP. 
                 <strong>Project Q-Rotate replaces spatial geometry with quantum wave information.</strong> We map the lock and key into wave states, apply a single dimensional rotation step, and ask a single spectator qubit: <em>'Did it lock, yes or no?'</em> 
@@ -1533,10 +1860,10 @@
 
           
           <!-- The Unfair Advantage Matrix for James -->
-          <div style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.14), rgba(59, 130, 246, 0.12)); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 14px; padding: 22px; margin-bottom: 22px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);">
+          <div style="background: rgba(12, 18, 34, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 22px; margin-bottom: 22px; box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(168, 85, 247, 0.2); padding-bottom: 10px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.3rem;">⚡</span>
+                <span style="font-size: 1.3rem;"></span>
                 <div>
                   <h4 style="color: #fff; font-size: 1.1rem; margin: 0; font-weight: 800;">James's Unfair Advantage Matrix: Why Gwen's Breakthrough Beats All Rivals</h4>
                   <div style="font-size: 0.78rem; color: #c084fc; font-weight: 600;">The defensive IP moats and competitive differentiation to cite in decks and judge interviews</div>
@@ -1593,7 +1920,7 @@
 
           <!-- Status & Scope Note -->
           <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
-            <div style="font-size: 0.8rem; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">📌 Venture & GTM Status Note for James</div>
+            <div style="font-size: 0.8rem; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;"> Venture & GTM Status Note for James</div>
             <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; margin: 0;">
               The foundational commercial thesis—framing the $O(1)$ Blind Parity Test as a Zero-Knowledge Proof for confidential pharmaceutical IP licensing—was drafted as part of the technical prototype. 
               <strong>James is now assigned to review and elevate the commercial narrative, engage his biopharma network for prospective pilot syndicates, and structure the venture pitch for the Grand Finals.</strong>
@@ -1601,7 +1928,7 @@
           </div>
 
           <!-- Assigned Scope of Work Checklist -->
-          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">📋 James's Assigned Scope of Work & Action Items</h4>
+          <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;"> James's Assigned Scope of Work & Action Items</h4>
           <div class="task-checklist">
             <label class="task-item" data-task-id="james_review_deck">
               <input type="checkbox" />
@@ -1638,12 +1965,12 @@
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid rgba(168, 85, 247, 0.25); padding-bottom: 14px;">
               <div>
                 <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; font-size: 0.75rem; font-weight: 800; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; margin-bottom: 6px;">
-                  <span>✨ Zero Git / Terminal Required</span>
+                  <span> Zero Git / Terminal Required</span>
                 </div>
-                <h3 style="color: #fff; font-size: 1.25rem; font-weight: 800; margin: 0;">💼 James's Venture & GTM Fill-In Workbook</h3>
+                <h3 style="color: #fff; font-size: 1.25rem; font-weight: 800; margin: 0;"> James's Venture & GTM Fill-In Workbook</h3>
               </div>
               <div id="james-save-status" style="font-size: 0.78rem; color: #10b981; font-weight: 600;">
-                🟢 All entries auto-saved
+                 All entries auto-saved
               </div>
             </div>
 
@@ -1691,14 +2018,14 @@
               <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                   <!-- Main Mailto & Mark Done Button -->
-                  <button id="btn-james-send-done" class="btn-primary" style="font-size: 0.92rem; padding: 12px 22px; cursor: pointer; border: none; background: linear-gradient(135deg, #10b981, #00f5d4); color: #06101e; font-weight: 800; box-shadow: 0 4px 20px rgba(0, 245, 212, 0.35);">
-                    <span>✉️ Send to Gwen (gwen@evecount.com) & Mark Done ✅</span>
+                  <button id="btn-james-send-done" class="btn-primary" style="font-size: 0.92rem; padding: 12px 22px; cursor: pointer; border: none; background: #00f5d4; color: #01040c; font-weight: 700; box-shadow: 0 4px 14px rgba(0, 245, 212, 0.25);">
+                    <span>Send to Gwen (gwen@evecount.com) & Complete</span>
                   </button>
                   <button id="btn-james-copy" class="btn-secondary" style="font-size: 0.85rem; padding: 10px 16px; cursor: pointer; border-color: rgba(168, 85, 247, 0.4); color: #c084fc;">
-                    <span>📋 Copy Text</span>
+                    <span> Copy Text</span>
                   </button>
                   <button id="btn-james-download" class="btn-secondary" style="font-size: 0.85rem; padding: 10px 16px; cursor: pointer;">
-                    <span>💾 Download .md</span>
+                    <span> Download .md</span>
                   </button>
                 </div>
                 <button id="btn-james-clear" style="background: transparent; border: none; color: #64748b; font-size: 0.78rem; cursor: pointer; text-decoration: underline;">
@@ -1709,7 +2036,7 @@
               <!-- Instant Confirmation Banner -->
               <div id="james-done-banner" style="display: none; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 16px 20px; margin-top: 16px; animation: fadeIn 0.3s ease;">
                 <div style="display: flex; align-items: center; gap: 8px; color: #10b981; font-weight: 800; font-size: 0.95rem; margin-bottom: 4px;">
-                  <span>🎉 Awesome work, James!</span>
+                  <span> Awesome work, James!</span>
                 </div>
                 <p style="color: #cbd5e1; font-size: 0.86rem; margin: 0; line-height: 1.5;">
                   Your strategy brief has been compiled into an email draft for <strong>gwen@evecount.com</strong>, and all of your action items above have been automatically <strong>marked COMPLETE</strong> on your dashboard.
@@ -1730,7 +2057,7 @@
           </div>
           <div style="display: flex; gap: 10px; align-items: center;">
             <a href="competition.html" target="_blank" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 14px;">Open Full Page ↗</a>
-            <button id="btn-close-comp-modal" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; transition: background 0.2s;">Close ✕</button>
+            <button id="btn-close-comp-modal" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; transition: background 0.2s;">Close &times;</button>
           </div>
         </div>
         <!-- Modal Content Container -->
@@ -1749,10 +2076,10 @@
       </p>
       <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
         <a href="workbook.html" class="btn-primary" target="_blank">
-          <span>🚀 Open Standalone Interactive Workbook</span>
+          <span> Open Standalone Interactive Workbook</span>
         </a>
         <a href="https://github.com/evecount/quantum_rotation/blob/main/notebooks/project_q_rotate.ipynb" class="btn-secondary" target="_blank">
-          <span>📖 Open GitHub Notebook</span>
+          <span> Open GitHub Notebook</span>
         </a>
       </div>
     </section>
@@ -2016,7 +2343,7 @@
           }
         } catch (err) {
           container.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <span>🌿 Branch active: <code style="color:var(--accent-cyan);">ben/frontend-systems</code></span>
+            <span> Branch active: <code style="color:var(--accent-cyan);">ben/frontend-systems</code></span>
             <a href="https://github.com/evecount/quantum_rotation/tree/ben/frontend-systems" target="_blank" style="color:var(--accent-cyan); font-size:0.8rem;">View commits on GitHub →</a>
           </div>`;
         }
@@ -2068,7 +2395,7 @@
         el.addEventListener('input', () => {
           localStorage.setItem(f.id, el.value);
           if (saveStatusEl) {
-            saveStatusEl.textContent = '🟢 Auto-saved to browser';
+            saveStatusEl.textContent = ' Auto-saved to browser';
             saveStatusEl.style.color = '#10b981';
           }
         });
@@ -2088,7 +2415,7 @@
         // Update badge
         const badge = document.querySelector('#panel-james [data-james-badge]');
         if (badge) {
-          badge.textContent = '✅ Strategy Brief Submitted to Gwen!';
+          badge.textContent = 'Strategy Brief Submitted to Gwen!';
           badge.style.background = 'rgba(16, 185, 129, 0.15)';
           badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
           badge.style.color = '#10b981';
@@ -2120,7 +2447,7 @@
         copyBtn.addEventListener('click', () => {
           const text = getJamesBriefMarkdown();
           navigator.clipboard.writeText(text).then(() => {
-            alert('✅ Full Venture & GTM Brief copied to your clipboard!');
+            alert('Full Venture & GTM Brief copied to your clipboard!');
           }).catch(() => {
             alert('Could not copy automatically. Use the "Send to Gwen" button.');
           });
@@ -2154,7 +2481,7 @@
               if (el) el.value = '';
               localStorage.removeItem(f.id);
             });
-            if (saveStatusEl) saveStatusEl.textContent = '⚪ Form cleared';
+            if (saveStatusEl) saveStatusEl.textContent = 'Form cleared';
           }
         });
       }
@@ -2195,7 +2522,7 @@
           const pitchEl = document.getElementById('pitch-text');
           if (pitchEl) {
             navigator.clipboard.writeText(pitchEl.innerText.trim()).then(() => {
-              alert('✅ 30-Second Elevator Pitch copied to clipboard!');
+              alert('30-Second Elevator Pitch copied to clipboard!');
             }).catch(() => {
               alert('Could not copy automatically.');
             });
@@ -2222,135 +2549,226 @@
       renderAllMath(document.body);
     });
 
-    // =========================================================================
-    // SCROLL-REACTIVE DANCING ASCII QUANTUM FIELD
-    // =========================================================================
-    (function() {
-      const asciiCanvas = document.getElementById('ascii-bg-canvas');
-      if (!asciiCanvas) return;
-      const ctx = asciiCanvas.getContext('2d');
+    // ThreeUI-Inspired Quantum Wavefront Lattice (Canvas 2D Port)
+    // Direct reference implementation derived from ThreeUI
+    // (neuform-isolated/signal-particles & predictive-arc, Meng To, MIT)
+    // ══════════════════════════════════════════════════════════════════════════
+    (function initQuantumWavefrontLattice() {
+      const canvas = document.getElementById('quantum-wavefront-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-      let width = 0, height = 0;
-      let scrollY = window.scrollY;
-      let targetScrollY = window.scrollY;
-      let scrollVel = 0;
-      let mouse = { x: -1000, y: -1000, active: false };
+      let animId = null;
+      let isVisible = true;
+      let isTabActive = true;
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+      const pointer = { x: -9999, y: -9999, active: false };
 
-      const glyphs = ['|0⟩', '|1⟩', 'Ψ', 'Φ', 'Û', 'ω', 'Δ', '⨂', '∫', '∂', '·', ':', '+', '×', '◇', '○', '∿', '≈', '0', '1'];
-
+      // Law 4: DPR capped at 1.5 for ambient background per threeui-canvas-craft §3
       function resize() {
-        width = asciiCanvas.width = window.innerWidth;
-        height = asciiCanvas.height = window.innerHeight;
-      }
-      window.addEventListener('resize', resize);
-      resize();
+        dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const parent = canvas.parentElement;
+        if (!parent) return;
+        const rect = parent.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      let lastScroll = window.scrollY;
-      window.addEventListener('scroll', () => {
-        targetScrollY = window.scrollY;
-        scrollVel = Math.abs(window.scrollY - lastScroll);
-        lastScroll = window.scrollY;
-      }, { passive: true });
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          render(0);
+        }
+      }
 
       window.addEventListener('pointermove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-        mouse.active = true;
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = e.clientX - rect.left;
+        pointer.y = e.clientY - rect.top;
+        pointer.active = (pointer.x >= 0 && pointer.x <= width && pointer.y >= 0 && pointer.y <= height);
       }, { passive: true });
 
-      let time = 0;
-      const spacing = 32; // Pixel grid spacing
+      window.addEventListener('pointerleave', () => {
+        pointer.active = false;
+      }, { passive: true });
 
-      function renderAscii() {
-        requestAnimationFrame(renderAscii);
-        time += 0.016;
-        
-        // Smooth scroll damping
-        const prevScroll = scrollY;
-        scrollY += (targetScrollY - scrollY) * 0.08;
-        scrollVel = Math.abs(scrollY - prevScroll);
-
+      // Render loop using deterministic trigonometric spatial hashing (§1)
+      function render(time) {
         ctx.clearRect(0, 0, width, height);
-        ctx.font = '11px "JetBrains Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
 
-        const cols = Math.ceil(width / spacing);
-        const rows = Math.ceil(height / spacing);
-        const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-        const scrollProgress = Math.min(Math.max(scrollY / docHeight, 0), 1);
+        // Law 5: Responsive density - widen pitch below 640px to keep mobile crisp (§5)
+        const isMobile = width < 640;
+        const spacing = isMobile ? 32 : 22;
+        const cols = Math.floor(width / spacing);
+        const rows = Math.floor(height / spacing);
+        const ox = (width - cols * spacing) / 2;
+        const oy = (height - rows * spacing) / 2;
 
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const baseX = c * spacing + spacing / 2;
-            const baseY = r * spacing + spacing / 2;
+        const t = time * 0.0016;
 
-            // Normalized coords from viewport center
-            const cx = baseX - width / 2;
-            const cy = baseY - height / 2;
-            const dist = Math.sqrt(cx * cx + cy * cy);
-            const angle = Math.atan2(cy, cx);
+        for (let c = 0; c <= cols; c++) {
+          const baseX = ox + c * spacing;
+          for (let r = 0; r <= rows; r++) {
+            const baseY = oy + r * spacing;
 
-            // Shape Morphing Driven by Scroll Position:
-            // 1. Vortex ring (Hero stage)
-            const vortexWeight = Math.max(0, 1.0 - scrollProgress * 3.0);
-            const vortex = Math.sin(dist * 0.018 - time * 2.2 + angle * 2.0) * vortexWeight;
+            // Deterministic 4-qubit harmonic phase wave superposition
+            const wave1 = Math.sin(c * 0.16 - t) * Math.cos(r * 0.12 - t * 0.8);
+            const wave2 = Math.sin((c + r) * 0.11 + t * 0.5) * 0.35;
+            const totalWave = wave1 + wave2;
 
-            // 2. Harmonic wave interference (Middle stages)
-            const waveWeight = Math.sin(scrollProgress * Math.PI);
-            const wave = (Math.sin(baseX * 0.02 + time * 1.5 + scrollY * 0.004) * 
-                          Math.cos(baseY * 0.02 - time * 1.2)) * waveWeight;
+            let posX = baseX;
+            let posY = baseY + totalWave * 5.5;
 
-            // 3. Converging geometric matrix (Bottom / Team stage)
-            const matrixWeight = Math.max(0, (scrollProgress - 0.5) * 2.0);
-            const matrix = Math.cos((baseX + baseY) * 0.012 + time * 2.5) * matrixWeight;
-
-            // Scroll velocity perturbation (letters dance faster when scrolling!)
-            const scrollJitter = Math.sin(time * 8 + c + r) * Math.min(scrollVel * 0.15, 6);
-
-            const totalWave = vortex * 1.5 + wave * 1.2 + matrix * 1.4;
-
-            // Mouse repulsion
-            const dx = baseX - mouse.x;
-            const dy = baseY - mouse.y;
-            const mouseDist = Math.sqrt(dx * dx + dy * dy);
-            let mxOffset = 0, myOffset = 0;
-            let mouseFactor = 0;
-            if (mouseDist < 130) {
-              mouseFactor = (1.0 - mouseDist / 130);
-              const mAngle = Math.atan2(dy, dx);
-              mxOffset = Math.cos(mAngle) * mouseFactor * 18;
-              myOffset = Math.sin(mAngle) * mouseFactor * 18;
+            // Cursor proximity elastic deflection (quantum dipole interaction)
+            let highlight = 0;
+            if (pointer.active) {
+              const dx = posX - pointer.x;
+              const dy = posY - pointer.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 140) {
+                const force = (1 - dist / 140);
+                posX += (dx / dist) * force * 14;
+                posY += (dy / dist) * force * 14;
+                highlight = force;
+              }
             }
 
-            // Pick glyph based on interference pattern
-            const glyphIdx = Math.abs(Math.floor((dist * 0.04 + totalWave * 5 + time * 2.5 + scrollProgress * 10) % glyphs.length));
-            const glyph = glyphs[glyphIdx];
+            const phaseAlpha = Math.max(0.10, (totalWave + 1.4) * 0.22 + highlight * 0.55);
+            const nodeRadius = isMobile ? (1.0 + highlight * 1.2) : (1.3 + highlight * 1.5);
 
-            // Color & Brightness styling
-            const baseBrightness = 0.05 + Math.abs(totalWave) * 0.07 + mouseFactor * 0.45;
-            const brightness = Math.min(Math.max(baseBrightness, 0.03), 0.55);
+            ctx.beginPath();
+            ctx.arc(posX, posY, nodeRadius, 0, Math.PI * 2);
 
-            if (mouseFactor > 0.08) {
-              ctx.fillStyle = `rgba(0, 245, 212, ${brightness + 0.3})`;
-            } else if (vortexWeight > 0.4 && Math.abs(dist - 180) < 40) {
-              ctx.fillStyle = `rgba(245, 158, 11, ${brightness + 0.15})`; // Gold vortex ring
-            } else if (Math.sin(baseX * 0.01 + time) > 0.3) {
-              ctx.fillStyle = `rgba(168, 85, 247, ${brightness})`; // Purple
+            if (highlight > 0.2) {
+              ctx.fillStyle = `rgba(0, 245, 212, ${phaseAlpha})`;
+              ctx.shadowColor = '#00f5d4';
+              ctx.shadowBlur = 8 * highlight;
+            } else if (totalWave > 0.55) {
+              ctx.fillStyle = `rgba(56, 189, 248, ${phaseAlpha})`;
+              ctx.shadowBlur = 0;
             } else {
-              ctx.fillStyle = `rgba(59, 130, 246, ${brightness})`; // Cyan-Blue
+              ctx.fillStyle = `rgba(255, 255, 255, ${phaseAlpha * 0.6})`;
+              ctx.shadowBlur = 0;
             }
 
-            const drawX = baseX + Math.cos(totalWave + time) * 5 + mxOffset;
-            const drawY = baseY + Math.sin(totalWave + time) * 5 + myOffset + scrollJitter;
-
-            ctx.fillText(glyph, drawX, drawY);
+            ctx.fill();
           }
         }
       }
 
-      renderAscii();
+      function loop(timestamp) {
+        if (!isVisible || !isTabActive) return;
+        render(timestamp);
+        animId = requestAnimationFrame(loop);
+      }
+
+      function start() {
+        if (!animId && isVisible && isTabActive && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          animId = requestAnimationFrame(loop);
+        }
+      }
+
+      function stop() {
+        if (animId) {
+          cancelAnimationFrame(animId);
+          animId = null;
+        }
+      }
+
+      // Law 2: IntersectionObserver controls loop
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          isVisible = entry.isIntersecting;
+          if (isVisible) start(); else stop();
+        }
+      }, { threshold: 0.05 });
+      observer.observe(canvas);
+
+      // Law 3: visibilitychange pauses tab
+      document.addEventListener('visibilitychange', () => {
+        isTabActive = !document.hidden;
+        if (isTabActive) start(); else stop();
+      });
+
+      // Law 4: ResizeObserver manages dimensions
+      if (canvas.parentElement) {
+        const ro = new ResizeObserver(() => resize());
+        ro.observe(canvas.parentElement);
+      }
+
+      resize();
+      start();
     })();
+
+  
+    // ══════════════════════════════════════════════════════════════════════════
+    // Dynamic Navigation Scroll Spy (Progressive Reading Tracker)
+    // ══════════════════════════════════════════════════════════════════════════
+    (function initScrollSpy() {
+      const sectionIds = ['overview', 'math', 'benchmarks', 'docs', 'war-room'];
+      const navLinks = {
+        'overview': document.querySelector('.nav-item[href="#overview"]'),
+        'math': document.querySelector('.nav-item[href="#math"]'),
+        'benchmarks': document.querySelector('.nav-item[href="#benchmarks"]'),
+        'docs': document.querySelector('.nav-item[href="#docs"]'),
+        'war-room': document.querySelector('.nav-item[href="#war-room"]')
+      };
+
+      const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+      if (!sections.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            // Clear active-accent from in-page items
+            Object.values(navLinks).forEach(link => {
+              if (link) link.classList.remove('active-accent');
+            });
+            if (navLinks[id]) {
+              navLinks[id].classList.add('active-accent');
+            }
+          }
+        });
+      }, {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0
+      });
+
+      sections.forEach(sec => observer.observe(sec));
+    })();
+
+  
+    // Navigation sliding magnetic glass pill
+    (function initMagneticNav() {
+      const navCluster = document.querySelector('.nav-cluster');
+      const pill = document.getElementById('magneticPill');
+      const items = document.querySelectorAll('.nav-item');
+      if (!navCluster || !pill) return;
+
+      items.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          const parentRect = navCluster.getBoundingClientRect();
+          const itemRect = item.getBoundingClientRect();
+          pill.style.left = (itemRect.left - parentRect.left) + 'px';
+          pill.style.width = itemRect.width + 'px';
+          pill.style.opacity = '1';
+          pill.style.transform = 'scale(1)';
+        });
+      });
+
+      navCluster.addEventListener('mouseleave', () => {
+        pill.style.opacity = '0';
+        pill.style.transform = 'scale(0.92)';
+      });
+    })();
+
   </script>
+
 </body>
 </html>

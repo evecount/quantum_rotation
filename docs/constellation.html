@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#01040c" />
   <title>The Resonance Constellation | Project Q-Rotate</title>
   <meta name="description" content="An interactive 3D multidimensional biomolecular universe for Project Q-Rotate, Quantinuum Singapore Grand Challenge 2026." />
 
@@ -66,7 +67,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 2;
-      background: radial-gradient(circle at center, transparent 45%, rgba(4, 6, 12, 0.75) 100%);
+      background: transparent;
     }
 
     /* Top HUD */
@@ -90,15 +91,54 @@
     }
 
     .hud-logo {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      color: #040814;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(6, 11, 24, 0.92);
+      color: #ffffff;
       font-weight: 800;
-      font-size: 0.85rem;
-      padding: 6px 12px;
-      border-radius: 8px;
-      letter-spacing: 0.05em;
+      font-size: 0.82rem;
+      padding: 5px 14px 5px 8px;
+      border-radius: 9999px;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+      border: 1px solid rgba(0, 245, 212, 0.38);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7),
+                  0 0 20px rgba(0, 245, 212, 0.22),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      user-select: none;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hud-logo:hover {
+      transform: translateY(-1px);
+      border-color: rgba(0, 245, 212, 0.65);
+      box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.8),
+                  0 0 28px rgba(0, 245, 212, 0.45),
+                  inset 0 1.5px 0 rgba(255, 255, 255, 0.6);
+    }
+    .q-brand-emblem {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+      filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.4));
+    }
+    .q-logo-svg {
+      display: block;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hud-logo:hover .q-logo-svg, .nav-brand:hover .q-logo-svg, .top-brand:hover .q-logo-svg {
+      transform: scale(1.08) rotate(8deg);
+    }
+    .brand-title-text {
+      background: transparent; color: #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
     }
 
     .hud-title h1 {
@@ -147,7 +187,7 @@
     }
 
     .hud-btn.primary {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      background: var(--accent-cyan);
       color: #040814;
       border: none;
       font-weight: 700;
@@ -366,6 +406,39 @@
       justify-content: space-between;
     }
 
+        .chip-res-group { display: flex; gap: 4px; }
+    .chip-res {
+      font-family: var(--font-mono); font-size: 0.60rem; font-weight: 600;
+      padding: 2px 7px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+    .chip-res:hover { border-color: rgba(255, 255, 255, 0.3); color: #ffffff; }
+    .chip-res.active {
+      border-color: var(--accent-cyan); background: rgba(0, 245, 212, 0.14);
+      color: var(--accent-cyan); box-shadow: 0 0 8px rgba(0, 245, 212, 0.25);
+    }
+    .chip-res.active-helios {
+      border-color: var(--accent-purple); background: rgba(168, 85, 247, 0.16);
+      color: var(--accent-purple); box-shadow: 0 0 8px rgba(168, 85, 247, 0.25);
+    }
+    .shot-selector-wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 10px 0 6px; padding: 6px 10px;
+      background: rgba(10, 15, 29, 0.65); border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+    }
+    .chip-shot {
+      font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+    .chip-shot:hover { border-color: rgba(255, 255, 255, 0.3); color: #ffffff; }
+    .chip-shot.active {
+      border-color: var(--accent-cyan); background: rgba(0, 245, 212, 0.14);
+      color: var(--accent-cyan); box-shadow: 0 0 8px rgba(0, 245, 212, 0.2);
+    }
     .qubit-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -444,7 +517,7 @@
     /* Parity Pulse Trigger Button */
     .btn-fire-parity {
       width: 100%;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      background: var(--accent-cyan);
       color: #030712;
       font-family: var(--font-ui);
       font-weight: 800;
@@ -514,8 +587,8 @@
       100% { opacity: 0; pointer-events: none; }
     }
 
-    /* Quantum Hero WASD Keypad & Scope */
-    .arcade-card {
+    /* Trapped-Ion Phase & Pitch Controls */
+    .control-card {
       background: rgba(6, 10, 20, 0.9);
       border: 1px solid rgba(0, 245, 212, 0.35);
       border-radius: 14px;
@@ -524,14 +597,14 @@
       box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
     }
 
-    .arcade-header {
+    .control-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
     }
 
-    .arcade-title {
+    .control-title {
       font-size: 0.76rem;
       font-weight: 800;
       text-transform: uppercase;
@@ -583,7 +656,7 @@
     .resonance-meter-bar {
       height: 4px;
       border-radius: 2px;
-      background: linear-gradient(90deg, #ef4444, #f59e0b, #00f5d4);
+      background: #00f5d4;
       transition: width 0.1s ease;
     }
 
@@ -723,7 +796,7 @@
     }
 
     .modal-content {
-      background: linear-gradient(135deg, rgba(14, 20, 38, 0.96), rgba(8, 12, 24, 0.98));
+      background: rgba(10, 15, 28, 0.96);
       border: 1px solid rgba(0, 245, 212, 0.35);
       border-radius: 20px;
       max-width: 660px;
@@ -733,6 +806,71 @@
       padding: 32px 28px;
       box-shadow: 0 0 50px rgba(0, 245, 212, 0.25);
       position: relative;
+    }
+    /* Embedded Mode in Presentation Slides (Zero Clipping) */
+    body.is-embedded .hud-top {
+      top: 10px;
+      left: 14px;
+      right: 14px;
+    }
+    body.is-embedded .hud-logo {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+    }
+    body.is-embedded .hud-btn {
+      padding: 5px 10px;
+      font-size: 0.72rem;
+    }
+    body.is-embedded .telemetry-box {
+      top: 54px;
+      left: 14px;
+      padding: 10px 14px;
+      width: 210px;
+      border-radius: 10px;
+    }
+    body.is-embedded .telemetry-title {
+      font-size: 0.7rem;
+      margin-bottom: 5px;
+    }
+    body.is-embedded .telemetry-row {
+      font-size: 0.72rem;
+      margin-bottom: 3px;
+    }
+    body.is-embedded .galaxy-selector {
+      bottom: 10px;
+      padding: 6px 12px;
+      gap: 8px;
+      border-radius: 14px;
+    }
+    body.is-embedded .galaxy-btn {
+      padding: 5px 10px;
+      font-size: 0.75rem;
+      border-radius: 8px;
+    }
+    body.is-embedded .inspector-drawer {
+      top: 10px;
+      right: 14px;
+      bottom: 12px;
+      width: 330px;
+      padding: 18px;
+      border-radius: 16px;
+      backdrop-filter: blur(20px);
+    }
+    body.is-embedded .inspector-title {
+      font-size: 1.15rem;
+    }
+    body.is-embedded .inspector-desc {
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    body.is-embedded .card-box {
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+    }
+    body.is-embedded .keypad-grid {
+      margin: 6px 0;
     }
   </style>
 </head>
@@ -745,24 +883,59 @@
   <!-- Top Navigation HUD -->
   <div class="hud-top">
     <div class="hud-brand">
-      <div class="hud-logo">Q-Rotate</div>
+      <div class="hud-logo">
+        <span class="q-brand-emblem" aria-hidden="true">
+        <svg class="q-logo-svg" viewBox="0 0 36 36" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="qBrandGrad" x1="2" y1="4" x2="34" y2="32" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00f5d4" />
+              <stop offset="50%" stop-color="#38bdf8" />
+              <stop offset="100%" stop-color="#818cf8" />
+            </linearGradient>
+            <radialGradient id="qBrandCoreGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#00f5d4" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="#00f5d4" stop-opacity="0" />
+            </radialGradient>
+            <filter id="qBrandFilter" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <circle cx="18" cy="18" r="15" stroke="rgba(255, 255, 255, 0.18)" stroke-width="1" stroke-dasharray="2 2.5" />
+          <circle cx="18" cy="3" r="1.3" fill="#00f5d4" />
+          <circle cx="33" cy="18" r="1.3" fill="#38bdf8" />
+          <circle cx="18" cy="33" r="1.3" fill="#818cf8" />
+          <circle cx="3" cy="18" r="1.3" fill="#f59e0b" />
+          <ellipse class="q-orbit-primary" cx="18" cy="18" rx="14.5" ry="6.2" transform="rotate(-28 18 18)" stroke="url(#qBrandGrad)" stroke-width="1.4" stroke-dasharray="18 4 8 4" stroke-linecap="round" filter="url(#qBrandFilter)" />
+          <ellipse class="q-orbit-secondary" cx="18" cy="18" rx="14.5" ry="6.2" transform="rotate(35 18 18)" stroke="rgba(0, 245, 212, 0.45)" stroke-width="1" stroke-dasharray="12 6" />
+          <circle cx="28" cy="13" r="1.8" fill="#ffffff" filter="url(#qBrandFilter)" />
+          <circle cx="28" cy="13" r="1.0" fill="#00f5d4" />
+          <circle cx="18" cy="18" r="7" stroke="url(#qBrandGrad)" stroke-width="1.8" />
+          <path d="M22 22L28 28" stroke="url(#qBrandGrad)" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="18" cy="18" r="2.8" fill="#ffffff" />
+          <circle cx="18" cy="18" r="1.5" fill="#00f5d4" />
+        </svg>
+      </span>
+        <span>Q-Rotate</span>
+      </div>
       <div class="hud-title">
         <h1>The Resonance Constellation</h1>
         <p>Starry Night Biomolecular Quantum Landscape</p>
       </div>
     </div>
     <div class="hud-nav">
-      <button class="hud-btn" id="btn-how-to-play" style="border-color: var(--accent-gold); color: #f59e0b;">
-        <span>🎮 How to Play</span>
-      </button>
+      <button class="hud-btn" id="btn-how-to-play" style="border-color: rgba(245, 158, 11, 0.4); color: #f59e0b;"><span>Constellation Guide</span></button>
       <button class="hud-btn" id="btn-toggle-sound">
-        <span id="sound-label">🔊 Audio: ON</span>
+        <span id="sound-label">Audio: ON</span>
       </button>
       <a href="index.html" class="hud-btn">
         <span>← Documentation</span>
       </a>
+      <a href="simulation.html" class="hud-btn" style="border-color: var(--accent-cyan); color: var(--accent-cyan); margin-right: 2px;">
+        <span>Simulation</span>
+      </a>
       <a href="workbook.html" class="hud-btn primary" target="_blank">
-        <span>⚡ Open Workbook</span>
+        <span>Open Workbook</span>
       </a>
     </div>
   </div>
@@ -797,7 +970,7 @@
 
   <!-- Interaction Guide Hint -->
   <div class="guide-hint">
-    ✨ Click any celestial cluster to enter the active site • Drag to rotate view • Scroll to zoom
+     Click any celestial cluster to enter the active site • Drag to rotate view • Scroll to zoom
   </div>
 
   <!-- Bottom Galaxy Destination Selector -->
@@ -835,7 +1008,7 @@
         <span class="inspector-tag" id="drawer-tag">Photochemical Active Site</span>
         <h2 class="inspector-title" id="drawer-title">11-cis Retinal in Rhodopsin</h2>
       </div>
-      <button class="btn-close" id="btn-close-drawer">✕</button>
+      <button class="btn-close" id="btn-close-drawer">&times;</button>
     </div>
 
     <p class="inspector-desc" id="drawer-desc">
@@ -846,7 +1019,10 @@
     <div class="card-box">
       <div class="card-label">
         <span>Qubit Phase Spectrum (Half-Turns)</span>
-        <span style="color: var(--accent-cyan);">4 Qubits</span>
+        <div class="chip-res-group">
+          <button class="chip-res active" id="btn-const-res-4">4Q (H2)</button>
+          <button class="chip-res" id="btn-const-res-8">8Q (Helios)</button>
+        </div>
       </div>
       <div class="qubit-grid" id="qubit-grid">
         <div class="qubit-tile locked">
@@ -868,11 +1044,11 @@
       </div>
     </div>
 
-    <!-- Quantum Hero Resonance Oscilloscope & WASD Keypad -->
-    <div class="arcade-card">
-      <div class="arcade-header">
-        <div class="arcade-title">
-          <span>🎸 Quantum Hero: Resonance Scope</span>
+    <!-- Phase Resonance Spectrogram & Trapped-Ion Controls -->
+    <div class="control-card">
+      <div class="control-header">
+        <div class="control-title">
+          <span> Resonance Spectrogram: Waveform Interference</span>
         </div>
         <span id="scope-synchrony" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-cyan); font-weight: 700;">50% SYNCHRONY</span>
       </div>
@@ -923,15 +1099,15 @@
         <div class="key-row" style="width: 100%;">
           <button class="key-btn space-key-btn" data-key="space" id="key-btn-space">
             <span class="key-char">SPACEBAR</span>
-            <span class="key-action">⚛️ Fire Blind Parity SWAP</span>
+            <span class="key-action"> Execute Blind Parity Test</span>
           </button>
         </div>
       </div>
 
       <!-- Live Gate Execution Ticker -->
       <div class="gate-ticker">
-        <span>Laser Gate: <span class="highlight" id="ticker-gate-name">IDLE</span></span>
-        <span id="ticker-gate-status" style="color: var(--accent-cyan);">Ready to Pulse</span>
+        <span>QCCD Gate: <span class="highlight" id="ticker-gate-name">IDLE</span></span>
+        <span id="ticker-gate-status" style="color: var(--accent-cyan);">Carrier Synced</span>
       </div>
     </div>
 
@@ -949,9 +1125,20 @@
       </div>
     </div>
 
+    <!-- Quantum Shot Noise Selector -->
+    <div class="shot-selector-wrap">
+      <span style="font-size: 0.64rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Quantum Shot Noise:</span>
+      <div style="display: flex; gap: 4px;">
+        <button class="chip-shot" data-shots="100">100</button>
+        <button class="chip-shot active" data-shots="500">500</button>
+        <button class="chip-shot" data-shots="1000">1K</button>
+        <button class="chip-shot" data-shots="ideal">Ideal (∞)</button>
+      </div>
+    </div>
+
     <!-- Parity Test Trigger -->
     <button class="btn-fire-parity" id="btn-fire-parity">
-      <span>⚛️ Fire Blind Parity Test (SWAP) [SPACE]</span>
+      <span> Fire Blind Parity Test (SWAP) [SPACE]</span>
     </button>
 
     <div class="parity-result-box" id="parity-result">
@@ -960,69 +1147,112 @@
 
     <!-- External Link -->
     <a href="workbook.html" target="_blank" class="hud-btn" style="text-align:center; justify-content:center;">
-      <span>📖 Open Interactive Notebook for This System →</span>
+      <span> Open Interactive Notebook for This System →</span>
     </a>
   </div>
 
   <!-- How to Play Layman Modal Dialog -->
   <div class="modal-backdrop" id="how-to-play-modal">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px;">
+    <div class="modal-content" style="max-width: 780px; padding: 26px 30px; border-radius: 22px; background: rgba(6, 11, 24, 0.94); border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: 0 28px 70px rgba(0,0,0,0.85), 0 0 50px rgba(0, 245, 212, 0.15);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 14px;">
         <div>
-          <div style="font-size: 0.75rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
-            The 60-Second Layman Guide
+          <div style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);"></span>
+            Constellation Exploration Guide
           </div>
-          <h2 style="font-size: 1.7rem; font-weight: 800; color: #fff; line-height: 1.2;">🎮 How to Play: Quantum Hero</h2>
+          <h2 style="font-size: 1.45rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; line-height: 1.2;">
+            What is Happening in the Biomolecular Constellation?
+          </h2>
+          <p style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
+            A continuous topological map of quantum molecular docking across 6 landmark biological systems
+          </p>
         </div>
-        <button class="btn-close" id="btn-close-modal">✕</button>
+        <button class="btn-close" id="btn-close-modal" aria-label="Close Guide" style="font-size: 1.2rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #cbd5e1; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
       </div>
 
-      <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px;">
-        Think of your drug candidate like an <strong>electric guitar</strong> tuning into resonance with an amplifier (the protein pocket). Instead of checking billions of tiny 3D grid points, Quantinuum trapped ions use laser rotation pulses to match wave frequencies!
-      </p>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px;">
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 245, 212, 0.3); border-radius: 12px; padding: 14px;">
-          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: var(--accent-cyan); margin-bottom: 4px;">
-            [A] & [D] (or ← / →)
+      <div style="display: flex; flex-direction: column; gap: 14px; max-height: 65vh; overflow-y: auto; padding-right: 4px;">
+        <!-- Card 1: The 6 Star Systems -->
+        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
+          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="color: var(--accent-cyan); font-weight: 800;">1.</span> The 6 Celestial Star Clusters
+          </h3>
+          <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
+            Each glowing star cluster represents a landmark molecular benchmark in biochemistry and pharmacology:
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 8px;">
+            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
+              <strong style="color: #00f5d4;">01. Rhodopsin:</strong> Light-driven retinal molecular switch
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
+              <strong style="color: #38bdf8;">02. GFP Core:</strong> Ser65-Tyr66-Gly67 fluorophore
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
+              <strong style="color: #a855f7;">03. COVID-19 Mpro:</strong> Cys145/His41 antiviral target
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
+              <strong style="color: #f59e0b;">04. COX-2 Pocket:</strong> Anti-inflammatory NSAID binding site
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
+              <strong style="color: #ec4899;">05. Azobenzene:</strong> Opto-mechanical trans/cis switch
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
+              <strong style="color: #10b981;">06. H2 Benchmark:</strong> Exact quantum chemistry baseline
+            </div>
           </div>
-          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Quantum Phase Shift (Rz Gate)</div>
-          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
-            Steps the dimensional rotation angle Û<sub>tube</sub>(τ). Watch the Cyan wave on the oscilloscope slide until it lines up directly with the Gold wave!
+        </div>
+
+        <!-- Card 2: Nebulae and Waveforms -->
+        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
+          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="color: var(--accent-gold); font-weight: 800;">2.</span> Nebulae &amp; Wave Interference
+          </h3>
+          <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
+            The particle field and wave rings visualize the continuous phase eigenstates of the molecular system.
+            The <strong style="color: #f59e0b;">Gold wave</strong> represents the static receptor protein cavity, while the <strong style="color: #00f5d4;">Cyan wave</strong> represents the rotating ligand pose.
+            When the waves are out of phase, interference ripples scatter through the nebula.
           </p>
         </div>
 
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 14px;">
-          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #60a5fa; margin-bottom: 4px;">
-            [W] & [S] (or ↑ / ↓)
+        <!-- Card 3: Interactive Gate Controls -->
+        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
+          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="color: var(--accent-blue); font-weight: 800;">3.</span> Interactive Quantum Gate Controls
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 8px;">
+            <div style="background: rgba(0,0,0,0.35); border-left: 3px solid var(--accent-cyan); padding: 8px 12px; border-radius: 4px;">
+              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: var(--accent-cyan);">[A] &amp; [D] / Arrows &larr; &rarr;</div>
+              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Phase Modulation (Rz Gate)</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Rotates U_tube(&tau;), sliding the cyan wave in phase.</div>
+            </div>
+            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #60a5fa; padding: 8px 12px; border-radius: 4px;">
+              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #60a5fa;">[W] &amp; [S] / Arrows &uarr; &darr;</div>
+              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Euler Spatial Pitch (Rx Gate)</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Tilts the 3D molecular axis to enter the binding crevice.</div>
+            </div>
+            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #f59e0b; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
+              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #f59e0b;">[SPACEBAR] / Fire Parity Button</div>
+              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Blind Parity SWAP Test (Controlled-SWAP)</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Interferes both registers onto the ancilla. When Synchrony &ge; 90%, it triggers a <strong style="color: #00f5d4;">Zero-Parity Lock (|0&rang;)</strong> with zero coordinate leakage!</div>
+            </div>
           </div>
-          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Spatial Pitch Tilt (Rx Gate)</div>
-          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
-            Twists the 3D molecular orientation in physical space so the key aligns with the protein crevice.
-          </p>
         </div>
 
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 14px; grid-column: 1 / -1;">
-          <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #f59e0b; margin-bottom: 4px;">
-            [SPACEBAR] (or Click Parity Button)
-          </div>
-          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 4px;">Blind Parity Test (SWAP Test)</div>
-          <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
-            Interferes both states into a single spectator qubit (the <strong>ancilla</strong>). If it reads <strong>|0⟩ (Zero-Parity Match)</strong>, the lock clicks shut! You've verified structural and electronic fit with <strong>zero exposure of proprietary 3D coordinates</strong>.
+        <!-- Card 4: Web Audio Harmonics -->
+        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
+          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="color: var(--accent-green); font-weight: 800;">4.</span> Real-Time Audio Harmonics
+          </h3>
+          <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
+            The Web Audio synthesizer sonifies the quantum phase error &Delta;&Phi;. When out of phase, dissonant intervals and microtonal beating sound. As you align the waveforms, dissonance resolves into a pure harmonic triad chord.
           </p>
         </div>
       </div>
 
-      <div style="background: rgba(0, 245, 212, 0.1); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
-        <span style="font-size: 1.6rem;">🎯</span>
-        <div style="font-size: 0.82rem; color: #e2e8f0; line-height: 1.5;">
-          <strong>Your Goal:</strong> Achieve 100% Wave Synchrony and lock in all <strong>6 biomolecular star clusters</strong> across the galaxy (Rhodopsin, GFP, COVID-19 Mpro, COX-2, Azobenzene, and H2).
-        </div>
+      <div style="margin-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 14px;">
+        <button class="btn-fire-parity" id="btn-modal-start" style="width: 100%; margin: 0; padding: 10px; font-size: 0.82rem; border-radius: 12px; background: rgba(0, 245, 212, 0.16); border: 1px solid rgba(0, 245, 212, 0.5); cursor: pointer; color: #ffffff; font-weight: 700; box-shadow: 0 0 24px rgba(0, 245, 212, 0.25);">
+          <span>Enter Quantum Constellation</span>
+        </button>
       </div>
-
-      <button class="btn-fire-parity" id="btn-modal-start" style="width: 100%; margin: 0;">
-        <span>🚀 Ready to Play! Fire Trapped-Ion Lasers →</span>
-      </button>
     </div>
   </div>
 
@@ -1102,33 +1332,112 @@
 
     let currentSystemIdx = 0;
 
+    
     // =========================================================================
-    // 2. THREE.JS SCENE SETUP
+    // 2. THREE.JS SCENE SETUP & CINEMATIC PBR LIGHTING
     // =========================================================================
     const canvas = document.getElementById('webgl-canvas');
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x05070d, 0.007);
+    scene.fog = new THREE.FogExp2(0x030610, 0.006);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 30, 110);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      powerPreference: "high-performance"
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.maxDistance = 250;
-    controls.minDistance = 15;
+    controls.minDistance = 12;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.4;
+    controls.autoRotateSpeed = 0.35;
 
-    // Ambient and Point Lights
-    scene.add(new THREE.AmbientLight(0x1a243a, 1.5));
+    // Studio & Cosmic Physically-Based Lights
+    const hemiLight = new THREE.HemisphereLight(0x38bdf8, 0x030712, 0.85);
+    scene.add(hemiLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    keyLight.position.set(45, 65, 55);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0x00f5d4, 0.9);
+    fillLight.position.set(-50, -35, -45);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0xa855f7, 0.7);
+    rimLight.position.set(0, -60, 40);
+    scene.add(rimLight);
 
     // =========================================================================
-    // 3. STARRY NIGHT VORTEX: 3,500 Swirling Turbulent Stardust Particles
+    // 3. PROCEDURAL PBR TEXTURES
+    // =========================================================================
+
+    // Subtle micro-surface bump map for atoms & materials
+    function createAtomNoiseTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 128; cvs.height = 128;
+      const ctx = cvs.getContext('2d');
+      const imgData = ctx.createImageData(128, 128);
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        const v = 128 + Math.floor((Math.random() - 0.5) * 50);
+        imgData.data[i] = v;
+        imgData.data[i+1] = v;
+        imgData.data[i+2] = v;
+        imgData.data[i+3] = 255;
+      }
+      ctx.putImageData(imgData, 0, 0);
+      const tex = new THREE.CanvasTexture(cvs);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 2);
+      return tex;
+    }
+    const atomBumpTexture = createAtomNoiseTexture();
+
+    // Luminous volumetric stellar corona flare
+    function createCoronaTexture(hexColor) {
+      const cvs = document.createElement('canvas');
+      cvs.width = 128; cvs.height = 128;
+      const ctx = cvs.getContext('2d');
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.25, hexColor ? '#' + new THREE.Color(hexColor).getHexString() : '#00f5d4');
+      grad.addColorStop(0.55, 'rgba(59, 130, 246, 0.35)');
+      grad.addColorStop(0.85, 'rgba(168, 85, 247, 0.12)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
+      return new THREE.CanvasTexture(cvs);
+    }
+
+    // Stardust glowing particle texture
+    function createParticleTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 64; cvs.height = 64;
+      const ctx = cvs.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      grad.addColorStop(0.25, 'rgba(0, 245, 212, 0.85)');
+      grad.addColorStop(0.6, 'rgba(59, 130, 246, 0.3)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(cvs);
+    }
+
+    // =========================================================================
+    // 4. STARRY NIGHT VORTEX: 3,500 Swirling Turbulent Stardust Particles
     // =========================================================================
     const particleCount = 3500;
     const particleGeo = new THREE.BufferGeometry();
@@ -1145,10 +1454,9 @@
     ];
 
     for (let i = 0; i < particleCount; i++) {
-      // Swirling logarithmic spiral distribution (Kolmogorov turbulence simulation)
       const theta = Math.random() * Math.PI * 2;
-      const r = Math.pow(Math.random(), 0.8) * 160 + 10;
-      const height = (Math.sin(r * 0.08) + Math.cos(theta * 3)) * 25 + (Math.random() - 0.5) * 30;
+      const r = Math.pow(Math.random(), 0.8) * 165 + 12;
+      const height = (Math.sin(r * 0.08) + Math.cos(theta * 3)) * 25 + (Math.random() - 0.5) * 32;
 
       const x = r * Math.cos(theta);
       const y = height;
@@ -1171,22 +1479,6 @@
     particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Custom glowing particle texture
-    function createParticleTexture() {
-      const cvs = document.createElement('canvas');
-      cvs.width = 64;
-      cvs.height = 64;
-      const ctx = cvs.getContext('2d');
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0, 'rgba(255,255,255,1)');
-      grad.addColorStop(0.3, 'rgba(0,245,212,0.8)');
-      grad.addColorStop(0.6, 'rgba(59,130,246,0.3)');
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      return new THREE.CanvasTexture(cvs);
-    }
-
     const particleMat = new THREE.PointsMaterial({
       size: 2.2,
       map: createParticleTexture(),
@@ -1200,7 +1492,228 @@
     scene.add(starParticles);
 
     // =========================================================================
-    // 4. CELESTIAL STAR SYSTEMS (Biomolecular Nodes)
+    // 5. 3D MOLECULAR GEOMETRY DATA & CPK ATOMIC SYSTEM
+    // =========================================================================
+    const ELEMENT_PALETTE = {
+      C: { color: 0x1e293b, radius: 0.65, roughness: 0.22, metalness: 0.20, name: 'Carbon' },
+      N: { color: 0x2563eb, radius: 0.60, roughness: 0.18, metalness: 0.25, name: 'Nitrogen' },
+      O: { color: 0xdc2626, radius: 0.58, roughness: 0.15, metalness: 0.10, name: 'Oxygen' },
+      S: { color: 0xf59e0b, radius: 0.75, roughness: 0.25, metalness: 0.35, name: 'Sulfur' },
+      H: { color: 0xf8fafc, radius: 0.40, roughness: 0.10, metalness: 0.05, name: 'Hydrogen' },
+      P: { color: 0xa855f7, radius: 0.72, roughness: 0.20, metalness: 0.30, name: 'Phosphorus' }
+    };
+
+    const MOLECULAR_DATA = {
+      // 01. 11-cis Retinal in Rhodopsin (Beta-ionone ring + polyene chain + Schiff link)
+      rhodopsin: {
+        atoms: [
+          { el: 'C', pos: [-4.2,  1.2,  0.0] },
+          { el: 'C', pos: [-3.4,  2.2,  0.3] },
+          { el: 'C', pos: [-2.2,  1.9,  0.2] },
+          { el: 'C', pos: [-1.8,  0.6, -0.3] },
+          { el: 'C', pos: [-2.6, -0.4, -0.6] },
+          { el: 'C', pos: [-3.8, -0.1, -0.5] },
+          { el: 'C', pos: [-5.2,  1.5, -0.7] },
+          { el: 'C', pos: [-4.5,  1.3,  1.2] },
+          { el: 'C', pos: [-2.3, -1.6, -1.1] },
+          { el: 'C', pos: [-0.6,  0.3, -0.1] },
+          { el: 'C', pos: [ 0.3,  1.0,  0.1] },
+          { el: 'C', pos: [ 1.4,  0.5,  0.3] },
+          { el: 'C', pos: [ 1.6, -0.7,  0.1] },
+          { el: 'C', pos: [ 2.4,  1.3,  0.6] },
+          { el: 'C', pos: [ 3.5,  0.9,  0.7] },
+          { el: 'C', pos: [ 4.0, -0.2,  0.4] },
+          { el: 'C', pos: [ 5.1, -0.5,  0.7] },
+          { el: 'C', pos: [ 5.4, -1.7,  0.3] },
+          { el: 'C', pos: [ 6.0,  0.2,  1.2] },
+          { el: 'N', pos: [ 7.1, -0.1,  1.5] }
+        ],
+        bonds: [
+          [0,1], [1,2], [2,3], [3,4], [4,5], [5,0], [0,6], [0,7], [4,8],
+          [3,9], [9,10], [10,11], [11,12], [11,13], [13,14], [14,15],
+          [15,16], [16,17], [16,18], [18,19]
+        ]
+      },
+
+      // 02. GFP Fluorophore Chromophore (Ser65-Tyr66-Gly67 imidazolidinone + phenol)
+      gfp: {
+        atoms: [
+          { el: 'C', pos: [-1.2,  0.8,  0.0] },
+          { el: 'N', pos: [-0.2,  1.7,  0.1] },
+          { el: 'C', pos: [ 1.0,  1.1,  0.0] },
+          { el: 'O', pos: [ 2.1,  1.7,  0.0] },
+          { el: 'C', pos: [ 0.8, -0.4, -0.1] },
+          { el: 'N', pos: [-0.6, -0.5, -0.1] },
+          { el: 'C', pos: [ 1.8, -1.3, -0.2] },
+          { el: 'C', pos: [ 3.2, -1.0, -0.2] },
+          { el: 'C', pos: [ 4.1, -2.1, -0.3] },
+          { el: 'C', pos: [ 5.5, -1.8, -0.3] },
+          { el: 'C', pos: [ 6.0, -0.5, -0.2] },
+          { el: 'O', pos: [ 7.3, -0.2, -0.2] },
+          { el: 'C', pos: [ 5.2,  0.6, -0.1] },
+          { el: 'C', pos: [ 3.8,  0.3, -0.1] },
+          { el: 'C', pos: [-2.6,  1.3,  0.1] },
+          { el: 'O', pos: [-0.9, -1.7, -0.2] }
+        ],
+        bonds: [
+          [0,1], [1,2], [2,3], [2,4], [4,5], [5,0], [0,14], [4,6],
+          [6,7], [7,8], [8,9], [9,10], [10,11], [10,12], [12,13], [13,7], [5,15]
+        ]
+      },
+
+      // 03. SARS-CoV-2 Mpro Catalytic Dyad + Paxlovid Core
+      mpro: {
+        atoms: [
+          { el: 'S', pos: [-2.8,  1.7, -0.5] }, // Cys145 catalytic Sulfur
+          { el: 'C', pos: [-4.0,  1.1, -1.0] },
+          { el: 'N', pos: [-2.4, -1.3, -0.3] }, // His41 Imidazole
+          { el: 'C', pos: [-3.3, -2.0, -0.2] },
+          { el: 'N', pos: [-2.9, -3.1,  0.2] },
+          { el: 'C', pos: [-1.8, -3.0,  0.3] },
+          { el: 'C', pos: [-1.4, -1.9, -0.1] },
+          { el: 'C', pos: [-0.4,  0.9,  0.2] }, // Nirmatrelvir nitrile
+          { el: 'N', pos: [-0.1,  2.0,  0.4] },
+          { el: 'C', pos: [ 0.7,  0.2,  0.0] },
+          { el: 'N', pos: [ 0.5, -1.0,  0.3] },
+          { el: 'C', pos: [ 1.6, -1.6,  0.3] },
+          { el: 'O', pos: [ 1.6, -2.8,  0.1] },
+          { el: 'C', pos: [ 2.9, -0.8,  0.5] }, // Pyrrolidone
+          { el: 'C', pos: [ 4.1, -1.4,  0.2] },
+          { el: 'C', pos: [ 4.9, -0.3,  0.3] },
+          { el: 'N', pos: [ 4.1,  0.6,  0.7] },
+          { el: 'C', pos: [ 2.9,  0.4,  0.6] },
+          { el: 'O', pos: [ 4.5,  1.7,  1.0] }
+        ],
+        bonds: [
+          [0,1], [2,3], [3,4], [4,5], [5,6], [6,2],
+          [7,8], [7,9], [9,10], [10,11], [11,12], [11,13],
+          [13,14], [14,15], [15,16], [16,17], [17,13], [16,18]
+        ]
+      },
+
+      // 04. COX-2 Secondary Hydrophobic Selectivity Channel
+      cox2: {
+        atoms: [
+          { el: 'C', pos: [-2.0,  0.4,  0.0] },
+          { el: 'C', pos: [-1.3,  1.4,  0.2] },
+          { el: 'C', pos: [ 0.0,  1.3,  0.2] },
+          { el: 'C', pos: [ 0.5,  0.2,  0.0] },
+          { el: 'C', pos: [-0.2, -0.8, -0.2] },
+          { el: 'C', pos: [-1.5, -0.7, -0.2] },
+          { el: 'S', pos: [ 2.2,  0.1,  0.0] }, // Sulfonamide selectivity anchor
+          { el: 'O', pos: [ 2.6,  1.1, -0.7] },
+          { el: 'O', pos: [ 2.6, -1.0, -0.5] },
+          { el: 'N', pos: [ 2.7,  0.2,  1.4] },
+          { el: 'C', pos: [-3.4,  0.5,  0.0] },
+          { el: 'C', pos: [-4.1, -0.7, -0.2] },
+          { el: 'O', pos: [-3.7, -1.8,  0.1] },
+          { el: 'O', pos: [-5.2, -0.5, -0.6] }
+        ],
+        bonds: [
+          [0,1], [1,2], [2,3], [3,4], [4,5], [5,0],
+          [3,6], [6,7], [6,8], [6,9],
+          [0,10], [10,11], [11,12], [11,13]
+        ]
+      },
+
+      // 05. Azobenzene Opto-Mechanical Molecular Switch (trans N=N)
+      azobenzene: {
+        atoms: [
+          { el: 'C', pos: [-4.6,  0.7, -0.2] },
+          { el: 'C', pos: [-3.8,  1.6,  0.0] },
+          { el: 'C', pos: [-2.5,  1.4,  0.1] },
+          { el: 'C', pos: [-2.0,  0.2,  0.0] },
+          { el: 'C', pos: [-2.8, -0.7, -0.2] },
+          { el: 'C', pos: [-4.1, -0.5, -0.3] },
+          { el: 'N', pos: [-0.7, -0.1,  0.1] }, // Azo N1
+          { el: 'N', pos: [ 0.2,  0.5,  0.3] }, // Azo N2
+          { el: 'C', pos: [ 1.5,  0.3,  0.2] },
+          { el: 'C', pos: [ 2.0, -0.9,  0.0] },
+          { el: 'C', pos: [ 3.3, -1.2, -0.1] },
+          { el: 'C', pos: [ 4.1, -0.3,  0.0] },
+          { el: 'C', pos: [ 3.6,  0.9,  0.2] },
+          { el: 'C', pos: [ 2.3,  1.2,  0.3] }
+        ],
+        bonds: [
+          [0,1], [1,2], [2,3], [3,4], [4,5], [5,0],
+          [3,6], [6,7], [7,8],
+          [8,9], [9,10], [10,11], [11,12], [12,13], [13,8]
+        ]
+      },
+
+      // 06. H2 & Trapped-Ion Electrostatic Manifold
+      h2bench: {
+        atoms: [
+          { el: 'H', pos: [-1.2,  0.0,  0.0] }, // H1
+          { el: 'H', pos: [ 1.2,  0.0,  0.0] }, // H2
+          { el: 'P', pos: [ 0.0,  3.0,  0.0] }, // RF electrode top
+          { el: 'P', pos: [ 0.0, -3.0,  0.0] }, // RF electrode bottom
+          { el: 'S', pos: [-3.2,  0.0,  1.6] }, // DC segmented electrode
+          { el: 'S', pos: [ 3.2,  0.0,  1.6] },
+          { el: 'S', pos: [-3.2,  0.0, -1.6] },
+          { el: 'S', pos: [ 3.2,  0.0, -1.6] }
+        ],
+        bonds: [
+          [0,1], [2,0], [2,1], [3,0], [3,1], [4,0], [5,1], [6,0], [7,1]
+        ]
+      }
+    };
+
+    // Shared Metallic Bond Material
+    const bondMaterial = new THREE.MeshStandardMaterial({
+      color: 0x64748b,
+      metalness: 0.85,
+      roughness: 0.22,
+      bumpMap: atomBumpTexture,
+      bumpScale: 0.02
+    });
+
+    // Helper: Build a realistic molecular assembly
+    function createMoleculeMesh(sysId) {
+      const molData = MOLECULAR_DATA[sysId] || MOLECULAR_DATA['rhodopsin'];
+      const molGroup = new THREE.Group();
+
+      // 1. Build Atoms
+      const atomMeshes = [];
+      molData.atoms.forEach((atom, aIdx) => {
+        const pal = ELEMENT_PALETTE[atom.el] || ELEMENT_PALETTE.C;
+        const geo = new THREE.SphereGeometry(pal.radius, 28, 28);
+        const mat = new THREE.MeshStandardMaterial({
+          color: pal.color,
+          roughness: pal.roughness,
+          metalness: pal.metalness,
+          bumpMap: atomBumpTexture,
+          bumpScale: 0.035
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(atom.pos[0], atom.pos[1], atom.pos[2]);
+        molGroup.add(mesh);
+        atomMeshes.push(mesh);
+      });
+
+      // 2. Build Covalent Bonds (Cylinders)
+      molData.bonds.forEach(([i, j]) => {
+        if (i < atomMeshes.length && j < atomMeshes.length) {
+          const p1 = atomMeshes[i].position;
+          const p2 = atomMeshes[j].position;
+          const dist = p1.distanceTo(p2);
+
+          const bondGeo = new THREE.CylinderGeometry(0.12, 0.12, dist, 12);
+          const bondMesh = new THREE.Mesh(bondGeo, bondMaterial);
+
+          // Position at midpoint and orient along bond vector
+          bondMesh.position.copy(p1).add(p2).multiplyScalar(0.5);
+          const dir = new THREE.Vector3().subVectors(p2, p1).normalize();
+          bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+          molGroup.add(bondMesh);
+        }
+      });
+
+      return molGroup;
+    }
+
+    // =========================================================================
+    // 6. CELESTIAL STAR SYSTEMS (Refractive Liquid Glass Receptors + CPK Molecules)
     // =========================================================================
     const systemNodes = [];
     const raycastMeshes = [];
@@ -1209,50 +1722,90 @@
       const group = new THREE.Group();
       group.position.copy(sys.pos);
 
-      // 1. Central Pulsing Star Core
-      const coreGeo = new THREE.SphereGeometry(2.4, 24, 24);
-      const coreMat = new THREE.MeshBasicMaterial({ color: sys.color, wireframe: false });
+      // 1. Central Luminescent Stellar Core
+      const coreGeo = new THREE.SphereGeometry(1.6, 32, 32);
+      const coreMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        emissive: sys.color,
+        emissiveIntensity: 2.4,
+        roughness: 0.08,
+        metalness: 0.1
+      });
       const coreMesh = new THREE.Mesh(coreGeo, coreMat);
       group.add(coreMesh);
 
-      // 2. Halo Outer Glow Shell
-      const haloGeo = new THREE.SphereGeometry(4.2, 24, 24);
-      const haloMat = new THREE.MeshBasicMaterial({
-        color: sys.color,
+      // 2. Volumetric Atmospheric Corona Flare (Additive Sprite)
+      const coronaTex = createCoronaTexture(sys.color);
+      const coronaMat = new THREE.SpriteMaterial({
+        map: coronaTex,
         transparent: true,
-        opacity: 0.25,
-        wireframe: true,
+        blending: THREE.AdditiveBlending,
+        opacity: 0.82,
+        depthWrite: false
       });
-      const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+      const coronaSprite = new THREE.Sprite(coronaMat);
+      coronaSprite.scale.set(16, 16, 1);
+      group.add(coronaSprite);
+
+      // 3. Refractive Optical Liquid Glass Receptor Pocket Cavity (CybrDeck Physical Glass)
+      // Replaces the AI-slop wireframe with transmissive physical crystal
+      const pocketGeo = new THREE.IcosahedronGeometry(7.2, 3);
+      const pocketMat = new THREE.MeshPhysicalMaterial({
+        color: sys.color,
+        emissive: sys.color,
+        emissiveIntensity: 0.10,
+        roughness: 0.09,
+        metalness: 0.05,
+        transmission: 0.86,      // True physical optical transmission!
+        ior: 1.48,               // Natural quartz/protein crystal refraction
+        reflectivity: 0.95,
+        clearcoat: 1.0,          // Clearcoat luster
+        clearcoatRoughness: 0.08,
+        transparent: true,
+        opacity: 0.72,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+      const haloMesh = new THREE.Mesh(pocketGeo, pocketMat);
       group.add(haloMesh);
 
-      // 3. Orbital Resonance Rings
-      const ringGeo = new THREE.RingGeometry(5.5, 6.2, 32);
-      const ringMat = new THREE.MeshBasicMaterial({
+      // 4. Dual Concentric 3D Orbital Resonance Rings (Physical Metallic Torus)
+      // Replaces flat 2D unshaded RingGeometry
+      const ringGeo = new THREE.TorusGeometry(8.5, 0.14, 16, 80);
+      const ringMat = new THREE.MeshStandardMaterial({
         color: sys.color,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.45,
+        metalness: 0.92,
+        roughness: 0.16,
+        emissive: sys.color,
+        emissiveIntensity: 0.45
       });
       const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.rotation.x = Math.PI / 2 + Math.random() * 0.4;
+      ringMesh.rotation.x = Math.PI / 2 + 0.15;
       group.add(ringMesh);
 
-      // 4. 3D Mini Molecular Wireframe Cluster (Simulating Pocket Active Site)
-      const ligandGroup = new THREE.Group();
-      const nAtoms = 5;
-      for (let a = 0; a < nAtoms; a++) {
-        const atomGeo = new THREE.SphereGeometry(0.6, 12, 12);
-        const atomMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        const atomMesh = new THREE.Mesh(atomGeo, atomMat);
-        const phi = (a / nAtoms) * Math.PI * 2;
-        atomMesh.position.set(Math.cos(phi) * 3, Math.sin(phi) * 1.5, Math.sin(phi * 2) * 1.2);
-        ligandGroup.add(atomMesh);
-      }
+      const subRingGeo = new THREE.TorusGeometry(10.0, 0.08, 16, 80);
+      const subRingMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        metalness: 0.95,
+        roughness: 0.12,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 0.3
+      });
+      const subRingMesh = new THREE.Mesh(subRingGeo, subRingMat);
+      subRingMesh.rotation.x = Math.PI / 3;
+      subRingMesh.rotation.y = 0.4;
+      group.add(subRingMesh);
+
+      // 5. Authentic 3D Biomolecular Structure (Atoms + Covalent Bonds)
+      const ligandGroup = createMoleculeMesh(sys.id);
       group.add(ligandGroup);
 
-      // Invisible larger hit box for easy clicking
-      const hitGeo = new THREE.SphereGeometry(8.0, 12, 12);
+      // 6. Dedicated Internal PointLight for Local Illuminance
+      const localLight = new THREE.PointLight(sys.color, 2.2, 28);
+      group.add(localLight);
+
+      // 7. Raycast Hit Mesh for Smooth Clicking
+      const hitGeo = new THREE.SphereGeometry(9.5, 16, 16);
       const hitMat = new THREE.MeshBasicMaterial({ visible: false });
       const hitMesh = new THREE.Mesh(hitGeo, hitMat);
       hitMesh.userData = { systemIndex: idx };
@@ -1260,7 +1813,17 @@
       raycastMeshes.push(hitMesh);
 
       scene.add(group);
-      systemNodes.push({ group, coreMesh, haloMesh, ringMesh, ligandGroup, data: sys });
+      systemNodes.push({
+        group,
+        coreMesh,
+        haloMesh,
+        ringMesh,
+        subRingMesh,
+        coronaSprite,
+        ligandGroup,
+        localLight,
+        data: sys
+      });
     });
 
     // =========================================================================
@@ -1282,6 +1845,11 @@
     const btnFireParity = document.getElementById('btn-fire-parity');
     const btnCloseDrawer = document.getElementById('btn-close-drawer');
     const galaxyButtons = document.querySelectorAll('.galaxy-btn');
+    const isEmbedded = (window.self !== window.top) || new URLSearchParams(window.location.search).has('embed');
+    if (isEmbedded) {
+      document.body.classList.add('is-embedded');
+    }
+
 
     function selectSystem(index) {
       currentSystemIdx = index;
@@ -1408,7 +1976,7 @@
     }
 
     // =========================================================================
-    // 7. QUANTUM HERO WASD CONTROLS & GATE SIMULATION
+    // 7. Quantum Alignment WASD CONTROLS & GATE SIMULATION
     // =========================================================================
     let currentPitch = 0.0; // 3D Pitch tilt (W / S)
     const tickerGateName = document.getElementById('ticker-gate-name');
@@ -1500,16 +2068,17 @@
         resonanceMeterBar.style.width = `${pct}%`;
       }
 
-      // Visual feedback on halo & particle turbulence
+      // Visual feedback on liquid glass receptor & orbital tori
       if (errorDiff < 6.0) {
-        // Aligned ground state!
         telemetryDeltaPhi.style.color = '#00f5d4';
         node.haloMesh.material.color.setHex(0x00f5d4);
-        node.ringMesh.material.opacity = 0.95;
+        node.haloMesh.material.emissive.setHex(0x00f5d4);
+        node.haloMesh.material.emissiveIntensity = 0.30;
       } else {
         telemetryDeltaPhi.style.color = '#f59e0b';
         node.haloMesh.material.color.setHex(sys.color);
-        node.ringMesh.material.opacity = 0.4;
+        node.haloMesh.material.emissive.setHex(sys.color);
+        node.haloMesh.material.emissiveIntensity = 0.10;
       }
     }
 
@@ -1536,35 +2105,184 @@
       const node = systemNodes[currentSystemIdx];
       const originalScale = node.ringMesh.scale.x;
       new TWEEN.Tween(node.ringMesh.scale)
-        .to({ x: 2.3, y: 2.3, z: 2.3 }, 260)
+        .to({ x: 2.2, y: 2.2, z: 2.2 }, 260)
         .yoyo(true)
         .repeat(1)
         .start();
 
+      if (node.subRingMesh) {
+        new TWEEN.Tween(node.subRingMesh.scale)
+          .to({ x: 1.8, y: 1.8, z: 1.8 }, 300)
+          .yoyo(true)
+          .repeat(1)
+          .start();
+      }
+
+      if (node.localLight) {
+        new TWEEN.Tween(node.localLight)
+          .to({ intensity: 5.5 }, 160)
+          .yoyo(true)
+          .repeat(1)
+          .start();
+      }
+
       parityResult.style.display = 'block';
-      if (errorDiff < 6.0) {
-        parityResult.className = 'parity-result-box pass';
-        parityResult.innerHTML = `
-          <strong>✨ ZERO-PARITY LOCKED (P=0.00)</strong><br />
-          Ancilla Readout: |0⟩ • Ground State Synchronized!<br />
-          <span style="font-size:0.75rem;">Structural & electronic fit verified without exposing 3D coordinates.</span>
-        `;
-        logGatePulse('SWAP Ancilla: |0⟩', '✨ ZERO-PARITY LOCK ACHIEVED!');
-        playPulseSound('lock');
+      const errorRad = THREE.MathUtils.degToRad(errorDiff);
+      const probZero = Math.cos(errorRad / 2.0) ** 2;
+
+      if (constShotMode === null) {
+        // Ideal Continuum Mode
+        if (errorDiff < 6.0) {
+          parityResult.className = 'parity-result-box pass';
+          parityResult.innerHTML = `
+            <strong>ZERO-PARITY LOCKED (Ideal Overlap: ${(probZero * 100).toFixed(1)}%)</strong><br />
+            Ancilla Readout: |0⟩ • Ground State Synchronized!<br />
+            <span style="font-size:0.75rem;">Structural & electronic fit verified without exposing 3D coordinates.</span>
+          `;
+          logGatePulse('SWAP Ancilla: |0⟩', 'ZERO-PARITY LOCK ACHIEVED!');
+          playPulseSound('lock');
+        } else {
+          const failProb = (1.0 - probZero).toFixed(2);
+          parityResult.className = 'parity-result-box fail';
+          parityResult.innerHTML = `
+            <strong>PARITY MISMATCH (P(fail)=${failProb})</strong><br />
+            Ancilla Readout: |1⟩ • Phase Cascading Error Detected.<br />
+            <span style="font-size:0.75rem;">Use [A]/[D] to tune toward ${sys.optimalAngle.toFixed(1)}° for lock.</span>
+          `;
+          logGatePulse('SWAP Ancilla: |1⟩', `Mismatch P(fail)=${failProb}`);
+          playPulseSound('fail');
+        }
       } else {
-        const failProb = (0.5 * (1 - Math.cos(THREE.MathUtils.degToRad(errorDiff)))).toFixed(2);
-        parityResult.className = 'parity-result-box fail';
-        parityResult.innerHTML = `
-          <strong>⚠️ PARITY MISMATCH (P=${failProb})</strong><br />
-          Ancilla Readout: |1⟩ • Phase Cascading Error Detected.<br />
-          <span style="font-size:0.75rem;">Use [A]/[D] to tune toward ${sys.optimalAngle.toFixed(1)}° for lock.</span>
-        `;
-        logGatePulse('SWAP Ancilla: |1⟩', `Mismatch P(fail)=${failProb}`);
-        playPulseSound('fail');
+        // Finite Shot Sampling (Projective Measurements)
+        let k = 0;
+        for (let i = 0; i < constShotMode; i++) {
+          if (Math.random() < probZero) k++;
+        }
+        const empP = k / constShotMode;
+        const stdErr = Math.sqrt(Math.max(1e-9, empP * (1.0 - empP) / constShotMode));
+        const isLocked = empP >= 0.90 || errorDiff < 6.0;
+
+        if (isLocked) {
+          parityResult.className = 'parity-result-box pass';
+          parityResult.innerHTML = `
+            <strong>ZERO-PARITY LOCKED (${k}/${constShotMode} shots |0⟩)</strong><br />
+            Empirical Overlap: ${(empP * 100).toFixed(1)}% ± ${(stdErr * 100).toFixed(1)}% 1σ • QPU Verified<br />
+            <span style="font-size:0.75rem;">Structural & electronic fit confirmed on simulated Quantinuum H2.</span>
+          `;
+          logGatePulse('SWAP Ancilla: |0⟩', `Lock: ${k}/${constShotMode} shots (${(empP * 100).toFixed(1)}%)`);
+          playPulseSound('lock');
+        } else {
+          parityResult.className = 'parity-result-box fail';
+          parityResult.innerHTML = `
+            <strong>PARITY MISMATCH (${constShotMode - k}/${constShotMode} shots |1⟩)</strong><br />
+            Empirical Overlap: ${(empP * 100).toFixed(1)}% ± ${(stdErr * 100).toFixed(1)}% 1σ<br />
+            <span style="font-size:0.75rem;">Use [A]/[D] or analog slider to tune toward ${sys.optimalAngle.toFixed(1)}°.</span>
+          `;
+          logGatePulse('SWAP Ancilla: |1⟩', `Mismatch: ${constShotMode - k}/${constShotMode} shots |1⟩`);
+          playPulseSound('fail');
+        }
       }
     }
 
-    btnFireParity.addEventListener('click', triggerParityTest);
+    // Constellation research variables & bindings
+    let constShotMode = 500;
+    let constQubitMode = 4;
+
+    const btnConstRes4 = document.getElementById('btn-const-res-4');
+    const btnConstRes8 = document.getElementById('btn-const-res-8');
+    const qubitGrid = document.getElementById('qubit-grid');
+
+    function renderConstellationQubitGrid() {
+      const sys = SYSTEMS[activeSystemIndex];
+      if (!sys || !qubitGrid) return;
+
+      if (constQubitMode === 4) {
+        qubitGrid.innerHTML = `
+          <div class="qubit-tile locked">
+            <div class="qubit-id">q0 (${sys.sites ? sys.sites[0] : 'Site 0'})</div>
+            <div class="qubit-phi" id="q0-val">${sys.baseDeltaPhi[0]}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q1 (${sys.sites ? sys.sites[1] : 'Site 1'})</div>
+            <div class="qubit-phi" id="q1-val">${sys.baseDeltaPhi[1]}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q2 (${sys.sites ? sys.sites[2] : 'Site 2'})</div>
+            <div class="qubit-phi" id="q2-val">${sys.baseDeltaPhi[2]}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q3 (${sys.sites ? sys.sites[3] : 'Site 3'})</div>
+            <div class="qubit-phi" id="q3-val">${sys.baseDeltaPhi[3]}π</div>
+          </div>
+        `;
+      } else {
+        // 8-qubit dual-shell mode
+        const d0 = sys.baseDeltaPhi[0], d1 = sys.baseDeltaPhi[1], d2 = sys.baseDeltaPhi[2], d3 = sys.baseDeltaPhi[3];
+        qubitGrid.innerHTML = `
+          <div class="qubit-tile locked">
+            <div class="qubit-id">q0 (Core 0)</div>
+            <div class="qubit-phi">${d0}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q1 (Core 1)</div>
+            <div class="qubit-phi">${d1}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q2 (Core 2)</div>
+            <div class="qubit-phi">${d2}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q3 (Core 3)</div>
+            <div class="qubit-phi">${d3}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q4 (Rot 0)</div>
+            <div class="qubit-phi">${(+d0 * 0.75 + 0.1).toFixed(2)}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q5 (Rot 1)</div>
+            <div class="qubit-phi">${(+d1 * 0.75 - 0.15).toFixed(2)}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q6 (Rot 2)</div>
+            <div class="qubit-phi">${(+d2 * 0.75 + 0.2).toFixed(2)}π</div>
+          </div>
+          <div class="qubit-tile">
+            <div class="qubit-id">q7 (Rot 3)</div>
+            <div class="qubit-phi">${(+d3 * 0.75 - 0.1).toFixed(2)}π</div>
+          </div>
+        `;
+      }
+    }
+
+    if (btnConstRes4 && btnConstRes8) {
+      btnConstRes4.addEventListener('click', () => {
+        Haptics.tick('medium');
+        btnConstRes4.classList.add('active');
+        btnConstRes8.classList.remove('active', 'active-helios');
+        constQubitMode = 4;
+        renderConstellationQubitGrid();
+      });
+      btnConstRes8.addEventListener('click', () => {
+        Haptics.tick('medium');
+        btnConstRes8.classList.add('active', 'active-helios');
+        btnConstRes4.classList.remove('active');
+        constQubitMode = 8;
+        renderConstellationQubitGrid();
+      });
+    }
+
+    document.querySelectorAll('.chip-shot').forEach(btn => {
+      btn.addEventListener('click', function() {
+        Haptics.tick('light');
+        document.querySelectorAll('.chip-shot').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const s = this.dataset.shots;
+        constShotMode = s === 'ideal' ? null : +s;
+      });
+    });
+
+        btnFireParity.addEventListener('click', triggerParityTest);
 
     // Keyboard WASD Controls
     window.addEventListener('keydown', (e) => {
@@ -1611,7 +2329,7 @@
     btnToggleSound.addEventListener('click', () => {
       initAudio();
       soundEnabled = !soundEnabled;
-      soundLabel.innerText = soundEnabled ? '🔊 Audio: ON' : '🔇 Audio: OFF';
+      soundLabel.innerText = soundEnabled ? ' Audio: ON' : ' Audio: OFF';
     });
 
     // How to Play Modal Handlers
@@ -1663,6 +2381,7 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     });
 
     // =========================================================================
@@ -1679,11 +2398,11 @@
 
       scopeCtx.clearRect(0, 0, w, h);
 
-      // Subtle background grid
-      scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      // 1. Subtle Quantum Phase Sub-Grid
+      scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       scopeCtx.lineWidth = 1;
       scopeCtx.beginPath();
-      for (let x = 0; x < w; x += 35) {
+      for (let x = 0; x < w; x += 32) {
         scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, h);
       }
       for (let y = 0; y < h; y += 16) {
@@ -1696,35 +2415,49 @@
       const errorDiff = Math.abs(curAngle - sys.optimalAngle);
       const phaseShift = THREE.MathUtils.degToRad(curAngle - sys.optimalAngle);
 
-      // Target Pocket Wave (Gold)
+      // 2. ThreeUI-Style Predictive Multi-Harmonic Wave Packet for Pocket Target |psi_P> (Gold)
       scopeCtx.strokeStyle = '#f59e0b';
       scopeCtx.lineWidth = 2;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
-        const y = midY + Math.sin(x * 0.05 + time * 3.5) * 16;
+        // Multi-frequency harmonic envelope (carrier + envelope modulation)
+        const fundamental = Math.sin(x * 0.045 + time * 3.2);
+        const harmonic = Math.sin(x * 0.09 + time * 4.8) * 0.35;
+        const envelope = Math.cos(x * 0.015 - time * 0.8);
+        const y = midY + (fundamental + harmonic) * envelope * 15;
         if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
       }
       scopeCtx.stroke();
 
-      // Tunable Ligand Wave (Cyan)
+      // 3. Tunable Ligand State |psi_L(tau)> Wave Packet (Cyan)
       scopeCtx.strokeStyle = '#00f5d4';
       scopeCtx.lineWidth = 2;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
-        const y = midY + Math.sin(x * 0.05 + time * 3.5 + phaseShift) * 16;
+        const fundamental = Math.sin(x * 0.045 + time * 3.2 + phaseShift);
+        const harmonic = Math.sin(x * 0.09 + time * 4.8 + phaseShift * 2) * 0.35;
+        const envelope = Math.cos(x * 0.015 - time * 0.8 + phaseShift * 0.5);
+        const y = midY + (fundamental + harmonic) * envelope * 15;
         if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
       }
       scopeCtx.stroke();
 
-      // If nearly locked, draw glowing interference halo
+      // 4. Constructive Superposition Fringe Halo (Active Resonance Lock)
       if (errorDiff < 6.0) {
-        scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-        scopeCtx.lineWidth = 3;
+        // Draw iridescent interference wavefront beam
+        const grad = scopeCtx.createLinearGradient(0, 0, w, 0);
+        grad.addColorStop(0, '#00f5d4');
+        grad.addColorStop(0.5, '#ffffff');
+        grad.addColorStop(1, '#38bdf8');
+
+        scopeCtx.strokeStyle = grad;
+        scopeCtx.lineWidth = 3.5;
         scopeCtx.shadowColor = '#00f5d4';
-        scopeCtx.shadowBlur = 10;
+        scopeCtx.shadowBlur = 12;
         scopeCtx.beginPath();
         for (let x = 0; x < w; x++) {
-          const y = midY + Math.sin(x * 0.05 + time * 3.5) * 19;
+          const fundamental = Math.sin(x * 0.045 + time * 3.2);
+          const y = midY + fundamental * 18;
           if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
         }
         scopeCtx.stroke();
@@ -1737,8 +2470,12 @@
     // =========================================================================
     let clock = new THREE.Clock();
 
+    let constAnimId = null;
+    let isConstTabActive = true;
+
     function animate() {
-      requestAnimationFrame(animate);
+      if (!isConstTabActive) return;
+      constAnimId = requestAnimationFrame(animate);
       TWEEN.update();
       controls.update();
 
@@ -1765,20 +2502,41 @@
       }
       posAttr.needsUpdate = true;
 
-      // Pulse and rotate celestial nodes
+      // Pulse and rotate celestial nodes & physical molecular components
       systemNodes.forEach((node, idx) => {
-        node.coreMesh.rotation.y += 0.01;
-        node.haloMesh.rotation.y -= 0.008;
-        node.haloMesh.rotation.x += 0.005;
+        node.coreMesh.rotation.y += 0.012;
+        node.haloMesh.rotation.y -= 0.004;
+        node.haloMesh.rotation.x += 0.003;
         node.ringMesh.rotation.z += 0.006;
+        if (node.subRingMesh) {
+          node.subRingMesh.rotation.z -= 0.008;
+          node.subRingMesh.rotation.y += 0.005;
+        }
 
-        // Subtle breathing scale
-        const scale = 1.0 + Math.sin(time * 2.5 + idx) * 0.08;
-        node.coreMesh.scale.set(scale, scale, scale);
+        // Breathing scale for star core & corona
+        const pulse = 1.0 + Math.sin(time * 2.5 + idx) * 0.06;
+        node.coreMesh.scale.set(pulse, pulse, pulse);
+        if (node.coronaSprite) {
+          node.coronaSprite.scale.set(16 * pulse, 16 * pulse, 1);
+        }
       });
 
       renderer.render(scene, camera);
     }
+
+    
+    // ThreeUI rAF Law 3: visibilitychange pauses tab rendering
+    document.addEventListener('visibilitychange', () => {
+      isConstTabActive = !document.hidden;
+      if (isConstTabActive) {
+        if (!constAnimId) constAnimId = requestAnimationFrame(animate);
+      } else {
+        if (constAnimId) {
+          cancelAnimationFrame(constAnimId);
+          constAnimId = null;
+        }
+      }
+    });
 
     animate();
 
