@@ -13,8 +13,12 @@ import numpy as np
 from dataclasses import dataclass, asdict
 from typing import Sequence, Optional
 
-from src.qrotate.hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
-from src.qrotate.circuits import build_pytket_swap_test_circuit, rebase_to_h2_gateset
+try:
+    from .hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
+    from .circuits import build_pytket_swap_test_circuit, rebase_to_h2_gateset
+except ImportError:
+    from src.qrotate.hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
+    from src.qrotate.circuits import build_pytket_swap_test_circuit, rebase_to_h2_gateset
 
 
 # =====================================================================
