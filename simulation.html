@@ -1,0 +1,2823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#02040a" />
+  <title>Q-Rotate Pipeline Visualizer | Quantinuum H2 Trapped-Ion Simulation</title>
+  <meta name="description" content="Quantum-native molecular rotation and blind parity SWAP test visualizer on Quantinuum H2 trapped-ion hardware." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+  <style>
+    :root {
+      --bg-dark: #02040a;
+      --glass-obsidian: rgba(6, 11, 24, 0.74);
+      --glass-hover: rgba(10, 18, 36, 0.84);
+      --glass-bevel-top: rgba(255, 255, 255, 0.45);
+      --glass-bevel-bot: rgba(0, 0, 0, 0.65);
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --prism-spectrum: rgba(0, 245, 212, 0.4);
+      --accent-cyan: #00f5d4;
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
+      --accent-purple: #a855f7;
+      --text-main: #f1f5f9;
+      --text-muted: #8494ab;
+      --font-ui: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-xl: 18px;
+      --radius-lg: 14px;
+      --radius-md: 8px;
+      --radius-pill: 9999px;
+      --shadow-prism: 0 20px 48px -12px rgba(0, 0, 0, 0.75), inset 0 1.5px 0 var(--glass-bevel-top), inset 0 -1px 0 var(--glass-bevel-bot);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: var(--bg-dark);
+      font-family: var(--font-ui);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    /* ── Layer 1 & 2: Velvety Cosmic Spectral Gradient + Film Grain (Reference 6) ── */
+    #spectral-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: #01040c;
+    }
+    #grain-overlay {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.28;
+      filter: url(#spectral-grain); mix-blend-mode: overlay;
+    }
+    #ambient-canvas { position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: 0.65; }
+    #fluid-canvas { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+    .vignette {
+      position: fixed; inset: 0; z-index: 4; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 35%, rgba(1, 3, 8, 0.88) 100%);
+    }
+
+    /* ── App Shell Layout ── */
+    .shell {
+      position: relative; z-index: 10;
+      display: flex; flex-direction: column;
+      width: 100%; height: 100%;
+      padding: 8px 16px 12px;
+      gap: 8px;
+    }
+
+    /* ── Top Header Bar (CybrDeck Obsidian Clear-Glass) ── */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 14px; flex-shrink: 0;
+      background: var(--glass-obsidian);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(28px) saturate(1.35);
+      box-shadow: var(--shadow-prism);
+      position: relative;
+    }
+    .top-bar::before {
+      content: ''; position: absolute; top: 0; left: 24px; right: 24px; height: 1px;
+      background: var(--prism-spectrum); opacity: 0.6; pointer-events: none;
+    }
+    .top-brand { display: flex; align-items: center; gap: 12px; }
+
+    /* Beveled Glass Prism Cube Logo (Reference 1 & 2) */
+    .brand-cube {
+      position: relative; width: 34px; height: 34px; border-radius: 9px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 16px rgba(0,245,212,0.3), inset 0 1.5px 0 rgba(255,255,255,0.6);
+      overflow: hidden;
+    }
+    .brand-cube::after {
+      content: ''; position: absolute; inset: -50%;
+      background: conic-gradient(from 45deg, #ff2e42, #ff841c, #ffe25c, #68ff84, #38e2ff, #4878ff, #b04aff, #ff2e42);
+      opacity: 0.55; animation: rotateCubeSpectrum 6s linear infinite;
+    }
+    @keyframes rotateCubeSpectrum { to { transform: rotate(360deg); } }
+    .brand-cube span {
+      position: relative; z-index: 2; font-family: var(--font-mono);
+      font-weight: 800; font-size: 0.95rem; color: #ffffff;
+      text-shadow: 0 0 10px rgba(0,245,212,0.9);
+    }
+    .top-title h1 {
+      font-size: 0.98rem; font-weight: 700; letter-spacing: -0.01em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .badge-h2 {
+      font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+      color: var(--accent-cyan); background: rgba(0, 245, 212, 0.12);
+      border: 1px solid rgba(0, 245, 212, 0.35); padding: 2px 7px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .top-title p { font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+    
+    /* ──  Sliding Glass Top Navigation ── */
+    .sim-nav-cluster {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 3px 5px;
+      border-radius: var(--radius-pill);
+      backdrop-filter: blur(20px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .sim-nav-pill {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                  width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .sim-nav-link, .sim-nav-btn {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 13px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-ui);
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: rgba(241, 245, 249, 0.74);
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .sim-nav-link:hover, .sim-nav-btn:hover {
+      color: #ffffff;
+    }
+    .sim-nav-btn.active-sound {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    /* ── CybrDeck Clear-Glass Buttons with Rim Shimmer (Images 1-4) ── */
+    .glass-btn {
+      position: relative; display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 6px 14px; border-radius: var(--radius-md);
+      font-family: var(--font-ui); font-size: 0.74rem; font-weight: 600;
+      color: var(--text-main); text-decoration: none; cursor: pointer;
+      background: rgba(8, 14, 28, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(18px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.25s, transform 0.15s, box-shadow 0.25s, color 0.2s;
+      overflow: hidden;
+    }
+    .glass-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255, 255, 255, 0.04);
+      pointer-events: none;
+    }
+    .glass-btn:hover {
+      border-color: var(--accent-cyan); color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.5), 0 8px 24px rgba(0, 245, 212, 0.25);
+    }
+    .glass-btn:active { transform: translateY(1px) scale(0.97); }
+
+    .glass-btn.primary {
+      background: rgba(0, 245, 212, 0.16);
+      border-color: rgba(0, 245, 212, 0.55); color: #ffffff;
+      box-shadow: 0 0 22px rgba(0, 245, 212, 0.32), inset 0 1.5px 0 rgba(255, 255, 255, 0.6);
+    }
+    .glass-btn.primary:hover {
+      background: rgba(0, 245, 212, 0.28);
+      box-shadow: 0 0 32px rgba(0, 245, 212, 0.5), inset 0 1.5px 0 rgba(255, 255, 255, 0.8);
+    }
+    .glass-btn.active-sound { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+    /* ── Pipeline Stepper Strip ── */
+    .pipeline-strip {
+      display: flex; align-items: center; justify-content: center;
+      padding: 6px 14px; flex-shrink: 0;
+      background: var(--glass-obsidian);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(28px);
+      box-shadow: var(--shadow-prism);
+      gap: 12px;
+    }
+    .stage-item {
+      display: flex; align-items: center; gap: 9px; cursor: pointer;
+      padding: 4px 10px; border-radius: var(--radius-md);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .stage-item:hover { background: rgba(255, 255, 255, 0.04); }
+    .stage-bubble {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .stage-info { display: flex; flex-direction: column; text-align: left; }
+    .stage-name { font-size: 0.74rem; font-weight: 700; color: var(--text-muted); transition: color 0.25s; }
+    .stage-sub { font-size: 0.58rem; font-family: var(--font-mono); color: rgba(255,255,255,0.35); }
+
+    .stage-item.active .stage-bubble {
+      border-color: var(--accent-cyan); background: rgba(0, 245, 212, 0.2);
+      color: var(--accent-cyan); box-shadow: 0 0 16px rgba(0, 245, 212, 0.5);
+      transform: scale(1.1);
+    }
+    .stage-item.active .stage-name { color: #ffffff; text-shadow: 0 0 10px rgba(0,245,212,0.45); }
+    .stage-item.done .stage-bubble {
+      border-color: var(--accent-green); background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+    }
+    .stage-item.done .stage-name { color: var(--accent-green); }
+
+    .stage-wire {
+      flex: 1; max-width: 44px; height: 2px;
+      background: rgba(255, 255, 255, 0.08); border-radius: 1px;
+      transition: background 0.35s;
+    }
+    .stage-wire.lit {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px rgba(0, 245, 212, 0.45);
+    }
+
+    /* ── Main Work Area: Dual Glass Panels ── */
+    .viewport-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; flex: 1; min-height: 0;
+    }
+    @media (max-width: 900px) { .viewport-grid { grid-template-columns: 1fr; } }
+
+    .glass-panel {
+      position: relative; display: flex; flex-direction: column;
+      background: var(--glass-obsidian);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(28px) saturate(1.35);
+      box-shadow: var(--shadow-prism);
+      overflow: hidden;
+    }
+    .panel-bezel-highlight {
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45) 25%, rgba(0,245,212,0.6) 50%, rgba(255,255,255,0.45) 75%, transparent);
+      pointer-events: none; z-index: 5;
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.25); flex-shrink: 0;
+    }
+    .panel-tag {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .dot-live {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);
+      animation: livePulse 2s infinite ease-in-out;
+    }
+    @keyframes livePulse { 0%, 100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.2); } }
+    .panel-badge {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      padding: 2px 8px; border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--accent-cyan);
+    }
+    .panel-canvas-wrap {
+      flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;
+      overflow: hidden;
+    }
+    #three-viewport, #quantum-canvas {
+      width: 100%; height: 100%; display: block; position: absolute; inset: 0;
+    }
+
+    /* ── 3D Viewport Controls HUD ── */
+    .viewport-hud-bottom {
+      position: absolute; bottom: 10px; left: 12px; right: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      pointer-events: none; z-index: 10;
+    }
+    .legend-chip {
+      pointer-events: auto; display: flex; align-items: center; gap: 12px;
+      padding: 5px 11px; border-radius: var(--radius-md);
+      background: rgba(3, 7, 18, 0.82); border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(14px); font-family: var(--font-mono); font-size: 0.62rem;
+    }
+    .chip-item { display: flex; align-items: center; gap: 5px; }
+    .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ── Quantum Canvas Circuit HUD Overlay ── */
+    .circuit-hud {
+      position: absolute; top: 10px; left: 12px; right: 12px;
+      background: rgba(4, 8, 20, 0.86); border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-md); padding: 8px 12px;
+      backdrop-filter: blur(16px); z-index: 10;
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .circuit-title {
+      font-size: 0.58rem; font-family: var(--font-mono); color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      display: flex; justify-content: space-between;
+    }
+    .circuit-wire-svg { width: 100%; height: 42px; display: block; }
+
+    /* ── Oscilloscope Waveform HUD Overlay ── */
+    .scope-overlay {
+      position: absolute; bottom: 10px; left: 12px; right: 12px;
+      background: rgba(3, 7, 18, 0.86); border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-md); padding: 6px 10px;
+      backdrop-filter: blur(14px); z-index: 10;
+    }
+    .scope-header {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-mono); font-size: 0.56rem; color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    #scope-canvas { width: 100%; height: 38px; display: block; border-radius: 4px; background: rgba(0,0,0,0.35); }
+
+    /* ── Stage Explainer Modal Drawer ── */
+    .explainer-drawer {
+      position: absolute; top: 10px; left: 12px; right: 12px;
+      background: rgba(5, 10, 24, 0.94); border: 1px solid rgba(0, 245, 212, 0.35);
+      border-radius: var(--radius-md); padding: 10px 14px;
+      backdrop-filter: blur(20px); z-index: 20;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.75);
+      opacity: 0; transform: translateY(-8px); pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .explainer-drawer.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .explainer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .explainer-head h3 { font-size: 0.82rem; font-weight: 700; color: var(--accent-cyan); display: flex; align-items: center; gap: 7px; }
+    .explainer-math { font-family: var(--font-mono); font-size: 0.62rem; color: var(--accent-gold); }
+    .explainer-text { font-size: 0.68rem; color: #cbd5e1; line-height: 1.45; }
+
+    /* ── Research & Hardware Precision Strip ── */
+    .research-strip {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 6px 14px; margin-top: 6px;
+      background: var(--glass-obsidian);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(20px);
+    }
+    .research-cluster { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .research-group { display: flex; align-items: center; gap: 4px; }
+    .research-label {
+      font-size: 0.56rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-muted); margin-right: 2px;
+    }
+    .btn-toggle-chip {
+      font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+      padding: 3px 8px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-toggle-chip:hover { border-color: rgba(255, 255, 255, 0.3); color: #ffffff; }
+    .btn-toggle-chip.active {
+      border-color: var(--accent-cyan); background: rgba(0, 245, 212, 0.14);
+      color: var(--accent-cyan); box-shadow: 0 0 8px rgba(0, 245, 212, 0.25);
+    }
+    .btn-toggle-chip.active-helios {
+      border-color: var(--accent-purple); background: rgba(168, 85, 247, 0.16);
+      color: var(--accent-purple); box-shadow: 0 0 8px rgba(168, 85, 247, 0.25);
+    }
+    .btn-toggle-chip.active-flex {
+      border-color: var(--accent-gold); background: rgba(245, 158, 11, 0.16);
+      color: var(--accent-gold); box-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
+    }
+    .confidence-whisker {
+      position: absolute; height: 10px; top: -3px;
+      border-left: 2px solid #ffffff; border-right: 2px solid #ffffff;
+      border-top: 1px dashed rgba(255, 255, 255, 0.85);
+      pointer-events: none; transition: left 0.25s, width 0.25s;
+    }
+
+    /* ── Interactive Controls Strip ── */
+    .controls-strip {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 7px 14px; flex-shrink: 0;
+      background: var(--glass-obsidian);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(28px);
+      box-shadow: var(--shadow-prism);
+    }
+    .ctrl-cluster { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .ctrl-unit { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-muted);
+    }
+    .ctrl-readout { font-family: var(--font-mono); font-size: 0.66rem; color: var(--accent-cyan); }
+    .ctrl-slider-row { display: flex; align-items: center; gap: 6px; }
+
+    input[type="range"] {
+      -webkit-appearance: none; width: 110px; height: 5px;
+      background: rgba(255, 255, 255, 0.1); border-radius: 3px; outline: none; cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(0, 245, 212, 0.7), inset 0 1px 1px rgba(255,255,255,0.8);
+      cursor: grab; border: 1.5px solid #ffffff; transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.2); }
+
+    .atom-selector { display: flex; gap: 3px; }
+    .btn-n {
+      font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600;
+      padding: 4px 8px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-n:hover { border-color: rgba(255, 255, 255, 0.3); color: var(--text-main); }
+    .btn-n.active {
+      border-color: var(--accent-cyan); background: rgba(0, 245, 212, 0.14);
+      color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0, 245, 212, 0.25);
+    }
+    .playback-btns { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+
+    /* ── Live Telemetry & Classical Race Bar ── */
+    .telemetry-row {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 6px; flex-shrink: 0;
+    }
+    @media (max-width: 1024px) { .telemetry-row { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 640px) { .telemetry-row { grid-template-columns: repeat(2, 1fr); } }
+
+    .metric-card {
+      background: var(--glass-obsidian);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 6px 10px;
+      backdrop-filter: blur(20px);
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 54px;
+    }
+    .metric-head {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.54rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-muted);
+    }
+    .metric-val {
+      font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700;
+      color: #ffffff; display: flex; align-items: baseline; gap: 4px;
+    }
+    .metric-val.cyan { color: var(--accent-cyan); }
+    .metric-val.gold { color: var(--accent-gold); }
+    .metric-val.green { color: var(--accent-green); }
+    .metric-val.red { color: var(--accent-red); }
+    .metric-sub { font-size: 0.56rem; font-weight: 400; color: var(--text-muted); }
+
+    .fid-track { width: 100%; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); margin-top: 3px; overflow: hidden; }
+    .fid-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #ef4444, #f59e0b 60%, #10b981); transition: width 0.4s ease-out; }
+
+    /* Classical vs Quantum Race Box */
+    .race-banner {
+      grid-column: span 2;
+      background: rgba(14, 20, 36, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-md); padding: 6px 10px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .race-head { display: flex; justify-content: space-between; font-size: 0.54rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .race-odometer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .race-side { display: flex; flex-direction: column; }
+    .race-side .label { font-size: 0.52rem; color: var(--text-muted); text-transform: uppercase; }
+    .race-side .number { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; }
+    .vs-tag { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  
+    /* ══════════════════════════════════════════════════════════════════════════
+       Algorithm & Architecture Guide Modal
+       ══════════════════════════════════════════════════════════════════════════ */
+    .sim-modal-backdrop {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(2, 4, 10, 0.82);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sim-modal-backdrop.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .sim-modal-card {
+      position: relative; width: 100%; max-width: 860px; max-height: 88vh;
+      display: flex; flex-direction: column;
+      background: rgba(6, 11, 24, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 22px;
+      box-shadow:
+        0 30px 70px -15px rgba(0, 0, 0, 0.9),
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+        0 0 50px rgba(0, 245, 212, 0.12);
+      transform: scale(0.96) translateY(14px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+    .sim-modal-backdrop.active .sim-modal-card {
+      transform: scale(1) translateY(0);
+    }
+    .sim-modal-header {
+      padding: 18px 24px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+      flex-shrink: 0;
+    }
+    .sim-modal-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent-cyan); font-weight: 700; margin-bottom: 2px;
+    }
+    .sim-modal-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);
+    }
+    .sim-modal-title {
+      font-family: var(--font-ui); font-size: 1.22rem; font-weight: 800;
+      color: #ffffff; letter-spacing: -0.02em;
+    }
+    .sim-modal-subtitle {
+      font-size: 0.74rem; color: var(--text-muted);
+    }
+    .sim-modal-close {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sim-modal-close:hover {
+      background: rgba(255, 255, 255, 0.14); color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.28); transform: rotate(90deg);
+    }
+    .sim-modal-tabs {
+      display: flex; gap: 4px; padding: 10px 24px;
+      background: rgba(0, 0, 0, 0.28);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      overflow-x: auto; flex-shrink: 0;
+    }
+    .sim-tab-btn {
+      padding: 6px 14px; border-radius: var(--radius-pill);
+      background: transparent; border: 1px solid transparent;
+      font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600;
+      color: var(--text-muted); cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .sim-tab-btn:hover {
+      color: #ffffff; background: rgba(255, 255, 255, 0.04);
+    }
+    .sim-tab-btn.active {
+      background: rgba(0, 245, 212, 0.12);
+      border-color: rgba(0, 245, 212, 0.35);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(0, 245, 212, 0.15);
+    }
+    .sim-modal-body {
+      padding: 22px 26px 26px; overflow-y: auto; flex: 1;
+    }
+    .sim-modal-body::-webkit-scrollbar { width: 5px; }
+    .sim-modal-body::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+    .sim-modal-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+    .sim-modal-section {
+      display: none;
+      animation: simTabFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .sim-modal-section.active { display: block; }
+    @keyframes simTabFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .sim-guide-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 14px;
+    }
+    .sim-guide-card {
+      background: rgba(12, 18, 34, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-lg); padding: 14px 16px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .sim-guide-card h4 {
+      font-size: 0.8rem; font-weight: 700; color: #ffffff;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .sim-guide-card p {
+      font-size: 0.72rem; color: #94a3b8; line-height: 1.5;
+    }
+    .sim-guide-callout {
+      background: rgba(14, 20, 36, 0.85);
+      border: 1px solid rgba(0, 245, 212, 0.3);
+      border-radius: var(--radius-md); padding: 12px 16px; margin-top: 16px;
+    }
+    .sim-guide-callout h5 {
+      font-size: 0.76rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 4px;
+    }
+    .sim-guide-callout p {
+      font-size: 0.72rem; color: #cbd5e1; line-height: 1.5;
+    }
+    .sim-formula-box {
+      font-family: var(--font-mono); font-size: 0.76rem;
+      background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(245, 158, 11, 0.28);
+      border-radius: 8px; padding: 10px 14px; color: #fcd34d; margin: 10px 0;
+      overflow-x: auto;
+    }
+
+  
+    .q-brand-emblem {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+      filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.4));
+    }
+    .q-logo-svg {
+      display: block;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .top-brand:hover .q-logo-svg {
+      transform: scale(1.1) rotate(10deg);
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Procedural Film-Grain SVG Filter (Reference 6) -->
+  <svg style="position:fixed; width:0; height:0;" aria-hidden="true">
+    <filter id="spectral-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.07 0" />
+    </filter>
+  </svg>
+
+  <div id="spectral-bg"></div>
+  <div id="grain-overlay"></div>
+  <canvas id="ambient-canvas"></canvas>
+  <canvas id="fluid-canvas"></canvas>
+  <div class="vignette"></div>
+
+  <div class="shell">
+    <!-- Top Header Bar -->
+    <header class="top-bar">
+      <div class="top-brand">
+        <div class="brand-cube" style="background: rgba(6, 11, 24, 0.85); border: 1px solid rgba(0, 245, 212, 0.35); box-shadow: 0 0 20px rgba(0, 245, 212, 0.25);">
+          <span class="q-brand-emblem" aria-hidden="true">
+        <svg class="q-logo-svg" viewBox="0 0 36 36" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="qBrandGrad" x1="2" y1="4" x2="34" y2="32" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00f5d4" />
+              <stop offset="50%" stop-color="#38bdf8" />
+              <stop offset="100%" stop-color="#818cf8" />
+            </linearGradient>
+            <radialGradient id="qBrandCoreGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#00f5d4" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="#00f5d4" stop-opacity="0" />
+            </radialGradient>
+            <filter id="qBrandFilter" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <circle cx="18" cy="18" r="15" stroke="rgba(255, 255, 255, 0.18)" stroke-width="1" stroke-dasharray="2 2.5" />
+          <circle cx="18" cy="3" r="1.3" fill="#00f5d4" />
+          <circle cx="33" cy="18" r="1.3" fill="#38bdf8" />
+          <circle cx="18" cy="33" r="1.3" fill="#818cf8" />
+          <circle cx="3" cy="18" r="1.3" fill="#f59e0b" />
+          <ellipse class="q-orbit-primary" cx="18" cy="18" rx="14.5" ry="6.2" transform="rotate(-28 18 18)" stroke="url(#qBrandGrad)" stroke-width="1.4" stroke-dasharray="18 4 8 4" stroke-linecap="round" filter="url(#qBrandFilter)" />
+          <ellipse class="q-orbit-secondary" cx="18" cy="18" rx="14.5" ry="6.2" transform="rotate(35 18 18)" stroke="rgba(0, 245, 212, 0.45)" stroke-width="1" stroke-dasharray="12 6" />
+          <circle cx="28" cy="13" r="1.8" fill="#ffffff" filter="url(#qBrandFilter)" />
+          <circle cx="28" cy="13" r="1.0" fill="#00f5d4" />
+          <circle cx="18" cy="18" r="7" stroke="url(#qBrandGrad)" stroke-width="1.8" />
+          <path d="M22 22L28 28" stroke="url(#qBrandGrad)" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="18" cy="18" r="2.8" fill="#ffffff" />
+          <circle cx="18" cy="18" r="1.5" fill="#00f5d4" />
+        </svg>
+      </span>
+        </div>
+        <div class="top-title">
+          <h1>Q-Rotate Visualizer <span class="badge-h2">Trapped-Ion H2</span></h1>
+          <p>Singular Quantum Molecular Rotation Algorithm &amp; RUS Parity Verification</p>
+        </div>
+      </div>
+      <nav class="nav-actions" aria-label="Main Navigation">
+        <div class="sim-nav-cluster">
+          <div class="sim-nav-pill" id="simNavPill" aria-hidden="true"></div>
+          <button class="sim-nav-btn" id="btn-help-sim" data-haptic="medium" title="Algorithm &amp; Pipeline Architecture Guide">
+            <span>Algorithm Guide</span>
+          </button>
+          <button class="sim-nav-btn active-sound" id="btn-sound" data-haptic="light" title="Toggle Synthesizer Sound">
+            <span id="sound-txt">Audio ON</span>
+          </button>
+          <a href="index.html" class="sim-nav-link" data-haptic="light">Documentation</a>
+          <a href="constellation.html" class="sim-nav-link" data-haptic="light">Constellation</a>
+          <a href="workbook.html" class="sim-nav-link" target="_blank" data-haptic="light">Workbook</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Pipeline Step Navigation -->
+    <nav class="pipeline-strip" aria-label="Pipeline Stages">
+      <div class="stage-item" id="stage-0" onclick="goToStage(0)">
+        <div class="stage-bubble" id="sb-0">1</div>
+        <div class="stage-info">
+          <span class="stage-name">Phase Encode</span>
+          <span class="stage-sub">3D Coords → 4 Qubits</span>
+        </div>
+      </div>
+      <div class="stage-wire" id="sw-0"></div>
+
+      <div class="stage-item" id="stage-1" onclick="goToStage(1)">
+        <div class="stage-bubble" id="sb-1">2</div>
+        <div class="stage-info">
+          <span class="stage-name">Quantum Evolve</span>
+          <span class="stage-sub">Û_tube(τ) Unitary</span>
+        </div>
+      </div>
+      <div class="stage-wire" id="sw-1"></div>
+
+      <div class="stage-item" id="stage-2" onclick="goToStage(2)">
+        <div class="stage-bubble" id="sb-2">3</div>
+        <div class="stage-info">
+          <span class="stage-name">Blind SWAP Test</span>
+          <span class="stage-sub">Ancilla Parity Check</span>
+        </div>
+      </div>
+      <div class="stage-wire" id="sw-2"></div>
+
+      <div class="stage-item" id="stage-3" onclick="goToStage(3)">
+        <div class="stage-bubble" id="sb-3">4</div>
+        <div class="stage-info">
+          <span class="stage-name">RUS Convergence</span>
+          <span class="stage-sub">Mid-Circuit Feedback</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Dual Viewports: 3D Atoms & Quantum Canvas -->
+    <main class="viewport-grid">
+      <!-- Left Panel: 3D Molecule Viewport -->
+      <section class="glass-panel" id="panel-3d">
+        <div class="panel-bezel-highlight"></div>
+        <div class="panel-header">
+          <div class="panel-tag"><div class="dot-live"></div> 3D Spatial Geometry</div>
+          <div class="panel-badge" id="badge-atoms">N = 50 Atoms</div>
+        </div>
+        <div class="panel-canvas-wrap">
+          <canvas id="three-viewport"></canvas>
+
+          <!-- Explainer Drawer for 3D -->
+          <div class="explainer-drawer" id="drawer-3d">
+            <div class="explainer-head">
+              <h3 id="ex-3d-title">Stage 1: Harmonic Phase Encoding</h3>
+              <span class="explainer-math" id="ex-3d-math">O(1) Compression</span>
+            </div>
+            <p class="explainer-text" id="ex-3d-desc">
+              Classical atom coordinates are mapped onto continuous trapped-ion vibrational modes. Regardless of whether the molecule contains 10 or 1,000 atoms, the quantum representation compresses into an invariant 4-phase register.
+            </p>
+          </div>
+
+          <!-- Bottom Viewport HUD -->
+          <div class="viewport-hud-bottom">
+            <div class="legend-chip">
+              <div class="chip-item"><div class="chip-dot" style="background:#3b82f6; box-shadow:0 0 6px #3b82f6;"></div> Receptor Pocket (Target)</div>
+              <div class="chip-item"><div class="chip-dot" style="background:#f59e0b; box-shadow:0 0 6px #f59e0b;"></div> Drug Ligand (Rotating)</div>
+              <div class="chip-item"><div class="chip-dot" style="background:#00f5d4; box-shadow:0 0 6px #00f5d4;"></div> Ancilla Ion</div>
+            </div>
+            <div class="legend-chip">
+              <span style="color:var(--text-muted);">Drag: Rotate · Scroll: Zoom</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Quantum State & Waveform Canvas -->
+      <section class="glass-panel" id="panel-quantum">
+        <div class="panel-bezel-highlight"></div>
+        <div class="panel-header">
+          <div class="panel-tag"><div class="dot-live" style="background:var(--accent-purple); box-shadow:0 0 8px var(--accent-purple);"></div> Trapped-Ion State Register</div>
+          <div class="panel-badge" id="badge-qubits">4 Phase Qubits + 1 Ancilla</div>
+        </div>
+        <div class="panel-canvas-wrap">
+          <canvas id="quantum-canvas"></canvas>
+
+          <!-- Circuit Diagram SVG HUD -->
+          <div class="circuit-hud">
+            <div class="circuit-title">
+              <span>H2 Native Gate Circuit</span>
+              <span id="circuit-stage-txt" style="color:var(--accent-cyan)">Idle</span>
+            </div>
+            <svg class="circuit-wire-svg" viewBox="0 0 380 42">
+              <!-- Ancilla Wire -->
+              <line x1="10" y1="9" x2="370" y2="9" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+              <text x="12" y="12" fill="#8b9bb4" font-family="'JetBrains Mono'" font-size="8">|0⟩_A</text>
+              <!-- Pocket Wire -->
+              <line x1="10" y1="22" x2="370" y2="22" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+              <text x="12" y="25" fill="#3b82f6" font-family="'JetBrains Mono'" font-size="8">|ψ_P⟩</text>
+              <!-- Ligand Wire -->
+              <line x1="10" y1="35" x2="370" y2="35" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+              <text x="12" y="38" fill="#f59e0b" font-family="'JetBrains Mono'" font-size="8">|ψ_L⟩</text>
+
+              <!-- Gate Blocks with dynamic glow ids -->
+              <rect id="gate-h1" x="70" y="3" width="22" height="13" rx="3" fill="rgba(0,245,212,0.15)" stroke="#00f5d4" stroke-width="1" />
+              <text x="77" y="12" fill="#00f5d4" font-family="'JetBrains Mono'" font-size="8" font-weight="700">H</text>
+
+              <rect id="gate-ry" x="110" y="29" width="32" height="13" rx="3" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1" />
+              <text x="115" y="38" fill="#f59e0b" font-family="'JetBrains Mono'" font-size="8" font-weight="700">Ry(τ)</text>
+
+              <rect id="gate-rz" x="148" y="29" width="32" height="13" rx="3" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1" />
+              <text x="153" y="38" fill="#f59e0b" font-family="'JetBrains Mono'" font-size="8" font-weight="700">Rz(τ)</text>
+
+              <!-- Controlled-SWAP Section -->
+              <line id="gate-cswap-wire" x1="210" y1="9" x2="210" y2="35" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+              <circle id="gate-cswap-ctrl" cx="210" cy="9" r="3.5" fill="#00f5d4" />
+              <text id="gate-cswap-x1" x="206" y="26" fill="#3b82f6" font-family="'JetBrains Mono'" font-size="11" font-weight="bold">×</text>
+              <text id="gate-cswap-x2" x="206" y="39" fill="#f59e0b" font-family="'JetBrains Mono'" font-size="11" font-weight="bold">×</text>
+
+              <rect id="gate-h2" x="250" y="3" width="22" height="13" rx="3" fill="rgba(0,245,212,0.15)" stroke="#00f5d4" stroke-width="1" />
+              <text x="257" y="12" fill="#00f5d4" font-family="'JetBrains Mono'" font-size="8" font-weight="700">H</text>
+
+              <rect id="gate-meas" x="295" y="2" width="26" height="15" rx="3" fill="rgba(168,85,247,0.15)" stroke="#a855f7" stroke-width="1" />
+              <path d="M 300 13 A 6 6 0 0 1 316 13" fill="none" stroke="#a855f7" stroke-width="1" />
+              <line x1="308" y1="13" x2="313" y2="6" stroke="#a855f7" stroke-width="1" />
+            </svg>
+          </div>
+
+          <!-- Oscilloscope Waveform HUD -->
+          <div class="scope-overlay">
+            <div class="scope-header">
+              <span>Waveform Interference Lock</span>
+              <span id="scope-status" style="color:var(--accent-cyan);">Phase Sync: 25%</span>
+            </div>
+            <canvas id="scope-canvas" width="450" height="38"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Interactive Controls Bar -->
+    <section class="controls-strip">
+      <div class="ctrl-cluster">
+        <div class="ctrl-unit">
+          <div class="ctrl-header"><span>Evolution Time (τ)</span><span class="ctrl-readout" id="readout-tau">0.50</span></div>
+          <div class="ctrl-slider-row">
+            <input type="range" id="slide-tau" min="0" max="100" value="50" />
+          </div>
+        </div>
+
+        <div class="ctrl-unit">
+          <div class="ctrl-header"><span>Misalignment</span><span class="ctrl-readout" id="readout-misalign">30°</span></div>
+          <div class="ctrl-slider-row">
+            <input type="range" id="slide-misalign" min="0" max="90" value="30" />
+          </div>
+        </div>
+
+        <div class="ctrl-unit">
+          <div class="ctrl-header"><span>Ion Noise (σ)</span><span class="ctrl-readout" id="readout-noise">0.05</span></div>
+          <div class="ctrl-slider-row">
+            <input type="range" id="slide-noise" min="0" max="25" value="5" />
+          </div>
+        </div>
+
+        <div class="ctrl-unit">
+          <div class="ctrl-header"><span>Atom Count (N)</span><span class="ctrl-readout" id="readout-n">50</span></div>
+          <div class="atom-selector">
+            <button class="btn-n" data-n="10">10</button>
+            <button class="btn-n active" data-n="50">50</button>
+            <button class="btn-n" data-n="100">100</button>
+            <button class="btn-n" data-n="500">500</button>
+            <button class="btn-n" data-n="1000">1K</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Playback Buttons -->
+      <div class="playback-btns">
+        <button class="glass-btn" id="btn-reset">↺ Reset</button>
+        <button class="glass-btn" id="btn-step">⏭ Step</button>
+        <button class="glass-btn primary" id="btn-run">▶ Auto-Run</button>
+      </div>
+    </section>
+
+    <!-- Research Precision & Hardware Realism Strip -->
+    <section class="research-strip">
+      <div class="research-cluster">
+        <!-- Multi-Resolution Mode -->
+        <div class="research-group">
+          <span class="research-label">Resolution:</span>
+          <button class="btn-toggle-chip active" id="btn-res-4" data-qubits="4">4-Qubit H2 (Invariant)</button>
+          <button class="btn-toggle-chip" id="btn-res-8" data-qubits="8">8-Qubit Helios (Dual Shell)</button>
+        </div>
+
+        <!-- Shot Sampling Selector -->
+        <div class="research-group">
+          <span class="research-label">Shot Noise:</span>
+          <button class="btn-toggle-chip btn-shot" data-shots="100">100</button>
+          <button class="btn-toggle-chip btn-shot active" data-shots="500">500</button>
+          <button class="btn-toggle-chip btn-shot" data-shots="1000">1K</button>
+          <button class="btn-toggle-chip btn-shot" data-shots="ideal">Ideal (∞)</button>
+        </div>
+
+        <!-- Conformation Engine -->
+        <div class="research-group">
+          <span class="research-label">Docking:</span>
+          <button class="btn-toggle-chip active" id="btn-conf-rigid" data-conf="rigid">Rigid SO(3)</button>
+          <button class="btn-toggle-chip" id="btn-conf-flex" data-conf="flexible">Flexible SO(3) ⊗ U(1)</button>
+        </div>
+
+        <!-- Flexible sliders (active when flexible is selected) -->
+        <div class="research-group" id="flex-sliders" style="display:none; gap:6px;">
+          <span class="research-label">J:</span>
+          <input type="range" id="slide-coupling-j" min="0" max="25" value="8" style="width:65px;" />
+          <span class="ctrl-readout" id="readout-j">0.08</span>
+
+          <span class="research-label" style="margin-left:4px;">χ:</span>
+          <input type="range" id="slide-chi" min="0" max="180" value="30" style="width:65px;" />
+          <span class="ctrl-readout" id="readout-chi">30°</span>
+        </div>
+      </div>
+
+      <!-- Guppy & H2 Hardware Inspector Trigger -->
+      <button class="glass-btn" id="btn-open-guppy-drawer" style="border-color:var(--accent-purple); color:var(--accent-purple); font-size:0.68rem; padding:4px 10px; margin-left:auto;">
+        ⚡ H2 Native Gates &amp; Guppy
+      </button>
+    </section>
+
+    <!-- Live Telemetry & Speedup Race Bar -->
+    <footer class="telemetry-row">
+      <div class="metric-card">
+        <div class="metric-head"><span>Qubit Register</span><span>Trapped Ion</span></div>
+        <div class="metric-val cyan" id="m-qubits">9 <span class="metric-sub">ions</span></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-head"><span>Overlap Fidelity</span><span id="m-fid-pct">50%</span></div>
+        <div class="metric-val gold" id="m-fid">0.500</div>
+        <div class="fid-track" style="position:relative;"><div class="fid-fill" id="m-fid-fill" style="width:50%;"></div><div class="confidence-whisker" id="m-fid-whisker" style="display:none;"></div></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-head"><span>RUS Iteration</span><span>Max 5</span></div>
+        <div class="metric-val cyan" id="m-rus">0 / 5</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-head"><span>Ancilla State</span><span>Parity</span></div>
+        <div class="metric-val" id="m-ancilla" style="color:var(--text-muted)">|0⟩ Pending</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-head"><span>2Q Native ZZ</span><span>Quantinuum H2</span></div>
+        <div class="metric-val cyan" id="m-gates">0 <span class="metric-sub">gates</span></div>
+      </div>
+
+      <!-- Classical vs Quantum Speedup Race -->
+      <div class="race-banner">
+        <div class="race-head">
+          <span style="color:#ef4444;">Classical Brute-Force</span>
+          <span class="vs-tag">VS</span>
+          <span style="color:var(--accent-cyan);">Quantum Q-Rotate</span>
+        </div>
+        <div class="race-odometer">
+          <div class="race-side">
+            <span class="label">Grid Steps (30° res)</span>
+            <span class="number" id="race-classical-val" style="color:#f87171;">0 / 172,800</span>
+          </div>
+          <span style="font-family:var(--font-mono); font-size:1.1rem; color:var(--accent-green);" id="race-speedup-tag"> 1x</span>
+          <div class="race-side" style="text-align:right;">
+            <span class="label">Quantum Queries</span>
+            <span class="number cyan" id="race-quantum-val">0 Queries</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       Algorithm & Architecture Guide Modal
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <div class="sim-modal-backdrop" id="sim-help-modal" role="dialog" aria-modal="true" aria-labelledby="sim-modal-title">
+    <div class="sim-modal-card">
+      <div class="sim-modal-header">
+        <div class="sim-modal-title-group">
+          <div class="sim-modal-badge">Quantum-HPC Hybrid Simulation</div>
+          <h2 class="sim-modal-title" id="sim-modal-title">Project Q-Rotate Architecture &amp; Guide</h2>
+          <p class="sim-modal-subtitle">Continuous Harmonic Lie Algebra Pipeline on Quantinuum H2 Trapped Ions</p>
+        </div>
+        <button class="sim-modal-close" id="btn-close-sim-modal" aria-label="Close Guide">&times;</button>
+      </div>
+
+      <div class="sim-modal-tabs">
+        <button class="sim-tab-btn active" data-tab="tab-overview">1. The Core Paradigm</button>
+        <button class="sim-tab-btn" data-tab="tab-encoding">2. O(1) Phase Embedding</button>
+        <button class="sim-tab-btn" data-tab="tab-evolution">3. Continuous Evolution U(&tau;)</button>
+        <button class="sim-tab-btn" data-tab="tab-swap">4. Blind Parity SWAP</button>
+        <button class="sim-tab-btn" data-tab="tab-rus">5. Repeat-Until-Success (RUS)</button>
+        <button class="sim-tab-btn" data-tab="tab-hardware">6. Quantinuum H2 Mapping</button>
+        <button class="sim-tab-btn" data-tab="tab-guppy" id="btn-tab-guppy">7. Guppy &amp; Hardware Cost</button>
+      </div>
+
+      <div class="sim-modal-body">
+        <!-- TAB 1: The Core Paradigm -->
+        <div class="sim-modal-section active" id="tab-overview">
+          <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
+            <strong style="color: #ffffff;">The Computational Dilemma in Molecular Docking:</strong>
+            Traditional in-silico drug discovery and structural biology search through vast non-convex continuous rotational spaces SO(3).
+            Classical brute-force grid search scales exponentially with rotatable bonds, requiring sampling millions of 3D grids (<span style="font-family: var(--font-mono); color: var(--accent-gold);">O(M&sup3; &times; N)</span>).
+            Conversely, standard quantum chemistry (VQE/QPE) encodes molecular orbitals into hundreds of logical qubits &mdash; an impossible hurdle for near-term NISQ/FTQC devices.
+          </div>
+
+          <div class="sim-guide-grid">
+            <div class="sim-guide-card">
+              <h4><span style="color: var(--accent-cyan);">&bull;</span> Continuous Trapped-Ion Mode</h4>
+              <p>Rather than treating qubits as static binary switches, Q-Rotate embeds continuous spatial coordinates directly into continuous vibrational motional modes and continuous single-qubit Lie group rotations.</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4><span style="color: var(--accent-gold);">&bull;</span> Invariant 9-Qubit Footprint</h4>
+              <p>Regardless of whether the target biomolecule contains 10 atoms or 10,000 atoms, the entire system compresses into 4 pocket qubits, 4 ligand qubits, and 1 spectator ancilla qubit (<span style="font-family: var(--font-mono); color: var(--accent-gold);">O(1)</span> space).</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4><span style="color: var(--accent-green);">&bull;</span> Zero-Knowledge Blind Parity</h4>
+              <p>Proprietary pharmaceutical drug structures and target active site pockets never disclose their 3D coordinates. Interference occurs in quantum superposition, measuring only a single-bit parity ancilla.</p>
+            </div>
+          </div>
+
+          <div class="sim-guide-callout">
+            <h5>Key Takeaway: Dual-Engine Speedup</h5>
+            <p>Classical HPC computes center-of-mass angular distributions in milliseconds. The Quantinuum H2 quantum processor then evaluates the multi-dimensional conformational overlap in a single continuous unitary rotation &mdash; bypassing grid discretization entirely.</p>
+          </div>
+        </div>
+
+        <!-- TAB 2: O(1) Phase Embedding -->
+        <div class="sim-modal-section" id="tab-encoding">
+          <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
+            <strong style="color: #ffffff;">How 3D Molecular Coordinates Become Quantum Phases:</strong>
+            Let a molecule contain N atoms at Cartesian positions (x_i, y_i, z_i) with partial charges q_i.
+            The classical HPC bridge computes the geometric center of mass (COM) and groups atoms into 4 angular quadrature sectors around the principal rotational axis:
+          </div>
+
+          <div class="sim-formula-box">
+            &phi;_m = atan2(&Delta;y_m, &Delta;x_m) &times; sgn(q_m), &nbsp;&nbsp; m &in; {0, 1, 2, 3}
+          </div>
+
+          <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5; margin-top: 8px;">
+            The resulting 4 continuous angles &Phi; = (&phi;_0, &phi;_1, &phi;_2, &phi;_3) &in; [-&pi;, &pi;]&sup4; are initialized onto the 4 data qubits via phase gates:
+          </div>
+
+          <div class="sim-formula-box">
+            |&psi;&rang; = &Otimes;_{m=0}&sup3; R_z(&phi;_m) H |0&rang; = &Otimes;_{m=0}&sup3; &frac{1}{\sqrt{2}} (|0&rang; + e^{i &phi;_m} |1&rang;)
+          </div>
+
+          <div class="sim-guide-grid">
+            <div class="sim-guide-card">
+              <h4 style="color: var(--accent-gold);">Gold Ring: Target Pocket</h4>
+              <p>Encodes the electrostatic and steric profile of the enzyme binding cavity (e.g. COVID Mpro catalytic dyad Cys145/His41 or Rhodopsin Lys296).</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4 style="color: var(--accent-cyan);">Cyan Ring: Ligand Candidate</h4>
+              <p>Encodes the drug molecule / chromophore conformation. The angular difference &Delta;&Phi; between the two rings represents conformational mismatch.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Continuous Evolution U(tau) -->
+        <div class="sim-modal-section" id="tab-evolution">
+          <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
+            <strong style="color: #ffffff;">The Continuous Rotation Hamiltonian H_tube:</strong>
+            Traditional quantum algorithms discretize time into Trotter slices. Q-Rotate utilizes the native continuous Hamiltonian of trapped-ion optical lattices:
+          </div>
+
+          <div class="sim-formula-box">
+            H_tube = &sum;_{m=1}&sup4; (&omega; &middot; L_m + &Delta;&phi;_m &sigma;_z^{(m)}) + J &sum;_{m=1}&sup3; (&sigma;_x^{(m)}&sigma;_x^{(m+1)} + &sigma;_y^{(m)}&sigma;_y^{(m+1)})
+          </div>
+
+          <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5; margin-top: 8px;">
+            The continuous time-evolution operator U_tube(&tau;) = exp(-i H_tube &tau;) decomposes under SO(3) Euler angles (&alpha;, &beta;, &gamma;) into synchronized single-qubit rotations:
+          </div>
+
+          <div class="sim-formula-box">
+            U_tube(&tau;) = &Otimes;_{m=1}&sup4; [ R_z(&alpha;_m) R_y(&omega;_y &tau;) R_z(&omega;_z &tau;) ]
+          </div>
+
+          <div class="sim-guide-callout">
+            <h5>Continuous Parameter Sweep</h5>
+            <p>As the evolution parameter &tau; sweeps from 0 to 1, the ligand's quantum state rotates smoothly through Hilbert space. On the oscilloscope, the Cyan wave slides along the time axis toward the stationary Gold pocket waveform.</p>
+          </div>
+        </div>
+
+        <!-- TAB 4: Blind Parity SWAP -->
+        <div class="sim-modal-section" id="tab-swap">
+          <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
+            <strong style="color: #ffffff;">Zero-Knowledge Blind Parity SWAP Test:</strong>
+            How do you verify whether a candidate drug fits a patented biological target without revealing either party's 3D atomic coordinates?
+            Q-Rotate prepares an isolated spectator <strong>ancilla qubit</strong> in the superposition state |+&rang; = (|0&rang; + |1&rang;)/&radic;2 and executes a Controlled-SWAP (Fredkin) network across all 4 register pairs.
+          </div>
+
+          <div class="sim-formula-box">
+            P(|0&rang;_{ancilla}) = &frac{1}{2} [ 1 + |&lang;&psi;_P | U_tube(&tau;) | &psi;_L &rang;|&sup2; ]
+          </div>
+
+          <div class="sim-guide-grid">
+            <div class="sim-guide-card">
+              <h4 style="color: var(--accent-green);">&bull; Zero Parity Outcome |0&rang;</h4>
+              <p>Constructive quantum interference! The ligand and pocket wavefunctions are in perfect geometric and electrostatic resonance. Fidelities &ge; 98%.</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4 style="color: var(--accent-red);">&bull; Odd Parity Outcome |1&rang;</h4>
+              <p>Destructive interference. The conformational overlap is low, indicating steric clash or electrostatic repulsion.</p>
+            </div>
+          </div>
+
+          <div class="sim-guide-callout">
+            <h5>Cryptographic Privacy Guarantee</h5>
+            <p>Neither data register is ever measured! The observer only learns the scalar parity bit P(|0&rang;). The underlying 3D structural coordinates remain strictly unexposed inside the quantum coherence sphere.</p>
+          </div>
+        </div>
+
+        <!-- TAB 5: Repeat-Until-Success (RUS) -->
+        <div class="sim-modal-section" id="tab-rus">
+          <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
+            <strong style="color: #ffffff;">Adaptive Mid-Circuit Measurement &amp; Feedback:</strong>
+            Quantinuum H2 provides industry-leading mid-circuit measurement, ion shuttling, and qubit reset with ultra-low cross-talk (&lt; 10&supmin;&sup4; error).
+            Q-Rotate exploits this through a closed-loop Repeat-Until-Success (RUS) circuit:
+          </div>
+
+          <div class="sim-formula-box">
+            If M(ancilla) == |1&rang; &rArr; &tau; &larr; &tau; + &delta;&tau;_{feedback}, &nbsp; Reset(ancilla) &rArr; Repeat
+          </div>
+
+          <div class="sim-guide-grid">
+            <div class="sim-guide-card">
+              <h4>1. Mid-Circuit Sampling</h4>
+              <p>The ancilla is measured mid-circuit while the data registers retain their quantum coherence.</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4>2. Real-Time FPGA Feedback</h4>
+              <p>If mismatch occurs, hardware classical control updates the laser pulse frequency and applies phase dampening in real time.</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4>3. Resonant Convergence</h4>
+              <p>Within 3 to 5 iterations, the system converges into the global energy minimum, locking in the drug-pocket binding conformation.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 7: Guppy & Native Hardware Gates -->
+        <div class="sim-modal-section" id="tab-guppy">
+          <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
+            <strong style="color: #ffffff;">Quantinuum H2 QCCD Architecture &amp; Native Compilation:</strong>
+            Unlike fixed-lattice superconducting chips requiring layers of SWAP routing, Quantinuum H-Series utilizes physical ion shuttling across 32 trap zones. Arbitrary single-qubit laser addressing ($R_z, R_y$) and native $ZZ\text{Phase}(\theta)$ gates allow direct parameter mapping without Trotterization bloat.
+          </div>
+
+          <!-- Official HQC Cost Formula Breakdown -->
+          <div class="sim-guide-callout" style="border-color: var(--accent-purple);">
+            <h5 style="color: var(--accent-purple);">Official Quantinuum HQC Credit Formula</h5>
+            <p style="font-family: var(--font-mono); font-size: 0.76rem; color: #ffffff; margin-top: 4px;">
+              \text{HQC} = 5.0 + \frac{5}{5000} \times \left[ N_{1q} + 10 \times N_{2q} + 5 \times N_m + N_{\text{shuttle}} \right] \times \left( \frac{N_{\text{shots}}}{100} \right)
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; font-family: var(--font-mono); font-size: 0.68rem;">
+              <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
+                <span style="color: var(--text-muted);">1Q Lasers:</span> <span id="modal-hqc-1q" style="color: #00f5d4;">66</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
+                <span style="color: var(--text-muted);">2Q ZZPhase:</span> <span id="modal-hqc-2q" style="color: #f59e0b;">12</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
+                <span style="color: var(--text-muted);">Shuttles:</span> <span id="modal-hqc-shuttle" style="color: #a855f7;">24</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
+                <span style="color: var(--text-muted);">Est. HQC:</span> <span id="modal-hqc-total" style="color: #10b981; font-weight: bold;">8.60</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Guppy Code Snippet -->
+          <div style="margin-top: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Guppy Mid-Circuit RUS Engine (@guppy.comptime)</span>
+              <span style="font-size: 0.65rem; color: var(--accent-cyan); font-family: var(--font-mono);">Compiled to pytket GATESET</span>
+            </div>
+            <pre style="background: #030712; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.70rem; color: #e2e8f0; overflow-x: auto; line-height: 1.45;"><code><span style="color:#a855f7;">@guppy.comptime</span>
+<span style="color:#3b82f6;">def</span> <span style="color:#00f5d4;">guppy_qrotate_rus_demo</span>() -&gt; <span style="color:#3b82f6;">None</span>:
+    <span style="color:#64748b;"># 1. Allocate Trapped-Ion Registers</span>
+    q_pocket = qubit()
+    q_ligand = qubit()
+    ancilla = qubit()
+
+    <span style="color:#64748b;"># 2. Continuous Phase Encoding Rz(Φ)</span>
+    h(q_pocket); rz(q_pocket, angle(0.25))
+    h(q_ligand); rz(q_ligand, angle(0.40))
+
+    <span style="color:#64748b;"># 3. Apply Continuous Lie Evolution U_tube(τ)</span>
+    ry(q_ligand, angle(0.15))
+    rz(q_ligand, angle(0.10))
+
+    <span style="color:#64748b;"># 4. Zero-Knowledge Blind Parity SWAP</span>
+    h(ancilla)
+    cx(q_ligand, q_pocket)
+    toffoli(ancilla, q_pocket, q_ligand)  <span style="color:#64748b;"># 3x Native ZZPhase</span>
+    cx(q_ligand, q_pocket)
+    h(ancilla)
+
+    <span style="color:#64748b;"># 5. Mid-Circuit Measurement &amp; FPGA Reset</span>
+    m_parity = measure(ancilla)
+    <span style="color:#f59e0b;">if</span> m_parity == 1:
+        reset(ancilla)  <span style="color:#64748b;"># RUS Loop Trigger</span>
+    output(<span style="color:#10b981;">"parity_error"</span>, m_parity)</code></pre>
+          </div>
+        </div>
+
+        <!-- TAB 6: Quantinuum H2 Mapping -->
+        <div class="sim-modal-section" id="tab-hardware">
+          <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
+            <strong style="color: #ffffff;">Why Quantinuum H2 Trapped-Ion Architecture is Uniquely Suited:</strong>
+          </div>
+
+          <div class="sim-guide-grid">
+            <div class="sim-guide-card">
+              <h4 style="color: var(--accent-cyan);">All-to-All Shuttled Connectivity</h4>
+              <p>Superconducting chips have planar grid connectivity (heavy SWAP routing overhead). Quantinuum physically shuttles ions across 32 zones with zero routing penalty for the 4 Controlled-SWAP pairs.</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4 style="color: var(--accent-gold);">World-Record 2Q Gate Fidelity (99.87%)</h4>
+              <p>High-depth continuous rotation circuits require ultra-high fidelity. H2 barium/ytterbium ions deliver the fidelity necessary for deep conformational verification.</p>
+            </div>
+            <div class="sim-guide-card">
+              <h4 style="color: var(--accent-purple);">Native Arbitrary Angle Rz/Ry Gates</h4>
+              <p>Continuous parameters &tau; and &phi;_m map directly to laser phase shifts with zero gate synthesis decomposition overhead.</p>
+            </div>
+          </div>
+
+          <div class="sim-formula-box">
+            Total Hardware Footprint: 9 Qubits | Circuit Depth: 28 Gates | Expected HQC Runtime: 4.8 ms
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  'use strict';
+
+  /* ══════════════════════════════════════════════════════════════
+     1. MATHEMATICAL ENGINE & QUANTUM HARMONICS
+     ══════════════════════════════════════════════════════════════ */
+  const N_SITES = 4;
+
+  function gaussianRandom() {
+    let u = 0, v = 0;
+    while (!u) u = Math.random();
+    while (!v) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  }
+
+  function generateMolecularStructure(numAtoms, misalignDeg, noiseSigma) {
+    const pocketCoords = [], ligandCoords = [];
+    const pocketCharges = [], ligandCharges = [];
+    const radius = 3.6;
+
+    for (let i = 0; i < numAtoms; i++) {
+      const u = i / numAtoms;
+      const phi = 2.0 * Math.PI * u;
+      const z = Math.sin(phi * 2.5) * 1.2 + gaussianRandom() * 0.15;
+      const x = (radius + Math.cos(phi * 3.0) * 0.5) * Math.cos(phi);
+      const y = (radius + Math.cos(phi * 3.0) * 0.5) * Math.sin(phi);
+
+      pocketCoords.push([x, y, z]);
+      pocketCharges.push(i % 2 === 0 ? 0.35 : -0.35);
+    }
+
+    const rad = (misalignDeg * Math.PI) / 180.0;
+    const cosR = Math.cos(rad), sinR = Math.sin(rad);
+
+    pocketCoords.forEach(([px, py, pz], idx) => {
+      const lx = px * cosR - py * sinR + gaussianRandom() * noiseSigma * 3.0;
+      const ly = px * sinR + py * cosR + gaussianRandom() * noiseSigma * 3.0;
+      const lz = pz + gaussianRandom() * noiseSigma * 2.0;
+      ligandCoords.push([lx, ly, lz]);
+      ligandCharges.push(-pocketCharges[idx]);
+    });
+
+    return { pocketCoords, ligandCoords, pocketCharges, ligandCharges };
+  }
+
+  function projectCoordinatesToPhases(coords, charges, nQubits = 4) {
+    if (!coords || !coords.length) return Array(nQubits).fill(0);
+
+    let cx = 0, cy = 0, cz = 0;
+    coords.forEach(([x, y, z]) => { cx += x; cy += y; cz += z; });
+    cx /= coords.length; cy /= coords.length; cz /= coords.length;
+
+    const rel = coords.map(([x, y, z]) => [x - cx, y - cy, z - cz]);
+    const r = rel.map(([rx, ry, rz]) => Math.hypot(rx, ry, rz));
+    const phi = rel.map(([rx, ry]) => Math.atan2(ry, rx));
+
+    if (nQubits === 4) {
+      // Single-Shell O(1) Invariant Quadrature (H2 Mode)
+      const chunkSize = Math.max(1, Math.floor(coords.length / 4));
+      const phaseVector = [];
+      for (let q = 0; q < 4; q++) {
+        const start = q * chunkSize;
+        const end = q === 3 ? coords.length : Math.min(coords.length, (q + 1) * chunkSize);
+        let sumAngle = 0, sumCharge = 0, count = 0;
+        for (let i = start; i < end; i++) {
+          sumAngle += phi[i];
+          sumCharge += charges[i] || 0;
+          count++;
+        }
+        let phase = (sumAngle / count + sumCharge / count * 0.8) % (2.0 * Math.PI);
+        if (phase > Math.PI) phase -= 2.0 * Math.PI;
+        if (phase < -Math.PI) phase += 2.0 * Math.PI;
+        phaseVector.push(phase);
+      }
+      return phaseVector;
+    } else {
+      // Dual-Shell Multi-Resolution (8 Qubits: Core Cavity + Sidechain Rotamers)
+      const sortedR = [...r].sort((a, b) => a - b);
+      const rMed = sortedR[Math.floor(sortedR.length / 2)] || 1.0;
+
+      const coreIdx = [], sideIdx = [];
+      for (let i = 0; i < coords.length; i++) {
+        if (r[i] <= rMed) coreIdx.push(i);
+        else sideIdx.push(i);
+      }
+      if (coreIdx.length === 0) coreIdx.push(...sideIdx);
+      if (sideIdx.length === 0) sideIdx.push(...coreIdx);
+
+      const phases = [];
+      // Shell 0: Core cavity (4 phases)
+      const cChunk = Math.max(1, Math.floor(coreIdx.length / 4));
+      for (let q = 0; q < 4; q++) {
+        const start = q * cChunk;
+        const end = q === 3 ? coreIdx.length : Math.min(coreIdx.length, (q + 1) * cChunk);
+        let sumA = 0, sumC = 0, cnt = 0;
+        for (let i = start; i < end; i++) {
+          const idx = coreIdx[i];
+          sumA += phi[idx]; sumC += charges[idx] || 0; cnt++;
+        }
+        let ph = (sumA / cnt + sumC / cnt * 0.8) % (2.0 * Math.PI);
+        if (ph > Math.PI) ph -= 2.0 * Math.PI;
+        if (ph < -Math.PI) ph += 2.0 * Math.PI;
+        phases.push(ph);
+      }
+      // Shell 1: Exterior flexible rotamers (4 phases)
+      const sChunk = Math.max(1, Math.floor(sideIdx.length / 4));
+      for (let q = 0; q < 4; q++) {
+        const start = q * sChunk;
+        const end = q === 3 ? sideIdx.length : Math.min(sideIdx.length, (q + 1) * sChunk);
+        let sumA = 0, sumC = 0, cnt = 0;
+        for (let i = start; i < end; i++) {
+          const idx = sideIdx[i];
+          sumA += phi[idx]; sumC += charges[idx] || 0; cnt++;
+        }
+        let ph = (sumA / cnt + sumC / cnt * 0.8) % (2.0 * Math.PI);
+        if (ph > Math.PI) ph -= 2.0 * Math.PI;
+        if (ph < -Math.PI) ph += 2.0 * Math.PI;
+        phases.push(ph);
+      }
+      return phases;
+    }
+  }
+
+  function calculateFidelity(pocketPhases, ligandPhases) {
+    if (!pocketPhases.length || !ligandPhases.length) return 0.5;
+    let sumCos = 0;
+    const len = Math.min(pocketPhases.length, ligandPhases.length);
+    for (let i = 0; i < len; i++) {
+      sumCos += Math.cos(pocketPhases[i] - ligandPhases[i]);
+    }
+    const overlap = sumCos / len;
+    return Math.max(0.0, Math.min(1.0, (overlap + 1.0) / 2.0));
+  }
+
+  function sampleProjectiveMeasurements(probZero, nShots) {
+    probZero = Math.max(0.0, Math.min(1.0, probZero));
+    if (nShots === null || nShots === undefined) {
+      return {
+        counts0: null,
+        counts1: null,
+        empiricalP: probZero,
+        stdErr: 0.0,
+        ciLow: probZero,
+        ciHigh: probZero,
+        isLocked: probZero >= 0.90
+      };
+    }
+    let k = 0;
+    for (let i = 0; i < nShots; i++) {
+      if (Math.random() < probZero) k++;
+    }
+    const empiricalP = k / nShots;
+    const stdErr = Math.sqrt(Math.max(1e-9, (empiricalP * (1.0 - empiricalP)) / nShots));
+    const ciLow = Math.max(0.0, empiricalP - 1.96 * stdErr);
+    const ciHigh = Math.min(1.0, empiricalP + 1.96 * stdErr);
+    return {
+      counts0: k,
+      counts1: nShots - k,
+      empiricalP,
+      stdErr,
+      ciLow,
+      ciHigh,
+      isLocked: empiricalP >= 0.90 || App.rusIteration >= 3
+    };
+  }
+
+  function computeHqcCost(nSites, iterations, shots = 500, isFlexible = false) {
+    const totalQubits = 2 * nSites + 1;
+    const prep1q = 2 * nSites * 2;
+    const evolve1q = nSites * 2;
+    const cswap1q = 10 * nSites;
+    const ancilla1q = 2;
+    const n1q = (prep1q + evolve1q + cswap1q + ancilla1q) * iterations;
+
+    const cswapZz = 3 * nSites;
+    const dihedralZz = isFlexible ? (nSites - 1) : 0;
+    const n2q = (cswapZz + dihedralZz) * iterations;
+    const nm = 1 * iterations;
+    const nShuttle = n2q * 2;
+
+    const shotFactor = (shots || 100) / 100.0;
+    const rawCredits = (n1q + 10 * n2q + 5 * nm + nShuttle) * shotFactor;
+    const hqc = +(5.0 + rawCredits / 5000.0).toFixed(2);
+
+    return {
+      totalQubits,
+      twoQGates: n2q,
+      singleQGates: n1q,
+      shuttles: nShuttle,
+      hqc
+    };
+  }
+
+  function classicalSearchComplexity(numAtoms, gridResolutionDeg = 30) {
+    const angleSteps = Math.floor(360 / gridResolutionDeg);
+    return angleSteps * angleSteps * angleSteps * numAtoms;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     2. APP STATE & QUANTUM HARDWARE PRESETS
+     ══════════════════════════════════════════════════════════════ */
+  const App = {
+    numAtoms: 50,
+    misalignDeg: 30,
+    noiseSigma: 0.05,
+    tau: 0.50,
+    stage: -1,
+    isRunning: false,
+    isSoundOn: true,
+    audioCtx: null,
+
+    // Research enhancements
+    qubitMode: 4,               // 4 (H2 Invariant) or 8 (Helios Dual-Shell)
+    shotMode: 500,              // 100, 500, 1000, or null (Ideal continuum)
+    dockingMode: 'rigid',       // 'rigid' or 'flexible' (SO(3) x U(1))
+    couplingJ: 0.08,            // Inter-site Heisenberg exchange J-coupling
+    dihedralChi: 30,            // Dihedral torsion angle in degrees
+
+    // Finite shot sampling statistics
+    measuredCounts0: 0,
+    measuredCounts1: 0,
+    empiricalProb: 0.5,
+    stdError: 0.0,
+    ciLow: 0.5,
+    ciHigh: 0.5,
+
+    molecule: null,
+    pocketPhases: [],
+    ligandPhases: [],
+    currentLigandPhases: [],
+
+    fidelity: 0.5,
+    rusIteration: 0,
+    maxRus: 5,
+    isLocked: false,
+    classicalStepCounter: 0,
+    targetClassicalSteps: 0,
+    classicalInterval: null
+  };
+
+  /* ══════════════════════════════════════════════════════════════
+     3. WEB AUDIO SYNTHESIZER
+     ══════════════════════════════════════════════════════════════ */
+  function getAudioContext() {
+    if (!App.audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) App.audioCtx = new AC();
+    }
+    if (App.audioCtx && App.audioCtx.state === 'suspended') {
+      App.audioCtx.resume();
+    }
+    return App.audioCtx;
+  }
+
+  function playSynthTone(freq, duration, type = 'sine', gainVal = 0.05) {
+    if (!App.isSoundOn) return;
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch (err) {}
+  }
+
+  function playHadamardSweep() {
+    if (!App.isSoundOn) return;
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(260, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.35);
+      gain.gain.setValueAtTime(0.07, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.35);
+    } catch (e) {}
+  }
+
+  function playLockChord() {
+    if (!App.isSoundOn) return;
+    [523.25, 659.25, 783.99, 987.77, 1174.66].forEach((f, idx) => {
+      setTimeout(() => playSynthTone(f, 0.8, 'sine', 0.04), idx * 60);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     4. THREE.JS 3D VIEWPORT WITH GLASS OPTICS & WARP CONDUIT
+     ══════════════════════════════════════════════════════════════ */
+  let threeScene, threeCam, threeRenderer, threeControls;
+  let pocketGroup, ligandGroup, ancillaMesh, conduitGroup, warpParticles;
+  const threeCanvas = document.getElementById('three-viewport');
+
+  function initThree() {
+    threeScene = new THREE.Scene();
+    threeCam = new THREE.PerspectiveCamera(48, 1, 0.1, 100);
+    threeCam.position.set(7, 4.5, 9);
+
+    threeRenderer = new THREE.WebGLRenderer({
+      canvas: threeCanvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+    threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    threeRenderer.setClearColor(0x000000, 0);
+
+    threeControls = new THREE.OrbitControls(threeCam, threeCanvas);
+    threeControls.enableDamping = true;
+    threeControls.dampingFactor = 0.06;
+    threeControls.autoRotate = true;
+    threeControls.autoRotateSpeed = 0.6;
+    threeControls.maxDistance = 22;
+    threeControls.minDistance = 3;
+
+    // Rich Lighting Setup
+    threeScene.add(new THREE.AmbientLight(0x2a3b5c, 0.75));
+    const dLight1 = new THREE.DirectionalLight(0x00f5d4, 0.95);
+    dLight1.position.set(6, 10, 6);
+    threeScene.add(dLight1);
+
+    const dLight2 = new THREE.DirectionalLight(0xf59e0b, 0.75);
+    dLight2.position.set(-6, -6, -4);
+    threeScene.add(dLight2);
+
+    pocketGroup = new THREE.Group();
+    ligandGroup = new THREE.Group();
+    conduitGroup = new THREE.Group();
+    threeScene.add(pocketGroup);
+    threeScene.add(ligandGroup);
+    threeScene.add(conduitGroup);
+
+    // Physical Glass Ancilla Ion (Reference 1 & 3: Optical Glass Transmission)
+    const ancillaGeo = new THREE.SphereGeometry(0.32, 32, 32);
+    const ancillaMat = new THREE.MeshPhysicalMaterial({
+      color: 0x00f5d4,
+      emissive: 0x00f5d4,
+      emissiveIntensity: 0.5,
+      roughness: 0.04,
+      metalness: 0.05,
+      transmission: 0.92,
+      ior: 1.52,
+      thickness: 1.2,
+      transparent: true,
+      opacity: 0
+    });
+    ancillaMesh = new THREE.Mesh(ancillaGeo, ancillaMat);
+    threeScene.add(ancillaMesh);
+
+    buildHyperbolicQuantumWarpConduit();
+    resizeThree();
+  }
+
+  // Hyperbolic Quantum Conduit (Inspired by Reference 7)
+  function buildHyperbolicQuantumWarpConduit() {
+    while (conduitGroup.children.length) conduitGroup.remove(conduitGroup.children[0]);
+
+    const numStreams = 32;
+    const pointsPerStream = 40;
+    const positions = [];
+    const colors = [];
+
+    for (let s = 0; s < numStreams; s++) {
+      const angle = (2.0 * Math.PI * s) / numStreams;
+      for (let p = 0; p < pointsPerStream; p++) {
+        const u = (p / (pointsPerStream - 1)) * 2.0 - 1.0;
+        const waist = 0.38 + u * u * 2.9; // Hyperbolic throat
+        const x = Math.cos(angle + u * 1.9) * waist;
+        const z = Math.sin(angle + u * 1.9) * waist;
+        const y = u * 4.6;
+
+        positions.push(x, y, z);
+
+        const t = (u + 1.0) / 2.0;
+        if (t < 0.45) {
+          colors.push(0.0, 0.96, 0.83); // Cyan
+        } else if (t < 0.55) {
+          colors.push(1.0, 1.0, 1.0); // White-hot core
+        } else {
+          colors.push(0.96, 0.62, 0.07); // Amber gold
+        }
+      }
+    }
+
+    const conduitGeo = new THREE.BufferGeometry();
+    conduitGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    conduitGeo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    const conduitMat = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.22,
+      blending: THREE.AdditiveBlending
+    });
+
+    const conduitLines = new THREE.LineSegments(conduitGeo, conduitMat);
+    conduitLines.name = 'warpLines';
+    conduitGroup.add(conduitLines);
+
+    // Streaming Relativistic Particle Sparks
+    const pCount = 280;
+    const pPositions = new Float32Array(pCount * 3);
+    const pSpeeds = new Float32Array(pCount);
+    for (let i = 0; i < pCount; i++) {
+      const u = (Math.random() * 2.0 - 1.0);
+      const angle = Math.random() * Math.PI * 2.0;
+      const waist = 0.38 + u * u * 2.9;
+      pPositions[i * 3] = Math.cos(angle) * waist;
+      pPositions[i * 3 + 1] = u * 4.6;
+      pPositions[i * 3 + 2] = Math.sin(angle) * waist;
+      pSpeeds[i] = 0.02 + Math.random() * 0.04;
+    }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    const pMat = new THREE.PointsMaterial({
+      color: 0x00f5d4,
+      size: 0.06,
+      transparent: true,
+      opacity: 0.75,
+      blending: THREE.AdditiveBlending
+    });
+    warpParticles = new THREE.Points(pGeo, pMat);
+    warpParticles.userData = { speeds: pSpeeds };
+    conduitGroup.add(warpParticles);
+  }
+
+  function resizeThree() {
+    const parent = threeCanvas.parentElement;
+    if (!parent) return;
+    const w = parent.clientWidth, h = parent.clientHeight;
+    threeCam.aspect = w / h;
+    threeCam.updateProjectionMatrix();
+    threeRenderer.setSize(w, h);
+  }
+
+  let ligandCoreGroup, ligandSideGroup;
+
+  function rebuild3DMolecules() {
+    while (pocketGroup.children.length) pocketGroup.remove(pocketGroup.children[0]);
+    while (ligandGroup.children.length) ligandGroup.remove(ligandGroup.children[0]);
+
+    ligandCoreGroup = new THREE.Group();
+    ligandSideGroup = new THREE.Group();
+    ligandGroup.add(ligandCoreGroup);
+    ligandGroup.add(ligandSideGroup);
+
+    if (!App.molecule) return;
+
+    const sphereGeo = new THREE.SphereGeometry(0.09, 14, 14);
+    const pocketMat = new THREE.MeshPhysicalMaterial({
+      color: 0x3b82f6,
+      emissive: 0x1d4ed8,
+      emissiveIntensity: 0.35,
+      roughness: 0.1,
+      metalness: 0.2,
+      clearcoat: 0.8
+    });
+    const ligandCoreMat = new THREE.MeshPhysicalMaterial({
+      color: 0xf59e0b,
+      emissive: 0xb45309,
+      emissiveIntensity: 0.35,
+      roughness: 0.1,
+      metalness: 0.2,
+      clearcoat: 0.8
+    });
+    const ligandSideMat = new THREE.MeshPhysicalMaterial({
+      color: 0xfbbf24,
+      emissive: 0xd97706,
+      emissiveIntensity: 0.45,
+      roughness: 0.12,
+      metalness: 0.25,
+      clearcoat: 0.95
+    });
+
+    const scale = App.numAtoms > 200 ? 0.42 : App.numAtoms > 60 ? 0.68 : 0.95;
+
+    // Calculate median radius to differentiate core vs exterior sidechains
+    const rList = App.molecule.ligandCoords.map(([x, y, z]) => Math.hypot(x, y, z)).sort((a, b) => a - b);
+    const rMed = rList[Math.floor(rList.length / 2)] || 1.0;
+
+    App.molecule.pocketCoords.forEach(([x, y, z]) => {
+      const mesh = new THREE.Mesh(sphereGeo, pocketMat);
+      mesh.position.set(x * scale * 0.5, z * scale * 0.5, y * scale * 0.5);
+      pocketGroup.add(mesh);
+    });
+
+    App.molecule.ligandCoords.forEach(([x, y, z]) => {
+      const r = Math.hypot(x, y, z);
+      const isSide = r > rMed;
+      const mesh = new THREE.Mesh(sphereGeo, isSide ? ligandSideMat : ligandCoreMat);
+      mesh.position.set(x * scale * 0.5, z * scale * 0.5, y * scale * 0.5);
+      if (isSide) {
+        ligandSideGroup.add(mesh);
+      } else {
+        ligandCoreGroup.add(mesh);
+      }
+    });
+
+    ligandGroup.rotation.set(0, 0, 0);
+    ligandSideGroup.rotation.set(0, 0, 0);
+    ancillaMesh.material.opacity = 0;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     5. QUANTUM CANVAS (POLAR PHASE RINGS & INTERFERENCE)
+     ══════════════════════════════════════════════════════════════ */
+  const qCanvas = document.getElementById('quantum-canvas');
+  const qCtx = qCanvas.getContext('2d');
+
+  function resizeQuantumCanvas() {
+    const parent = qCanvas.parentElement;
+    if (!parent) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = parent.clientWidth, h = parent.clientHeight;
+    qCanvas.width = w * dpr;
+    qCanvas.height = h * dpr;
+    qCanvas.style.width = w + 'px';
+    qCanvas.style.height = h + 'px';
+    qCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function renderQuantumState(time) {
+    const w = qCanvas.clientWidth, h = qCanvas.clientHeight;
+    qCtx.clearRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2 + 8;
+    const baseRadius = Math.min(cx - 36, cy - 40) * 0.65;
+
+    // 1. Concentric Coordinate Grid
+    qCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    qCtx.lineWidth = 1;
+    for (let r = baseRadius * 0.33; r <= baseRadius * 1.25; r += baseRadius * 0.33) {
+      qCtx.beginPath();
+      qCtx.arc(cx, cy, r, 0, Math.PI * 2);
+      qCtx.stroke();
+    }
+    for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
+      qCtx.beginPath();
+      qCtx.moveTo(cx, cy);
+      qCtx.lineTo(cx + Math.cos(a) * baseRadius * 1.25, cy + Math.sin(a) * baseRadius * 1.25);
+      qCtx.stroke();
+    }
+
+    if (App.qubitMode === 4) {
+      // Single-Shell O(1) Invariant Mode
+      drawPhaseRing(cx, cy, baseRadius, App.pocketPhases, '#3b82f6', 0);
+      drawPhaseRing(cx, cy, baseRadius, App.currentLigandPhases, '#f59e0b', 0);
+
+      // Interference Fringes
+      if (App.stage >= 2) {
+        renderFringes(cx, cy, baseRadius, App.pocketPhases, App.currentLigandPhases, 4);
+      }
+    } else {
+      // Dual-Shell Multi-Resolution Mode (Helios 8-Qubit)
+      const rInner = baseRadius * 0.62;
+      const rOuter = baseRadius * 1.12;
+
+      // Inner Core Shell (q0..q3)
+      drawPhaseRing(cx, cy, rInner, App.pocketPhases.slice(0, 4), '#3b82f6', 0, 'Core');
+      drawPhaseRing(cx, cy, rInner, App.currentLigandPhases.slice(0, 4), '#f59e0b', 0, 'Core');
+
+      // Outer Rotamer Shell (q4..q7)
+      drawPhaseRing(cx, cy, rOuter, App.pocketPhases.slice(4, 8), '#60a5fa', 4, 'Rotamer');
+      drawPhaseRing(cx, cy, rOuter, App.currentLigandPhases.slice(4, 8), '#fbbf24', 4, 'Rotamer');
+
+      if (App.stage >= 2) {
+        renderFringes(cx, cy, rInner, App.pocketPhases.slice(0, 4), App.currentLigandPhases.slice(0, 4), 4);
+        renderFringes(cx, cy, rOuter, App.pocketPhases.slice(4, 8), App.currentLigandPhases.slice(4, 8), 4);
+      }
+    }
+
+    // Central Ancilla Qubit
+    if (App.stage >= 2) {
+      const pulse = 0.4 + 0.3 * Math.sin(time * 5.0);
+      qCtx.beginPath();
+      qCtx.arc(cx, cy, 11, 0, Math.PI * 2);
+      qCtx.fillStyle = App.isLocked
+        ? `rgba(16, 185, 129, ${pulse})`
+        : App.rusIteration > 0
+        ? `rgba(239, 68, 68, ${pulse})`
+        : `rgba(0, 245, 212, ${pulse})`;
+      qCtx.fill();
+
+      qCtx.strokeStyle = App.isLocked ? '#10b981' : App.rusIteration > 0 ? '#ef4444' : '#00f5d4';
+      qCtx.lineWidth = 2;
+      qCtx.stroke();
+
+      qCtx.font = '700 9px "JetBrains Mono"';
+      qCtx.fillStyle = App.isLocked ? '#10b981' : '#00f5d4';
+      qCtx.textAlign = 'center';
+      qCtx.fillText(App.isLocked ? '|0⟩ LOCK' : App.rusIteration > 0 ? '|1⟩ RETRY' : 'Ancilla |0⟩', cx, cy + 24);
+    }
+  }
+
+  function renderFringes(cx, cy, radius, pocketP, ligandP, count) {
+    const len = Math.min(pocketP.length, ligandP.length, count);
+    for (let i = 0; i < len; i++) {
+      const delta = Math.abs(pocketP[i] - ligandP[i]);
+      const coherence = Math.max(0, 1.0 - delta / Math.PI);
+      const midAngle = (pocketP[i] + ligandP[i]) / 2.0;
+
+      const fx = cx + Math.cos(midAngle) * radius;
+      const fy = cy + Math.sin(midAngle) * radius;
+
+      const grad = qCtx.createRadialGradient(fx, fy, 0, fx, fy, 20);
+      if (coherence > 0.75) {
+        grad.addColorStop(0, `rgba(0, 245, 212, ${0.65 * coherence})`);
+        grad.addColorStop(0.6, `rgba(16, 185, 129, ${0.25 * coherence})`);
+      } else {
+        grad.addColorStop(0, `rgba(239, 68, 68, ${0.5 * (1 - coherence)})`);
+        grad.addColorStop(0.6, `rgba(245, 158, 11, ${0.2 * (1 - coherence)})`);
+      }
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+      qCtx.fillStyle = grad;
+      qCtx.beginPath();
+      qCtx.arc(fx, fy, 20, 0, Math.PI * 2);
+      qCtx.fill();
+    }
+  }
+
+  function drawPhaseRing(cx, cy, r, phases, color, offsetIdx = 0, shellName = '') {
+    if (!phases || !phases.length) return;
+
+    qCtx.strokeStyle = color;
+    qCtx.lineWidth = 1.6;
+    qCtx.globalAlpha = 0.45;
+    qCtx.beginPath();
+    qCtx.arc(cx, cy, r, 0, Math.PI * 2);
+    qCtx.stroke();
+    qCtx.globalAlpha = 1.0;
+
+    phases.forEach((phi, idx) => {
+      const qIndex = offsetIdx + idx;
+      const x = cx + Math.cos(phi) * r;
+      const y = cy + Math.sin(phi) * r;
+
+      const g = qCtx.createRadialGradient(x, y, 0, x, y, 12);
+      g.addColorStop(0, color);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      qCtx.fillStyle = g;
+      qCtx.beginPath();
+      qCtx.arc(x, y, 12, 0, Math.PI * 2);
+      qCtx.fill();
+
+      qCtx.fillStyle = color;
+      qCtx.beginPath();
+      qCtx.arc(x, y, 4, 0, Math.PI * 2);
+      qCtx.fill();
+
+      qCtx.strokeStyle = color;
+      qCtx.globalAlpha = 0.16;
+      qCtx.lineWidth = 1;
+      qCtx.beginPath();
+      qCtx.moveTo(cx, cy);
+      qCtx.lineTo(x, y);
+      qCtx.stroke();
+      qCtx.globalAlpha = 1.0;
+
+      qCtx.font = '500 8px "JetBrains Mono"';
+      qCtx.fillStyle = 'rgba(255,255,255,0.6)';
+      qCtx.textAlign = 'center';
+      qCtx.fillText(`q${qIndex}`, cx + Math.cos(phi) * (r + 16), cy + Math.sin(phi) * (r + 16) + 3);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     6. OSCILLOSCOPE WAVEFORM
+     ══════════════════════════════════════════════════════════════ */
+  const sCanvas = document.getElementById('scope-canvas');
+  const sCtx = sCanvas.getContext('2d');
+
+  function renderOscilloscope(time) {
+    if (!sCanvas || !sCtx) return;
+    const w = sCanvas.width, h = sCanvas.height;
+    const midY = h / 2;
+    sCtx.clearRect(0, 0, w, h);
+
+    // ThreeUI Subtle Quantum Phase Sub-Grid
+    sCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    sCtx.lineWidth = 1;
+    for (let x = 0; x < w; x += 32) {
+      sCtx.beginPath();
+      sCtx.moveTo(x, 0); sCtx.lineTo(x, h);
+      sCtx.stroke();
+    }
+    for (let y = 0; y < h; y += 16) {
+      sCtx.beginPath();
+      sCtx.moveTo(0, y); sCtx.lineTo(w, y);
+      sCtx.stroke();
+    }
+
+    let phaseShift = 0;
+    if (App.pocketPhases && App.pocketPhases.length) {
+      for (let i = 0; i < N_SITES; i++) {
+        phaseShift += (App.currentLigandPhases[i] - App.pocketPhases[i]);
+      }
+      phaseShift /= N_SITES;
+    }
+
+    // ThreeUI Multi-Harmonic Waveform for Pocket Target |psi_P> (Gold/Amber)
+    sCtx.strokeStyle = '#f59e0b';
+    sCtx.lineWidth = 1.8;
+    sCtx.beginPath();
+    for (let x = 0; x < w; x++) {
+      const fund = Math.sin(x * 0.042 + time * 3.2);
+      const harm = Math.sin(x * 0.084 + time * 4.8) * 0.35;
+      const env = Math.cos(x * 0.014 - time * 0.8);
+      const y = midY + (fund + harm) * env * 14;
+      if (x === 0) sCtx.moveTo(x, y); else sCtx.lineTo(x, y);
+    }
+    sCtx.stroke();
+
+    // ThreeUI Multi-Harmonic Waveform for Tunable Ligand |psi_L(tau)> (Cyan)
+    sCtx.strokeStyle = '#00f5d4';
+    sCtx.lineWidth = 1.8;
+    sCtx.beginPath();
+    for (let x = 0; x < w; x++) {
+      const fund = Math.sin(x * 0.042 + time * 3.2 + phaseShift);
+      const harm = Math.sin(x * 0.084 + time * 4.8 + phaseShift * 2) * 0.35;
+      const env = Math.cos(x * 0.014 - time * 0.8 + phaseShift * 0.5);
+      const y = midY + (fund + harm) * env * 14;
+      if (x === 0) sCtx.moveTo(x, y); else sCtx.lineTo(x, y);
+    }
+    sCtx.stroke();
+
+    // Active Superposition Constructive Interference Fringe on Lock
+    if (App.isLocked || Math.abs(phaseShift) < 0.12) {
+      const grad = sCtx.createLinearGradient(0, 0, w, 0);
+      grad.addColorStop(0, '#00f5d4');
+      grad.addColorStop(0.5, '#ffffff');
+      grad.addColorStop(1, '#38bdf8');
+
+      sCtx.strokeStyle = grad;
+      sCtx.lineWidth = 2.8;
+      sCtx.shadowColor = '#00f5d4';
+      sCtx.shadowBlur = 10;
+      sCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const fund = Math.sin(x * 0.042 + time * 3.2);
+        const y = midY + fund * 16;
+        if (x === 0) sCtx.moveTo(x, y); else sCtx.lineTo(x, y);
+      }
+      sCtx.stroke();
+      sCtx.shadowBlur = 0;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     7. AMBIENT SIGNALS & PEARLESCENT OIL-SLICK FLUID (Ref 5)
+     ══════════════════════════════════════════════════════════════ */
+  const ambCanvas = document.getElementById('ambient-canvas');
+  const ambCtx = ambCanvas.getContext('2d');
+  const fluidCanvas = document.getElementById('fluid-canvas');
+  const fluidCtx = fluidCanvas.getContext('2d');
+  const fluidPoints = [];
+  let lastPointer = null;
+
+  function resizeBackgroundCanvases() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    ambCanvas.width = window.innerWidth * dpr;
+    ambCanvas.height = window.innerHeight * dpr;
+    ambCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    fluidCanvas.width = window.innerWidth;
+    fluidCanvas.height = window.innerHeight;
+  }
+
+  function renderAmbientGrid(time) {
+    const w = window.innerWidth, h = window.innerHeight;
+    ambCtx.clearRect(0, 0, w, h);
+    const spacing = w < 768 ? 26 : 18;
+    const cols = Math.floor(w / spacing), rows = Math.floor(h / spacing);
+    const ox = (w - cols * spacing) / 2, oy = (h - rows * spacing) / 2;
+
+    for (let i = 0; i <= cols; i++) {
+      const nx = i * 0.12;
+      const px = ox + i * spacing;
+      for (let j = 0; j <= rows; j++) {
+        const ny = j * 0.12;
+        const py = oy + j * spacing;
+        const wave = Math.sin(nx + time * 0.35) * Math.cos(ny - time * 0.25) + Math.sin(nx * 0.6 - ny * 0.6 + time * 0.4);
+
+        if (wave > 0.22) {
+          const alpha = (wave - 0.22) * 0.22;
+          const hash = Math.sin(i * 19.12) * Math.cos(j * 43.21);
+          ambCtx.fillStyle = hash > 0.96 ? `rgba(0, 245, 212, ${alpha * 1.5})`
+                          : hash < -0.96 ? `rgba(245, 158, 11, ${alpha * 1.3})`
+                          : `rgba(148, 163, 184, ${alpha})`;
+          ambCtx.beginPath();
+          ambCtx.arc(px, py, 1.0, 0, Math.PI * 2);
+          ambCtx.fill();
+        }
+      }
+    }
+  }
+
+  window.addEventListener('pointermove', (e) => {
+    const now = performance.now();
+    if (lastPointer) {
+      const dt = Math.max((now - lastPointer.t) / 1000, 0.016);
+      const vx = (e.clientX - lastPointer.x) / dt;
+      const vy = (e.clientY - lastPointer.y) / dt;
+      const speed = Math.hypot(vx, vy);
+
+      fluidPoints.push({
+        x: e.clientX, y: e.clientY,
+        vx: vx * 0.12, vy: vy * 0.12,
+        age: 0,
+        maxAge: 32 + Math.min(speed * 0.35, 22),
+        size: 26 + Math.min(speed * 0.3, 26)
+      });
+      if (fluidPoints.length > 55) fluidPoints.shift();
+    }
+    lastPointer = { x: e.clientX, y: e.clientY, t: now };
+  });
+
+  // Thin-Film Marbling Trail (Reference 5: Iridescent Oil Slick Flow)
+  function renderFluidTrail() {
+    fluidCtx.clearRect(0, 0, fluidCanvas.width, fluidCanvas.height);
+    fluidCtx.globalCompositeOperation = 'screen';
+
+    for (let i = fluidPoints.length - 1; i >= 0; i--) {
+      const p = fluidPoints[i];
+      p.age++;
+      p.x += p.vx; p.y += p.vy;
+      p.vx *= 0.94; p.vy *= 0.94;
+
+      const prog = p.age / p.maxAge;
+      if (prog >= 1.0) { fluidPoints.splice(i, 1); continue; }
+
+      const alpha = Math.sin(prog * Math.PI) * (1.0 - prog * 0.5);
+      const r = p.size * (1.0 + prog * 1.1);
+
+      // Iridescent 3-Phase Color Shift
+      const phase = prog * 2.0;
+      const rVal = Math.round(128 + 127 * Math.cos(phase + 0));
+      const gVal = Math.round(128 + 127 * Math.cos(phase + 2.1));
+      const bVal = Math.round(128 + 127 * Math.cos(phase + 4.2));
+
+      const grad = fluidCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+      grad.addColorStop(0, `rgba(${rVal}, ${gVal}, ${bVal}, ${0.35 * alpha})`);
+      grad.addColorStop(0.5, `rgba(56, 226, 255, ${0.18 * alpha})`);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+      fluidCtx.fillStyle = grad;
+      fluidCtx.beginPath();
+      fluidCtx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      fluidCtx.fill();
+
+      // Specular highlight core
+      const core = fluidCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 0.25);
+      core.addColorStop(0, `rgba(255, 255, 255, ${0.65 * alpha})`);
+      core.addColorStop(1, 'rgba(0,0,0,0)');
+      fluidCtx.fillStyle = core;
+      fluidCtx.beginPath();
+      fluidCtx.arc(p.x, p.y, r * 0.25, 0, Math.PI * 2);
+      fluidCtx.fill();
+    }
+    fluidCtx.globalCompositeOperation = 'source-over';
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     8. PIPELINE ORCHESTRATION & STATE MACHINE
+     ══════════════════════════════════════════════════════════════ */
+  const STAGE_TITLES = [
+    'Stage 1: Harmonic Phase Encoding',
+    'Stage 2: Continuous Unitary Evolution Û(τ)',
+    'Stage 3: Blind Parity SWAP Test',
+    'Stage 4: Repeat-Until-Success (RUS) Feedback'
+  ];
+  const STAGE_MATH = [
+    '|coords⟩ → |θ_0, θ_1, θ_2, θ_3⟩',
+    'Û_tube(τ) = exp(-i ω·L τ)',
+    '|0⟩_A (CSWAP) |0⟩_A → P(|0⟩) = (1+F)/2',
+    'Mid-Circuit Measurement → State Lock'
+  ];
+  const STAGE_DESCS = [
+    'Classical atom positions are compressed via spherical harmonics into an invariant 4-phase register. Regardless of whether N=10 or N=1000 atoms, only 4 continuous ion phases are utilized.',
+    'The parameter τ continuously rotates the ligand wavefunction in phase space. Under Trapped-Ion native ZZPhase gates, Euler rotations orient the molecule into alignment.',
+    'A central ancilla ion mediates a blind controlled-SWAP parity measurement. The overlap fidelity is evaluated non-destructively without collapsing or revealing molecular secrets.',
+    'If parity measurement fails (|1⟩), mid-circuit quantum feedback dampens the angular error and repeats. Once |0⟩ is detected, the target molecule snaps into optimal lock.'
+  ];
+
+  function resetState() {
+    App.stage = -1;
+    App.isRunning = false;
+    App.isLocked = false;
+    App.rusIteration = 0;
+
+    App.molecule = generateMolecularStructure(App.numAtoms, App.misalignDeg, App.noiseSigma);
+    App.pocketPhases = projectCoordinatesToPhases(App.molecule.pocketCoords, App.molecule.pocketCharges, App.qubitMode);
+    App.ligandPhases = projectCoordinatesToPhases(App.molecule.ligandCoords, App.molecule.ligandCharges, App.qubitMode);
+    App.currentLigandPhases = [...App.ligandPhases];
+    App.fidelity = calculateFidelity(App.pocketPhases, App.currentLigandPhases);
+
+    const initialShots = sampleProjectiveMeasurements(0.5 * (1.0 + App.fidelity), App.shotMode);
+    App.measuredCounts0 = initialShots.counts0;
+    App.measuredCounts1 = initialShots.counts1;
+    App.empiricalProb = initialShots.empiricalP;
+    App.stdError = initialShots.stdErr;
+    App.ciLow = initialShots.ciLow;
+    App.ciHigh = initialShots.ciHigh;
+
+    if (App.classicalInterval) clearInterval(App.classicalInterval);
+    App.classicalStepCounter = 0;
+    App.targetClassicalSteps = classicalSearchComplexity(App.numAtoms, 30);
+
+    rebuild3DMolecules();
+    updateUI();
+    setStage(-1);
+    document.getElementById('btn-run').textContent = '▶ Auto-Run';
+  }
+
+  function setStage(st) {
+    App.stage = st;
+
+    for (let i = 0; i < 4; i++) {
+      const item = document.getElementById('stage-' + i);
+      const wire = document.getElementById('sw-' + i);
+      item.className = 'stage-item' + (i < st ? ' done' : i === st ? ' active' : '');
+      if (wire) wire.className = 'stage-wire' + (i < st ? ' lit' : '');
+    }
+
+    const drawer = document.getElementById('drawer-3d');
+    if (st >= 0 && st < 4) {
+      document.getElementById('ex-3d-title').textContent = STAGE_TITLES[st];
+      document.getElementById('ex-3d-math').textContent = STAGE_MATH[st];
+      document.getElementById('ex-3d-desc').textContent = STAGE_DESCS[st];
+      drawer.classList.add('show');
+    } else {
+      drawer.classList.remove('show');
+    }
+
+    const cTxt = document.getElementById('circuit-stage-txt');
+    const h1 = document.getElementById('gate-h1');
+    const ry = document.getElementById('gate-ry');
+    const rz = document.getElementById('gate-rz');
+    const h2 = document.getElementById('gate-h2');
+    const meas = document.getElementById('gate-meas');
+
+    [h1, ry, rz, h2, meas].forEach(el => { if (el) { el.style.strokeWidth = '1'; el.style.filter = 'none'; }});
+
+    if (st === 0) {
+      cTxt.textContent = 'Encoding State';
+    } else if (st === 1) {
+      cTxt.textContent = 'Evolution: Ry + Rz';
+      ry.style.strokeWidth = '2'; ry.style.filter = 'drop-shadow(0 0 6px #f59e0b)';
+      rz.style.strokeWidth = '2'; rz.style.filter = 'drop-shadow(0 0 6px #f59e0b)';
+    } else if (st === 2) {
+      cTxt.textContent = 'SWAP Test: H + CSWAP + H';
+      h1.style.strokeWidth = '2'; h1.style.filter = 'drop-shadow(0 0 6px #00f5d4)';
+      h2.style.strokeWidth = '2'; h2.style.filter = 'drop-shadow(0 0 6px #00f5d4)';
+    } else if (st === 3) {
+      cTxt.textContent = App.isLocked ? 'Locked |0⟩' : 'RUS Feedback Active';
+      meas.style.strokeWidth = '2'; meas.style.filter = 'drop-shadow(0 0 6px #a855f7)';
+    } else {
+      cTxt.textContent = 'Idle';
+    }
+  }
+
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+
+  async function executeStage0() {
+    setStage(0);
+    playSynthTone(440, 0.35, 'sine');
+    const lines = conduitGroup.getObjectByName('warpLines');
+    if (lines) {
+      new TWEEN.Tween(lines.material).to({ opacity: 0.5 }, 500).yoyo(true).repeat(1).start();
+    }
+    await delay(1600);
+  }
+
+  async function executeStage1() {
+    setStage(1);
+    playHadamardSweep();
+
+    const targetY = (App.misalignDeg * Math.PI / 180.0) * App.tau;
+    new TWEEN.Tween(ligandGroup.rotation)
+      .to({ y: targetY }, 1300)
+      .easing(TWEEN.Easing.Cubic.InOut)
+      .start();
+
+    if (App.dockingMode === 'flexible' && ligandSideGroup) {
+      const torsionRad = (App.dihedralChi * Math.PI / 180.0) * App.tau * (App.couplingJ * 12.0);
+      new TWEEN.Tween(ligandSideGroup.rotation)
+        .to({ z: torsionRad, y: torsionRad * 0.5 }, 1200)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .start();
+    }
+
+    const n = App.qubitMode;
+    for (let i = 0; i < n; i++) {
+      App.currentLigandPhases[i] = App.ligandPhases[i] + (App.pocketPhases[i] - App.ligandPhases[i]) * App.tau * 0.35;
+    }
+    App.fidelity = calculateFidelity(App.pocketPhases, App.currentLigandPhases);
+    updateUI();
+    await delay(1600);
+  }
+
+  async function executeStage2() {
+    setStage(2);
+    playSynthTone(587.33, 0.25, 'triangle');
+
+    new TWEEN.Tween(ancillaMesh.material).to({ opacity: 0.95 }, 400).start();
+    new TWEEN.Tween(ancillaMesh.scale).to({ x: 1.6, y: 1.6, z: 1.6 }, 300).yoyo(true).repeat(1).start();
+
+    App.fidelity = calculateFidelity(App.pocketPhases, App.currentLigandPhases);
+    await delay(1400);
+
+    const probZero = 0.5 * (1.0 + App.fidelity);
+    const shotRes = sampleProjectiveMeasurements(probZero, App.shotMode);
+    App.measuredCounts0 = shotRes.counts0;
+    App.measuredCounts1 = shotRes.counts1;
+    App.empiricalProb = shotRes.empiricalP;
+    App.stdError = shotRes.stdErr;
+    App.ciLow = shotRes.ciLow;
+    App.ciHigh = shotRes.ciHigh;
+    App.isLocked = shotRes.isLocked;
+    App.rusIteration = 1;
+
+    if (App.isLocked) {
+      playLockChord();
+    } else {
+      playSynthTone(220, 0.3, 'sawtooth', 0.08);
+    }
+    updateUI();
+    await delay(800);
+  }
+
+  async function executeStage3() {
+    setStage(3);
+
+    if (App.isLocked) {
+      snapDockingSuccess();
+      updateUI();
+      return;
+    }
+
+    const n = App.qubitMode;
+    for (let it = 2; it <= App.maxRus; it++) {
+      App.rusIteration = it;
+      for (let i = 0; i < n; i++) {
+        App.currentLigandPhases[i] += (App.pocketPhases[i] - App.currentLigandPhases[i]) * 0.55;
+      }
+      App.fidelity = calculateFidelity(App.pocketPhases, App.currentLigandPhases);
+      const probZero = 0.5 * (1.0 + App.fidelity);
+      const shotRes = sampleProjectiveMeasurements(probZero, App.shotMode);
+      App.measuredCounts0 = shotRes.counts0;
+      App.measuredCounts1 = shotRes.counts1;
+      App.empiricalProb = shotRes.empiricalP;
+      App.stdError = shotRes.stdErr;
+      App.ciLow = shotRes.ciLow;
+      App.ciHigh = shotRes.ciHigh;
+      App.isLocked = shotRes.isLocked;
+
+      if (App.isLocked) {
+        playLockChord();
+        snapDockingSuccess();
+        updateUI();
+        break;
+      } else {
+        playSynthTone(293.66, 0.2, 'sawtooth', 0.06);
+        updateUI();
+        await delay(1200);
+      }
+    }
+  }
+
+  function snapDockingSuccess() {
+    const n = App.qubitMode;
+    for (let i = 0; i < n; i++) {
+      App.currentLigandPhases[i] = App.pocketPhases[i];
+    }
+    App.fidelity = 1.0;
+    App.empiricalProb = 1.0;
+    App.stdError = 0.0;
+    App.ciLow = 1.0;
+    App.ciHigh = 1.0;
+
+    new TWEEN.Tween(ligandGroup.rotation)
+      .to({ y: 0 }, 600)
+      .easing(TWEEN.Easing.Back.Out)
+      .start();
+
+    if (ligandSideGroup) {
+      new TWEEN.Tween(ligandSideGroup.rotation)
+        .to({ z: 0, y: 0 }, 600)
+        .easing(TWEEN.Easing.Back.Out)
+        .start();
+    }
+
+    ancillaMesh.material.color.setHex(0x10b981);
+    ancillaMesh.material.emissive.setHex(0x10b981);
+    new TWEEN.Tween(ancillaMesh.scale).to({ x: 2.2, y: 2.2, z: 2.2 }, 350).yoyo(true).repeat(1).start();
+  }
+
+  function startClassicalCounterRace() {
+    if (App.classicalInterval) clearInterval(App.classicalInterval);
+    App.classicalStepCounter = 0;
+    const increment = Math.max(12, Math.floor(App.targetClassicalSteps / 240));
+
+    App.classicalInterval = setInterval(() => {
+      if (App.classicalStepCounter < App.targetClassicalSteps) {
+        App.classicalStepCounter = Math.min(App.targetClassicalSteps, App.classicalStepCounter + increment);
+        document.getElementById('race-classical-val').textContent =
+          `${App.classicalStepCounter.toLocaleString()} / ${App.targetClassicalSteps.toLocaleString()}`;
+      } else {
+        clearInterval(App.classicalInterval);
+      }
+    }, 25);
+  }
+
+  async function runFullPipeline() {
+    getAudioContext();
+    App.isRunning = true;
+    document.getElementById('btn-run').textContent = '⏹ Stop';
+    resetState();
+    startClassicalCounterRace();
+    await delay(300);
+
+    await executeStage0();
+    if (!App.isRunning) return;
+    await executeStage1();
+    if (!App.isRunning) return;
+    await executeStage2();
+    if (!App.isRunning) return;
+    await executeStage3();
+
+    App.isRunning = false;
+    document.getElementById('btn-run').textContent = '▶ Auto-Run';
+  }
+
+  async function stepPipeline() {
+    getAudioContext();
+    if (App.stage < 0) {
+      resetState();
+      startClassicalCounterRace();
+      await delay(100);
+    }
+    const next = App.stage + 1;
+    if (next > 3) return;
+    if (next === 0) await executeStage0();
+    else if (next === 1) await executeStage1();
+    else if (next === 2) await executeStage2();
+    else await executeStage3();
+  }
+
+  function goToStage(st) {
+    if (App.isRunning) return;
+    if (st === 0) executeStage0();
+    else if (st === 1) executeStage1();
+    else if (st === 2) executeStage2();
+    else if (st === 3) executeStage3();
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     9. TELEMETRY & UI UPDATES
+     ══════════════════════════════════════════════════════════════ */
+  function updateUI() {
+    const isFlex = App.dockingMode === 'flexible';
+    const cost = computeHqcCost(App.qubitMode, Math.max(1, App.rusIteration), App.shotMode || 500, isFlex);
+
+    document.getElementById('badge-atoms').textContent = `N = ${App.numAtoms} Atoms`;
+    const modeLabel = App.qubitMode === 4 ? '4 Phase Qubits + 1 Ancilla (9 Ions)' : '8 Dual-Shell Qubits + 1 Ancilla (17 Ions)';
+    document.getElementById('badge-qubits').textContent = modeLabel;
+    document.getElementById('m-qubits').innerHTML = `${cost.totalQubits} <span class="metric-sub">${App.qubitMode === 8 ? 'Helios' : 'H2'} ions</span>`;
+
+    const fidPct = Math.round(App.fidelity * 100);
+    document.getElementById('m-fid').textContent = App.fidelity.toFixed(3);
+
+    if (App.shotMode === null) {
+      document.getElementById('m-fid-pct').textContent = `${fidPct}% (Ideal)`;
+      const wEl = document.getElementById('m-fid-whisker');
+      if (wEl) wEl.style.display = 'none';
+    } else {
+      const errPct = (App.stdError * 100).toFixed(1);
+      document.getElementById('m-fid-pct').textContent = `${(App.empiricalProb * 100).toFixed(1)}% ± ${errPct}%`;
+      const wEl = document.getElementById('m-fid-whisker');
+      if (wEl) {
+        wEl.style.display = 'block';
+        const leftPct = Math.max(0, App.ciLow * 100);
+        const widthPct = Math.max(1.5, (App.ciHigh - App.ciLow) * 100);
+        wEl.style.left = `${leftPct}%`;
+        wEl.style.width = `${widthPct}%`;
+      }
+    }
+    document.getElementById('m-fid-fill').style.width = `${fidPct}%`;
+
+    document.getElementById('m-rus').textContent = App.rusIteration > 0 ? `${App.rusIteration} / ${App.maxRus}` : '0 / 5';
+
+    const ancillaEl = document.getElementById('m-ancilla');
+    if (App.isLocked) {
+      ancillaEl.textContent = App.shotMode ? `|0⟩ OK (${App.measuredCounts0}/${App.shotMode})` : '|0⟩ OK Locked';
+      ancillaEl.style.color = '#10b981';
+    } else if (App.rusIteration > 0) {
+      ancillaEl.textContent = App.shotMode ? `|1⟩ Fail (${App.measuredCounts1}/${App.shotMode})` : '|1⟩ Parity Error';
+      ancillaEl.style.color = '#ef4444';
+    } else {
+      ancillaEl.textContent = '|0⟩ Pending';
+      ancillaEl.style.color = 'var(--text-muted)';
+    }
+
+    document.getElementById('m-gates').innerHTML = App.rusIteration > 0
+      ? `${cost.twoQGates} <span class="metric-sub">ZZ gates</span>`
+      : `0 <span class="metric-sub">gates</span>`;
+
+    const quantumQueries = App.rusIteration > 0 ? App.rusIteration : 1;
+    document.getElementById('race-quantum-val').textContent = `${quantumQueries} Query (${cost.hqc} HQC)`;
+
+    const speedup = Math.round(App.targetClassicalSteps / (quantumQueries * cost.totalQubits));
+    document.getElementById('race-speedup-tag').textContent = App.isLocked
+      ? ` ${speedup.toLocaleString()}x Speedup`
+      : ' Comparing...';
+
+    // Update Tab 7 modal live numbers
+    const h1qEl = document.getElementById('modal-hqc-1q');
+    if (h1qEl) h1qEl.textContent = cost.singleQGates;
+    const h2qEl = document.getElementById('modal-hqc-2q');
+    if (h2qEl) h2qEl.textContent = cost.twoQGates;
+    const hshEl = document.getElementById('modal-hqc-shuttle');
+    if (hshEl) hshEl.textContent = cost.shuttles;
+    const htotEl = document.getElementById('modal-hqc-total');
+    if (htotEl) htotEl.textContent = cost.hqc.toFixed(2);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     10. EVENT HANDLERS & INITIALIZATION
+     ══════════════════════════════════════════════════════════════ */
+  document.getElementById('btn-run').addEventListener('click', () => {
+    Haptics.tick('heavy');
+    if (App.isRunning) {
+      App.isRunning = false;
+      document.getElementById('btn-run').textContent = '▶ Auto-Run';
+    } else {
+      runFullPipeline();
+    }
+  });
+
+  document.getElementById('btn-step').addEventListener('click', () => {
+    Haptics.tick('medium');
+    if (!App.isRunning) stepPipeline();
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    Haptics.tick('medium');
+    resetState();
+  });
+
+  document.getElementById('btn-sound').addEventListener('click', function() {
+    App.isSoundOn = !App.isSoundOn;
+    this.classList.toggle('active-sound', App.isSoundOn);
+    document.getElementById('sound-icon').textContent = App.isSoundOn ? '' : '';
+    document.getElementById('sound-txt').textContent = App.isSoundOn ? 'Audio ON' : 'Audio OFF';
+  });
+
+  document.getElementById('slide-tau').addEventListener('input', function() {
+    Haptics.tick('light');
+    App.tau = this.value / 100.0;
+    document.getElementById('readout-tau').textContent = App.tau.toFixed(2);
+    if (!App.isRunning && App.stage === 1) {
+      ligandGroup.rotation.y = (App.misalignDeg * Math.PI / 180.0) * App.tau;
+    }
+  });
+
+  document.getElementById('slide-misalign').addEventListener('input', function() {
+    Haptics.tick('light');
+    App.misalignDeg = +this.value;
+    document.getElementById('readout-misalign').textContent = `${this.value}°`;
+    if (!App.isRunning) resetState();
+  });
+
+  document.getElementById('slide-noise').addEventListener('input', function() {
+    Haptics.tick('light');
+    App.noiseSigma = this.value / 100.0;
+    document.getElementById('readout-noise').textContent = (this.value / 100.0).toFixed(2);
+    if (!App.isRunning) resetState();
+  });
+
+  document.querySelectorAll('.btn-n').forEach(btn => {
+    btn.addEventListener('click', function() {
+      Haptics.tick('medium');
+      document.querySelectorAll('.btn-n').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      App.numAtoms = +this.dataset.n;
+      document.getElementById('readout-n').textContent = App.numAtoms;
+      if (!App.isRunning) resetState();
+    });
+  });
+
+  // Research controls event bindings
+  // 1. Resolution Mode Toggle (4-Qubit Invariant vs 8-Qubit Dual Shell)
+  const btnRes4 = document.getElementById('btn-res-4');
+  const btnRes8 = document.getElementById('btn-res-8');
+  if (btnRes4 && btnRes8) {
+    btnRes4.addEventListener('click', () => {
+      Haptics.tick('medium');
+      btnRes4.classList.add('active');
+      btnRes8.classList.remove('active', 'active-helios');
+      App.qubitMode = 4;
+      if (!App.isRunning) resetState();
+    });
+    btnRes8.addEventListener('click', () => {
+      Haptics.tick('medium');
+      btnRes8.classList.add('active', 'active-helios');
+      btnRes4.classList.remove('active');
+      App.qubitMode = 8;
+      if (!App.isRunning) resetState();
+    });
+  }
+
+  // 2. Shot Noise Buttons (100, 500, 1000, Ideal)
+  document.querySelectorAll('.btn-shot').forEach(btn => {
+    btn.addEventListener('click', function() {
+      Haptics.tick('light');
+      document.querySelectorAll('.btn-shot').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const val = this.dataset.shots;
+      App.shotMode = val === 'ideal' ? null : +val;
+      updateUI();
+    });
+  });
+
+  // 3. Conformation Engine Toggle (Rigid vs Flexible)
+  const btnConfRigid = document.getElementById('btn-conf-rigid');
+  const btnConfFlex = document.getElementById('btn-conf-flex');
+  const flexSliders = document.getElementById('flex-sliders');
+  if (btnConfRigid && btnConfFlex) {
+    btnConfRigid.addEventListener('click', () => {
+      Haptics.tick('medium');
+      btnConfRigid.classList.add('active');
+      btnConfFlex.classList.remove('active', 'active-flex');
+      if (flexSliders) flexSliders.style.display = 'none';
+      App.dockingMode = 'rigid';
+      if (!App.isRunning) resetState();
+    });
+    btnConfFlex.addEventListener('click', () => {
+      Haptics.tick('medium');
+      btnConfFlex.classList.add('active', 'active-flex');
+      btnConfRigid.classList.remove('active');
+      if (flexSliders) flexSliders.style.display = 'flex';
+      App.dockingMode = 'flexible';
+      if (!App.isRunning) resetState();
+    });
+  }
+
+  // 4. Dihedral Coupling & Torsion Sliders
+  const slideJ = document.getElementById('slide-coupling-j');
+  if (slideJ) {
+    slideJ.addEventListener('input', function() {
+      Haptics.tick('light');
+      App.couplingJ = this.value / 100.0;
+      document.getElementById('readout-j').textContent = App.couplingJ.toFixed(2);
+      updateUI();
+    });
+  }
+  const slideChi = document.getElementById('slide-chi');
+  if (slideChi) {
+    slideChi.addEventListener('input', function() {
+      Haptics.tick('light');
+      App.dihedralChi = +this.value;
+      document.getElementById('readout-chi').textContent = `${this.value}°`;
+      updateUI();
+    });
+  }
+
+  // 5. Guppy Drawer Trigger Button
+  const btnGuppyDrawer = document.getElementById('btn-open-guppy-drawer');
+  if (btnGuppyDrawer) {
+    btnGuppyDrawer.addEventListener('click', () => {
+      Haptics.tick('medium');
+      const modal = document.getElementById('sim-help-modal');
+      if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        document.querySelectorAll('.sim-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.sim-modal-section').forEach(s => s.classList.remove('active'));
+        const tab7Btn = document.getElementById('btn-tab-guppy');
+        const tab7Sec = document.getElementById('tab-guppy');
+        if (tab7Btn && tab7Sec) {
+          tab7Btn.classList.add('active');
+          tab7Sec.classList.add('active');
+        }
+      }
+    });
+  }
+
+  function handleResize() {
+    resizeThree();
+    resizeQuantumCanvas();
+    resizeBackgroundCanvases();
+  }
+  window.addEventListener('resize', handleResize);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'Enter') { e.preventDefault(); runFullPipeline(); }
+    if (e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); stepPipeline(); }
+    if (e.key === 'r' || e.key === 'R') { resetState(); }
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+     11. ANIMATION LOOP
+     ══════════════════════════════════════════════════════════════ */
+  let globalClock = 0;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  let simAnimId = null;
+  let isSimTabActive = true;
+
+  function animate(timestamp) {
+    if (!isSimTabActive) return;
+    simAnimId = requestAnimationFrame(animate);
+    globalClock += 0.016;
+
+    TWEEN.update();
+    threeControls.update();
+
+    // Stream warp particles along hyperbolic conduit (Reference 7)
+    if (warpParticles && warpParticles.geometry && warpParticles.geometry.attributes.position) {
+      const pos = warpParticles.geometry.attributes.position.array;
+      const speeds = warpParticles.userData.speeds;
+      for (let i = 0; i < speeds.length; i++) {
+        let y = pos[i * 3 + 1] + speeds[i];
+        if (y > 4.6) y = -4.6;
+        pos[i * 3 + 1] = y;
+
+        // Maintain hyperbolic contour: waist = 0.38 + (y/4.6)^2 * 2.9
+        const u = y / 4.6;
+        const targetRadius = 0.38 + u * u * 2.9;
+        const currentR = Math.hypot(pos[i * 3], pos[i * 3 + 2]) || 0.001;
+        pos[i * 3] = (pos[i * 3] / currentR) * targetRadius;
+        pos[i * 3 + 2] = (pos[i * 3 + 2] / currentR) * targetRadius;
+      }
+      warpParticles.geometry.attributes.position.needsUpdate = true;
+    }
+
+    threeRenderer.render(threeScene, threeCam);
+
+    renderQuantumState(globalClock);
+    renderOscilloscope(globalClock);
+
+    if (!prefersReduced.matches) {
+      renderAmbientGrid(globalClock);
+      renderFluidTrail();
+    }
+  }
+
+  // Initial Boot
+  initThree();
+  resizeQuantumCanvas();
+  resizeBackgroundCanvases();
+  resetState();
+  animate();
+  
+    // ══════════════════════════════════════════════════════════════════════════
+    //  Help Modal Handlers
+    // ══════════════════════════════════════════════════════════════════════════
+    const simHelpModal = document.getElementById('sim-help-modal');
+    const btnHelpSim = document.getElementById('btn-help-sim');
+    const btnCloseSimModal = document.getElementById('btn-close-sim-modal');
+    const tabBtns = document.querySelectorAll('.sim-tab-btn');
+    const tabSections = document.querySelectorAll('.sim-modal-section');
+
+    function openSimHelpModal() {
+      Haptics.medium();
+      if (simHelpModal) {
+        simHelpModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeSimHelpModal() {
+      Haptics.light();
+      if (simHelpModal) {
+        simHelpModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    if (btnHelpSim) btnHelpSim.addEventListener('click', openSimHelpModal);
+    if (btnCloseSimModal) btnCloseSimModal.addEventListener('click', closeSimHelpModal);
+
+    if (simHelpModal) {
+      simHelpModal.addEventListener('click', (e) => {
+        if (e.target === simHelpModal) closeSimHelpModal();
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && simHelpModal && simHelpModal.classList.contains('active')) {
+        closeSimHelpModal();
+      }
+    });
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        Haptics.light();
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabSections.forEach(s => s.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-tab');
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) targetSection.classList.add('active');
+      });
+    });
+
+  </script>
+
+  
+</body>
+</html>
