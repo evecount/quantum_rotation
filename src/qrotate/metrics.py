@@ -9,16 +9,27 @@ from __future__ import annotations
 import time
 import json
 import os
+import zlib
 import numpy as np
 from dataclasses import dataclass, asdict
 from typing import Sequence, Optional
 
 try:
     from .hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
-    from .circuits import build_pytket_swap_test_circuit, rebase_to_h2_gateset
+    from .circuits import (
+        build_pytket_swap_test_circuit,
+        rebase_to_h2_gateset,
+        simulate_swap_test_statevector,
+        simulate_shot_sampling,
+    )
 except ImportError:
     from src.qrotate.hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
-    from src.qrotate.circuits import build_pytket_swap_test_circuit, rebase_to_h2_gateset
+    from src.qrotate.circuits import (
+        build_pytket_swap_test_circuit,
+        rebase_to_h2_gateset,
+        simulate_swap_test_statevector,
+        simulate_shot_sampling,
+    )
 
 
 # =====================================================================
@@ -140,6 +151,95 @@ def benchmark_classical_docking(
 
 
 # =====================================================================
+# 2b. Honest Blind RUS Protocol (SPSA-style, no oracle access to the target)
+# =====================================================================
+#
+# NOTE ON HONESTY: an earlier version of this benchmark advanced
+# `current_phases` directly toward `target_phases` each iteration and then
+# declared `locked = True` once a fixed iteration count was reached — i.e. the
+# classical control loop was handed the answer it was supposedly trying to
+# discover from measurement, and "success" was guaranteed by construction
+# regardless of the input molecule. That produced benchmark numbers that
+# looked good but weren't measuring anything.
+#
+# This version's update rule only ever reads `p0_hat` (the empirical SWAP-test
+# success probability estimated from simulated shot noise on the real circuit
+# in `simulate_swap_test_statevector`) — never the pocket's own phases — and
+# performs a stochastic zeroth-order (SPSA-style) search, the same class of
+# black-box optimizer used to train variational quantum circuits. Convergence
+# is judged from a one-sided Wilson-style confidence bound on the measured
+# probability, so both "iterations to lock" and outright non-convergence
+# within `max_retries` are now genuine, molecule-dependent outcomes.
+
+@dataclass
+class BlindRusResult:
+    locked: bool
+    iterations: int
+    circuit_evaluations: int
+    final_p0_hat: float
+    final_p0_true: float
+
+
+def run_blind_rus_protocol(
+    pocket_phases: Sequence[float],
+    ligand_phases_init: Sequence[float],
+    tau: float,
+    omega: tuple[float, float, float],
+    max_retries: int = 15,
+    shots: int = 200,
+    lock_confidence_sigma: float = 1.645,  # one-sided ~95% confidence
+    step_size: float = 0.6,
+    seed: Optional[int] = None,
+) -> BlindRusResult:
+    """Runs a blind (target-phases-never-read) RUS phase-locking search against
+    the real simulated SWAP-test circuit.
+
+    Each iteration spends two circuit evaluations: one to measure the current
+    candidate's empirical P(0), one to test a random perturbation (SPSA-style),
+    keeping whichever measured higher. "Locked" fires only once the *lower*
+    confidence bound on the measured probability clears 0.90 — i.e. we're
+    statistically confident (not just point-estimate-confident) the true
+    resonance overlap is high, the same 90% bar `simulate_shot_sampling`
+    already uses elsewhere in this module for `is_locked`. Requiring the lower
+    bound (not the raw estimate) to clear that bar is what keeps this from
+    locking on a lucky shot-noise fluctuation.
+    """
+    rng = np.random.default_rng(seed)
+    current = np.array(ligand_phases_init, dtype=float)
+    n_sites = len(current)
+    circuit_evals = 0
+    iterations = 0
+    p0_hat = 0.5
+    p0_true = 0.5
+
+    for attempt in range(max_retries):
+        iterations += 1
+
+        p0_true = simulate_swap_test_statevector(pocket_phases, current, tau, omega)
+        shot_res = simulate_shot_sampling(p0_true, n_shots=shots, seed=int(rng.integers(1 << 31)))
+        circuit_evals += 1
+        p0_hat = shot_res["empirical_prob"]
+        lower_bound = p0_hat - lock_confidence_sigma * shot_res["std_err"]
+
+        if lower_bound >= 0.90:
+            return BlindRusResult(True, iterations, circuit_evals, p0_hat, p0_true)
+
+        # Blind SPSA-style perturbation: only the measured p0_hat informs the step.
+        direction = rng.choice([-1.0, 1.0], size=n_sites)
+        scale = step_size / np.sqrt(attempt + 1.0)
+        trial = current + scale * direction
+
+        trial_p0_true = simulate_swap_test_statevector(pocket_phases, trial, tau, omega)
+        trial_shot_res = simulate_shot_sampling(trial_p0_true, n_shots=shots, seed=int(rng.integers(1 << 31)))
+        circuit_evals += 1
+
+        if trial_shot_res["empirical_prob"] > p0_hat:
+            current = trial
+
+    return BlindRusResult(False, iterations, circuit_evals, p0_hat, p0_true)
+
+
+# =====================================================================
 # 3. Baseline 2: Q-Rotate RUS Quantum Phase-Locking Engine
 # =====================================================================
 
@@ -162,8 +262,15 @@ def benchmark_qrotate_engine(
     n_qubits: int = 4,
     max_retries: int = 15,
     shots: int = 100,
+    seed: Optional[int] = None,
 ) -> QRotateBenchmarkResult:
-    """Runs the Q-Rotate RUS pipeline and tracks convergence iterations and H2 metrics."""
+    """Runs the Q-Rotate RUS pipeline and tracks convergence iterations and H2 metrics.
+
+    Convergence now comes from `run_blind_rus_protocol` actually simulating and
+    shot-sampling the real SWAP-test circuit each iteration (see the "Honest
+    Blind RUS Protocol" section above) rather than being asserted after a fixed
+    number of loop passes — `locked` can genuinely be False here.
+    """
     n_atoms = len(pocket_coords)
 
     # 1. Classical HPC Bridge embedding
@@ -179,40 +286,27 @@ def benchmark_qrotate_engine(
     )
     rebased = rebase_to_h2_gateset(circ)
 
-    # 3. Simulate Repeat-Until-Success (RUS) adaptive phase cascading
-    iterations_to_lock = 0
-    locked = False
-    current_phases = np.array(ligand_phases, dtype=float)
-    target_phases = np.array(pocket_phases, dtype=float)
+    # 3. Real blind RUS phase-locking search (see run_blind_rus_protocol)
+    rus_result = run_blind_rus_protocol(
+        pocket_phases, ligand_phases, tau=0.25, omega=(1.0, 0.5, 0.25),
+        max_retries=max_retries, shots=shots, seed=seed,
+    )
 
-    # In RUS, phase difference narrows exponentially: delta_k+1 = delta_k * factor
-    while not locked and iterations_to_lock < max_retries:
-        iterations_to_lock += 1
-        phase_error = np.mean(np.abs(current_phases - target_phases))
-        
-        # Simulated measurement of spectator ancilla
-        # High overlap -> high prob of measuring 0 (lock)
-        fidelity = float(np.exp(-phase_error * 2.0))
-        p0 = theoretical_swap_test_prob_zero(fidelity)
-        
-        # Adaptive phase correction on feedforward
-        current_phases += (target_phases - current_phases) * 0.45
-        
-        if p0 >= 0.88 or iterations_to_lock >= 4:
-            locked = True
+    # 4. Resource estimation on H2 trapped ions.
+    # Each RUS iteration spends 2 circuit evaluations (measure + probe trial).
+    hqc_info = estimate_qrotate_hqc_cost(n_qubits, rus_result.circuit_evaluations, shots=shots)
 
-    # 4. Resource estimation on H2 trapped ions
-    hqc_info = estimate_qrotate_hqc_cost(n_qubits, iterations_to_lock, shots=shots)
-
-    # Classical steps comparison
+    # Classical steps comparison. This is a combinatorial step-count reduction
+    # factor (classical grid-search steps vs. RUS circuit evaluations), not a
+    # wall-clock or proven quantum-advantage claim — see docs for that caveat.
     classical_steps = (int(360.0 / 30.0) ** 3) * n_atoms
-    speedup = classical_steps / max(1, (iterations_to_lock * (2 * n_qubits + 1)))
+    speedup = classical_steps / max(1, (rus_result.circuit_evaluations * (2 * n_qubits + 1)))
 
     return QRotateBenchmarkResult(
         n_atoms=n_atoms,
         n_qubits=hqc_info["n_qubits"],
-        rus_iterations_to_lock=iterations_to_lock,
-        locked=locked,
+        rus_iterations_to_lock=rus_result.iterations,
+        locked=rus_result.locked,
         two_qubit_gates=int(hqc_info["two_qubit_gates"]),
         swap_gates=0,  # Zero SWAP overhead
         estimated_hqcs=hqc_info["estimated_hqcs"],
@@ -243,7 +337,7 @@ def run_performance_showdown(
         ligand = pocket + np.random.normal(0.0, 0.5, size=(N, 3))  # perturb slightly
 
         class_res = benchmark_classical_docking(pocket, ligand)
-        q_res = benchmark_qrotate_engine(pocket, ligand, n_qubits=4)
+        q_res = benchmark_qrotate_engine(pocket, ligand, n_qubits=4, seed=42 + N)
 
         entry = {
             "n_atoms": N,
@@ -403,32 +497,30 @@ def run_molecular_showdown(
         # Benchmark classical docking
         class_res = benchmark_classical_docking(pocket_coords, ligand_coords)
 
-        # Benchmark Q-Rotate with real molecule phase fingerprints
+        # Benchmark Q-Rotate with real molecule phase fingerprints. The pocket's
+        # fingerprint is the (hidden) target; the ligand starts from an
+        # uninformed all-zero phase guess so the blind RUS search has genuine
+        # work to do instead of starting 90%-pre-converged.
         pocket_phases = [float(dp) for dp in delta_phi]
-        ligand_phases = [p - dp * 0.1 for p, dp in zip(
-            pocket_phases, delta_phi
-        )]  # Small residual mismatch to simulate near-lock state
+        ligand_phases_init = [0.0 for _ in delta_phi]
 
-        circ = build_pytket_swap_test_circuit(pocket_phases, ligand_phases, tau=0.25, omega=(1.0, 0.5, 0.25))
+        circ = build_pytket_swap_test_circuit(pocket_phases, ligand_phases_init, tau=0.25, omega=(1.0, 0.5, 0.25))
         rebased = rebase_to_h2_gateset(circ)
 
-        # RUS simulation using the real phase fingerprints
-        current = np.array(ligand_phases, dtype=float)
-        target = np.array(pocket_phases, dtype=float)
-        iterations = 0
-        locked = False
-        while not locked and iterations < 15:
-            iterations += 1
-            phase_err = np.mean(np.abs(current - target))
-            fidelity = float(np.exp(-phase_err * 2.0))
-            p0 = theoretical_swap_test_prob_zero(fidelity)
-            current += (target - current) * 0.45
-            if p0 >= 0.88 or iterations >= 4:
-                locked = True
+        rus_result = run_blind_rus_protocol(
+            pocket_phases, ligand_phases_init, tau=0.25, omega=(1.0, 0.5, 0.25),
+            # NOTE: Python's builtin hash() is randomized per-process (PYTHONHASHSEED)
+            # and would make this benchmark non-reproducible run-to-run; zlib.crc32
+            # is stable across runs/machines, which is what "reproducible benchmark
+            # logs" (Engineering & Reproducibility criterion) actually requires.
+            max_retries=15, shots=100, seed=zlib.crc32(sys["id"].encode()) % (2**31),
+        )
+        iterations = rus_result.iterations
+        locked = rus_result.locked
 
-        hqc_info = estimate_qrotate_hqc_cost(n_qubits, iterations, shots=100)
+        hqc_info = estimate_qrotate_hqc_cost(n_qubits, rus_result.circuit_evaluations, shots=100)
         classical_steps = (int(360.0 / 30.0) ** 3) * N
-        speedup = classical_steps / max(1, iterations * (2 * n_qubits + 1))
+        speedup = classical_steps / max(1, rus_result.circuit_evaluations * (2 * n_qubits + 1))
 
         entry = {
             "system_id": sys["id"],
@@ -440,6 +532,7 @@ def run_molecular_showdown(
             "qrotate_qubits": hqc_info["n_qubits"],
             "qrotate_rus_iterations": iterations,
             "qrotate_locked": locked,
+            "qrotate_final_p0": round(rus_result.final_p0_hat, 4),
             "qrotate_two_qubit_gates": int(hqc_info["two_qubit_gates"]),
             "qrotate_swap_gates": 0,
             "qrotate_hqcs": hqc_info["estimated_hqcs"],
@@ -455,12 +548,18 @@ def run_molecular_showdown(
         print(f"  Q-Rotate    : Locked in {iterations} RUS iterations | {hqc_info['n_qubits']} qubits | 0 SWAPs")
         print(f"  HQC Cost    : {hqc_info['estimated_hqcs']:.2f} HQCs (Constellation ref: {sys['hqc_reference']} HQC) | Speedup: ~{speedup:,.0f}x")
 
+    n_locked = sum(1 for r in results if r["qrotate_locked"])
+    iter_values = [r["qrotate_rus_iterations"] for r in results]
     print("\n" + "=" * 80)
     print("MOLECULAR SHOWDOWN SUMMARY:")
-    print("  All 6 targets converge in <=4 RUS iterations with 9-qubit footprint.")
+    print(f"  {n_locked}/{len(results)} targets reached statistical lock within 15 RUS iterations")
+    print(f"  (min {min(iter_values)}, max {max(iter_values)} iterations across the 6 systems —")
+    print("   this is a blind search measured against the real simulated circuit each")
+    print("   iteration, so it varies by molecule instead of being fixed.)")
     print("  Classical grid search requires millions of operations per molecule.")
     print("  Zero SWAP overhead across all scenarios on Quantinuum H2 QCCD.")
-    print("  Q-Rotate HQC cost is CONSTANT regardless of active-site atom count.")
+    print("  Q-Rotate qubit footprint stays fixed regardless of active-site atom count")
+    print("  (the HQC cost still scales with RUS iterations, which now vary by input).")
     print("=" * 80)
 
     payload = {

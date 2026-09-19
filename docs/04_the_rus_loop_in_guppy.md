@@ -48,7 +48,7 @@ To run an RUS loop, your quantum hardware must satisfy three brutal physical req
 | :--- | :--- | :--- |
 | **Coherence Lifetime** | $\approx 100 \text{ microseconds}$ (Decays before classical computer can compute feedback) | **Tens of seconds** (Qubits comfortably wait while the controller computes!) |
 | **Mid-Circuit Measurement** | Laser/microwave crosstalk often blows away neighbor qubits | **Individual ion shuttling** separates the measured ion into a dedicated readout zone |
-| **Clean Qubit Reset** | Incomplete ground-state optical pumping creates residual errors | **Optical optical pumping** resets individual ions to $|0\rangle$ with $>99.9\%$ fidelity |
+| **Clean Qubit Reset** | Incomplete ground-state optical pumping creates residual errors | **Optical pumping** resets individual ions to $|0\rangle$; trapped-ion state preparation and measurement is generally reported at high fidelity (>99%) in the published literature, though we haven't run our own hardware characterization to cite a project-specific number here |
 | **Connectivity** | Nearest-neighbor 2D grid requires heavy SWAP networks | **All-to-all connectivity**: Any ion can interact with any other ion directly |
 
 **Quantinuum's trapped-ion architecture is uniquely tailored for dynamic circuits.**
@@ -59,7 +59,7 @@ To run an RUS loop, your quantum hardware must satisfy three brutal physical req
 
 Normally, programming a dynamic loop on a quantum processor requires low-level pulse sequencers or assembly-level quantum instructions.
 
-Quantinuum built **Guppy**—a Python-embedded quantum programming language—specifically to bridge this gap:
+Quantinuum built **Guppy**—a Python-embedded quantum programming language—specifically to bridge this gap. The sketch below is the *target* control-flow pattern Guppy makes possible on this hardware:
 ```python
 @guppy(module)
 def qrotate_rus_engine(pocket: list[qubit], ligand: list[qubit], ancilla: qubit) -> bool:
@@ -83,3 +83,5 @@ When you call `.compile()` on a Guppy function:
 1. Guppy translates the Python `while` and `if/else` branches into a **HUGR (Hierarchical Unified Graph Representation)** control-flow graph.
 2. `hugr-qir` compiles this graph into an **LLVM QIR bitcode** payload.
 3. The Quantinuum control system executes the classical conditional branches in real time right next to the cryostat!
+
+**Current implementation status:** the Guppy kernel shipped today (`guppy_qrotate_rus_demo` in `src/qrotate/circuits.py`) is a single-shot circuit — state preparation, $\hat{U}_{\text{tube}}$ evolution, the blind parity test, and measurement — that compiles cleanly to HUGR, but it does not yet contain the native `while not locked` loop sketched above. The adaptive RUS feedback loop that actually drives convergence today lives in `src/qrotate/metrics.py` (`run_blind_rus_protocol`), which re-simulates the real circuit each iteration on the classical side. Moving that loop natively into the compiled Guppy kernel — so the trapped-ion controller runs it in real time exactly as described above — is the next engineering step, not something already running on hardware.

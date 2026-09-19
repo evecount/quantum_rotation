@@ -49,9 +49,9 @@ Look at what happens at the extremes:
 
 ---
 
-### 3. Why It's Called a "Blind" (Zero-Knowledge) Test
+### 3. Why It's Called a "Blind" (Coordinate-Free) Test — and What That Does and Doesn't Guarantee
 
-Because we only ever measure the single ancilla qubit:
-1. **No Coordinate Exposure**: The exact proprietary chemical coordinates of the drug and the target protein are never broadcast or read out.
-2. **Exponentially Low Readout Overhead**: You don't read out $2^N$ numbers. You measure 1 bit.
-3. **Instant Signal for Feedback**: A readout of $1$ tells the control loop immediately: *"Apply another corrective rotation and test again!"*
+Because we only ever measure the single ancilla qubit, not the pocket/ligand registers themselves:
+1. **No Direct Coordinate Exposure**: The exact 3D atomic coordinates of the drug and the target protein are never broadcast or read out — only their compressed phase encoding is prepared into the circuit, and only a single aggregate bit comes back out.
+2. **Compact Per-Shot Readout**: Each shot returns 1 bit, not the full $2^N$-dimensional state — but estimating $P(0)$ to a useful precision still takes $O(1/\epsilon^2)$ repeated shots (standard SWAP-test statistics), and across enough repeated queries at different candidate phases, an aggregate signal about the overlap does leak out. This is a real, useful reduction in what's exposed, not a formal zero-knowledge guarantee — we don't make that claim.
+3. **Instant Signal for Feedback**: A readout of $1$ tells the control loop immediately: *"Try another candidate phase and test again."* Note the control loop only ever sees this aggregate parity bit — it does not have direct access to the pocket's own phase values, which is what keeps the RUS search (Chapter 4) an honest blind search rather than one that's handed the answer.

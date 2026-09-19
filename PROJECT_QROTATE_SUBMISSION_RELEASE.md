@@ -29,7 +29,7 @@ This submission is strictly engineered to satisfy the four official scoring crit
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | **James Sun's Commercial Thesis:** Eliminates multi-billion-dollar classical docking bottlenecks; replaces wet-lab trial-and-error with continuous phase synchronization; $120M–$280M biopharma licensing roadmap. |
 | **Technical Performance & Hardware Use** | **30%** | Correctness, benchmark gains, scalability, hardware utilization | **Quantinuum Native Execution:** Reduced to 7 qubits, 47 `PhasedX`, 24 `ZZPhase`, 11.5 HQCs; dynamic mid-circuit measurement/reset loop in **Guppy**; 6 real-world benchmark active sites. |
-| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | **Gwen's Lie Algebra $\hat{U}_{\text{tube}}(\tau)$:** Replaced 40 years of classical $O(N^3)$ Cartesian grid docking with continuous $SU(2)^{\otimes n}$ rotations; Zero-Knowledge blind parity interference curve. Documented in full in [`provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md`](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md). |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | **Gwen's Lie Algebra $\hat{U}_{\text{tube}}(\tau)$:** Replaced 40 years of classical $O(N^3)$ Cartesian grid docking with continuous $SU(2)^{\otimes n}$ rotations; coordinate-free blind parity interference curve. Documented in full in [`provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md`](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | **Ben's Systems Architecture:** Clean modular `src/qrotate/` package, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, comprehensive docstrings, `pyproject.toml`, and clean Git history. |
 
 ---
@@ -42,7 +42,7 @@ Traditional computational docking models (AutoDock, Schrödinger, DFT) discretiz
 1. **Continuous Lie Algebra Unitary ($\hat{U}_{\text{tube}}(\tau)$)**:
    $$\hat{U}_{\text{tube}}(\tau) = \exp\left(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}})\right)$$
    $$\hat{H}_{\text{rot}} = \vec{\omega} \cdot \sum_{k=1}^N \hat{\vec{\sigma}}_k, \quad \hat{H}_{\text{phase}} = \sum_{m=1}^N \Delta \Phi_m \hat{Z}_m$$
-2. **Zero-Knowledge Blind Parity (SWAP Test)**:
+2. **Coordinate-Free Blind Parity (SWAP Test)**:
    $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
    Verifies active site fit without exposing proprietary chemical coordinates.
 3. **Dynamic Repeat-Until-Success (RUS) in Guppy**:

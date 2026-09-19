@@ -58,6 +58,116 @@ def rebase_to_h2_gateset(circuit):
 
 
 # =====================================================================
+# 0. Statevector Circuit Simulator (ground-truth reference model)
+# =====================================================================
+#
+# Pure-numpy dense statevector simulator for the exact gate sequence built by
+# `build_pytket_swap_test_circuit`. This exists so benchmark/RUS code measures
+# P(ancilla=0) from actually simulating the circuit instead of a closed-form
+# guess — dense simulation is tractable here because the circuit only ever
+# uses 2*n_sites+1 qubits (9 for the n_sites=4 case used throughout this
+# project, i.e. a 512-dimensional state vector).
+
+def _apply_1q_gate(state: np.ndarray, gate: np.ndarray, qubit: int, n_qubits: int) -> np.ndarray:
+    """Applies a 2x2 unitary to `qubit` of an n_qubits statevector (qubit 0 = MSB)."""
+    t = state.reshape([2] * n_qubits)
+    t = np.moveaxis(t, qubit, 0)
+    shape = t.shape
+    t = gate @ t.reshape(2, -1)
+    t = t.reshape(shape)
+    t = np.moveaxis(t, 0, qubit)
+    return t.reshape(-1)
+
+
+def _apply_cx(state: np.ndarray, control: int, target: int, n_qubits: int) -> np.ndarray:
+    """Applies CNOT(control -> target) via an index permutation (qubit 0 = MSB)."""
+    idx = np.arange(state.shape[0])
+    c_pos = n_qubits - 1 - control
+    t_pos = n_qubits - 1 - target
+    c_bit = (idx >> c_pos) & 1
+    perm = np.where(c_bit == 1, idx ^ (1 << t_pos), idx)
+    return state[perm]
+
+
+def _apply_ccx(state: np.ndarray, control_a: int, control_b: int, target: int, n_qubits: int) -> np.ndarray:
+    """Applies Toffoli(control_a, control_b -> target) via an index permutation."""
+    idx = np.arange(state.shape[0])
+    ca_pos = n_qubits - 1 - control_a
+    cb_pos = n_qubits - 1 - control_b
+    t_pos = n_qubits - 1 - target
+    both = ((idx >> ca_pos) & 1) & ((idx >> cb_pos) & 1)
+    perm = np.where(both == 1, idx ^ (1 << t_pos), idx)
+    return state[perm]
+
+
+def _ry_matrix(theta: float) -> np.ndarray:
+    c, s = np.cos(theta / 2.0), np.sin(theta / 2.0)
+    return np.array([[c, -s], [s, c]], dtype=complex)
+
+
+def _rz_matrix(theta: float) -> np.ndarray:
+    return np.array([[np.exp(-1j * theta / 2.0), 0.0], [0.0, np.exp(1j * theta / 2.0)]], dtype=complex)
+
+
+_H_MATRIX = np.array([[1.0, 1.0], [1.0, -1.0]], dtype=complex) / np.sqrt(2.0)
+
+
+def simulate_swap_test_statevector(
+    pocket_phases: Sequence[float],
+    ligand_phases: Sequence[float],
+    tau: float,
+    omega: tuple[float, float, float],
+) -> float:
+    """Exactly simulates the gate sequence in `build_pytket_swap_test_circuit`
+    (same qubit layout, same Ry/Rz/CX/CCX/H gates, same pytket angle convention
+    of half-turns i.e. physical_angle = phases[i]) and returns the true
+    P(ancilla measures 0) = (1 + |<psi_pocket|psi_ligand>|^2) / 2 for the
+    resulting n_sites-qubit product-state overlap.
+
+    This is the ground-truth model the RUS engine in metrics.py measures
+    against — it replaces reasoning about a closed-form fidelity guess with
+    literally running the circuit that would be compiled to hardware.
+    """
+    n_sites = len(pocket_phases)
+    n_total = 2 * n_sites + 1
+    dim = 1 << n_total
+
+    state = np.zeros(dim, dtype=complex)
+    state[0] = 1.0
+
+    ancilla = 0
+    pocket_reg = list(range(1, n_sites + 1))
+    ligand_reg = list(range(n_sites + 1, n_total))
+
+    # 1. State preparation (encoding coordinate phases)
+    for i in range(n_sites):
+        state = _apply_1q_gate(state, _ry_matrix(0.5 * np.pi), pocket_reg[i], n_total)
+        state = _apply_1q_gate(state, _rz_matrix(float(pocket_phases[i])), pocket_reg[i], n_total)
+        state = _apply_1q_gate(state, _ry_matrix(0.5 * np.pi), ligand_reg[i], n_total)
+        state = _apply_1q_gate(state, _rz_matrix(float(ligand_phases[i])), ligand_reg[i], n_total)
+
+    # 2. Apply U_tube evolution to the ligand register
+    _, wy, wz = omega
+    for i in range(n_sites):
+        state = _apply_1q_gate(state, _ry_matrix(wy * tau), ligand_reg[i], n_total)
+        state = _apply_1q_gate(state, _rz_matrix(wz * tau), ligand_reg[i], n_total)
+
+    # 3. Ancilla-mediated Blind Parity Test (register SWAP test via per-site CSWAP)
+    state = _apply_1q_gate(state, _H_MATRIX, ancilla, n_total)
+    for i in range(n_sites):
+        state = _apply_cx(state, ligand_reg[i], pocket_reg[i], n_total)
+        state = _apply_ccx(state, ancilla, pocket_reg[i], ligand_reg[i], n_total)
+        state = _apply_cx(state, ligand_reg[i], pocket_reg[i], n_total)
+    state = _apply_1q_gate(state, _H_MATRIX, ancilla, n_total)
+
+    # 4. P(ancilla = 0)
+    idx = np.arange(dim)
+    ancilla_pos = n_total - 1 - ancilla
+    mask_zero = ((idx >> ancilla_pos) & 1) == 0
+    return float(np.sum(np.abs(state[mask_zero]) ** 2))
+
+
+# =====================================================================
 # 1. Quantum Shot Sampling Engine (Projective Measurements)
 # =====================================================================
 
@@ -311,14 +421,16 @@ if HAS_GUPPY:
         h(ancilla)
 
         # 5. Measure and output parity
+        # measure() returns a lazy `Measurement`; it must be `.read()` into a
+        # bool before it can cross the `output`/`result` boundary.
         m_parity = measure(ancilla)
-        output("parity_error", m_parity)
+        output("parity_error", m_parity.read())
 
         # 6. Measure remaining qubits
         m_p = measure(q_pocket)
         m_l = measure(q_ligand)
-        output("pocket_state", m_p)
-        output("ligand_state", m_l)
+        output("pocket_state", m_p.read())
+        output("ligand_state", m_l.read())
 else:
     def guppy_qrotate_rus_demo() -> None:
         """Fallback mock for Guppy Q-Rotate execution."""
