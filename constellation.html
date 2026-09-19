@@ -983,14 +983,14 @@
       <span class="telemetry-val" id="telemetry-delta-phi" style="color: var(--accent-cyan);">0.14 rad</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">HQC (illustrative)</span>
-      <span class="telemetry-val" id="telemetry-hqc">9.44 HQC</span>
+      <span class="telemetry-label">HQC per screen (est.)</span>
+      <span class="telemetry-val" id="telemetry-hqc">36.6 HQC</span>
     </div>
     <div class="telemetry-row">
       <span class="telemetry-label">Target HW</span>
       <span class="telemetry-val" style="color: #fff;">Quantinuum H2-2E</span>
     </div>
-    <p class="telemetry-note">Target angles and HQC figures are hand-picked for this demo, not computed. For real statevector results, open <a href="simulation.html">Simulation</a>.</p>
+    <p class="telemetry-note">Target angles are hand-picked for this demo. HQC is the estimated cost of a full blind RUS screen from <code>benchmarks/molecular_showdown.json</code>, not a billed hardware job. For statevector results, open <a href="simulation.html">Simulation</a>.</p>
   </div>
 
   <!-- Interaction Guide Hint -->
@@ -1189,7 +1189,7 @@
             What is this page for?
           </h2>
           <p style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
-            A hands-on demo of Q-Rotate's core idea: you find the fit by rotating continuously and checking the overlap, not by searching a grid. The six systems are example settings. Their target angles and HQC figures are illustrative, not simulation output.
+            A hands-on demo of Q-Rotate's core idea: you find the fit by rotating continuously and checking the overlap, not by searching a grid. The six systems are example settings. Their target angles are illustrative. The HQC figure is the estimated cost of that system's benchmark screen (<code>benchmarks/molecular_showdown.json</code>).
           </p>
         </div>
         <button class="btn-close" id="btn-close-modal" aria-label="Close Guide" style="font-size: 1.2rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #cbd5e1; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
@@ -1304,8 +1304,9 @@
     // =========================================================================
     // 1. DATASET: 6 Real-World Biomolecular Case Studies
     // =========================================================================
-    // NOTE: optimalAngle, baseDeltaPhi and hqcCost are hand-picked demo values,
-    // not output of src/qrotate. The HUD labels them as illustrative.
+    // NOTE: optimalAngle and baseDeltaPhi are hand-picked demo values, not output
+    // of src/qrotate. hqcCost is qrotate_hqcs from benchmarks/molecular_showdown.json
+    // (estimated full RUS screen cost; re-sync if the benchmark is regenerated).
     const systems = [
       {
         id: "rhodopsin",
@@ -1315,7 +1316,7 @@
         pos: new THREE.Vector3(-45, 15, -20),
         color: 0x00f5d4, // Cyan
         baseDeltaPhi: [0.12, -0.45, 0.88, -0.22],
-        hqcCost: "9.44 HQC",
+        hqcCost: "36.6 HQC",
         optimalAngle: 0.0,
       },
       {
@@ -1326,7 +1327,7 @@
         pos: new THREE.Vector3(40, 25, -35),
         color: 0x10b981, // Emerald
         baseDeltaPhi: [-0.62, 0.31, 0.15, -0.08],
-        hqcCost: "11.20 HQC",
+        hqcCost: "25.4 HQC",
         optimalAngle: 35.0,
       },
       {
@@ -1337,7 +1338,7 @@
         pos: new THREE.Vector3(60, -20, 10),
         color: 0x3b82f6, // Electric Blue
         baseDeltaPhi: [0.44, 0.92, -0.38, 0.19],
-        hqcCost: "12.80 HQC",
+        hqcCost: "87.0 HQC",
         optimalAngle: -50.0,
       },
       {
@@ -1348,7 +1349,7 @@
         pos: new THREE.Vector3(-55, -25, 25),
         color: 0xf59e0b, // Amber Gold
         baseDeltaPhi: [-0.18, 0.25, 0.73, -0.54],
-        hqcCost: "10.15 HQC",
+        hqcCost: "19.8 HQC",
         optimalAngle: 80.0,
       },
       {
@@ -1359,7 +1360,7 @@
         pos: new THREE.Vector3(10, 45, 30),
         color: 0xa855f7, // Purple
         baseDeltaPhi: [0.78, -0.81, 0.35, -0.42],
-        hqcCost: "8.60 HQC",
+        hqcCost: "42.2 HQC",
         optimalAngle: -115.0,
       },
       {
@@ -1370,7 +1371,7 @@
         pos: new THREE.Vector3(0, -45, -30),
         color: 0xec4899, // Pink
         baseDeltaPhi: [0.15, -0.10, 0.20, -0.05],
-        hqcCost: "14.50 HQC",
+        hqcCost: "8.6 HQC",
         optimalAngle: 15.0,
       }
     ];

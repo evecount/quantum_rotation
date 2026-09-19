@@ -347,7 +347,7 @@ These rows use synthetic point clouds that happen to lock on the first RUS itera
 | Azobenzene Switch | 24 | 7 | 156 `ZZPhase` | 42.2 | 355x |
 | H2 Hardware Benchmark | 8 | 1 | 12 `ZZPhase` | 8.6 | 1,536x |
 
-All HQC figures are estimates from the H-series costing formula (`estimate_qrotate_hqc_cost` in `src/qrotate/metrics.py`, 100 shots), not billed hardware jobs. "Speedup" / "step-count ratio" compares classical grid steps with RUS circuit evaluations. It is not a wall-clock comparison.
+All HQC figures are estimates from the H-series costing formula (`estimate_qrotate_hqc_cost` in `src/qrotate/metrics.py`, 100 shots), not billed hardware jobs. That function assumes a simplified 10 single-qubit + 12 two-qubit gates per circuit. The actual rebased circuit is 62 `PhasedX` + 32 `ZZPhase` (≈13.6 HQCs per 100-shot run), so these tables **understate** the cost. "Speedup" / "step-count ratio" compares classical grid steps with RUS circuit evaluations. It is not a wall-clock comparison.
 
 ### Key Takeaways for the Submission Package
 
