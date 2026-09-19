@@ -238,6 +238,17 @@
       justify-content: space-between;
     }
 
+    .telemetry-note {
+      margin-top: 10px;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    .telemetry-note a {
+      color: var(--accent-cyan);
+    }
+
     .telemetry-pulse {
       width: 8px;
       height: 8px;
@@ -934,7 +945,7 @@
       </div>
       <div class="hud-title">
         <h1>The Resonance Constellation</h1>
-        <p>Starry Night Biomolecular Quantum Landscape</p>
+        <p>Toy model: turn the ligand until it lines up with the pocket. The SWAP-test signal rises as cos²(θ/2).</p>
       </div>
     </div>
     <div class="hud-nav">
@@ -957,29 +968,29 @@
   <!-- Telemetry HUD Left -->
   <div class="telemetry-box">
     <div class="telemetry-title">
-      <span>Quantum Telemetry</span>
-      <div class="telemetry-pulse"></div>
+      <span>Toy Model Readout</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">Hilbert Space</span>
-      <span class="telemetry-val">SU(2)<sup>⊗n</sup> Lie Algebra</span>
+      <span class="telemetry-label">Model</span>
+      <span class="telemetry-val">Rotation + SWAP test</span>
     </div>
     <div class="telemetry-row">
       <span class="telemetry-label">Active System</span>
       <span class="telemetry-val" id="active-star-name">Rhodopsin / Retinal</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">Phase Error ΔΦ</span>
+      <span class="telemetry-label">Angle Error ΔΦ</span>
       <span class="telemetry-val" id="telemetry-delta-phi" style="color: var(--accent-cyan);">0.14 rad</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">HQC Estimate</span>
+      <span class="telemetry-label">HQC (illustrative)</span>
       <span class="telemetry-val" id="telemetry-hqc">9.44 HQC</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">Hardware Target</span>
+      <span class="telemetry-label">Target HW</span>
       <span class="telemetry-val" style="color: #fff;">Quantinuum H2-2E</span>
     </div>
+    <p class="telemetry-note">Target angles and HQC figures are hand-picked for this demo, not computed. For real statevector results, open <a href="simulation.html">Simulation</a>.</p>
   </div>
 
   <!-- Interaction Guide Hint -->
@@ -1175,10 +1186,10 @@
             Constellation Exploration Guide
           </div>
           <h2 style="font-size: 1.45rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; line-height: 1.2;">
-            What is Happening in the Biomolecular Constellation?
+            What is this page for?
           </h2>
           <p style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
-            A continuous topological map of quantum molecular docking across 6 landmark biological systems
+            A hands-on demo of Q-Rotate's core idea: you find the fit by rotating continuously and checking the overlap, not by searching a grid. The six systems are example settings. Their target angles and HQC figures are illustrative, not simulation output.
           </p>
         </div>
         <button class="btn-close" id="btn-close-modal" aria-label="Close Guide" style="font-size: 1.2rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #cbd5e1; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
@@ -1246,7 +1257,7 @@
             <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #f59e0b; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
               <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #f59e0b;">[SPACEBAR] / Fire Parity Button</div>
               <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Blind Parity SWAP Test (Controlled-SWAP)</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Interferes both registers onto the ancilla. When Synchrony &ge; 90%, it triggers a <strong style="color: #00f5d4;">Zero-Parity Lock (|0&rang;)</strong> with zero coordinate leakage!</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Interferes both registers onto the ancilla. In this toy, a <strong style="color: #00f5d4;">Zero-Parity Lock (|0&rang;)</strong> fires when Synchrony (cos²(θ/2)) &ge; 90%.</div>
             </div>
           </div>
         </div>
@@ -1293,6 +1304,8 @@
     // =========================================================================
     // 1. DATASET: 6 Real-World Biomolecular Case Studies
     // =========================================================================
+    // NOTE: optimalAngle, baseDeltaPhi and hqcCost are hand-picked demo values,
+    // not output of src/qrotate. The HUD labels them as illustrative.
     const systems = [
       {
         id: "rhodopsin",
