@@ -5,7 +5,7 @@
 | :--- | :--- | :--- |
 | **Search Paradigm** | Discretized 3D Cartesian grid ($10^6+$ voxels) | Continuous Lie algebra manifold ($SU(2)$) |
 | **Search Path** | Mountain hike over rugged potential energy barriers | **Geodesic burrowing** directly through wave space |
-| **Hardware Overhead** | Megawatts on GPU clusters (days to weeks) | **11.5 HQCs** on Quantinuum H2 (sub-penny) |
+| **Hardware Overhead** | Megawatts on GPU clusters (days to weeks) | **≈13.6 HQCs** per 100-shot circuit on Quantinuum H2 (estimated) |
 | **IP Protection** | Plaintext atomic coordinates exposed in memory | **Zero-Knowledge Blind Parity** (100% encrypted) |
 
 - **The Helios Opportunity:** Trapped ions physically shuttle across optical zones, executing continuous Hamiltonian time-evolution without grid discretization.
@@ -102,11 +102,11 @@ More importantly, our compiler pipeline automatically takes this circuit, optimi
 
 | Resource Profile Metric | Compiler Allocation | Hardware Efficiency Advantage |
 | :--- | :--- | :--- |
-| **Active Ion Qubits** | `7 Qubits` | 100% dedicated trapped-ion register |
-| **Single-Qubit Rotations (`PhasedX`)** | `47 Gates` | Precision optical Raman laser pulses |
-| **Two-Qubit Entanglers (`ZZPhase`)** | `24 Gates` | All-to-all ion shuttling (0 SWAP gates) |
-| **Mid-Circuit Parity Readout** | `1 Gate` | Fast optical detection & qubit reset |
-| **Execution Cost (100 Shots)** | `11.5 HQCs` | Sub-penny commercial drug screening |
+| **Active Ion Qubits** | `9 Qubits` | 4 pocket + 4 ligand + 1 ancilla |
+| **Single-Qubit Rotations (`PhasedX`)** | `62 Gates` | Plus 82 virtual `Rz` (free) |
+| **Two-Qubit Entanglers (`ZZPhase`)** | `32 Gates` | All-to-all ion shuttling (0 SWAP gates) |
+| **Mid-Circuit Parity Readout** | `1 Measurement` | Fast optical detection & qubit reset |
+| **Execution Cost (100 Shots)** | `≈13.6 HQCs` (estimated) | Per circuit; a full RUS screen runs it several times |
 
 ---
 Now let's talk about the hardware engineering. Why did we build Project Q-Rotate specifically for Quantinuum's H-series trapped-ion processors instead of superconducting chips like IBM or Google?
@@ -115,9 +115,9 @@ As quantum developers, qubit connectivity is everything. Superconducting archite
 
 In Quantinuum's H1 and H2 ion traps, charged ytterbium ions are physically shuttled through optical zones using precision RF voltages. Every single qubit has native all-to-all connectivity with every other qubit in the trap.
 
-We wrote our compiler passes using Pytket and the native Quantinuum backend. Look at the benchmark statistics on the canvas. For a typical active binding pocket, our compiler reduces the entire test to just 7 ion qubits, using 47 single-ion laser pulses and only 24 two-qubit entangling operations.
+We wrote our compiler passes using Pytket and the native Quantinuum backend. Look at the benchmark statistics on the canvas. For a typical active binding pocket, our compiler reduces one test circuit to 9 ion qubits, using 62 single-ion rotations and 32 two-qubit entangling operations, with no SWAP routing.
 
-Using Quantinuum's official pricing formula, running 100 shots of this complete biomolecular test costs exactly 11.5 credits. That is a fraction of a penny per candidate. As engineers, that is what excites us: proving that quantum-accelerated screening is commercially viable on current hardware today.
+Using Quantinuum's published HQC formula, 100 shots of that circuit comes to roughly 13.6 credits. That's an estimate, not a billed run. A full blind screen repeats the circuit a few times until it locks, so the real cost per candidate is a multiple of that. As engineers, what excites us is that the circuit is small enough to be realistic on current hardware.
 
 # The Superpower: Guppy Dynamic RUS Loops
 - Repeat-Until-Success (RUS) in Quantinuum `guppylang`
@@ -195,7 +195,7 @@ You can drag the angle slider, tilt the 3D pitch, and watch the exact moment the
 - The $2.6B Drug Discovery Bottleneck: 90% of wet-lab candidates fail due to false positives
 - **The $120M–$280M Biopharma Licensing Roadmap:**
   * High-throughput quantum pre-screening before expensive chemical synthesis
-  * Less than a single penny per candidate test on Quantinuum trapped ions (11.5 HQCs)
+  * A small, fixed-size circuit per candidate on Quantinuum trapped ions (≈13.6 estimated HQCs per 100-shot run)
 - **Zero-Knowledge Pharma Moat (The Decisive Commercial Advantage):**
   * Proves lock-and-key binding parity without exposing 3D atomic coordinates
   * Eliminates cloud corporate espionage and IP leak fears for unpatented drug scaffolds
@@ -208,7 +208,7 @@ Finally, let's talk about the real world. Why does this matter commercially, and
 
 In the pharmaceutical sector, bringing a single therapeutic to market costs an average of 2.6 billion dollars and takes over a decade. The single biggest driver of that cost is false positives—molecules that look promising on classical grid simulations, but fail completely after millions of dollars are burned in wet-lab synthesis.
 
-Project Q-Rotate helps solve this by acting as an ultra-precise, ultra-cheap quantum filter. Because our compiled circuit runs on Quantinuum hardware for just 11.5 credits—a fraction of a single penny per candidate—drug discovery teams can pre-screen vast chemical libraries with quantum precision before ordering expensive chemical reagents.
+Project Q-Rotate helps solve this by acting as an ultra-precise, ultra-cheap quantum filter. Because each compiled test circuit is small (about 13.6 estimated credits per 100-shot run), drug discovery teams could use it as a pre-screen before ordering expensive chemical reagents.
 
 And here is the decisive breakthrough for enterprise biopharma: our Zero-Knowledge Blind Parity protocol.
 
@@ -221,7 +221,7 @@ We built this as software developers to bridge the gap between quantum hardware 
 # Key Takeaways
 - **The Core Breakthrough:** Replaced $O(N^3)$ classical Cartesian grid docking with continuous quantum rotations $\hat{U}_{\text{tube}}(\tau)$.
 - **Zero-Knowledge Security:** Ancilla-mediated SWAP test verifies binding parity without leaking proprietary atomic coordinates.
-- **Sub-Penny Hardware Efficiency:** Rebased to Quantinuum H2 native gates (`PhasedX`, `ZZPhase`) executing at just 11.5 HQCs per test.
+- **Compact Hardware Footprint:** Rebased to Quantinuum H2 native gates (`PhasedX`, `ZZPhase`) at ≈13.6 estimated HQCs per 100-shot circuit.
 - **Dynamic Superpower:** Native mid-circuit measurement and conditional reset feedback loop implemented in Quantinuum `guppylang`.
 - **The Clinical & Commercial Vision:** High-precision, zero-leakage quantum screening accelerating life-saving therapies for global medicine.
 ---
@@ -231,7 +231,7 @@ First, we tackled a fundamental bottleneck in computational biology from a coder
 
 Second, we introduced Zero-Knowledge Blind Parity, allowing pharmaceutical teams and quantum cloud providers to verify molecular fits without exposing confidential chemical coordinates.
 
-Third, we engineered our compiler for maximum efficiency on Quantinuum's H-series processors, executing complete binding tests for just 11.5 credits—fractions of a penny per candidate—leveraging native trapped-ion all-to-all connectivity.
+Third, we engineered our compiler for maximum efficiency on Quantinuum's H-series processors, compiling each binding test to a 9-qubit circuit of about 13.6 estimated credits per 100-shot run, with no SWAP routing thanks to native trapped-ion all-to-all connectivity.
 
 Fourth, we turned Quantinuum's trapped ions into an auto-tuning quantum engine with dynamic Guppy loops, testing mid-stream and nudging misaligned molecules into resonance on the fly.
 
