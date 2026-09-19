@@ -1,0 +1,141 @@
+/*
+ * Cybrdeck Glass Kit — CSS layer
+ * Ported from CybrDeck-Website's `.cd-lens-glass` / GlassLensDefs system.
+ *
+ * This is the "clear optical glass" material: refraction, not blur.
+ * Pair with glass-lens-defs.js (mounts the SVG filters this references)
+ * and glass-button.js (the Canvas2D hover chassis for buttons).
+ *
+ * House rule: near-zero tint, no face wash gradient — all the light lives
+ * on the edges. See README.md for the full playbook this was extracted from.
+ */
+
+:root {
+  --cd-obsidian: 9, 15, 27;       /* rgb triplet — the recurring "glass body" ink tone */
+  --cd-brand-400: #d8a657;
+  --cd-brand-500: #c68f3d;
+}
+
+/* ---------------------------------------------------------------------
+   1. The refractive lens (backdrop-filter + SVG feDisplacementMap).
+   Requires glass-lens-defs.js to have mounted #cd-lens-<tier> once.
+   The blur() declaration MUST precede the url() one: it is the fallback
+   for engines that reject SVG filters in backdrop-filter, and declaration
+   order (not @supports) is the feature-detection mechanism here.
+--------------------------------------------------------------------- */
+.cd-lens-glass {
+  -webkit-backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  -webkit-backdrop-filter: url(#cd-lens-default) saturate(1.35) brightness(1.06);
+  backdrop-filter: url(#cd-lens-default) saturate(1.35) brightness(1.06);
+}
+.cd-lens-glass--sm {
+  -webkit-backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  -webkit-backdrop-filter: url(#cd-lens-sm) saturate(1.35) brightness(1.06);
+  backdrop-filter: url(#cd-lens-sm) saturate(1.35) brightness(1.06);
+}
+.cd-lens-glass--lg {
+  -webkit-backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  -webkit-backdrop-filter: url(#cd-lens-lg) saturate(1.35) brightness(1.06);
+  backdrop-filter: url(#cd-lens-lg) saturate(1.35) brightness(1.06);
+}
+.cd-lens-glass--xl {
+  -webkit-backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  backdrop-filter: blur(6px) saturate(1.4) brightness(1.04);
+  -webkit-backdrop-filter: url(#cd-lens-xl) saturate(1.35) brightness(1.06);
+  backdrop-filter: url(#cd-lens-xl) saturate(1.35) brightness(1.06);
+}
+
+/* Full-bleed illustrated bands: displacement + a touch of saturation only —
+   never brightness, never the blur() fallback (reads as a frosted glow). */
+.cd-lens-glass--band {
+  -webkit-backdrop-filter: url(#cd-lens-xl) saturate(1.15);
+  backdrop-filter: url(#cd-lens-xl) saturate(1.15);
+}
+
+/* ---------------------------------------------------------------------
+   2. The glass button chassis (rest state). The hover "rim" effect is
+   drawn on a <canvas> by glass-button.js; this CSS is the always-visible
+   static machined-bevel look under it.
+--------------------------------------------------------------------- */
+.cd-glass-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  isolation: isolate;
+  border-radius: 999px;
+  padding: 0.65em 1.4em;
+  font: inherit;
+  font-weight: 700;
+  color: #f5f7fb;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.025) 0%,
+    rgba(var(--cd-obsidian), 0.12) 46%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  box-shadow:
+    inset 0 1.5px 0.5px -0.5px rgba(255, 255, 255, 0.62),
+    inset 0 -1.5px 0.5px -0.5px rgba(255, 255, 255, 0.26),
+    inset 1.5px 0 1px -1px rgba(255, 255, 255, 0.18),
+    inset -1.5px 0 1px -1px rgba(255, 255, 255, 0.18),
+    0 10px 28px -16px rgba(0, 0, 0, 0.65);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.cd-glass-btn:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(var(--cd-obsidian), 0.10) 46%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.40);
+}
+
+.cd-glass-btn:active {
+  transform: scale(0.96) translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9), 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.cd-glass-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(216, 166, 87, 0.7);
+}
+
+.cd-glass-btn--primary {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(var(--cd-obsidian), 0.22) 46%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+}
+
+/* The rim-effect canvas: inflated past the pill so bloom can escape, and
+   NOT clipped (unlike the iridescent variant, whose canvas is overflow:hidden). */
+.cd-glass-btn__fx {
+  position: absolute;
+  inset: -30px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.cd-glass-btn__label {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-glass-btn {
+    transition: none;
+  }
+}

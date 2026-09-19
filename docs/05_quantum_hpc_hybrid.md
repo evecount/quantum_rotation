@@ -54,15 +54,17 @@ Our workflow directly builds on the two landmark preprints defining this competi
 
 ### 3. How Q-Rotate Fits In
 
-In Project Q-Rotate:
-1. **Classical HPC (Supercomputer / Fugaku / Slurm cluster)**: Performs the ground-state geometry optimization, computes the electrostatic potential in the binding pocket, and extracts atomic coordinates and partial charges.
-2. **HPC Bridge (`src/qrotate/hpc_bridge.py`)**: Reads standard chemical data formats (PDB/SDF) and extracts two critical mathematical arguments:
+> **Scope note:** Section 1's ONIOM framework and Section 2's references describe the *target architecture* this project is designed toward and the literature it takes inspiration from. The `hpc_bridge.py` module shipped today does the lighter-weight piece of that pipeline — geometric and partial-charge feature extraction — not full ONIOM-layered DFT/ground-state optimization or a real quantum-embedding partition of the active site. The steps below describe what's implemented now; closing the gap to the full ONIOM picture is future work, not a current claim.
+
+In Project Q-Rotate today:
+1. **Classical geometry input**: `MolecularGeometry` takes already-computed atomic coordinates and partial charges (e.g. from a PDB/SDF file or an upstream classical pipeline) — this project does not itself run the DFT/force-field step that produces them.
+2. **HPC Bridge (`src/qrotate/hpc_bridge.py`)**: Extracts two mathematical arguments from that geometry:
    - **The Target Manifold ($\vec{\omega}$)**: The pocket geometry is processed to extract the collective angular momentum required to orient the active site: $\vec{\omega} = (\omega_x, \omega_y, \omega_z)$.
    - **The Error Field (`initial_delta_phi`)**: The ligand geometry is compared against the pocket's complementary manifold to calculate the initial discrete phase discrepancy at each orbital contact site.
 3. **Parameter Injection into Guppy**: Classical `float` and `list[float]` variables calculated by the HPC bridge are passed directly as compile-time/runtime parameters into `@guppy` functions.
 4. **HUGR Dataflow Graph Compilation**: Guppy lowers both quantum gates and classical control flow (`while`, `if/else`, adaptive dampening) into a unified **HUGR (Hierarchical Unified Graph Representation)** and LLVM QIR bitcode.
-5. **Quantinuum H2 / Helios Execution**: The trapped-ion hardware executes the Repeat-Until-Success protocol in real time right at the cryostat, leveraging mid-circuit measurement and ion reset with **zero network latency** back to the classical host.
-6. **Classical Post-Processing (`src/qrotate/metrics.py`)**: Takes the measured output distributions and reconstructs the binding affinity and resonance curve.
+5. **Quantinuum H2 / Helios Execution**: The trapped-ion hardware executes the Repeat-Until-Success protocol in real time right at the cryostat, leveraging mid-circuit measurement and ion reset without a datacenter network round-trip back to a classical host (latency internal to the control system is still nonzero — "no round-trip," not "zero latency").
+6. **Classical Post-Processing (`src/qrotate/metrics.py`)**: Takes the measured output distributions and reports the resonance/parity curve. (Note: this reports overlap/resonance, not a computed binding free energy — see Chapter 2 for what the phase encoding does and doesn't capture.)
 
 ---
 

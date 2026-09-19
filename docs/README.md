@@ -31,9 +31,9 @@ This project is explicitly structured to satisfy the four official scoring dimen
 
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
-| **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture & GTM Thesis](#7-commercial-architecture--market-value) ($120M–$280M Biopharma licensing roadmap, 100x cost reduction vs wet lab synthesis, James Sun / Mamba Partners). |
+| **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture, Market Value & Use Cases](#7-commercial-architecture-market-value--use-cases) (3 concrete use cases with honest evidence-level labels; illustrative $120M–$280M scenario model in `workspaces/JAMES_VENTURE_GTM_BRIEF.md`, James Sun / Mamba Partners). |
 | **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 4: Hardware Benchmarks](#4-hardware-compilation--quantinuum-native-execution) (7 Qubits, 47 `PhasedX`, 24 `ZZPhase`, 11.5 HQCs on Quantinuum H2, Guppy RUS dynamic loop, 6 benchmark active sites). |
-| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; Zero-Knowledge SWAP test; thermal perturbation analysis). |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; coordinate-free SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
 ---
@@ -42,16 +42,17 @@ This project is explicitly structured to satisfy the four official scoring dimen
 
 Project Q-Rotate replaces traditional, computationally expensive 3D spatial docking models with a quantum-native, information-theoretic approach. Standard computational docking and biomolecular simulations face severe scaling bottlenecks when modeling complex molecular geometries and photochemical active sites. Conventional classical methods (such as grid-based DFT or brute-force spatial sampling) scale poorly with system size, while multi-configurational methods (CASSCF, DMRG) hit an exponential wall when exploring multi-reference excited states.
 
-By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies ligand-protein structural and electronic alignment via a **blind parity test**, completely circumventing the need to compute massive overarching molecular geometries or discretize high-dimensional 3D spatial grids.
+By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies ligand-protein structural alignment via a **blind parity test** over a compressed, phase-encoded representation of each molecule's geometry and partial charges, avoiding the need to discretize high-dimensional 3D spatial grids. (This version does not model electronic structure directly — see [Section 2](#2-the-mathematical-core) for exactly what the phase encoding does and doesn't capture.)
 
 > [!IMPORTANT]
-> ### 🛡️ Zero-Knowledge Proof for Pharma: The Decisive Commercial Moat
-> **By executing an ancilla-mediated blind parity test, Project Q-Rotate verifies whether a candidate ligand achieves lock-and-key resonance with a target protein active site without disclosing the exact 3D atomic coordinates. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, this coordinate-free zero-knowledge matching protocol provides an unassailable commercial advantage.**
-> 
+> ### 🛡️ Coordinate-Free Screening for Pharma: A Reduced-Exposure Commercial Angle
+> **By executing an ancilla-mediated blind parity test, Project Q-Rotate checks whether a candidate ligand achieves lock-and-key resonance with a target protein active site while only ever exchanging a compressed phase fingerprint and a single-bit ancilla readout — never the raw 3D atomic coordinates themselves. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, reducing what has to leave either party's system during a screening pass is a genuine commercial advantage.**
+>
 > * **The Commercial Bottleneck:** Enterprise biopharma companies invest hundreds of millions of dollars synthesizing and patenting novel molecular scaffolds. They are notoriously reluctant to transmit raw 3D atomic coordinates across external cloud computing environments due to the risk of IP exposure and corporate espionage.
 > * **The Quantum Mathematical Solution:** In Project Q-Rotate, the ancilla-mediated quantum SWAP test evaluates structural fit using quantum state overlap. The output is a single scalar interference parity metric:
 >   $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
->   Neither the cloud platform nor the quantum hardware provider ever gains access to the underlying 3D molecular coordinates, unlocking sovereign, confidential quantum drug screening for global biopharma sponsors.
+>   Neither the cloud platform nor the quantum hardware provider ever receives the raw 3D molecular coordinates during a run.
+> * **Honesty note:** this is *not* a cryptographic zero-knowledge proof. The measured $P(0)$ value (and its statistics across repeated shots or queries) is itself information correlated with the overlap, so we describe this as coordinate-free / reduced-exposure screening rather than a formal ZK guarantee — see [Chapter 3](docs/03_the_blind_parity_test.md) for the precise claim.
 
 
 ### 🏔️ The Intuition: The Classical "Mountain Hike" vs. The Lie Group "Burrowing"
@@ -96,7 +97,7 @@ When the ligand and pocket topologies are a perfect structural and electronic ma
 
 ### Core Modules
 
-* **Blind Parity Verification (`src/qrotate/circuits.py`):** An ancilla-mediated quantum SWAP test that acts as a zero-knowledge proof for structural fit without exposing raw atomic coordinates.
+* **Blind Parity Verification (`src/qrotate/circuits.py`):** An ancilla-mediated quantum SWAP test that checks structural fit without exposing raw atomic coordinates directly (a coordinate-free check, not a cryptographic zero-knowledge proof — see docs/03).
 * **Adaptive QPE & Phase Feedback:** Dynamically reads phase deviations ($\Delta \Phi_m$) if the initial parity check fails.
 * **Repeat-Until-Success (RUS) Control Loop:** Guppy's native classical `while` loops execute a mid-circuit Repeat-Until-Success protocol, applying real-time phase corrections mid-circuit until zero parity is measured.
 * **Classical HPC Bridge (`src/qrotate/hpc_bridge.py`):** Compresses multi-thousand-atom 3D macromolecular environments into compact $N$-qubit phase registers.
@@ -297,15 +298,31 @@ python tests\test_qrotate.py
 
 ---
 
-## 7. Hardware Utilization Highlights (Quantinuum H2 / Helios)
+## 7. Commercial Architecture, Market Value & Use Cases
 
-* **Native Gate Optimization**: Compiles directly into Quantinuum trapped-ion physical primitives: `PhasedX`, `ZZPhase`, and virtual `Rz` rotations.
-* **All-to-All Connectivity**: CSWAP and ancilla parity tests execute with zero SWAP network routing overhead.
-* **Mid-Circuit Dynamic Control**: The Repeat-Until-Success (RUS) loop uses mid-circuit measurement and qubit reset directly on the ion trap, keeping circuit depth shallow while driving phase error to zero.
+This section exists to satisfy the **Problem & Value (30%)** judging criterion directly: who has this problem, why existing options fall short, and what evidence backs the value claim (see `Competition.md`'s 0–5 evidence scale — each item below is labeled with its honest current level).
+
+### 7.1 Three Concrete Use Cases
+
+1. **Cross-company IP-safe fit screening.** Two biopharma organizations (or a biopharma and a CRO) want to check whether Company A's candidate ligand resonates with Company B's patented, undisclosed binding pocket — without either party transmitting raw 3D atomic coordinates to the other or to a third-party cloud vendor. Today's alternative is a legal NDA-mediated coordinate exchange, or not screening at all. Q-Rotate's blind parity test lets both parties exchange only a compressed phase fingerprint and a single ancilla readout. *Evidence level: 2 (plausible, demonstrated on synthetic and illustrative data — see `docs/03_the_blind_parity_test.md` for exactly what is and isn't protected; not yet validated on a real cross-party pilot).*
+2. **Cheap pre-triage before expensive classical screening.** A computational chemistry team has thousands of candidate poses/orientations to check before committing to full DFT or wet-lab synthesis. Q-Rotate's fixed, small qubit footprint (`benchmark_qrotate_engine`, `run_molecular_showdown` in `src/qrotate/metrics.py`) gives a cheap first-pass orientation/overlap filter to cut down what reaches the expensive stage. *Evidence level: 3 (demonstrated with direct evidence — real statevector-simulated circuit runs and honest per-molecule benchmark numbers, regenerated in `benchmarks/*.json`; not yet benchmarked against a real classical screening pipeline's actual hit-rate).*
+3. **A fast geometric lens on photochemical/excited-state systems.** Teams working on light-activated biology (retinal/rhodopsin-style photoswitches, fluorescent biomarkers) need to explore orientation space quickly. Q-Rotate's continuous-rotation framing is a fast, complementary geometric screen — explicitly **not** a replacement for multi-reference electronic-structure methods (CASSCF/DMRG/QSCI) — that can help narrow down which orientations are worth a full quantum-chemistry treatment. *Evidence level: 1–2 (the geometric framing is implemented and tested; the "useful pre-filter for real photochemistry" claim itself is not yet validated against a real electronic-structure benchmark).*
+
+### 7.2 Licensing & Market Model
+
+See `workspaces/JAMES_VENTURE_GTM_BRIEF.md` for the full, honestly-labeled scenario model behind the commercial narrative — it is presented as a transparent, assumption-based framework (currently evidence level 1–2), not a sourced market forecast, with an explicit list of what would need to be validated to move up the evidence scale.
 
 ---
 
-## 8. Benchmarking Showdown: Classical Brute-Force vs. Q-Rotate RUS (Quantinuum H2)
+## 8. Hardware Utilization Highlights (Quantinuum H2 / Helios)
+
+* **Native Gate Optimization**: Compiles directly into Quantinuum trapped-ion physical primitives: `PhasedX`, `ZZPhase`, and virtual `Rz` rotations.
+* **All-to-All Connectivity**: CSWAP and ancilla parity tests execute with zero SWAP network routing overhead.
+* **Mid-Circuit Dynamic Control**: The Repeat-Until-Success (RUS) loop uses mid-circuit measurement and qubit reset directly on the ion trap, keeping circuit depth shallow while driving phase error toward zero (see `src/qrotate/metrics.py::run_blind_rus_protocol` for the honest, non-guaranteed convergence model — RUS can genuinely fail to lock within the iteration budget for a hard enough mismatch).
+
+---
+
+## 9. Benchmarking Showdown: Classical Brute-Force vs. Q-Rotate RUS (Quantinuum H2)
 
 To satisfy the **Technical Performance & Hardware Use (30%)** and **Scientific Merit (20%)** judging criteria, we pitted a standard classical 3D spatial rotation search ($30^\circ$ discrete Euler grid) against the **Q-Rotate Repeat-Until-Success (RUS)** quantum engine across scaling atom counts ($N = 10 \to 1,000$).
 
@@ -335,7 +352,7 @@ Structured JSON results are automatically exported to `benchmarks/showdown_resul
 
 ---
 
-## 9. 🏛️ About Eve Count & Leadership Bio
+## 10. 🏛️ About Eve Count & Leadership Bio
 
 ### Organization Overview: Eve Count
 **Eve Count** is a Singapore-based DeepTech quantum research laboratory and venture studio pioneering coordinate-free biomolecular simulation and next-generation sovereign algorithmic systems. Combining human mathematical domain invention with high-performance WebGL visualization and institutional capital strategy, Eve Count engineers high-leverage computational engines designed natively for trapped-ion quantum architectures.
@@ -351,7 +368,7 @@ Structured JSON results are automatically exported to `benchmarks/showdown_resul
 #### ⚛️ Gwendalynn (婉婷) Lim ("1ightray") — Founder & DeepTech Venture CTO
 * **Role:** Lead Quantum Architect & Inventor of Project Q-Rotate Core Engine
 * **Credentials:** B.Sc. (Hons) in Applied Computing (Singapore Institute of Technology), Advanced Machine Learning & Deep Learning Credentials (NTU SCTP).
-* **Domain Focus:** Continuous Hamiltonian time-evolution, Lie group representations ($SU(2)^{\otimes n}$), Zero-Knowledge quantum parity verification, and native trapped-ion kernel compilation in Quantinuum `guppylang` and Pytket.
+* **Domain Focus:** Continuous Hamiltonian time-evolution, Lie group representations ($SU(2)^{\otimes n}$), Coordinate-free quantum parity verification, and native trapped-ion kernel compilation in Quantinuum `guppylang` and Pytket.
 * **Bio:** Gwendalynn is a Singaporean computer scientist, machine learning practitioner, and deep-tech founder. Rejecting four decades of classical Cartesian grid discretization ($O(N^3)$ computational bottlenecks in molecular docking), Gwendalynn formulated the continuous Tube Hamiltonian ($\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau(\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$), transforming spatial and electrostatic molecular binding into an analytical, coordinate-free Lie algebra resonance problem. Gwendalynn directs the core mathematical architecture, algorithmic proofs, and physical trapped-ion execution across Quantinuum H1/H2 systems.
 * **Direct Contact:** [gwen@evecount.com](mailto:gwen@evecount.com) | [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)
 
