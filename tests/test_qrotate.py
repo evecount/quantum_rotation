@@ -24,6 +24,7 @@ from qrotate.hpc_bridge import (
 from qrotate.metrics import (
     compute_overlap_fidelity,
     estimate_qrotate_hqc_cost,
+    compute_circuit_hqc_cost,
 )
 from qrotate.circuits import (
     build_pytket_swap_test_circuit,
@@ -100,6 +101,34 @@ def test_metrics_cost():
     print(f"PASS: test_metrics_cost (Estimate: {cost_info['estimated_hqcs']} HQCs)")
 
 
+def test_hqc_cost_counts_compiled_circuit():
+    """The HQC estimate must come from the rebased circuit's real gate counts,
+    and a multi-run screen must cost exactly runs x one circuit."""
+    circ = rebase_to_h2_gateset(build_pytket_swap_test_circuit(
+        [0.3, 0.4, 0.5, 0.6], [0.6, 0.5, 0.4, 0.3], tau=0.25, omega=(1.0, 0.5, 0.25)))
+    one = compute_circuit_hqc_cost(circ, shots=100)
+    expected = 5.0 + (one["single_qubit_count"] + 10 * one["two_qubit_count"]
+                      + 5 * (one["n_qubits"] + one["measure_count"] + one["reset_count"])) * 100 / 5000
+    assert one["n_qubits"] == 9
+    assert one["hqc_cost"] == round(expected, 2)
+    screen = estimate_qrotate_hqc_cost(4, rus_attempts=3, shots=100, circuit=circ)
+    assert screen["estimated_hqcs"] == round(3 * one["hqc_cost"], 2)
+    # The closed-form counts used where pytket isn't available (and mirrored in
+    # simulation.html) must match the compiled circuit.
+    from qrotate.circuits import compile_h2_native_gates, calculate_exact_hqc_budget
+    for n in (2, 4, 8):
+        c = rebase_to_h2_gateset(build_pytket_swap_test_circuit(
+            [0.3 + 0.1 * i for i in range(n)], [0.9 - 0.1 * i for i in range(n)],
+            tau=0.25, omega=(1.0, 0.5, 0.25)))
+        real = compute_circuit_hqc_cost(c, shots=100)
+        model = compile_h2_native_gates(n)
+        assert model["single_qubit_laser_gates"] == real["single_qubit_count"], n
+        assert model["native_two_qubit_zzphase"] == real["two_qubit_count"], n
+        assert calculate_exact_hqc_budget(n, 1, 100)["hqc"] == real["hqc_cost"], n
+    print(f"PASS: test_hqc_cost_counts_compiled_circuit ({one['single_qubit_count']} PhasedX, "
+          f"{one['two_qubit_count']} ZZPhase, {one['hqc_cost']} HQC per circuit)")
+
+
 def test_swap_test_statevector_matches_closed_form():
     """The dense-statevector SWAP-test simulator must reproduce the textbook
     single-qubit SWAP-test formula P(0) = (1 + cos^2(delta_phi/2)) / 2 exactly
@@ -144,6 +173,7 @@ if __name__ == "__main__":
     test_pytket_circuit()
     test_guppy_circuit_compilation()
     test_metrics_cost()
+    test_hqc_cost_counts_compiled_circuit()
     test_swap_test_statevector_matches_closed_form()
     test_blind_rus_protocol_does_not_cheat()
     print("\nALL PROJECT Q-ROTATE TESTS PASSED SUCCESSFULLY!")

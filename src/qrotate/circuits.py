@@ -237,29 +237,19 @@ def compile_h2_native_gates(
     n_sites: int = 4,
     has_flexible_rotamer: bool = False,
 ) -> dict:
-    """Returns the exact native Quantinuum H2 gate synthesis breakdown.
+    """Returns the H2 native gate counts for one blind-parity SWAP-test circuit.
 
-    Quantinuum H2 QCCD Architecture Features:
-    - Single-qubit arbitrary-angle laser pulses: Rz(alpha), Ry(beta) [Fidelity > 99.99%]
-    - Native two-qubit ZZPhase(theta) [Fidelity > 99.9%]
-    - Fredkin (CSWAP) gate decomposition: 3 x ZZPhase + 6 x Ry + 4 x Rz per site
-    - Mid-circuit projective measurement with conditional real-time logic
-    - Physical ion shuttling between zones: ZERO SWAP gate routing overhead!
+    The counts match `build_pytket_swap_test_circuit` after
+    `rebase_to_h2_gateset` (checked in tests for 2, 4 and 8 sites):
+    15n + 2 PhasedX and 8n ZZPhase for n sites per register, plus 1
+    measurement. Rz is virtual and not counted. The flexible-rotamer dihedral
+    couplings (n - 1 ZZPhase) are not in the compiled circuit yet, so they are
+    a modeled add-on. All-to-all connectivity means 0 SWAP routing gates.
     """
-    # 1. State preparation
-    prep_1q = 2 * n_sites * 2  # Ry + Rz per qubit for pocket + ligand
-    # 2. U_tube evolution
-    evolve_1q = n_sites * 2     # Ry(wy*tau) + Rz(wz*tau) per ligand qubit
+    total_1q = 15 * n_sites + 2
     dihedral_2q = (n_sites - 1) if has_flexible_rotamer else 0
-    # 3. Blind Parity CSWAP test: each site requires 1 Fredkin = 3 ZZPhase + 10 single-qubit gates
-    cswap_zz = 3 * n_sites
-    cswap_1q = 10 * n_sites
-    # 4. Ancilla Hadamard + Measurement
+    total_2q = 8 * n_sites + dihedral_2q
     meas_count = 1
-    ancilla_1q = 2  # 2 Hadamards
-
-    total_1q = prep_1q + evolve_1q + cswap_1q + ancilla_1q
-    total_2q = cswap_zz + dihedral_2q
     total_qubits = 2 * n_sites + 1
 
     return {
@@ -268,7 +258,6 @@ def compile_h2_native_gates(
         "single_qubit_laser_gates": total_1q,
         "native_two_qubit_zzphase": total_2q,
         "mid_circuit_measurements": meas_count,
-        "all_to_all_shuttles": total_2q * 2,
         "swap_overhead_gates": 0,
         "has_flexible_rotamer": has_flexible_rotamer,
     }
@@ -280,27 +269,30 @@ def calculate_exact_hqc_budget(
     n_shots: int = 500,
     is_flexible: bool = False,
 ) -> dict:
-    """Calculates exact Quantinuum Hardware Quantum Credits (HQC) according to the official formula.
+    """Estimates HQCs with Quantinuum's H-series formula, per circuit:
 
-    HQC = 5.0 + 5/5000 * [ N_1q + 10 * N_2q + 5 * N_m + N_shuttle ] * (N_shots / 100)
+    HQC = 5 + (N_1q + 10 * N_2q + 5 * N_m) * N_shots / 5000
+
+    N_m counts state preparation of every qubit plus measurements. Each RUS
+    iteration runs a new circuit, so the total is n_iterations x per-circuit
+    cost. This is an estimate, not a billed job.
     """
     decomp = compile_h2_native_gates(n_sites, has_flexible_rotamer=is_flexible)
-    n_1q = decomp["single_qubit_laser_gates"] * n_iterations
-    n_2q = decomp["native_two_qubit_zzphase"] * n_iterations
-    n_m = decomp["mid_circuit_measurements"] * n_iterations
-    n_shuttle = decomp["all_to_all_shuttles"] * n_iterations
-
-    raw_credits = (n_1q + 10 * n_2q + 5 * n_m + n_shuttle) * (n_shots / 100.0)
-    hqc = 5.0 + (raw_credits / 5000.0)
+    n_1q = decomp["single_qubit_laser_gates"]
+    n_2q = decomp["native_two_qubit_zzphase"]
+    n_m = decomp["total_qubits"] + decomp["mid_circuit_measurements"]
+    per_circuit = 5.0 + (n_1q + 10 * n_2q + 5 * n_m) * n_shots / 5000.0
+    runs = max(1, n_iterations)
 
     return {
-        "hqc": round(hqc, 2),
+        "hqc": round(per_circuit * runs, 2),
+        "hqc_per_circuit": round(per_circuit, 2),
         "n_sites": n_sites,
         "n_iterations": n_iterations,
         "n_shots": n_shots,
-        "n_1q": n_1q,
-        "n_2q": n_2q,
-        "n_m": n_m,
+        "n_1q": n_1q * runs,
+        "n_2q": n_2q * runs,
+        "n_m": n_m * runs,
         "total_qubits": decomp["total_qubits"],
         "is_flexible": is_flexible,
     }

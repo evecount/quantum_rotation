@@ -59,7 +59,7 @@ Counts are for one SWAP-test circuit after `rebase_to_h2_gateset` (`src/qrotate/
 * **Two-Qubit Entanglers (`ZZPhase`):** 32 Gates
 * **Measurements:** 1
 * **Circuit Depth:** 68
-* **Hardware Quantum Credits (HQC):** **≈13.6 HQCs** per 100-shot circuit, estimated with the H-series formula (HQC = 5 + (N₁q + 10·N₂q + 5·(Nq + Nm)) · shots / 5000). This is not a billed hardware job. A full blind RUS screen runs this circuit several times (1–15 iterations across the six benchmark sites), so it costs a multiple of this.
+* **Hardware Quantum Credits (HQC):** **≈13.6 HQCs** per 100-shot circuit, estimated with the H-series formula (HQC = 5 + (N₁q + 10·N₂q + 5·(Nq + Nm)) · shots / 5000). This is not a billed hardware job. A full blind RUS screen runs this circuit several times (1–15 iterations across the six benchmark sites), so it costs a multiple of this: 13.6–395.6 estimated HQCs across the six sites (`benchmarks/molecular_showdown.json`).
 
 ---
 

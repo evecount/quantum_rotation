@@ -1215,22 +1215,23 @@
 
           <!-- Official HQC Cost Formula Breakdown -->
           <div class="sim-guide-callout" style="border-color: var(--accent-purple);">
-            <h5 style="color: var(--accent-purple);">Official Quantinuum HQC Credit Formula</h5>
+            <h5 style="color: var(--accent-purple);">Quantinuum H-Series HQC Formula (per circuit)</h5>
             <p style="font-family: var(--font-mono); font-size: 0.76rem; color: #ffffff; margin-top: 4px;">
-              \text{HQC} = 5.0 + \frac{5}{5000} \times \left[ N_{1q} + 10 \times N_{2q} + 5 \times N_m + N_{\text{shuttle}} \right] \times \left( \frac{N_{\text{shots}}}{100} \right)
+              \text{HQC} = 5 + \left[ N_{1q} + 10 \times N_{2q} + 5 \times N_m \right] \times \frac{N_{\text{shots}}}{5000}
             </p>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Gate counts come from the compiled circuit. N<sub>m</sub> counts state preps plus measurements. Each RUS iteration is a separate run, so the total is runs &times; per-circuit cost. This is an estimate, not a billed job.</p>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; font-family: var(--font-mono); font-size: 0.68rem;">
               <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
-                <span style="color: var(--text-muted);">1Q Lasers:</span> <span id="modal-hqc-1q" style="color: #00f5d4;">66</span>
+                <span style="color: var(--text-muted);">1Q PhasedX:</span> <span id="modal-hqc-1q" style="color: #00f5d4;">62</span>
               </div>
               <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
-                <span style="color: var(--text-muted);">2Q ZZPhase:</span> <span id="modal-hqc-2q" style="color: #f59e0b;">12</span>
+                <span style="color: var(--text-muted);">2Q ZZPhase:</span> <span id="modal-hqc-2q" style="color: #f59e0b;">32</span>
               </div>
               <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
-                <span style="color: var(--text-muted);">Shuttles:</span> <span id="modal-hqc-shuttle" style="color: #a855f7;">24</span>
+                <span style="color: var(--text-muted);">Runs:</span> <span id="modal-hqc-runs" style="color: #a855f7;">1</span>
               </div>
               <div style="background: rgba(255,255,255,0.04); padding: 6px; border-radius: 4px;">
-                <span style="color: var(--text-muted);">Est. HQC:</span> <span id="modal-hqc-total" style="color: #10b981; font-weight: bold;">8.60</span>
+                <span style="color: var(--text-muted);">Est. HQC:</span> <span id="modal-hqc-total" style="color: #10b981; font-weight: bold;">13.64</span>
               </div>
             </div>
           </div>
@@ -1293,7 +1294,7 @@
           </div>
 
           <div class="sim-formula-box">
-            Total Hardware Footprint: 9 Qubits | Circuit Depth: 28 Gates | Expected HQC Runtime: 4.8 ms
+            Compiled Footprint (4 sites): 9 Qubits | 62 PhasedX | 32 ZZPhase | Depth 68 | &asymp;13.6 HQC per 100-shot run
           </div>
         </div>
       </div>
@@ -1484,30 +1485,31 @@
     };
   }
 
+  // Per-circuit gate counts of the rebased pytket SWAP-test circuit
+  // (src/qrotate/metrics.py::compute_circuit_hqc_cost): 15n+2 PhasedX and 8n
+  // ZZPhase for n sites per register, 1 measurement. Rz is virtual and not
+  // counted. The flexible-rotamer dihedral couplings (n-1 ZZPhase) are not in
+  // the compiled circuit yet, so they are a modeled add-on.
   function computeHqcCost(nSites, iterations, shots = 500, isFlexible = false) {
     const totalQubits = 2 * nSites + 1;
-    const prep1q = 2 * nSites * 2;
-    const evolve1q = nSites * 2;
-    const cswap1q = 10 * nSites;
-    const ancilla1q = 2;
-    const n1q = (prep1q + evolve1q + cswap1q + ancilla1q) * iterations;
+    const runs = Math.max(1, iterations);
+    const perCircuit1q = 15 * nSites + 2;
+    const perCircuit2q = 8 * nSites + (isFlexible ? (nSites - 1) : 0);
+    const perCircuitMeas = 1;
+    const nShots = shots || 100;
 
-    const cswapZz = 3 * nSites;
-    const dihedralZz = isFlexible ? (nSites - 1) : 0;
-    const n2q = (cswapZz + dihedralZz) * iterations;
-    const nm = 1 * iterations;
-    const nShuttle = n2q * 2;
-
-    const shotFactor = (shots || 100) / 100.0;
-    const rawCredits = (n1q + 10 * n2q + 5 * nm + nShuttle) * shotFactor;
-    const hqc = +(5.0 + rawCredits / 5000.0).toFixed(2);
+    // Quantinuum H-series: HQC = 5 + (N1q + 10*N2q + 5*Nm) * shots / 5000,
+    // with Nm = state preps + measurements. Each RUS iteration runs a new
+    // circuit, so each is costed as its own job.
+    const nm = totalQubits + perCircuitMeas;
+    const perCircuitHqc = 5.0 + (perCircuit1q + 10 * perCircuit2q + 5 * nm) * nShots / 5000.0;
 
     return {
       totalQubits,
-      twoQGates: n2q,
-      singleQGates: n1q,
-      shuttles: nShuttle,
-      hqc
+      runs,
+      twoQGates: perCircuit2q * runs,
+      singleQGates: perCircuit1q * runs,
+      hqc: +(perCircuitHqc * runs).toFixed(2)
     };
   }
 
@@ -2555,8 +2557,8 @@
     if (h1qEl) h1qEl.textContent = cost.singleQGates;
     const h2qEl = document.getElementById('modal-hqc-2q');
     if (h2qEl) h2qEl.textContent = cost.twoQGates;
-    const hshEl = document.getElementById('modal-hqc-shuttle');
-    if (hshEl) hshEl.textContent = cost.shuttles;
+    const hrunEl = document.getElementById('modal-hqc-runs');
+    if (hrunEl) hrunEl.textContent = cost.runs;
     const htotEl = document.getElementById('modal-hqc-total');
     if (htotEl) htotEl.textContent = cost.hqc.toFixed(2);
   }

@@ -28,6 +28,7 @@ from .circuits import (
 from .metrics import (
     compute_overlap_fidelity,
     estimate_qrotate_hqc_cost,
+    compute_circuit_hqc_cost,
 )
 
 __all__ = [
@@ -48,4 +49,5 @@ __all__ = [
     "rebase_to_h2_gateset",
     "compute_overlap_fidelity",
     "estimate_qrotate_hqc_cost",
+    "compute_circuit_hqc_cost",
 ]
