@@ -32,7 +32,7 @@ This project is explicitly structured to satisfy the four official scoring dimen
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture, Market Value & Use Cases](#7-commercial-architecture-market-value--use-cases) (3 concrete use cases with honest evidence-level labels; illustrative $120M–$280M scenario model in `workspaces/JAMES_VENTURE_GTM_BRIEF.md`, James Sun / Mamba Partners). |
-| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register (4 pocket + 4 ligand + 1 ancilla), 0 SWAPs, 8.6–87.0 estimated H2 HQCs per screen across 6 benchmark active sites, Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
+| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register (4 pocket + 4 ligand + 1 ancilla), 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 13.6–395.6 estimated H2 HQCs per blind screen across 6 benchmark active sites, Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
 | **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; coordinate-free SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
@@ -330,31 +330,31 @@ To satisfy the **Technical Performance & Hardware Use (30%)** and **Scientific M
 
 | Atom Count ($N$) | Classical Brute-Force (30° Euler Grid) | Q-Rotate RUS Iterations | Register Size | Native H2 2Q Gates | Trapped-Ion SWAPs | Estimated Quantinuum HQCs | Operational Speedup |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **10** | 17,280 steps (0.020s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **1,920x** |
-| **50** | 86,400 steps (0.021s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **9,600x** |
-| **100** | 172,800 steps (0.020s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **19,200x** |
-| **500** | 864,000 steps (0.026s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **96,000x** |
-| **1,000** | **1,728,000 steps** (0.022s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **192,000x** |
+| **10** | 17,280 steps (0.015s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
+| **50** | 86,400 steps (0.015s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **9,600x** |
+| **100** | 172,800 steps (0.016s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **19,200x** |
+| **500** | 864,000 steps (0.013s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **96,000x** |
+| **1,000** | **1,728,000 steps** (0.011s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **192,000x** |
 
 These rows use synthetic point clouds that happen to lock on the first RUS iteration, so they show the best case. The six real active sites below are harder and take 1–15 iterations (`benchmarks/molecular_showdown.json`):
 
 | Active Site | Atoms (proxy) | RUS Iterations | Native H2 2Q Gates | Estimated HQCs | Step-count Ratio |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| Rhodopsin / 11-cis Retinal | 20 | 6 | 132 `ZZPhase` | 36.6 | 349x |
-| GFP Chromophore | 15 | 4 | 84 `ZZPhase` | 25.4 | 411x |
-| SARS-CoV-2 Mpro + Paxlovid | 49 | 15 | 348 `ZZPhase` | 87.0 | 324x |
-| COX-2 vs COX-1 Channel | 35 | 3 | 60 `ZZPhase` | 19.8 | 1,344x |
-| Azobenzene Switch | 24 | 7 | 156 `ZZPhase` | 42.2 | 355x |
-| H2 Hardware Benchmark | 8 | 1 | 12 `ZZPhase` | 8.6 | 1,536x |
+| Rhodopsin / 11-cis Retinal | 20 | 6 | 352 `ZZPhase` | 150.0 | 349x |
+| GFP Chromophore | 15 | 4 | 224 `ZZPhase` | 95.5 | 411x |
+| SARS-CoV-2 Mpro + Paxlovid | 49 | 15 | 928 `ZZPhase` | 395.6 | 324x |
+| COX-2 vs COX-1 Channel | 35 | 3 | 160 `ZZPhase` | 68.2 | 1,344x |
+| Azobenzene Switch | 24 | 7 | 416 `ZZPhase` | 177.3 | 355x |
+| H2 Hardware Benchmark | 8 | 1 | 32 `ZZPhase` | 13.6 | 1,536x |
 
-All HQC figures are estimates from the H-series costing formula (`estimate_qrotate_hqc_cost` in `src/qrotate/metrics.py`, 100 shots), not billed hardware jobs. That function assumes a simplified 10 single-qubit + 12 two-qubit gates per circuit. The actual rebased circuit is 62 `PhasedX` + 32 `ZZPhase` (≈13.6 HQCs per 100-shot run), so these tables **understate** the cost. "Speedup" / "step-count ratio" compares classical grid steps with RUS circuit evaluations. It is not a wall-clock comparison.
+All HQC figures are estimates, not billed hardware jobs. `compute_circuit_hqc_cost` in `src/qrotate/metrics.py` counts gates on the rebased circuit (62 `PhasedX` + 32 `ZZPhase` + 1 measurement on 9 qubits) and applies the H-series formula HQC = 5 + (N₁q + 10·N₂q + 5·N_m)·shots/5000 (100 shots, ≈13.64 HQCs per circuit). Each RUS circuit evaluation (up to two per iteration) runs a different circuit, so it is costed as its own job. 2Q gate totals likewise sum over all evaluations. "Speedup" / "step-count ratio" compares classical grid steps with RUS circuit evaluations. It is not a wall-clock comparison.
 
 ### Key Takeaways for the Submission Package
 
 1. **Elimination of the $O(N_{\text{rot}} \times N_{\text{atoms}})$ Combinatorial Explosion**: Classical docking chokes as atom count and angular resolution increase (1.728M steps at $N=1,000$). Q-Rotate evaluates all orientations simultaneously in wave space via $\hat{U}_{\text{tube}}(\tau)$.
 2. **Strict Constant Qubit Footprint ($N_{\text{qubits}} = 9$)**: Regardless of whether a molecule has 10 or 1,000 atoms, the spherical harmonic compression maps into a fixed 9-qubit register.
 3. **Zero SWAP Gates on Trapped Ions**: Direct execution on Quantinuum's trapped-ion QCCD architecture requires **0 SWAP gates**, preventing circuit depth degradation.
-4. **Fast Convergence without Barren Plateaus**: Mid-circuit measurement and reset let the RUS loop retry without deepening the circuit. Across the six active sites it locked in 1–15 iterations, at an estimated **8.6 to 87.0 HQCs** per screen.
+4. **Fast Convergence without Barren Plateaus**: Mid-circuit measurement and reset let the RUS loop retry without deepening the circuit. Across the six active sites it locked in 1–15 iterations, at an estimated **13.6 to 395.6 HQCs** per screen.
 
 ### Running the Live Benchmark Showdown
 To re-run the benchmark suite and reproduce all hardware metrics:

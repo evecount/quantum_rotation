@@ -57,40 +57,77 @@ def theoretical_swap_test_prob_zero(fidelity: float) -> float:
     return float(0.5 * (1.0 + fidelity))
 
 
+def compute_circuit_hqc_cost(circuit, shots: int = 100) -> dict[str, float]:
+    """Costs one rebased H-series circuit with Quantinuum's HQC formula.
+
+    HQC = 5 + (N_1q + 10 * N_2q + 5 * N_m) * shots / 5000
+
+    Counts come from the compiled circuit itself (run `rebase_to_h2_gateset`
+    first). N_1q counts PhasedX only: Rz is applied virtually (a frame change,
+    not a laser pulse), so it is excluded. N_m counts state preparation of
+    every qubit plus every measurement and reset. This is an estimate from the
+    published formula, not a billed job; the backend's own cost query is
+    authoritative.
+    """
+    from pytket import OpType
+
+    n_1q = circuit.n_gates_of_type(OpType.PhasedX)
+    n_2q = sum(circuit.n_gates_of_type(t) for t in (OpType.ZZPhase, OpType.ZZMax, OpType.TK2))
+    n_meas = circuit.n_gates_of_type(OpType.Measure)
+    n_reset = circuit.n_gates_of_type(OpType.Reset)
+    n_m = circuit.n_qubits + n_meas + n_reset
+    hqc = 5.0 + (n_1q + 10 * n_2q + 5 * n_m) * shots / 5000.0
+
+    return {
+        "n_qubits": circuit.n_qubits,
+        "single_qubit_count": n_1q,
+        "two_qubit_count": n_2q,
+        "measure_count": n_meas,
+        "reset_count": n_reset,
+        "depth": circuit.depth(),
+        "shots": shots,
+        "hqc_cost": round(hqc, 2),
+    }
+
+
+def _reference_swap_test_circuit(n_sites: int):
+    """Rebased SWAP-test circuit for `n_sites` sites. Its gate counts do not
+    depend on the phase values, so fixed non-zero phases stand in for real ones
+    (zeros could let the compiler drop gates)."""
+    phases = [0.3 + 0.1 * i for i in range(n_sites)]
+    circ = build_pytket_swap_test_circuit(phases, phases[::-1], tau=0.25, omega=(1.0, 0.5, 0.25))
+    return rebase_to_h2_gateset(circ)
+
+
 def estimate_qrotate_hqc_cost(
     n_qubits: int,
     rus_attempts: int,
     shots: int = 100,
+    circuit=None,
 ) -> dict[str, float]:
-    """Estimates Hardware Quantum Credits (HQCs) on Quantinuum H2.
+    """Estimates the HQC cost of a blind RUS screen on Quantinuum H2.
 
-    Based on the official Quantinuum H-series costing model:
-    Gating Cost = PhasedX + 10*(ZZMax + ZZPhase) + 5*(Qubits + Measure + Reset)
-    HQC = 5 + GatingCost * Shots / 5000
+    `n_qubits` is the sites per register (register size is 2 * n_qubits + 1)
+    and `rus_attempts` is the number of circuit evaluations. Each evaluation
+    runs a different circuit (the ligand phases change), so each is costed as
+    its own `shots`-shot job, including the 5-HQC per-job overhead. Pass the
+    rebased `circuit` if you have it; otherwise a reference circuit of the
+    same size is compiled.
     """
-    single_q_gates = (2 * n_qubits + 2) * rus_attempts
-    two_q_gates = (3 * n_qubits) * rus_attempts  # ZZPhase equivalents
-    measures = rus_attempts
-    resets = max(0, rus_attempts - 1)
-    total_qubits = 2 * n_qubits + 1  # pocket register + ligand register + ancilla
-
-    gating_cost = (
-        single_q_gates
-        + 10 * two_q_gates
-        + 5 * (total_qubits + measures + resets)
-    )
-
-    hqc = 5.0 + gating_cost * shots / 5000.0
+    if circuit is None:
+        circuit = _reference_swap_test_circuit(n_qubits)
+    per_circuit = compute_circuit_hqc_cost(circuit, shots=shots)
+    runs = max(1, rus_attempts)
 
     return {
-        "n_qubits": total_qubits,
-        "single_qubit_gates": single_q_gates,
-        "two_qubit_gates": two_q_gates,
+        "n_qubits": per_circuit["n_qubits"],
+        "circuit_runs": runs,
+        "single_qubit_gates": per_circuit["single_qubit_count"] * runs,
+        "two_qubit_gates": per_circuit["two_qubit_count"] * runs,
+        "two_qubit_gates_per_circuit": per_circuit["two_qubit_count"],
         "swap_gates": 0,  # 0 SWAP overhead due to trapped-ion all-to-all connectivity
-        "measures": measures,
-        "resets": resets,
-        "gating_cost": gating_cost,
-        "estimated_hqcs": round(hqc, 2),
+        "hqc_per_circuit": per_circuit["hqc_cost"],
+        "estimated_hqcs": round(per_circuit["hqc_cost"] * runs, 2),
     }
 
 
@@ -294,7 +331,7 @@ def benchmark_qrotate_engine(
 
     # 4. Resource estimation on H2 trapped ions.
     # Each RUS iteration spends 2 circuit evaluations (measure + probe trial).
-    hqc_info = estimate_qrotate_hqc_cost(n_qubits, rus_result.circuit_evaluations, shots=shots)
+    hqc_info = estimate_qrotate_hqc_cost(n_qubits, rus_result.circuit_evaluations, shots=shots, circuit=rebased)
 
     # Classical steps comparison. This is a combinatorial step-count reduction
     # factor (classical grid-search steps vs. RUS circuit evaluations), not a
@@ -391,7 +428,6 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
         "n_qubits": 4,
         "base_delta_phi": [0.12, -0.45, 0.88, -0.22],
         "optimal_angle_deg": 0.0,
-        "hqc_reference": 9.44,
     },
     {
         "id": "gfp",
@@ -402,7 +438,6 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
         "n_qubits": 4,
         "base_delta_phi": [-0.62, 0.31, 0.15, -0.08],
         "optimal_angle_deg": 35.0,
-        "hqc_reference": 11.20,
     },
     {
         "id": "mpro",
@@ -413,7 +448,6 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
         "n_qubits": 4,
         "base_delta_phi": [0.44, 0.92, -0.38, 0.19],
         "optimal_angle_deg": -50.0,
-        "hqc_reference": 12.80,
     },
     {
         "id": "cox2",
@@ -424,7 +458,6 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
         "n_qubits": 4,
         "base_delta_phi": [-0.18, 0.25, 0.73, -0.54],
         "optimal_angle_deg": 80.0,
-        "hqc_reference": 10.15,
     },
     {
         "id": "azobenzene",
@@ -435,7 +468,6 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
         "n_qubits": 4,
         "base_delta_phi": [0.78, -0.81, 0.35, -0.42],
         "optimal_angle_deg": -115.0,
-        "hqc_reference": 8.60,
     },
     {
         "id": "h2bench",
@@ -446,7 +478,6 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
         "n_qubits": 4,
         "base_delta_phi": [0.15, -0.10, 0.20, -0.05],
         "optimal_angle_deg": 15.0,
-        "hqc_reference": 14.50,
     },
 ]
 
@@ -518,7 +549,7 @@ def run_molecular_showdown(
         iterations = rus_result.iterations
         locked = rus_result.locked
 
-        hqc_info = estimate_qrotate_hqc_cost(n_qubits, rus_result.circuit_evaluations, shots=100)
+        hqc_info = estimate_qrotate_hqc_cost(n_qubits, rus_result.circuit_evaluations, shots=100, circuit=rebased)
         classical_steps = (int(360.0 / 30.0) ** 3) * N
         speedup = classical_steps / max(1, rus_result.circuit_evaluations * (2 * n_qubits + 1))
 
@@ -536,7 +567,6 @@ def run_molecular_showdown(
             "qrotate_two_qubit_gates": int(hqc_info["two_qubit_gates"]),
             "qrotate_swap_gates": 0,
             "qrotate_hqcs": hqc_info["estimated_hqcs"],
-            "hqc_reference_from_constellation": sys["hqc_reference"],
             "quantum_speedup_factor": round(speedup, 1),
             "circuit_depth": rebased.depth(),
         }
@@ -546,7 +576,7 @@ def run_molecular_showdown(
         print(f"  Tag         : {sys['tag']}")
         print(f"  Active Site : {N} atoms | Classical grid: {class_res.computational_steps:,} steps in {class_res.execution_time_sec:.4f}s")
         print(f"  Q-Rotate    : Locked in {iterations} RUS iterations | {hqc_info['n_qubits']} qubits | 0 SWAPs")
-        print(f"  HQC Cost    : {hqc_info['estimated_hqcs']:.2f} HQCs (Constellation ref: {sys['hqc_reference']} HQC) | Speedup: ~{speedup:,.0f}x")
+        print(f"  HQC Cost    : {hqc_info['estimated_hqcs']:.2f} HQCs ({hqc_info['circuit_runs']} circuit runs x {hqc_info['hqc_per_circuit']:.2f}) | Speedup: ~{speedup:,.0f}x")
 
     n_locked = sum(1 for r in results if r["qrotate_locked"])
     iter_values = [r["qrotate_rus_iterations"] for r in results]

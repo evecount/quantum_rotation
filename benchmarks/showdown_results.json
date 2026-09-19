@@ -2,64 +2,64 @@
   "benchmark_results": [
     {
       "n_atoms": 10,
-      "classical_time_sec": 0.01958,
+      "classical_time_sec": 0.01516,
       "classical_steps": 17280,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
       "qrotate_locked": true,
-      "qrotate_two_qubit_gates": 12,
+      "qrotate_two_qubit_gates": 32,
       "qrotate_swap_gates": 0,
-      "qrotate_hqcs": 8.6,
+      "qrotate_hqcs": 13.64,
       "qrotate_speedup_factor": 1920.0
     },
     {
       "n_atoms": 50,
-      "classical_time_sec": 0.02063,
+      "classical_time_sec": 0.01546,
       "classical_steps": 86400,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
       "qrotate_locked": true,
-      "qrotate_two_qubit_gates": 12,
+      "qrotate_two_qubit_gates": 32,
       "qrotate_swap_gates": 0,
-      "qrotate_hqcs": 8.6,
+      "qrotate_hqcs": 13.64,
       "qrotate_speedup_factor": 9600.0
     },
     {
       "n_atoms": 100,
-      "classical_time_sec": 0.01961,
+      "classical_time_sec": 0.01641,
       "classical_steps": 172800,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
       "qrotate_locked": true,
-      "qrotate_two_qubit_gates": 12,
+      "qrotate_two_qubit_gates": 32,
       "qrotate_swap_gates": 0,
-      "qrotate_hqcs": 8.6,
+      "qrotate_hqcs": 13.64,
       "qrotate_speedup_factor": 19200.0
     },
     {
       "n_atoms": 500,
-      "classical_time_sec": 0.02627,
+      "classical_time_sec": 0.01258,
       "classical_steps": 864000,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
       "qrotate_locked": true,
-      "qrotate_two_qubit_gates": 12,
+      "qrotate_two_qubit_gates": 32,
       "qrotate_swap_gates": 0,
-      "qrotate_hqcs": 8.6,
+      "qrotate_hqcs": 13.64,
       "qrotate_speedup_factor": 96000.0
     },
     {
       "n_atoms": 1000,
-      "classical_time_sec": 0.02161,
+      "classical_time_sec": 0.01084,
       "classical_steps": 1728000,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
       "qrotate_locked": true,
-      "qrotate_two_qubit_gates": 12,
+      "qrotate_two_qubit_gates": 32,
       "qrotate_swap_gates": 0,
-      "qrotate_hqcs": 8.6,
+      "qrotate_hqcs": 13.64,
       "qrotate_speedup_factor": 192000.0
     }
   ],
-  "generated_at": "2026-09-19 16:05:38"
+  "generated_at": "2026-09-19 17:41:41"
 }
