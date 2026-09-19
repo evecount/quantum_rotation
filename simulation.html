@@ -1305,6 +1305,22 @@
 
   if (typeof mountCybrdeckLensDefs === 'function') mountCybrdeckLensDefs();
 
+  // Haptics was referenced throughout the event handlers below (17 call
+  // sites) but never defined anywhere in this file — every button click
+  // (Auto-Run, Step, Reset, resolution/docking toggles, ...) threw a
+  // ReferenceError before it reached its actual logic, so nothing worked.
+  // Real vibration on devices that support it, a safe no-op everywhere else.
+  const Haptics = {
+    tick(intensity) {
+      if (!navigator.vibrate) return;
+      const ms = intensity === 'heavy' ? 25 : intensity === 'medium' ? 15 : 8;
+      try { navigator.vibrate(ms); } catch (e) { /* ignore */ }
+    },
+    light() { this.tick('light'); },
+    medium() { this.tick('medium'); },
+    heavy() { this.tick('heavy'); },
+  };
+
   /* ══════════════════════════════════════════════════════════════
      1. MATHEMATICAL ENGINE & QUANTUM HARMONICS
      ══════════════════════════════════════════════════════════════ */

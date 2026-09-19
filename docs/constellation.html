@@ -327,9 +327,9 @@
     /* Molecular Inspection Drawer (Right Side) */
     .inspector-drawer {
       position: absolute;
-      top: 20px;
+      top: 100px; /* clear the HUD nav bar (z-index 20 was overlapping and blocking its buttons) */
       right: 24px;
-      bottom: 24px;
+      bottom: 100px; /* clear the bottom galaxy-selector carousel, which it was also covering */
       width: 440px;
       max-width: calc(100vw - 48px);
       z-index: 20;
@@ -1277,6 +1277,19 @@
     // just blurring. Safe no-op if the kit's scripts failed to load.
     if (typeof mountCybrdeckLensDefs === 'function') mountCybrdeckLensDefs();
 
+    // Same Haptics gap as simulation.html: referenced below but never
+    // defined, which threw and aborted whatever handler called it first.
+    const Haptics = {
+      tick(intensity) {
+        if (!navigator.vibrate) return;
+        const ms = intensity === 'heavy' ? 25 : intensity === 'medium' ? 15 : 8;
+        try { navigator.vibrate(ms); } catch (e) { /* ignore */ }
+      },
+      light() { this.tick('light'); },
+      medium() { this.tick('medium'); },
+      heavy() { this.tick('heavy'); },
+    };
+
     // =========================================================================
     // 1. DATASET: 6 Real-World Biomolecular Case Studies
     // =========================================================================
@@ -1380,9 +1393,11 @@
     composer.addPass(new THREE.RenderPass(scene, camera));
     const bloomPass = new THREE.UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.85,  // strength
-      0.55,  // radius
-      0.2    // luminance threshold — only genuinely bright emissive elements bloom
+      0.45,  // strength — was 0.85, which combined with the core's own high
+             // emissive intensity whited out the whole sphere with no visible surface
+      0.4,   // radius
+      0.75   // luminance threshold — was 0.2 (bloomed almost everything);
+             // now only near-peak-bright specular points/particles bloom
     );
     composer.addPass(bloomPass);
 
@@ -1758,7 +1773,7 @@
       const coreMat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         emissive: sys.color,
-        emissiveIntensity: 2.4,
+        emissiveIntensity: 1.15,
         roughness: 0.08,
         metalness: 0.1
       });
