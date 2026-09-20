@@ -88,6 +88,20 @@ class MolecularGeometry:
         )
 
 
+def _circular_mean(angles: np.ndarray) -> float:
+    r"""Mean direction of a set of angles.
+
+    A plain `np.mean` of angles is wrong near the +/-pi branch cut: two atoms
+    at +179 and -179 degrees are 2 degrees apart but average to 0, pointing the
+    opposite way. That turned a rotating molecule's phase register into a
+    step function and produced spurious local maxima in the resonance
+    landscape. The mean of the unit vectors has no such discontinuity.
+    """
+    if len(angles) == 0:
+        return 0.0
+    return float(np.arctan2(np.sin(angles).mean(), np.cos(angles).mean()))
+
+
 def pocket_ligand_to_qubit_phases(
     geometry: MolecularGeometry,
     n_qubits: int = 4,
@@ -121,7 +135,7 @@ def pocket_ligand_to_qubit_phases(
             phases.append(0.0)
             continue
 
-        spatial_phase = np.mean(phi[start_idx:end_idx])
+        spatial_phase = _circular_mean(phi[start_idx:end_idx])
         charge_weight = np.mean(charges[start_idx:end_idx]) if len(charges) > 0 else 0.0
         combined = (spatial_phase + feature_scale * charge_weight) % (2.0 * np.pi)
         if combined > np.pi:
@@ -183,7 +197,7 @@ def pocket_ligand_to_multi_shell_phases(
                 all_phases.append(0.0)
                 continue
 
-            sp = np.mean(shell_phi[s_idx:e_idx])
+            sp = _circular_mean(shell_phi[s_idx:e_idx])
             cw = np.mean(shell_charges[s_idx:e_idx]) if len(shell_charges) > 0 else 0.0
             comb = (sp + feature_scale * cw) % (2.0 * np.pi)
             if comb > np.pi:

@@ -2,7 +2,7 @@
   "benchmark_results": [
     {
       "n_atoms": 10,
-      "classical_time_sec": 0.02147,
+      "classical_time_sec": 0.01956,
       "classical_steps": 17280,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
@@ -14,7 +14,7 @@
     },
     {
       "n_atoms": 50,
-      "classical_time_sec": 0.00635,
+      "classical_time_sec": 0.03929,
       "classical_steps": 86400,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
@@ -26,7 +26,7 @@
     },
     {
       "n_atoms": 100,
-      "classical_time_sec": 0.00632,
+      "classical_time_sec": 0.01587,
       "classical_steps": 172800,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
@@ -38,7 +38,7 @@
     },
     {
       "n_atoms": 500,
-      "classical_time_sec": 0.00629,
+      "classical_time_sec": 0.03127,
       "classical_steps": 864000,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
@@ -50,16 +50,16 @@
     },
     {
       "n_atoms": 1000,
-      "classical_time_sec": 0.00616,
+      "classical_time_sec": 0.01971,
       "classical_steps": 1728000,
       "qrotate_qubits": 9,
-      "qrotate_rus_iterations": 1,
+      "qrotate_rus_iterations": 7,
       "qrotate_locked": true,
-      "qrotate_two_qubit_gates": 32,
+      "qrotate_two_qubit_gates": 224,
       "qrotate_swap_gates": 0,
-      "qrotate_hqcs": 13.64,
-      "qrotate_speedup_factor": 192000.0
+      "qrotate_hqcs": 95.48,
+      "qrotate_speedup_factor": 27428.6
     }
   ],
-  "generated_at": "2026-09-20 20:19:44"
+  "generated_at": "2026-09-20 21:08:29"
 }

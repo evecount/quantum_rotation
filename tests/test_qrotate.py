@@ -101,6 +101,36 @@ def test_metrics_cost():
     print(f"PASS: test_metrics_cost (Estimate: {cost_info['estimated_hqcs']} HQCs)")
 
 
+def test_phase_encoding_is_rotation_equivariant():
+    """Rotating a molecule about z by theta must shift every chunk's phase by
+    exactly theta. A plain mean of angles breaks this at the +/-pi branch cut
+    (atoms at +179 and -179 average to 0), which turned the phase register into
+    a step function and invented local maxima in the resonance landscape."""
+    rng = np.random.default_rng(7)
+    coords = rng.normal(size=(24, 3)) * 3.0
+    geom = MolecularGeometry("m", ["C"] * len(coords), coords)
+    base = np.array(pocket_ligand_to_qubit_phases(geom, n_qubits=4))
+
+    for theta_deg in (5.0, 90.0, 179.0, -155.0):
+        theta = np.radians(theta_deg)
+        rot = np.array([
+            [np.cos(theta), -np.sin(theta), 0.0],
+            [np.sin(theta), np.cos(theta), 0.0],
+            [0.0, 0.0, 1.0],
+        ])
+        centroid = coords.mean(axis=0)
+        turned = (coords - centroid) @ rot.T + centroid
+        moved = np.array(pocket_ligand_to_qubit_phases(
+            MolecularGeometry("m", ["C"] * len(turned), turned), n_qubits=4))
+
+        # Compare on the circle: the difference must be theta for every chunk.
+        delta = np.angle(np.exp(1j * (moved - base - theta)))
+        assert np.max(np.abs(delta)) < 1e-9, (
+            f"rotation by {theta_deg} deg shifted phases by {moved - base}, expected {theta}")
+
+    print("PASS: test_phase_encoding_is_rotation_equivariant")
+
+
 def test_active_sites_are_real_structures():
     """The six benchmark systems must come from experimental coordinates, and
     each pocket must contain the residues that site is actually known for. This
@@ -212,6 +242,7 @@ if __name__ == "__main__":
     test_pytket_circuit()
     test_guppy_circuit_compilation()
     test_metrics_cost()
+    test_phase_encoding_is_rotation_equivariant()
     test_active_sites_are_real_structures()
     test_hqc_cost_counts_compiled_circuit()
     test_swap_test_statevector_matches_closed_form()
