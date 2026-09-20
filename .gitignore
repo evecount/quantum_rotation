@@ -27,3 +27,6 @@ Final Recordings/
 *.avi
 *.mkv
 *.wav
+
+# Cached raw structure downloads (PDB/SDF); benchmarks/active_sites.json is the committed extract
+.cache/
