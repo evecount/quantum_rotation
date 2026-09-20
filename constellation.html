@@ -574,6 +574,31 @@
       box-shadow: 0 8px 30px rgba(0, 245, 212, 0.55);
     }
 
+    .btn-run-search {
+      width: 100%;
+      margin-top: 8px;
+      background: transparent;
+      color: var(--accent-cyan);
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: 1px solid rgba(0, 245, 212, 0.45);
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-run-search:hover:not(:disabled) {
+      background: rgba(0, 245, 212, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .btn-run-search:disabled {
+      opacity: 0.55;
+      cursor: progress;
+    }
+
     .parity-result-box {
       border-radius: 10px;
       padding: 12px 16px;
@@ -1208,7 +1233,7 @@
       <input type="range" id="angle-slider" min="-180" max="180" value="0" />
       <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
         <span>-180° (Turbulent Mismatch)</span>
-        <span style="color:var(--accent-cyan);">Resonance Lock: 0.0°</span>
+        <span style="color:var(--accent-cyan);" id="lock-target-label">Resonance Lock: 0.0°</span>
         <span>+180°</span>
       </div>
     </div>
@@ -1227,6 +1252,11 @@
     <!-- Parity Test Trigger -->
     <button class="btn-fire-parity" id="btn-fire-parity">
       <span> Fire Blind Parity Test (SWAP) [SPACE]</span>
+    </button>
+
+    <!-- Runs the same blind RUS search the engine uses, on this landscape -->
+    <button class="btn-run-search" id="btn-run-search">
+      <span>Run Blind RUS Search [R]</span>
     </button>
 
     <div class="parity-result-box" id="parity-result">
@@ -1321,6 +1351,16 @@
               <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #f59e0b;">[SPACEBAR] / Fire Parity Button</div>
               <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Blind Parity SWAP Test (Controlled-SWAP)</div>
               <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Interferes both registers onto the ancilla. A <strong style="color: #00f5d4;">Zero-Parity Lock (|0&rang;)</strong> fires when the lower confidence bound on the sampled shots clears 90%, the same test the RUS engine uses.</div>
+            </div>
+            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #10b981; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
+              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #10b981;">[R] / Run Blind RUS Search</div>
+              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Let the algorithm search instead of you</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Runs the same repeat-until-success loop as <code>run_blind_rus_protocol</code>: it never reads the target angle, only the sampled parity bit, and keeps a random step when the measurement improves. It can and does fail &mdash; on a landscape with decoy peaks it may stall on one, which is the point.</div>
+            </div>
+            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #38bdf8; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
+              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #38bdf8;">Click the resonance landscape</div>
+              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Jump straight to any angle</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">The chart is the simulated P(0) for every angle of this system. Green marks the true optimum, amber marks decoy peaks.</div>
             </div>
           </div>
         </div>
@@ -2411,6 +2451,10 @@
       }
       renderLandscape(parseFloat(val));
       updateQubitPhaseValues(parseFloat(val));
+
+      // This label was hardcoded to 0.0°; show the system's simulated optimum.
+      const lockLabel = document.getElementById('lock-target-label');
+      if (lockLabel) lockLabel.innerText = `Resonance Lock: ${sys.optimalAngle.toFixed(1)}°`;
       if (resonanceMeterBar) {
         resonanceMeterBar.style.width = `${pct}%`;
       }
@@ -2535,6 +2579,126 @@
       }
     }
 
+    // =========================================================================
+    // BLIND RUS SEARCH
+    // The in-page version of run_blind_rus_protocol (src/qrotate/metrics.py):
+    // it never reads the optimum, it only samples shots at the current angle,
+    // keeps a random perturbation when the MEASURED parity improves, and locks
+    // only when the lower confidence bound clears 0.90. It can therefore stall
+    // on one of the decoy peaks, which is the point of showing it.
+    // =========================================================================
+    const MAX_RUS_ITERATIONS = 15;
+    let searchRunning = false;
+
+    function sampleShots(p0, shots) {
+      if (shots === null) return { empP: p0, stdErr: 0, lowerBound: p0, counts0: null };
+      let k = 0;
+      for (let i = 0; i < shots; i++) if (Math.random() < p0) k++;
+      const empP = k / shots;
+      const stdErr = Math.sqrt(Math.max(1e-9, empP * (1 - empP) / shots));
+      return { empP, stdErr, lowerBound: empP - 1.645 * stdErr, counts0: k };
+    }
+
+    async function runBlindSearch() {
+      if (searchRunning) return;
+      const btn = document.getElementById('btn-run-search');
+      const sys = systems[currentSystemIdx];
+      const reg = profileFor(sys.id, constQubitMode);
+      searchRunning = true;
+      if (btn) { btn.disabled = true; btn.querySelector('span').innerText = 'Searching…'; }
+
+      const shots = constShotMode;
+      let angle = parseFloat(angleSlider.value);
+      let best = sampleShots(currentP0(sys, angle), shots);
+      let evaluations = 1;
+      let locked = best.lowerBound >= 0.90;
+      let iteration = 1;
+
+      while (!locked && iteration < MAX_RUS_ITERATIONS) {
+        iteration += 1;
+        // Blind SPSA-style step: direction is random, size decays.
+        const step = (60 / Math.sqrt(iteration)) * (Math.random() < 0.5 ? -1 : 1);
+        const trialAngle = wrapAngle(angle + step);
+        const trial = sampleShots(currentP0(sys, trialAngle), shots);
+        evaluations += 1;
+
+        if (trial.empP > best.empP) {
+          angle = trialAngle;
+          best = trial;
+          angleSlider.value = angle;
+          updateAngleRotation(angle);
+        }
+        locked = best.lowerBound >= 0.90;
+        parityResult.style.display = 'block';
+        parityResult.className = 'parity-result-box';
+        parityResult.innerHTML = `<strong>RUS iteration ${iteration}/${MAX_RUS_ITERATIONS}</strong><br />` +
+          `Best measured overlap ${(best.empP * 100).toFixed(1)}% at ${angle.toFixed(1)}° · ${evaluations} circuit runs`;
+        await new Promise(r => setTimeout(r, 220));
+      }
+
+      const trueBest = reg ? reg.best_angle_deg : sys.optimalAngle;
+      const offBy = Math.abs(wrapAngle(angle - trueBest));
+      parityResult.style.display = 'block';
+
+      if (locked) {
+        parityResult.className = 'parity-result-box pass';
+        parityResult.innerHTML = `
+          <strong>LOCKED after ${iteration} iteration${iteration > 1 ? 's' : ''} (${evaluations} circuit runs)</strong><br />
+          Settled at ${angle.toFixed(1)}° · measured overlap ${(best.empP * 100).toFixed(1)}%, lower bound ${(best.lowerBound * 100).toFixed(1)}% ≥ 90%<br />
+          <span style="font-size:0.75rem;">The true optimum is ${trueBest}°, which the search never read — it only ever saw the parity bit.</span>
+        `;
+        playPulseSound('lock');
+      } else {
+        // Say what actually went wrong, which is not always a decoy peak.
+        const decoys = reg ? (reg.local_maxima_deg || []).filter(d => d !== reg.best_angle_deg) : [];
+        const nearestDecoy = decoys.reduce((acc, d) => {
+          const gap = Math.abs(wrapAngle(angle - d));
+          return gap < acc.gap ? { deg: d, gap } : acc;
+        }, { deg: null, gap: Infinity });
+
+        let diagnosis;
+        if (best.empP < 0.6) {
+          diagnosis = `It never found a basin: out here P(0) is flat at about 0.5, so the parity bit gives the search nothing to climb. The optimum is at ${trueBest}°.`;
+        } else if (nearestDecoy.deg !== null && nearestDecoy.gap <= 8) {
+          diagnosis = `It stalled on the decoy peak at ${nearestDecoy.deg}°, ${offBy.toFixed(0)}° away from the real optimum (${trueBest}°) — exactly the failure this landscape's shape invites.`;
+        } else if (offBy > 8) {
+          diagnosis = `It settled ${offBy.toFixed(0)}° off the optimum (${trueBest}°) on a shoulder of the curve.`;
+        } else {
+          diagnosis = 'Close to the optimum, but the shots never cleared the confidence bar.';
+        }
+
+        parityResult.className = 'parity-result-box fail';
+        parityResult.innerHTML = `
+          <strong>NO LOCK in ${MAX_RUS_ITERATIONS} iterations (${evaluations} circuit runs)</strong><br />
+          Stalled at ${angle.toFixed(1)}° · measured overlap ${(best.empP * 100).toFixed(1)}%, lower bound ${(best.lowerBound * 100).toFixed(1)}% &lt; 90%<br />
+          <span style="font-size:0.75rem;">${diagnosis}</span>
+        `;
+        playPulseSound('fail');
+      }
+
+      searchRunning = false;
+      if (btn) { btn.disabled = false; btn.querySelector('span').innerText = 'Run Blind RUS Search [R]'; }
+    }
+
+    const btnRunSearch = document.getElementById('btn-run-search');
+    if (btnRunSearch) btnRunSearch.addEventListener('click', () => { initAudio(); runBlindSearch(); });
+
+    // Click the landscape to jump the ligand to that angle.
+    if (landscapeCanvas) {
+      landscapeCanvas.style.cursor = 'crosshair';
+      landscapeCanvas.addEventListener('click', (e) => {
+        const rect = landscapeCanvas.getBoundingClientRect();
+        const padL = 26, padR = 8;
+        const plotW = rect.width - padL - padR;
+        const x = e.clientX - rect.left - padL;
+        const deg = Math.max(-180, Math.min(180, (x / plotW) * 360 - 180));
+        initAudio();
+        angleSlider.value = deg;
+        updateAngleRotation(deg);
+        logGatePulse('Landscape', `Jumped to ${deg.toFixed(1)}°`);
+      });
+    }
+
     // Constellation research variables & bindings
     let constShotMode = 500;
     let constQubitMode = 4;
@@ -2619,6 +2783,10 @@
       } else if (key === ' ' || key === 'enter') {
         e.preventDefault();
         triggerParityTest();
+      } else if (key === 'r') {
+        e.preventDefault();
+        initAudio();
+        runBlindSearch();
       }
     });
 
