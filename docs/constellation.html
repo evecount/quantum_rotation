@@ -216,8 +216,11 @@
     /* Telemetry HUD Left */
     .telemetry-box {
       position: absolute;
-      top: 100px;
+      /* Driven by the measured HUD height (see --hud-h below): the HUD wraps to
+         two or three rows on narrow screens and used to overlap this box. */
+      top: calc(var(--hud-h, 72px) + 24px);
       left: 24px;
+      max-width: min(260px, calc(100vw - 48px));
       z-index: 10;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
@@ -343,9 +346,10 @@
     /* Molecular Inspection Drawer (Right Side) */
     .inspector-drawer {
       position: absolute;
-      top: 100px; /* clear the HUD nav bar (z-index 20 was overlapping and blocking its buttons) */
+      /* Clear the HUD above and the galaxy carousel below, both measured. */
+      top: calc(var(--hud-h, 72px) + 24px);
       right: 24px;
-      bottom: 100px; /* clear the bottom galaxy-selector carousel, which it was also covering */
+      bottom: calc(var(--selector-h, 64px) + 24px);
       width: 440px;
       max-width: calc(100vw - 48px);
       z-index: 20;
@@ -593,9 +597,42 @@
     }
 
     /* Guide instructions overlay */
+    /* ── Responsive: the HUD is a set of absolutely positioned overlays, so
+       below these widths they have to wrap, shrink or step aside rather than
+       sit on top of each other. ── */
+    @media (max-width: 1100px) {
+      .hud-top { top: 12px; left: 14px; right: 14px; flex-wrap: wrap; gap: 10px; }
+      .hud-nav { flex-wrap: wrap; gap: 8px; }
+      .telemetry-box { left: 14px; }
+      .inspector-drawer { right: 14px; width: 400px; }
+    }
+
+    @media (max-width: 860px) {
+      .hud-top { flex-direction: column; align-items: flex-start; }
+      /* No room for a persistent side readout next to a full-width drawer;
+         the same values live in the drawer's own panels. */
+      .telemetry-box, .guide-hint { display: none; }
+      .inspector-drawer {
+        left: 14px;
+        right: 14px;
+        width: auto;
+        max-width: none;
+        padding: 18px;
+        border-radius: 16px;
+      }
+      .galaxy-selector { bottom: 14px; max-width: calc(100vw - 20px); padding: 8px 10px; }
+    }
+
+    @media (max-width: 520px) {
+      .hud-title h1 { font-size: 1rem; }
+      .hud-title p { font-size: 0.72rem; }
+      .hud-btn { font-size: 0.72rem; padding: 6px 10px; }
+      .inspector-drawer { padding: 14px; }
+    }
+
     .guide-hint {
       position: absolute;
-      top: 90px;
+      top: calc(var(--hud-h, 72px) + 14px);
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
@@ -682,6 +719,8 @@
 
     .legend-pocket { color: #f59e0b; }
     .legend-ligand { color: #00f5d4; }
+
+    #landscape-canvas { height: 96px; }
 
     .landscape-caption {
       font-size: 0.66rem;
@@ -1307,6 +1346,28 @@
 
   <!-- Three.js Constellation Core Logic -->
   <script>
+    // Publish the measured HUD and carousel heights so the absolutely
+    // positioned overlays can clear them at any width. The HUD wraps to two or
+    // three rows on a narrow window, which fixed top/bottom offsets could not
+    // account for.
+    function syncHudMetrics() {
+      const root = document.documentElement;
+      const hud = document.querySelector('.hud-top');
+      const selector = document.querySelector('.galaxy-selector');
+      if (hud) root.style.setProperty('--hud-h', `${Math.ceil(hud.getBoundingClientRect().height)}px`);
+      if (selector) root.style.setProperty('--selector-h', `${Math.ceil(selector.getBoundingClientRect().height)}px`);
+    }
+
+    syncHudMetrics();
+    window.addEventListener('resize', syncHudMetrics);
+    if (typeof ResizeObserver !== 'undefined') {
+      const hudObserver = new ResizeObserver(syncHudMetrics);
+      ['.hud-top', '.galaxy-selector'].forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) hudObserver.observe(el);
+      });
+    }
+
     // Mount the Cybrdeck glass refraction filters (assets/cybrdeck-glass/) so
     // .cd-lens-glass panels above (telemetry-box) refract for real instead of
     // just blurring. Safe no-op if the kit's scripts failed to load.
@@ -2193,11 +2254,27 @@
     const landscapeCaption = document.getElementById('landscape-caption');
     const landscapeSource = document.getElementById('landscape-source');
 
+    // Match the backing store to the element's CSS size and DPR, so the chart
+    // stays crisp at any drawer width instead of stretching a fixed bitmap.
+    function sizeLandscapeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = landscapeCanvas.clientWidth, h = landscapeCanvas.clientHeight;
+      if (!w || !h) return { w: 0, h: 0 };
+      const bw = Math.round(w * dpr), bh = Math.round(h * dpr);
+      if (landscapeCanvas.width !== bw || landscapeCanvas.height !== bh) {
+        landscapeCanvas.width = bw;
+        landscapeCanvas.height = bh;
+      }
+      landscapeCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w, h };
+    }
+
     function renderLandscape(currentAngle) {
       if (!landscapeCtx) return;
       const sys = systems[currentSystemIdx];
       const reg = profileFor(sys.id, constQubitMode);
-      const w = landscapeCanvas.width, h = landscapeCanvas.height;
+      const { w, h } = sizeLandscapeCanvas();
+      if (!w || !h) return;
       const padL = 26, padR = 8, padT = 8, padB = 14;
       const plotW = w - padL - padR, plotH = h - padT - padB;
 
@@ -2630,6 +2707,8 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
       composer.setSize(window.innerWidth, window.innerHeight);
+      // The drawer (and so the chart) changes width with the viewport.
+      renderLandscape(parseFloat(angleSlider.value));
     });
 
     // =========================================================================
