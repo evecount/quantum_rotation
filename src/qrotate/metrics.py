@@ -16,8 +16,11 @@ from dataclasses import dataclass, asdict
 from typing import Sequence, Optional
 
 try:
-    from .hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
-    from .structures import site_coordinates, load_active_sites
+    from .hpc_bridge import (
+        MolecularGeometry, pocket_ligand_to_qubit_phases,
+        shell_anisotropy, is_encoding_degenerate,
+    )
+    from .structures import site_coordinates, site_elements, load_active_sites
     from .circuits import (
         build_pytket_swap_test_circuit,
         rebase_to_h2_gateset,
@@ -25,8 +28,11 @@ try:
         simulate_shot_sampling,
     )
 except ImportError:
-    from src.qrotate.hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
-    from src.qrotate.structures import site_coordinates, load_active_sites
+    from src.qrotate.hpc_bridge import (
+        MolecularGeometry, pocket_ligand_to_qubit_phases,
+        shell_anisotropy, is_encoding_degenerate,
+    )
+    from src.qrotate.structures import site_coordinates, site_elements, load_active_sites
     from src.qrotate.circuits import (
         build_pytket_swap_test_circuit,
         rebase_to_h2_gateset,
@@ -528,7 +534,8 @@ def run_molecular_showdown(
 
         # How far off the probe starts, so a reader can see the difficulty
         # rather than inferring it from the iteration count.
-        probe_geom = MolecularGeometry(f"{sys['id']}_probe", ["C"] * N, probe_coords)
+        elements = site_elements(sys["id"]) or ["C"] * N
+        probe_geom = MolecularGeometry(f"{sys['id']}_probe", elements, probe_coords)
         start_phases = pocket_ligand_to_qubit_phases(probe_geom, n_qubits=n_qubits)
 
         # Classical baseline: the same grid search over the same atoms.
@@ -538,7 +545,7 @@ def run_molecular_showdown(
         # derived from its real atoms rather than a hand-picked constant. The
         # probe starts from an uninformed all-zero guess so the blind RUS search
         # has genuine work to do instead of starting 90%-pre-converged.
-        target_geom = MolecularGeometry(f"{sys['id']}_target", ["C"] * len(target_coords), target_coords)
+        target_geom = MolecularGeometry(f"{sys['id']}_target", elements, target_coords)
         pocket_phases = pocket_ligand_to_qubit_phases(target_geom, n_qubits=n_qubits)
         # Compile one representative circuit purely to read its gate counts.
         circ = build_pytket_swap_test_circuit(pocket_phases, start_phases, tau=0.25, omega=(1.0, 0.5, 0.25))
@@ -552,7 +559,7 @@ def run_molecular_showdown(
         rus_result = run_blind_rus_pose_recovery(
             pocket_phases, probe_coords, n_qubits=n_qubits,
             tau=0.25, omega=(1.0, 0.5, 0.25),
-            max_retries=15, shots=100, seed=seed,
+            max_retries=15, shots=100, seed=seed, elements=elements,
         )
         iterations = rus_result.iterations
         locked = rus_result.locked
@@ -563,10 +570,18 @@ def run_molecular_showdown(
 
         start_p0 = simulate_swap_test_statevector(pocket_phases, start_phases, 0.25, (1.0, 0.5, 0.25))
 
+        # A molecule whose angular moments all cancel encodes to an all-zero
+        # register at every orientation. Two such registers match perfectly and
+        # mean nothing, so the lock below would be an artefact, not a result.
+        anisotropy = shell_anisotropy(target_geom, n_qubits=n_qubits)
+        degenerate = is_encoding_degenerate(target_geom, n_qubits=n_qubits)
+
         entry = {
             "system_id": sys["id"],
             "start_offset_deg": sys["optimal_angle_deg"],
             "start_p0": round(start_p0, 4),
+            "shell_anisotropy": [round(a, 4) for a in anisotropy],
+            "encoding_degenerate": degenerate,
             "system_name": sys["name"],
             "system_tag": sys["tag"],
             # Where the coordinates came from, so a reader can check them.
@@ -598,6 +613,10 @@ def run_molecular_showdown(
               + (f" | ligand {entry['ligand_resname']} ({N} heavy atoms)"
                  f" | pocket {entry['n_pocket_atoms']} atoms" if site else ""))
         print(f"  Active Site : {N} atoms | Classical grid: {class_res.computational_steps:,} steps in {class_res.execution_time_sec:.4f}s")
+        if degenerate:
+            print("  WARNING     : every angular moment of this molecule cancels, so its")
+            print("                register is all zeros at every orientation. Any 'lock'")
+            print("                below is two empty registers agreeing, NOT a result.")
         print(f"  Q-Rotate    : {'Locked in' if locked else 'NO LOCK after'} {iterations} RUS iterations"
               f" | final P(0)={rus_result.final_p0_hat:.3f} | {hqc_info['n_qubits']} qubits | 0 SWAPs")
         print(f"  HQC Cost    : {hqc_info['estimated_hqcs']:.2f} HQCs ({hqc_info['circuit_runs']} circuit runs x {hqc_info['hqc_per_circuit']:.2f}) | Speedup: ~{speedup:,.0f}x")
@@ -606,8 +625,18 @@ def run_molecular_showdown(
     iter_values = [r["qrotate_rus_iterations"] for r in results]
     print("\n" + "=" * 80)
     print("MOLECULAR SHOWDOWN SUMMARY:")
-    print(f"  {n_locked}/{len(results)} targets reached statistical lock within 15 RUS iterations")
-    print(f"  (min {min(iter_values)}, max {max(iter_values)} iterations across the 6 systems —")
+    # Degenerate systems are excluded from the headline: an all-zero register
+    # "locks" against itself instantly and that number would flatter the result.
+    meaningful = [r for r in results if not r.get("encoding_degenerate")]
+    n_locked_meaningful = sum(1 for r in meaningful if r["qrotate_locked"])
+    print(f"  {n_locked_meaningful}/{len(meaningful)} targets with a usable encoding reached "
+          "statistical lock within 15 RUS iterations")
+    if len(meaningful) != len(results):
+        excluded = [r["system_id"] for r in results if r.get("encoding_degenerate")]
+        print(f"  ({len(results) - len(meaningful)} excluded as encoding-degenerate: "
+              f"{', '.join(excluded)} — see the WARNING above)")
+    iter_values = [r["qrotate_rus_iterations"] for r in meaningful] or iter_values
+    print(f"  (min {min(iter_values)}, max {max(iter_values)} iterations across those systems —")
     print("   this is a blind search measured against the real simulated circuit each")
     print("   iteration, so it varies by molecule instead of being fixed.)")
     print("  Classical grid search requires millions of operations per molecule.")
@@ -707,6 +736,7 @@ def run_blind_rus_pose_recovery(
     lock_confidence_sigma: float = 1.645,
     step_deg: float = 60.0,
     seed: Optional[int] = None,
+    elements: Optional[Sequence[str]] = None,
 ) -> BlindRusResult:
     """Blind RUS over the POSE rather than over free phase values.
 
@@ -720,10 +750,11 @@ def run_blind_rus_pose_recovery(
     Still blind: the target phases are never read, only the sampled parity.
     """
     rng = np.random.default_rng(seed)
+    probe_elements = list(elements) if elements else []
 
     def measure(angle_deg: float) -> tuple[float, dict]:
         rotated = _rotate_z(probe_coords, angle_deg)
-        geom = MolecularGeometry("probe", ["C"] * len(rotated), rotated)
+        geom = MolecularGeometry("probe", probe_elements or ["C"] * len(rotated), rotated)
         phases = pocket_ligand_to_qubit_phases(geom, n_qubits=n_qubits)
         p0_true = simulate_swap_test_statevector(target_phases, phases, tau, omega)
         shot_res = simulate_shot_sampling(p0_true, n_shots=shots, seed=int(rng.integers(1 << 31)))
@@ -777,7 +808,8 @@ def export_constellation_profiles(
         seed = zlib.crc32(sys["id"].encode()) % (2**31)
         pocket, ligand_base = _system_coordinates(
             sys["id"], sys["n_atoms_proxy"], sys["optimal_angle_deg"], seed)
-        pocket_geom = MolecularGeometry("pocket", ["C"] * len(pocket), pocket)
+        elements = site_elements(sys["id"]) or ["C"] * len(pocket)
+        pocket_geom = MolecularGeometry("target", elements, pocket)
 
         # Both register sizes the page offers: 4 sites (H2) and 8 (Helios).
         registers = {}
@@ -786,7 +818,7 @@ def export_constellation_profiles(
             p0_curve, phase_curve = [], []
             for ang in angles:
                 rotated = _rotate_z(ligand_base, ang)
-                geom = MolecularGeometry("ligand", ["C"] * len(rotated), rotated)
+                geom = MolecularGeometry("probe", elements, rotated)
                 phases = pocket_ligand_to_qubit_phases(geom, n_qubits=n_qubits)
                 p0_curve.append(round(simulate_swap_test_statevector(pocket_phases, phases, tau, omega), 4))
                 phase_curve.append([round(float(x), 3) for x in phases])

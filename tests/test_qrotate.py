@@ -131,6 +131,51 @@ def test_phase_encoding_is_rotation_equivariant():
     print("PASS: test_phase_encoding_is_rotation_equivariant")
 
 
+def test_phase_encoding_is_permutation_invariant():
+    """The register must describe the molecule, not the order its atoms happen
+    to appear in. The previous encoder chunked atoms by input order, so a
+    reordered copy of the same ligand scored as low as 0.52 against itself."""
+    rng = np.random.default_rng(11)
+    coords = rng.normal(size=(21, 3)) * 2.5
+    elements = ["C", "N", "O"] * 7
+    base = np.array(pocket_ligand_to_qubit_phases(
+        MolecularGeometry("m", elements, coords), n_qubits=4))
+
+    for _ in range(5):
+        p = rng.permutation(len(coords))
+        shuffled = np.array(pocket_ligand_to_qubit_phases(
+            MolecularGeometry("m", [elements[i] for i in p], coords[p]), n_qubits=4))
+        delta = np.angle(np.exp(1j * (shuffled - base)))
+        assert np.max(np.abs(delta)) < 1e-9, f"reordering changed the register by {delta}"
+
+    # Atoms at identical radii are the hard case: they must not be split
+    # across a shell boundary by input order (H2 is two atoms at one radius).
+    h2 = np.array([[-0.3707, 0.0, 0.0], [0.3707, 0.0, 0.0]])
+    a = pocket_ligand_to_qubit_phases(MolecularGeometry("h2", ["H", "H"], h2), n_qubits=4)
+    b = pocket_ligand_to_qubit_phases(MolecularGeometry("h2", ["H", "H"], h2[::-1]), n_qubits=4)
+    assert np.max(np.abs(np.angle(np.exp(1j * (np.array(a) - np.array(b)))))) < 1e-9
+
+    print("PASS: test_phase_encoding_is_permutation_invariant")
+
+
+def test_phase_encoding_sees_chirality():
+    """A molecule and its mirror image are different structures and must not
+    encode identically. The previous encoder used only the azimuth, so a
+    z-reflection left the register untouched (overlap 0.99)."""
+    rng = np.random.default_rng(5)
+    coords = rng.normal(size=(16, 3)) * 2.0
+    elements = ["C"] * 16
+    mirrored = coords.copy()
+    mirrored[:, 2] *= -1.0
+
+    original = pocket_ligand_to_qubit_phases(MolecularGeometry("m", elements, coords), n_qubits=4)
+    flipped = pocket_ligand_to_qubit_phases(MolecularGeometry("m", elements, mirrored), n_qubits=4)
+
+    overlap = simulate_swap_test_statevector(original, flipped, tau=0.25, omega=(1.0, 0.5, 0.25))
+    assert overlap < 0.9, f"mirror image is indistinguishable (P(0)={overlap:.3f})"
+    print(f"PASS: test_phase_encoding_sees_chirality (mirror P(0)={overlap:.3f})")
+
+
 def test_active_sites_are_real_structures():
     """The six benchmark systems must come from experimental coordinates, and
     each pocket must contain the residues that site is actually known for. This
@@ -243,6 +288,8 @@ if __name__ == "__main__":
     test_guppy_circuit_compilation()
     test_metrics_cost()
     test_phase_encoding_is_rotation_equivariant()
+    test_phase_encoding_is_permutation_invariant()
+    test_phase_encoding_sees_chirality()
     test_active_sites_are_real_structures()
     test_hqc_cost_counts_compiled_circuit()
     test_swap_test_statevector_matches_closed_form()

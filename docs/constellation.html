@@ -2390,10 +2390,48 @@
       return { w, h };
     }
 
+    // A landscape with no relief carries no orientation information: every
+    // angle scores the same, so a "lock" is two identical registers agreeing.
+    // Happens when a molecule's angular moments cancel by symmetry (H2's two
+    // atoms sit opposite each other, so they sum to exactly zero).
+    function isFlatLandscape(reg) {
+      return reg && (reg.best_p0 - reg.worst_p0) < 0.02;
+    }
+
+    function updateLandscapeCaption(reg) {
+      if (!landscapeCaption) return;
+      if (!reg) {
+        landscapeCaption.innerText =
+          'assets/constellation_profiles.js did not load, so this is the idealised curve, not simulation output.';
+        if (landscapeSource) landscapeSource.innerText = 'fallback';
+        return;
+      }
+      if (landscapeSource) landscapeSource.innerText = `${reg.total_qubits} qubits · statevector`;
+
+      if (isFlatLandscape(reg)) {
+        landscapeCaption.innerHTML = '<strong style="color:#f59e0b;">No orientation signal.</strong> '
+          + 'The angular moments of this molecule cancel by symmetry, so its phase register is the same '
+          + 'at every angle. Rotating it changes nothing measurable, and a "lock" here would be two '
+          + 'empty registers agreeing. The benchmark excludes it for the same reason.';
+        return;
+      }
+
+      const decoys = (reg.local_maxima_deg || []).filter(d => d !== reg.best_angle_deg);
+      landscapeCaption.innerText = decoys.length
+        ? `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. ${decoys.length} secondary peak${decoys.length > 1 ? 's' : ''} (amber) can trap a hill-climbing search.`
+        : `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. Single basin: overlap rises steadily toward the deposited pose.`;
+    }
+
     function renderLandscape(currentAngle) {
       if (!landscapeCtx) return;
       const sys = systems[currentSystemIdx];
       const reg = profileFor(sys.id, constQubitMode);
+
+      // The caption is text, not canvas: write it before any early return, or
+      // it keeps the previous system's wording whenever the canvas has no
+      // layout yet (drawer mid-open, or a very narrow viewport).
+      updateLandscapeCaption(reg);
+
       const { w, h } = sizeLandscapeCanvas();
       if (!w || !h) return;
       const padL = 26, padR = 8, padT = 8, padB = 14;
@@ -2489,12 +2527,8 @@
         `Currently at ${cur.toFixed(0)} degrees where P(0) is ${profileP0(reg, cur).toFixed(3)}.`
       );
 
-      if (landscapeSource) landscapeSource.innerText = `${reg.total_qubits} qubits · statevector`;
-      if (landscapeCaption) {
-        landscapeCaption.innerText = decoys.length
-          ? `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. ${decoys.length} decoy peak${decoys.length > 1 ? 's' : ''} (amber) can trap a hill-climbing search.`
-          : `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. Single basin: overlap rises steadily toward the deposited pose.`;
-      }
+      // The caption and source label were already written at the top of this
+      // function, before the canvas-size guard.
     }
 
     // Each qubit encodes one contiguous chunk of the ligand's atoms (see
@@ -2734,6 +2768,7 @@
       searchRunning = true;
       if (btn) { btn.disabled = true; btn.querySelector('span').innerText = 'Searching…'; }
 
+      const flat = isFlatLandscape(reg);
       const shots = constShotMode;
       let angle = parseFloat(angleSlider.value);
       let best = sampleShots(currentP0(sys, angle), shots);
@@ -2767,7 +2802,16 @@
       const offBy = Math.abs(wrapAngle(angle - trueBest));
       parityResult.style.display = 'block';
 
-      if (locked) {
+      if (locked && flat) {
+        parityResult.className = 'parity-result-box fail';
+        parityResult.innerHTML = `
+          <strong>NOT A RESULT (${evaluations} circuit runs)</strong><br />
+          It "locked" immediately because this molecule's register is identical at every angle.<br />
+          <span style="font-size:0.75rem;">Its angular moments cancel by symmetry, so there is nothing
+          to search. The benchmark excludes this system for the same reason.</span>
+        `;
+        playPulseSound('fail');
+      } else if (locked) {
         parityResult.className = 'parity-result-box pass';
         parityResult.innerHTML = `
           <strong>LOCKED after ${iteration} iteration${iteration > 1 ? 's' : ''} (${evaluations} circuit runs)</strong><br />

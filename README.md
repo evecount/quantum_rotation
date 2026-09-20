@@ -256,6 +256,7 @@ D:\Quantinuum_GrandChallenge\
 │       ├── __init__.py        # Module entrypoint & exports
 │       ├── operators.py       # U_tube definition & SU(2) Euler angle decomposition
 │       ├── structures.py      # Fetches PDB/PubChem entries, extracts the six active sites
+│       ├── encoding_diagnostics.py  # What the phase register can and cannot tell apart
 │       ├── hpc_bridge.py      # Classical parser mapping 3D coords to qubit phases
 │       ├── circuits.py        # Guppy & Pytket circuit builders (RUS loop & SWAP test)
 │       └── metrics.py         # Overlap fidelity & Quantinuum HQC costing model
@@ -352,9 +353,11 @@ These six run on **experimental coordinates** pulled from the RCSB PDB and PubCh
 | SARS-CoV-2 Mpro + Nirmatrelvir | PDB 7VH8 | 4WI | 35 | −50° | 0.701 | 2 | 1.000 | 27.28 |
 | COX-2 + Celecoxib | PDB 3LN1 | CEL | 26 | +80° | 0.573 | 2 | 0.960 | 27.28 |
 | Azobenzene Switch | PubChem 2272 | AZO | 14 | −115° | 0.502 | 5 | 0.950 | 68.20 |
-| H2 Hardware Benchmark | exact | H2 | 2 | +15° | 0.982 | 1 | 0.990 | 13.64 |
+| ~~H2 Hardware Benchmark~~ | exact | H2 | 2 | +15° | — | — | — | — |
 
-All six recover, in 1–5 iterations. **Read the start column before the iteration column:** the H2 row starts at P(0) 0.982 because a 2-atom molecule barely changes under a 15° turn, so its single iteration means almost nothing. Azobenzene, starting at 0.502 (no overlap signal at all), is the one that had to work.
+Five of five usable systems recover, in 2–5 iterations.
+
+**H2 is struck out because its result was meaningless, not because it failed.** Its two atoms sit exactly opposite each other, so the first-order angular moment the encoding is built on cancels to zero. Its register is all zeros at *every* orientation, which means the "lock in 1 iteration" earlier versions of this table reported was two empty registers agreeing — an artefact, not a measurement. `is_encoding_degenerate` now detects this, the benchmark excludes it from the headline, and the Constellation refuses to call it a lock. This is a real limit of any dipole-style moment on a centrosymmetric molecule, and it is worth knowing before someone screens one.
 
 Two corrections make these numbers different from earlier versions of this table, and both were bugs rather than tuning:
 
@@ -364,6 +367,26 @@ Two corrections make these numbers different from earlier versions of this table
 Extraction is validated against the chemistry each site is known for: Lys296 and its Glu113 counterion appear in the rhodopsin pocket, the Cys145/His41 dyad in Mpro, His148/Thr203/Glu222 in GFP, and Arg120/Tyr355/**Val523**/Ser530 in COX-2 (3LN1 numbers the mature protein, so those are Arg106/Tyr341/Val509/Ser516 in the file; labels are shifted by +14 to match the literature).
 
 All HQC figures are estimates, not billed hardware jobs. `compute_circuit_hqc_cost` in `src/qrotate/metrics.py` counts gates on the rebased circuit (62 `PhasedX` + 32 `ZZPhase` + 1 measurement on 9 qubits) and applies the H-series formula HQC = 5 + (N₁q + 10·N₂q + 5·N_m)·shots/5000 (100 shots, ≈13.64 HQCs per circuit). Each RUS circuit evaluation (up to two per iteration) runs a different circuit, so it is costed as its own job. 2Q gate totals likewise sum over all evaluations. "Speedup" / "step-count ratio" compares classical grid steps with RUS circuit evaluations. It is not a wall-clock comparison.
+
+### What the Encoding Can Tell Apart (`benchmarks/encoding_diagnostics.json`)
+
+Pose recovery measures how fast the loop finds a known answer. It says nothing about whether the register actually *describes the molecule*, and the encoder this project ran for most of its life failed precisely there. `src/qrotate/encoding_diagnostics.py` measures those properties directly on the six ligands.
+
+`self` is the ceiling, below 1.0 because the circuit evolves the probe register and leaves the target alone. `permuted` should equal it; everything else should sit far below.
+
+| Property | Old encoder | Current, 4 sites | Current, 8 sites | What it means |
+| :--- | :---: | :---: | :---: | :--- |
+| Same molecule, atoms reordered | **0.52–0.91** | **equal to self (gap 0.0000)** | equal to self | The register described the input file's atom order, not the molecule |
+| Mirror image (reflected through z) | **0.99** | **0.50–0.52** | 0.50–0.51 | Enantiomers are different drugs; the old encoder could not see chirality at all |
+| Two *different* ligands, worst case | 0.83 | 0.78 | **0.51** | How often it would report a false match |
+| Coordinates jittered by 0.1 Å | — | 0.70–0.99 | 0.57–0.92 | Tolerance of experimental uncertainty |
+
+The redesign (`molecular_shell_phases` in `src/qrotate/hpc_bridge.py`) sorts atoms into shells by radius instead of by file order, and weights each atom by √Z·e^(κẑ). Radius and z are both unchanged by a rotation about z, so the encoding stays exactly rotation-equivariant — the property pose recovery depends on — while becoming permutation invariant and reflection-sensitive. Three tests pin those properties.
+
+Two honest caveats:
+
+* **The redesign did not make the headline benchmark faster.** Pose recovery still takes 1–5 iterations, because the old encoder was already rotation-equivariant once the branch-cut bug was fixed. What changed is correctness the benchmark never tested.
+* **The 4-site register is weak at telling molecules apart** (worst case 0.78). Eight shells fix that (0.51) at the cost of noise tolerance, since each shell then holds fewer atoms. Use 8 when coordinates are good and discrimination matters; 4 when they are rough. The H2 row is the one exception in the mirror column (0.99) and it is correct: H2 lies along x with z = 0, so it genuinely *is* its own reflection.
 
 ### Key Takeaways for the Submission Package
 
@@ -381,6 +404,11 @@ python -m src.qrotate.structures
 Then re-run the benchmark suite, which works offline from that extract:
 ```powershell
 python -m src.qrotate.metrics
+```
+
+And to reproduce the encoding table above:
+```powershell
+python -m src.qrotate.encoding_diagnostics
 ```
 Structured JSON results are automatically exported to `benchmarks/showdown_results.json`.
 

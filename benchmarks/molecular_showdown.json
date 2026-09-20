@@ -3,7 +3,14 @@
     {
       "system_id": "rhodopsin",
       "start_offset_deg": 45.0,
-      "start_p0": 0.79,
+      "start_p0": 0.7909,
+      "shell_anisotropy": [
+        0.3935,
+        0.6082,
+        0.1778,
+        0.4571
+      ],
+      "encoding_degenerate": false,
       "system_name": "11-cis Retinal / Rhodopsin",
       "system_tag": "Photochemical Master Switch",
       "structure_source": "RCSB 1U19",
@@ -12,12 +19,12 @@
       "n_pocket_atoms": 94,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 20,
-      "classical_time_sec": 0.02967,
+      "classical_time_sec": 0.00657,
       "classical_steps": 34560,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 2,
       "qrotate_locked": true,
-      "qrotate_final_p0": 0.97,
+      "qrotate_final_p0": 0.98,
       "qrotate_two_qubit_gates": 64,
       "qrotate_swap_gates": 0,
       "qrotate_hqcs": 27.28,
@@ -27,7 +34,14 @@
     {
       "system_id": "gfp",
       "start_offset_deg": 35.0,
-      "start_p0": 0.8635,
+      "start_p0": 0.864,
+      "shell_anisotropy": [
+        0.4633,
+        0.4363,
+        0.3306,
+        0.145
+      ],
+      "encoding_degenerate": false,
       "system_name": "GFP Chromophore",
       "system_tag": "Bioluminescent Proton Transfer",
       "structure_source": "RCSB 1EMA",
@@ -36,7 +50,7 @@
       "n_pocket_atoms": 87,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 22,
-      "classical_time_sec": 0.02645,
+      "classical_time_sec": 0.00606,
       "classical_steps": 38016,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 4,
@@ -51,7 +65,14 @@
     {
       "system_id": "mpro",
       "start_offset_deg": -50.0,
-      "start_p0": 0.7005,
+      "start_p0": 0.7011,
+      "shell_anisotropy": [
+        0.5465,
+        0.2626,
+        0.2332,
+        0.6799
+      ],
+      "encoding_degenerate": false,
       "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
       "system_tag": "Antiviral Covalent Inhibitor",
       "structure_source": "RCSB 7VH8",
@@ -60,7 +81,7 @@
       "n_pocket_atoms": 108,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 35,
-      "classical_time_sec": 0.031,
+      "classical_time_sec": 0.00623,
       "classical_steps": 60480,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 2,
@@ -75,7 +96,14 @@
     {
       "system_id": "cox2",
       "start_offset_deg": 80.0,
-      "start_p0": 0.5726,
+      "start_p0": 0.5728,
+      "shell_anisotropy": [
+        0.2449,
+        0.3545,
+        0.6841,
+        0.4628
+      ],
+      "encoding_degenerate": false,
       "system_name": "COX-2 + Celecoxib",
       "system_tag": "Single-Residue Selectivity",
       "structure_source": "RCSB 3LN1",
@@ -84,7 +112,7 @@
       "n_pocket_atoms": 93,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 26,
-      "classical_time_sec": 0.0243,
+      "classical_time_sec": 0.00653,
       "classical_steps": 44928,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 2,
@@ -99,7 +127,14 @@
     {
       "system_id": "azobenzene",
       "start_offset_deg": -115.0,
-      "start_p0": 0.5023,
+      "start_p0": 0.5024,
+      "shell_anisotropy": [
+        0.8231,
+        0.391,
+        0.201,
+        0.5062
+      ],
+      "encoding_degenerate": false,
       "system_name": "Azobenzene Molecular Switch",
       "system_tag": "Photopharmacological Motor",
       "structure_source": "PubChem 2272",
@@ -108,12 +143,12 @@
       "n_pocket_atoms": 14,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 14,
-      "classical_time_sec": 0.02396,
+      "classical_time_sec": 0.00608,
       "classical_steps": 24192,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 5,
       "qrotate_locked": true,
-      "qrotate_final_p0": 0.95,
+      "qrotate_final_p0": 0.94,
       "qrotate_two_qubit_gates": 160,
       "qrotate_swap_gates": 0,
       "qrotate_hqcs": 68.2,
@@ -123,7 +158,14 @@
     {
       "system_id": "h2bench",
       "start_offset_deg": 15.0,
-      "start_p0": 0.9817,
+      "start_p0": 0.9903,
+      "shell_anisotropy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "encoding_degenerate": true,
       "system_name": "H2 Hardware Benchmark",
       "system_tag": "Trapped-Ion Physical Stress Test",
       "structure_source": "exact H2",
@@ -132,12 +174,12 @@
       "n_pocket_atoms": 2,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 2,
-      "classical_time_sec": 0.02783,
+      "classical_time_sec": 0.00557,
       "classical_steps": 3456,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
       "qrotate_locked": true,
-      "qrotate_final_p0": 0.99,
+      "qrotate_final_p0": 1.0,
       "qrotate_two_qubit_gates": 32,
       "qrotate_swap_gates": 0,
       "qrotate_hqcs": 13.64,
@@ -145,6 +187,6 @@
       "circuit_depth": 68
     }
   ],
-  "generated_at": "2026-09-20 21:08:32",
+  "generated_at": "2026-09-21 01:53:21",
   "systems_count": 6
 }

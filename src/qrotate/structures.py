@@ -362,6 +362,15 @@ def load_active_sites(path: str = ACTIVE_SITES_JSON) -> dict:
     return _ACTIVE_SITES_CACHE
 
 
+def site_elements(system_id: str, which: str = "ligand") -> list[str]:
+    """Element symbols for one side of a site, so the encoder can weight by Z.
+    Empty when the extract is unavailable, which makes the weighting uniform."""
+    site = load_active_sites().get(system_id)
+    if not site:
+        return []
+    return list(site[which]["elements"])
+
+
 def site_coordinates(system_id: str) -> Optional[tuple[np.ndarray, np.ndarray]]:
     """(pocket_coords, ligand_coords) in Angstroms, or None if unavailable."""
     site = load_active_sites().get(system_id)
