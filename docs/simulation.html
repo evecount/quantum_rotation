@@ -41,7 +41,11 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      width: 100%; height: 100%; overflow: hidden;
+      /* Fit the viewport when there's room, but scroll rather than crushing the
+         viewport panels into unreadable slivers on a short window. `.shell`
+         sets the floor via min-height. A fixed `height` here would cap the
+         document and clip that overflow instead of scrolling it. */
+      width: 100%; min-height: 100%; overflow-x: hidden;
       background: var(--bg-dark);
       font-family: var(--font-ui);
       color: var(--text-main);
@@ -69,7 +73,15 @@
     .shell {
       position: relative; z-index: 10;
       display: flex; flex-direction: column;
-      width: 100%; height: 100%;
+      width: 100%;
+      /* Viewport units, not a percentage: body is now auto-height, so `100%`
+         would collapse to the content height and the panels would never fill a
+         tall window. dvh keeps mobile browser chrome from cropping it. */
+      height: 100vh;
+      height: 100dvh;
+      /* Below this the 3D view and the phase rings have no usable room, so the
+         page scrolls instead of shrinking them to nothing. */
+      min-height: 760px;
       padding: 8px 16px 12px;
       gap: 8px;
     }
@@ -274,9 +286,35 @@
     /* ── Main Work Area: Dual Glass Panels ── */
     .viewport-grid {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px; flex: 1; min-height: 0;
+      gap: 10px; flex: 1; min-height: 320px;
     }
-    @media (max-width: 900px) { .viewport-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) {
+      .viewport-grid { grid-template-columns: 1fr; min-height: 0; }
+      /* Stacked: each panel needs its own floor, or both collapse. */
+      #panel-3d, #panel-quantum { min-height: 300px; }
+      /* Stacked panels are taller than one screen, so the shell has to grow
+         with its content and let the page scroll. A fixed height here makes
+         the second panel overflow and paint under the controls strip. */
+      .shell { height: auto; min-height: 100dvh; padding: 8px 10px 12px; }
+      /* These rows are horizontal lists; let them wrap instead of clipping. */
+      .top-bar, .controls-strip { flex-wrap: wrap; gap: 8px; justify-content: flex-start; }
+      .top-bar { row-gap: 6px; }
+      /* The nav pills and the 4-stage pipeline don't fit on a phone and must
+         not be cut off: let them scroll sideways on their own. */
+      /* min-width:0 is what actually lets a flex child shrink below its
+         content width; without it the cluster keeps overflowing the bar. */
+      .nav-actions { flex-wrap: wrap; max-width: 100%; min-width: 0; }
+      .sim-nav-cluster, .pipeline-strip {
+        max-width: 100%;
+        min-width: 0;
+        flex: 1 1 auto;
+        overflow-x: auto;
+        justify-content: flex-start;
+        scrollbar-width: none;
+      }
+      .sim-nav-cluster::-webkit-scrollbar, .pipeline-strip::-webkit-scrollbar { display: none; }
+      .sim-nav-link, .sim-nav-btn { white-space: nowrap; }
+    }
 
     .glass-panel {
       position: relative; display: flex; flex-direction: column;
@@ -1767,8 +1805,39 @@
     if (!parent) return;
     const w = parent.clientWidth, h = parent.clientHeight;
     threeCam.aspect = w / h;
-    threeCam.updateProjectionMatrix();
     threeRenderer.setSize(w, h);
+    frameThreeToFreeBand(parent, w, h);
+    threeCam.updateProjectionMatrix();
+  }
+
+  // The stage explainer (top) and the legend chips (bottom) sit over the 3D
+  // canvas, so on a short viewport the molecule renders behind them. Rather
+  // than move the camera (which fights OrbitControls), shift and scale the
+  // projection so the scene is framed inside the clear band between them.
+  function frameThreeToFreeBand(wrapEl, w, h) {
+    const band = overlayFreeBand(
+      wrapEl,
+      document.querySelector('#panel-3d .explainer-drawer'),
+      document.querySelector('#panel-3d .viewport-hud-bottom')
+    );
+    // Never shrink past 0.55: below that the molecule is too small to read,
+    // and a little overlap with a translucent HUD beats an unreadable model.
+    const ratio = Math.max(0.55, band.height / h);
+
+    // Nearly the whole panel is clear: render normally.
+    if (!isFinite(ratio) || ratio > 0.86 || band.height < 40) {
+      threeCam.clearViewOffset();
+      return;
+    }
+
+    // Render a window LARGER than the full frame, so the scene is minified by
+    // `ratio`, positioned so the frame's centre lands on the band's centre.
+    const subW = w / ratio;
+    const subH = h / ratio;
+    const bandCentre = band.top + band.height / 2;
+    const offsetX = (w - subW) / 2;
+    const offsetY = h / 2 - (bandCentre / h) * subH;
+    threeCam.setViewOffset(w, h, offsetX, offsetY, subW, subH);
   }
 
   let ligandCoreGroup, ligandSideGroup;
@@ -1857,17 +1926,66 @@
     qCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
+  // The canvas fills the panel, but the circuit HUD (top) and the waveform
+  // scope (bottom) are absolutely positioned over it. Drawing in the middle of
+  // the FULL canvas puts the phase rings underneath them on a short viewport,
+  // so measure the clear band between the two overlays and draw only there.
+  function overlayFreeBand(wrapEl, topEl, bottomEl, pad = 10) {
+    const fallback = { top: 0, bottom: wrapEl.clientHeight, height: wrapEl.clientHeight };
+    if (!wrapEl.clientHeight) return fallback;
+    const wrapRect = wrapEl.getBoundingClientRect();
+    const top = topEl ? (topEl.getBoundingClientRect().bottom - wrapRect.top) + pad : pad;
+    const bottom = bottomEl ? (bottomEl.getBoundingClientRect().top - wrapRect.top) - pad : wrapRect.height - pad;
+    if (!(bottom > top)) return fallback;
+    return { top, bottom, height: bottom - top };
+  }
+
+  // Measuring the band means a layout read, so cache it and let a
+  // ResizeObserver invalidate the cache when a panel or overlay changes size
+  // (the stage explainer grows and shrinks with its text).
+  let qBandCache = null;
+
+  function quantumBand() {
+    if (qBandCache) return qBandCache;
+    qBandCache = overlayFreeBand(
+      qCanvas.parentElement,
+      document.querySelector('#panel-quantum .circuit-hud'),
+      document.querySelector('#panel-quantum .scope-overlay')
+    );
+    return qBandCache;
+  }
+
+  function invalidatePanelFraming() {
+    qBandCache = null;
+    resizeThree();
+  }
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const framingObserver = new ResizeObserver(() => invalidatePanelFraming());
+    [
+      '#panel-quantum .panel-canvas-wrap', '#panel-quantum .circuit-hud', '#panel-quantum .scope-overlay',
+      '#panel-3d .panel-canvas-wrap', '#panel-3d .explainer-drawer', '#panel-3d .viewport-hud-bottom',
+    ].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) framingObserver.observe(el);
+    });
+  }
+
   function renderQuantumState(time) {
     const w = qCanvas.clientWidth, h = qCanvas.clientHeight;
     qCtx.clearRect(0, 0, w, h);
 
+    const band = quantumBand();
     const cx = w / 2;
-    const cy = h / 2 + 8;
+    const cy = band.top + band.height / 2;
     // Clamp to a positive minimum: on first paint (or a very narrow panel)
     // clientWidth/clientHeight can be small enough that this goes negative,
     // which throws inside ctx.arc() below and silently kills the whole
     // requestAnimationFrame loop for the rest of the page.
-    const baseRadius = Math.max(20, Math.min(cx - 36, cy - 40) * 0.65);
+    // The 1.25x grid ring and the 8-qubit outer ring are the widest things
+    // drawn, so the band has to fit those, not just baseRadius.
+    const radiusLimit = Math.min(cx - 36, band.height / 2) / 1.42;
+    const baseRadius = Math.max(14, radiusLimit);
 
     // 1. Concentric Coordinate Grid
     qCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
