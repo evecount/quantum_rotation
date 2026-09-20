@@ -102,7 +102,7 @@ More importantly, our compiler pipeline automatically takes this circuit, optimi
 
 | Resource Profile Metric | Compiler Allocation | Hardware Efficiency Advantage |
 | :--- | :--- | :--- |
-| **Active Ion Qubits** | `9 Qubits` | 4 pocket + 4 ligand + 1 ancilla |
+| **Active Ion Qubits** | `9 Qubits` (or `17`) | 4 target + 4 probe + 1 ancilla; the 8-site register doubles it |
 | **Single-Qubit Rotations (`PhasedX`)** | `62 Gates` | Plus 82 virtual `Rz` (free) |
 | **Two-Qubit Entanglers (`ZZPhase`)** | `32 Gates` | All-to-all ion shuttling (0 SWAP gates) |
 | **Mid-Circuit Parity Readout** | `1 Measurement` | Fast optical detection & qubit reset |

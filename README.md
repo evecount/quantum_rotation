@@ -32,7 +32,7 @@ This project is explicitly structured to satisfy the four official scoring dimen
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture, Market Value & Use Cases](#7-commercial-architecture-market-value--use-cases) (3 concrete use cases with honest evidence-level labels; illustrative $120M–$280M scenario model in `workspaces/JAMES_VENTURE_GTM_BRIEF.md`, James Sun / Mamba Partners). |
-| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register (4 pocket + 4 ligand + 1 ancilla), 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 13.6–68.2 estimated H2 HQCs per blind pose-recovery run across 6 experimental ligands (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
+| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register at 4 sites and 17 at 8, both benchmarked; 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 13.6–68.2 estimated H2 HQCs per blind pose-recovery run across 6 experimental ligands (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
 | **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; coordinate-free SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
@@ -330,6 +330,8 @@ To satisfy the **Technical Performance & Hardware Use (30%)** and **Scientific M
 
 ### Performance & Resource Telemetry (`benchmarks/showdown_results.json`)
 
+This scaling study runs the **4-site / 9-qubit** configuration throughout; see [Register Size](#register-size-9-qubits-or-17) below for the 17-qubit comparison.
+
 | Atom Count ($N$) | Classical Brute-Force (30° Euler Grid) | Q-Rotate RUS Iterations | Register Size | Native H2 2Q Gates | Trapped-Ion SWAPs | Estimated Quantinuum HQCs | Operational Speedup |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **10** | 17,280 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
@@ -367,6 +369,32 @@ Two corrections make these numbers different from earlier versions of this table
 Extraction is validated against the chemistry each site is known for: Lys296 and its Glu113 counterion appear in the rhodopsin pocket, the Cys145/His41 dyad in Mpro, His148/Thr203/Glu222 in GFP, and Arg120/Tyr355/**Val523**/Ser530 in COX-2 (3LN1 numbers the mature protein, so those are Arg106/Tyr341/Val509/Ser516 in the file; labels are shifted by +14 to match the literature).
 
 All HQC figures are estimates, not billed hardware jobs. `compute_circuit_hqc_cost` in `src/qrotate/metrics.py` counts gates on the rebased circuit (62 `PhasedX` + 32 `ZZPhase` + 1 measurement on 9 qubits) and applies the H-series formula HQC = 5 + (N₁q + 10·N₂q + 5·N_m)·shots/5000 (100 shots, ≈13.64 HQCs per circuit). Each RUS circuit evaluation (up to two per iteration) runs a different circuit, so it is costed as its own job. 2Q gate totals likewise sum over all evaluations. "Speedup" / "step-count ratio" compares classical grid steps with RUS circuit evaluations. It is not a wall-clock comparison.
+
+### Register Size: 9 Qubits or 17 (`benchmarks/molecular_showdown.json`)
+
+Both configurations run the same blind pose recovery on the same six ligands, so the choice rests on measured numbers rather than assumption:
+
+| | 4 sites / **9 qubits** | 8 sites / **17 qubits** |
+| :--- | :---: | :---: |
+| Recovered the deposited pose | 6/6 | 6/6 |
+| RUS iterations | 1-5 | 1-7 |
+| HQC per circuit | 13.64 | 22.04 |
+| HQC per screen | 13.64-68.20 | 22.04-154.28 |
+| Worst false match between different ligands | 0.777 | **0.510** |
+| Self-overlap under 0.1 A coordinate noise | **0.70-0.99** | 0.57-0.92 |
+
+Per system:
+
+| Active Site | 9 qb: iterations / HQC | 17 qb: iterations / HQC |
+| :--- | :---: | :---: |
+| Rhodopsin | 2 / 27.28 | 2 / 44.08 |
+| GFP | 4 / 54.56 | 4 / 88.16 |
+| Mpro | 2 / 27.28 | 2 / 44.08 |
+| COX-2 | 2 / 27.28 | 4 / 88.16 |
+| Azobenzene | 5 / 68.20 | 7 / 154.28 |
+| H2 | 1 / 13.64 | 1 / 22.04 |
+
+**The larger register does not recover poses better.** It is the same job at both sizes and costs roughly twice as much to do. What it buys is discrimination — telling one ligand from another — where 17 qubits drops the worst false match from 0.78 to 0.51. So 9 qubits stays the default for pose recovery, and 17 is the right choice when the question is "which of these molecules is this?" and the coordinates are good enough to afford the lower noise tolerance. The Constellation's 4Q/8Q toggle shows both sides live.
 
 ### What the Encoding Can Tell Apart (`benchmarks/encoding_diagnostics.json`)
 
@@ -408,7 +436,7 @@ Two honest caveats:
 ### Key Takeaways for the Submission Package
 
 1. **Elimination of the $O(N_{\text{rot}} \times N_{\text{atoms}})$ Combinatorial Explosion**: Classical docking chokes as atom count and angular resolution increase (1.728M steps at $N=1,000$). Q-Rotate evaluates all orientations simultaneously in wave space via $\hat{U}_{\text{tube}}(\tau)$.
-2. **Strict Constant Qubit Footprint ($N_{\text{qubits}} = 9$)**: Regardless of whether a molecule has 10 or 1,000 atoms, the spherical harmonic compression maps into a fixed 9-qubit register.
+2. **The register does not grow with the molecule**: 10 atoms or 1,000, the encoding compresses into the same register. That register is **9 qubits** in the 4-site configuration (4 target + 4 probe + 1 ancilla) and **17** in the 8-site one. What is invariant is the independence from atom count, not the number 9 — both sizes are benchmarked above, and choosing between them is a real trade, not a detail.
 3. **Zero SWAP Gates on Trapped Ions**: Direct execution on Quantinuum's trapped-ion QCCD architecture requires **0 SWAP gates**, preventing circuit depth degradation.
 4. **Convergence is not guaranteed**: mid-circuit measurement and reset let the RUS loop retry without deepening the circuit. On the six experimental ligands it recovers the deposited pose in **1–5 iterations** (13.64–68.20 estimated HQCs), but the loop can and does fail — `run_blind_rus_pose_recovery` returns `locked=False` when it runs out of budget, and the Constellation page will show that happening if you start it far from the answer.
 
