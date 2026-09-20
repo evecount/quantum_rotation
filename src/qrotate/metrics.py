@@ -306,10 +306,10 @@ def benchmark_qrotate_engine(
 ) -> QRotateBenchmarkResult:
     """Runs the Q-Rotate RUS pipeline and tracks convergence iterations and H2 metrics.
 
-    Convergence now comes from `run_blind_rus_protocol` actually simulating and
-    shot-sampling the real SWAP-test circuit each iteration (see the "Honest
-    Blind RUS Protocol" section above) rather than being asserted after a fixed
-    number of loop passes — `locked` can genuinely be False here.
+    Convergence comes from `run_blind_rus_pose_recovery` actually simulating and
+    shot-sampling the real SWAP-test circuit each iteration, searching over the
+    ligand's pose, rather than being asserted after a fixed number of loop
+    passes — `locked` can genuinely be False here.
     """
     n_atoms = len(pocket_coords)
 
@@ -326,9 +326,13 @@ def benchmark_qrotate_engine(
     )
     rebased = rebase_to_h2_gateset(circ)
 
-    # 3. Real blind RUS phase-locking search (see run_blind_rus_protocol)
-    rus_result = run_blind_rus_protocol(
-        pocket_phases, ligand_phases, tau=0.25, omega=(1.0, 0.5, 0.25),
+    # 3. Blind RUS search over the pose, the same one-parameter search the
+    #    molecular showdown and the Constellation page run. Searching free
+    #    phase values instead would let the optimiser move to registers no
+    #    rotation of the molecule can produce.
+    rus_result = run_blind_rus_pose_recovery(
+        pocket_phases, ligand_coords, n_qubits=n_qubits,
+        tau=0.25, omega=(1.0, 0.5, 0.25),
         max_retries=max_retries, shots=shots, seed=seed,
     )
 
@@ -430,7 +434,7 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
         "n_atoms_proxy": 20,       # Retinal chromophore: ~20 heavy atoms in active site
         "n_qubits": 4,
         "base_delta_phi": [0.12, -0.45, 0.88, -0.22],
-        "optimal_angle_deg": 0.0,
+        "optimal_angle_deg": 45.0,
     },
     {
         "id": "gfp",
@@ -512,33 +516,42 @@ def run_molecular_showdown(
         n_qubits = sys["n_qubits"]
         seed = zlib.crc32(sys["id"].encode()) % (2**31)
 
-        # Experimental coordinates when we have them (see structures.py); the
-        # ligand starts rotated off its reference pose by optimal_angle_deg.
-        pocket_coords, ligand_coords = _system_coordinates(
+        # Experimental coordinates when we have them (see structures.py). Both
+        # sides are the same ligand: the target is its deposited pose, the probe
+        # starts rotated off that pose by optimal_angle_deg. See
+        # `_system_coordinates` for why this measures pose recovery rather than
+        # protein-ligand docking.
+        target_coords, probe_coords = _system_coordinates(
             sys["id"], sys["n_atoms_proxy"], sys["optimal_angle_deg"], seed)
         site = sites.get(sys["id"])
-        N = len(ligand_coords)
+        N = len(probe_coords)
 
-        # Benchmark classical docking
-        class_res = benchmark_classical_docking(pocket_coords, ligand_coords)
+        # How far off the probe starts, so a reader can see the difficulty
+        # rather than inferring it from the iteration count.
+        probe_geom = MolecularGeometry(f"{sys['id']}_probe", ["C"] * N, probe_coords)
+        start_phases = pocket_ligand_to_qubit_phases(probe_geom, n_qubits=n_qubits)
 
-        # The pocket's phase fingerprint is the (hidden) target, derived from
-        # its real atoms rather than a hand-picked constant. The ligand starts
-        # from an uninformed all-zero guess so the blind RUS search has genuine
-        # work to do instead of starting 90%-pre-converged.
-        pocket_geom = MolecularGeometry(f"{sys['id']}_pocket", ["C"] * len(pocket_coords), pocket_coords)
-        pocket_phases = pocket_ligand_to_qubit_phases(pocket_geom, n_qubits=n_qubits)
-        ligand_phases_init = [0.0 for _ in pocket_phases]
+        # Classical baseline: the same grid search over the same atoms.
+        class_res = benchmark_classical_docking(target_coords, probe_coords)
 
-        circ = build_pytket_swap_test_circuit(pocket_phases, ligand_phases_init, tau=0.25, omega=(1.0, 0.5, 0.25))
+        # The target's phase fingerprint is what the search is looking for,
+        # derived from its real atoms rather than a hand-picked constant. The
+        # probe starts from an uninformed all-zero guess so the blind RUS search
+        # has genuine work to do instead of starting 90%-pre-converged.
+        target_geom = MolecularGeometry(f"{sys['id']}_target", ["C"] * len(target_coords), target_coords)
+        pocket_phases = pocket_ligand_to_qubit_phases(target_geom, n_qubits=n_qubits)
+        # Compile one representative circuit purely to read its gate counts.
+        circ = build_pytket_swap_test_circuit(pocket_phases, start_phases, tau=0.25, omega=(1.0, 0.5, 0.25))
         rebased = rebase_to_h2_gateset(circ)
 
-        rus_result = run_blind_rus_protocol(
-            pocket_phases, ligand_phases_init, tau=0.25, omega=(1.0, 0.5, 0.25),
-            # NOTE: Python's builtin hash() is randomized per-process (PYTHONHASHSEED)
-            # and would make this benchmark non-reproducible run-to-run; zlib.crc32
-            # is stable across runs/machines, which is what "reproducible benchmark
-            # logs" (Engineering & Reproducibility criterion) actually requires.
+        # Search over the pose, not over free phase values: the probe starts
+        # at its rotated (wrong) orientation and the blind loop has to turn it
+        # back. NOTE: Python's builtin hash() is randomized per-process
+        # (PYTHONHASHSEED) and would make this non-reproducible run-to-run;
+        # zlib.crc32 is stable across runs and machines.
+        rus_result = run_blind_rus_pose_recovery(
+            pocket_phases, probe_coords, n_qubits=n_qubits,
+            tau=0.25, omega=(1.0, 0.5, 0.25),
             max_retries=15, shots=100, seed=seed,
         )
         iterations = rus_result.iterations
@@ -548,8 +561,12 @@ def run_molecular_showdown(
         classical_steps = (int(360.0 / 30.0) ** 3) * N
         speedup = classical_steps / max(1, rus_result.circuit_evaluations * (2 * n_qubits + 1))
 
+        start_p0 = simulate_swap_test_statevector(pocket_phases, start_phases, 0.25, (1.0, 0.5, 0.25))
+
         entry = {
             "system_id": sys["id"],
+            "start_offset_deg": sys["optimal_angle_deg"],
+            "start_p0": round(start_p0, 4),
             "system_name": sys["name"],
             "system_tag": sys["tag"],
             # Where the coordinates came from, so a reader can check them.
@@ -558,7 +575,8 @@ def run_molecular_showdown(
             ),
             "ligand_resname": site["ligand"]["resname"] if site else None,
             "n_ligand_atoms": N,
-            "n_pocket_atoms": len(pocket_coords),
+            "n_pocket_atoms": site["pocket"]["n_atoms"] if site else None,
+            "comparison": "pose recovery: ligand vs a rotated copy of itself",
             "n_atoms_proxy": N,
             "classical_time_sec": class_res.execution_time_sec,
             "classical_steps": class_res.computational_steps,
@@ -623,8 +641,18 @@ def _system_coordinates(
     angle_deg: float,
     seed: int,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """(pocket, ligand) for one system, ligand rotated -angle_deg off its
-    reference pose so that dialling +angle_deg brings it back into register.
+    """(target, probe) for one system: the ligand in its deposited pose, and a
+    copy of it rotated -angle_deg away, so dialling +angle_deg brings the probe
+    back into register.
+
+    WHAT THIS MEASURES: pose recovery, not protein-ligand docking. Both sides
+    are the same molecule, so there is a true answer (the deposited pose) and
+    "locked" means the blind search found it. Comparing the pocket's phase
+    register against the ligand's would not have that property: they are
+    different molecules with different atom counts, so no rotation makes their
+    fingerprints agree and whichever angle scores highest is incidental. The
+    pocket is still read from the same experimental entry and reported for
+    context (atom counts, residues) — it just is not the thing being matched.
 
     Uses the experimental coordinates in benchmarks/active_sites.json when they
     are present (see src/qrotate/structures.py). Falls back to the old synthetic
@@ -633,8 +661,8 @@ def _system_coordinates(
     """
     real = site_coordinates(system_id)
     if real is not None:
-        pocket, ligand_reference = real
-        return pocket, _rotate_z(ligand_reference, -angle_deg)
+        _pocket, ligand_reference = real
+        return ligand_reference, _rotate_z(ligand_reference, -angle_deg)
 
     warnings.warn(
         f"{system_id}: benchmarks/active_sites.json not found — falling back to "
@@ -666,6 +694,60 @@ def _rotate_z(coords: np.ndarray, angle_deg: float) -> np.ndarray:
     ])
     centroid = coords.mean(axis=0)
     return (coords - centroid) @ rot.T + centroid
+
+
+def run_blind_rus_pose_recovery(
+    target_phases: Sequence[float],
+    probe_coords: np.ndarray,
+    n_qubits: int,
+    tau: float = 0.25,
+    omega: tuple[float, float, float] = (1.0, 0.5, 0.25),
+    max_retries: int = 15,
+    shots: int = 100,
+    lock_confidence_sigma: float = 1.645,
+    step_deg: float = 60.0,
+    seed: Optional[int] = None,
+) -> BlindRusResult:
+    """Blind RUS over the POSE rather than over free phase values.
+
+    `run_blind_rus_protocol` perturbs the four phase numbers directly, which no
+    physical ligand can do: a register the search can move to any point in
+    [-pi, pi]^4 does not correspond to any rotation of a molecule. This variant
+    perturbs the rotation angle, re-encodes the rotated coordinates, and
+    measures the resulting circuit — the same one-parameter search the
+    Constellation page runs, and the thing the method actually claims to do.
+
+    Still blind: the target phases are never read, only the sampled parity.
+    """
+    rng = np.random.default_rng(seed)
+
+    def measure(angle_deg: float) -> tuple[float, dict]:
+        rotated = _rotate_z(probe_coords, angle_deg)
+        geom = MolecularGeometry("probe", ["C"] * len(rotated), rotated)
+        phases = pocket_ligand_to_qubit_phases(geom, n_qubits=n_qubits)
+        p0_true = simulate_swap_test_statevector(target_phases, phases, tau, omega)
+        shot_res = simulate_shot_sampling(p0_true, n_shots=shots, seed=int(rng.integers(1 << 31)))
+        return p0_true, shot_res
+
+    angle = 0.0
+    p0_true, shot_res = measure(angle)
+    circuit_evals = 1
+    p0_hat = shot_res["empirical_prob"]
+
+    for attempt in range(max_retries):
+        iterations = attempt + 1
+        if p0_hat - lock_confidence_sigma * shot_res["std_err"] >= 0.90:
+            return BlindRusResult(True, iterations, circuit_evals, p0_hat, p0_true)
+
+        trial_angle = angle + (step_deg / np.sqrt(attempt + 1.0)) * rng.choice([-1.0, 1.0])
+        trial_p0_true, trial_shot = measure(trial_angle)
+        circuit_evals += 1
+        if trial_shot["empirical_prob"] > p0_hat:
+            angle, p0_true, shot_res = trial_angle, trial_p0_true, trial_shot
+            p0_hat = trial_shot["empirical_prob"]
+
+    locked = p0_hat - lock_confidence_sigma * shot_res["std_err"] >= 0.90
+    return BlindRusResult(locked, max_retries, circuit_evals, p0_hat, p0_true)
 
 
 def export_constellation_profiles(

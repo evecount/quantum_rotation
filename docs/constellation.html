@@ -1050,7 +1050,7 @@
       </div>
       <div class="hud-title">
         <h1>The Resonance Constellation</h1>
-        <p>Turn the ligand until it lines up with the pocket. The overlap readout is a simulated SWAP test, not an idealised curve.</p>
+        <p>Turn the ligand back into its deposited pose. The overlap readout is a simulated SWAP test on experimental coordinates.</p>
       </div>
     </div>
     <div class="hud-nav">
@@ -1095,7 +1095,7 @@
       <span class="telemetry-label">Target HW</span>
       <span class="telemetry-val" style="color: #fff;">Quantinuum H2-2E</span>
     </div>
-    <p class="telemetry-note">Coordinates are experimental (RCSB PDB / PubChem, see <code>benchmarks/active_sites.json</code>). Overlap and target angle come from simulating the SWAP-test circuit at every angle (<code>assets/constellation_profiles.js</code>). HQC is the estimated cost of a full blind RUS screen, not a billed hardware job.</p>
+    <p class="telemetry-note">Coordinates are experimental (RCSB PDB / PubChem, see <code>benchmarks/active_sites.json</code>). This is <strong>pose recovery</strong>: the ligand is matched against a rotated copy of itself, not against the pocket. Overlap comes from simulating the SWAP-test circuit at every angle. HQC is an estimate, not a billed hardware job.</p>
   </div>
 
   <!-- Interaction Guide Hint -->
@@ -1193,7 +1193,7 @@
         </div>
         <canvas id="landscape-canvas" width="380" height="96" class="scope-canvas"
                 role="img" aria-label="Simulated probability of the ancilla reading zero across a full rotation"></canvas>
-        <p id="landscape-caption" class="landscape-caption">Peak and decoy peaks are computed, not drawn by hand.</p>
+        <p id="landscape-caption" class="landscape-caption">Every point is simulated, not drawn by hand.</p>
       </div>
 
       <!-- Live Oscilloscope Scope -->
@@ -1204,8 +1204,8 @@
         </div>
         <canvas id="resonance-scope" width="380" height="65" class="scope-canvas"></canvas>
         <div class="scope-legend">
-          <span class="legend-pocket">● Gold: Pocket Target |ψ<sub>P</sub>⟩</span>
-          <span class="legend-ligand">● Cyan: Drug Ligand |ψ<sub>L</sub>⟩</span>
+          <span class="legend-pocket">● Gold: Deposited Pose |ψ<sub>T</sub>⟩</span>
+          <span class="legend-ligand">● Cyan: Rotated Probe |ψ<sub>P</sub>⟩</span>
         </div>
         <div style="background: rgba(255,255,255,0.08); border-radius: 2px; height: 4px; margin-top: 6px; overflow: hidden;">
           <div id="resonance-meter-bar" class="resonance-meter-bar" style="width: 50%;"></div>
@@ -1312,7 +1312,7 @@
             What is this page for?
           </h2>
           <p style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
-            A hands-on demo of Q-Rotate's core idea: you find the fit by rotating continuously and checking the overlap, not by searching a grid. Each system uses its experimental coordinates (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, plus exact H2) and plots its own simulated landscape, so some have decoy peaks that a hill-climbing search can stall on and some don't. The HQC figure is the estimated cost of that system's benchmark screen (<code>benchmarks/molecular_showdown.json</code>).
+            A hands-on demo of Q-Rotate's core idea: you find the fit by rotating continuously and checking the overlap, not by searching a grid. Each system uses its experimental coordinates (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, plus exact H2) and plots its own simulated landscape. What you are recovering is the ligand's deposited pose — the molecule is matched against a rotated copy of itself, which is a well-posed question. Matching it against the pocket instead would not be: they are different molecules, so no angle makes their registers agree. The HQC figure is the estimated cost of that system's benchmark screen (<code>benchmarks/molecular_showdown.json</code>).
           </p>
         </div>
         <button class="btn-close" id="btn-close-modal" aria-label="Close Guide" style="font-size: 1.2rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #cbd5e1; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
@@ -1356,7 +1356,7 @@
           </h3>
           <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
             The starfield and nebulae are scene dressing. The waves below are the readout that matters.
-            The <strong style="color: #f59e0b;">Gold wave</strong> is the pocket, the <strong style="color: #00f5d4;">Cyan wave</strong> is the rotating ligand. Their phase difference is what the SWAP test measures, and the resonance landscape plots the resulting P(0) for every angle.
+            The <strong style="color: #f59e0b;">Gold wave</strong> is the ligand's deposited pose, the <strong style="color: #00f5d4;">Cyan wave</strong> is the copy you are rotating. Their phase difference is what the SWAP test measures, and the resonance landscape plots the resulting P(0) for every angle.
             When the waves are out of phase, interference ripples scatter through the nebula.
           </p>
         </div>
@@ -1385,12 +1385,12 @@
             <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #10b981; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
               <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #10b981;">[R] / Run Blind RUS Search</div>
               <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Let the algorithm search instead of you</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Runs the same repeat-until-success loop as <code>run_blind_rus_protocol</code>: it never reads the target angle, only the sampled parity bit, and keeps a random step when the measurement improves. It can and does fail &mdash; on a landscape with decoy peaks it may stall on one, which is the point.</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Runs the same repeat-until-success loop as <code>run_blind_rus_protocol</code>: it never reads the target angle, only the sampled parity bit, and keeps a random step when the measurement improves. It can and does fail: start it far from the answer and the random walk may run out of iterations before the parity bit gives it anything to climb.</div>
             </div>
             <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #38bdf8; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
               <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #38bdf8;">Click the resonance landscape</div>
               <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Jump straight to any angle</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">The chart is the simulated P(0) for every angle of this system. Green marks the true optimum, amber marks decoy peaks.</div>
+              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">The chart is the simulated P(0) for every angle of this system. Green marks the optimum; amber would mark any secondary peak, though after the phase-encoding fix these landscapes are single-basin.</div>
             </div>
           </div>
         </div>
@@ -2366,8 +2366,9 @@
     // =========================================================================
     // RESONANCE LANDSCAPE CHART
     // Plots the exported P(0) curve for the active system with a marker at the
-    // current angle, so the decoy peaks a hill-climbing search can stall on
-    // are visible rather than implied.
+    // current angle. Secondary peaks are marked when they exist: before the
+    // circular-mean fix in hpc_bridge.py these landscapes were full of them,
+    // and every one was an artefact of averaging angles across the branch cut.
     // =========================================================================
     const landscapeCanvas = document.getElementById('landscape-canvas');
     const landscapeCtx = landscapeCanvas ? landscapeCanvas.getContext('2d') : null;
@@ -2492,7 +2493,7 @@
       if (landscapeCaption) {
         landscapeCaption.innerText = decoys.length
           ? `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. ${decoys.length} decoy peak${decoys.length > 1 ? 's' : ''} (amber) can trap a hill-climbing search.`
-          : `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. No decoy peaks: a single basin, so this one is easy to find.`;
+          : `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. Single basin: overlap rises steadily toward the deposited pose.`;
       }
     }
 
@@ -2654,7 +2655,7 @@
           parityResult.innerHTML = `
             <strong>ZERO-PARITY LOCKED (Ideal Overlap: ${(probZero * 100).toFixed(1)}%)</strong><br />
             Ancilla Readout: |0⟩ • Ground State Synchronized!<br />
-            <span style="font-size:0.75rem;">Fit verified from the parity bit alone — no coordinates were exchanged in this test.</span>
+            <span style="font-size:0.75rem;">Pose recovered from the parity bit alone — the target angle was never read.</span>
           `;
           logGatePulse('SWAP Ancilla: |0⟩', 'ZERO-PARITY LOCK ACHIEVED!');
           playPulseSound('lock');
