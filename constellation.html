@@ -747,6 +747,16 @@
 
     #landscape-canvas { height: 96px; }
 
+    @media (prefers-reduced-motion: reduce) {
+      /* Camera auto-rotation is disabled in JS too; this covers the CSS-driven
+         glows, pulses and the drawer slide. */
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
     .landscape-caption {
       font-size: 0.66rem;
       font-family: var(--font-mono);
@@ -1104,13 +1114,13 @@
   </div>
 
   <!-- Inspector Drawer -->
-  <div class="inspector-drawer" id="inspector-drawer">
+  <div class="inspector-drawer" id="inspector-drawer" role="dialog" aria-modal="false" aria-labelledby="drawer-title">
     <div class="inspector-header">
       <div>
         <span class="inspector-tag" id="drawer-tag">Photochemical Active Site</span>
         <h2 class="inspector-title" id="drawer-title">11-cis Retinal in Rhodopsin</h2>
       </div>
-      <button class="btn-close" id="btn-close-drawer">&times;</button>
+      <button class="btn-close" id="btn-close-drawer" aria-label="Close system inspector">&times;</button>
     </div>
 
     <p class="inspector-desc" id="drawer-desc">
@@ -1325,8 +1335,8 @@
             <span style="color: var(--accent-gold); font-weight: 800;">2.</span> Nebulae &amp; Wave Interference
           </h3>
           <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
-            The particle field and wave rings visualize the continuous phase eigenstates of the molecular system.
-            The <strong style="color: #f59e0b;">Gold wave</strong> represents the static receptor protein cavity, while the <strong style="color: #00f5d4;">Cyan wave</strong> represents the rotating ligand pose.
+            The starfield and nebulae are scene dressing. The waves below are the readout that matters.
+            The <strong style="color: #f59e0b;">Gold wave</strong> is the pocket, the <strong style="color: #00f5d4;">Cyan wave</strong> is the rotating ligand. Their phase difference is what the SWAP test measures, and the resonance landscape plots the resulting P(0) for every angle.
             When the waves are out of phase, interference ripples scatter through the nebula.
           </p>
         </div>
@@ -1601,8 +1611,19 @@
     controls.dampingFactor = 0.05;
     controls.maxDistance = 250;
     controls.minDistance = 12;
-    controls.autoRotate = true;
+    // Respect the OS "reduce motion" setting: a slowly drifting camera is
+    // exactly the kind of continuous movement that setting asks us to stop.
+    const prefersReducedMotion = window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : { matches: false, addEventListener: () => {} };
+
+    controls.autoRotate = !prefersReducedMotion.matches;
     controls.autoRotateSpeed = 0.35;
+    if (prefersReducedMotion.addEventListener) {
+      prefersReducedMotion.addEventListener('change', (e) => {
+        controls.autoRotate = !e.matches && !drawer.classList.contains('open');
+      });
+    }
 
     // Studio & Cosmic Physically-Based Lights
     const hemiLight = new THREE.HemisphereLight(0x38bdf8, 0x030712, 0.85);
@@ -2401,6 +2422,13 @@
       landscapeCtx.arc(xOf(cur), yOf(profileP0(reg, cur)), 2.5, 0, Math.PI * 2);
       landscapeCtx.fill();
 
+      // Keep the screen-reader description in step with what is plotted.
+      landscapeCanvas.setAttribute(
+        'aria-label',
+        `Simulated P(0) across a full rotation for ${sys.name}. Peak ${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg} degrees. ` +
+        `Currently at ${cur.toFixed(0)} degrees where P(0) is ${profileP0(reg, cur).toFixed(3)}.`
+      );
+
       if (landscapeSource) landscapeSource.innerText = `${reg.total_qubits} qubits · statevector`;
       if (landscapeCaption) {
         landscapeCaption.innerText = decoys.length
@@ -2803,9 +2831,22 @@
     });
 
     // Close drawer button
-    btnCloseDrawer.addEventListener('click', () => {
+    function closeDrawer() {
       drawer.classList.remove('open');
-      controls.autoRotate = true;
+      controls.autoRotate = !prefersReducedMotion.matches;
+    }
+
+    btnCloseDrawer.addEventListener('click', closeDrawer);
+
+    // Escape closes whichever overlay is open, which is what a keyboard user
+    // will reach for first.
+    window.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (howToPlayModal && howToPlayModal.classList.contains('active')) {
+        closeModal();
+      } else if (drawer.classList.contains('open')) {
+        closeDrawer();
+      }
     });
 
     // Galaxy button selectors
