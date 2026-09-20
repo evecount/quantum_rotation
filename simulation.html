@@ -1119,7 +1119,7 @@
               <p>Regardless of whether the target biomolecule contains 10 atoms or 10,000 atoms, the entire system compresses into 4 pocket qubits, 4 ligand qubits, and 1 spectator ancilla qubit (<span style="font-family: var(--font-mono); color: var(--accent-gold);">O(1)</span> space).</p>
             </div>
             <div class="sim-guide-card">
-              <h4><span style="color: var(--accent-green);">&bull;</span> Zero-Knowledge Blind Parity</h4>
+              <h4><span style="color: var(--accent-green);">&bull;</span> Coordinate-Free Blind Parity</h4>
               <p>Proprietary pharmaceutical drug structures and target active site pockets never disclose their 3D coordinates. Interference occurs in quantum superposition, measuring only a single-bit parity ancilla.</p>
             </div>
           </div>
@@ -1190,7 +1190,7 @@
         <!-- TAB 4: Blind Parity SWAP -->
         <div class="sim-modal-section" id="tab-swap">
           <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
-            <strong style="color: #ffffff;">Zero-Knowledge Blind Parity SWAP Test:</strong>
+            <strong style="color: #ffffff;">Coordinate-Free Blind Parity SWAP Test:</strong>
             How do you verify whether a candidate drug fits a patented biological target without revealing either party's 3D atomic coordinates?
             Q-Rotate prepares an isolated spectator <strong>ancilla qubit</strong> in the superposition state |+&rang; = (|0&rang; + |1&rang;)/&radic;2 and executes a Controlled-SWAP (Fredkin) network across all 4 register pairs.
           </div>
@@ -1295,7 +1295,7 @@
     ry(q_ligand, angle(0.15))
     rz(q_ligand, angle(0.10))
 
-    <span style="color:#64748b;"># 4. Zero-Knowledge Blind Parity SWAP</span>
+    <span style="color:#64748b;"># 4. Coordinate-Free Blind Parity SWAP</span>
     h(ancilla)
     cx(q_ligand, q_pocket)
     toffoli(ancilla, q_pocket, q_ligand)  <span style="color:#64748b;"># 3x Native ZZPhase</span>

@@ -508,7 +508,7 @@ and elsewhere), so no functionality was lost from the live site.
               <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 14px 16px;">
                 <div style="font-size: 0.78rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-bottom: 4px;">2. Commercial Unfair Advantage (30% Score)</div>
                 <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5; margin: 0;">
-                  30% of the score is <em>Problem & Business Value</em>. Our Blind Parity Test functions as a <strong>Zero-Knowledge Proof</strong> for pharmaceutical licensing—allowing biopharma giants to screen proprietary candidate drugs without IP exposure.
+                  30% of the score is <em>Problem & Business Value</em>. Our Blind Parity Test enables <strong>coordinate-free screening</strong> for pharmaceutical licensing—letting biopharma giants screen proprietary candidate drugs without transmitting raw 3D coordinates.
                 </p>
               </div>
 
@@ -581,7 +581,7 @@ and elsewhere), so no functionality was lost from the live site.
                     <td style="padding: 10px 12px; font-weight: 600; color: #fff;">IP Privacy & Commercial Value</td>
                     <td style="padding: 10px 12px; color: #94a3b8;">Zero IP privacy: Both parties must disclose full 3D atomic coordinates to run simulation.</td>
                     <td style="padding: 10px 12px; color: #94a3b8;">Full coordinates encoded in public Hamiltonian; easily reverse-engineered.</td>
-                    <td style="padding: 10px 12px; color: #e2e8f0; background: rgba(0, 245, 212, 0.04);"><strong>Zero-Knowledge Molecular Proof:</strong> Blind Parity readout confirms binding fit with a single qubit without disclosing chemical structures!</td>
+                    <td style="padding: 10px 12px; color: #e2e8f0; background: rgba(0, 245, 212, 0.04);"><strong>Coordinate-Free Molecular Screening:</strong> Blind Parity readout scores binding fit from a single ancilla without transmitting chemical structures!</td>
                   </tr>
                 </tbody>
               </table>
@@ -592,7 +592,7 @@ and elsewhere), so no functionality was lost from the live site.
           <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;">
             <div style="font-size: 0.8rem; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;"> Venture & GTM Status Note for James</div>
             <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; margin: 0;">
-              The foundational commercial thesis—framing the $O(1)$ Blind Parity Test as a Zero-Knowledge Proof for confidential pharmaceutical IP licensing—was drafted as part of the technical prototype. 
+              The foundational commercial thesis—framing the $O(1)$ Blind Parity Test as coordinate-free screening for confidential pharmaceutical IP licensing—was drafted as part of the technical prototype. 
               <strong>James is now assigned to review and elevate the commercial narrative, engage his biopharma network for prospective pilot syndicates, and structure the venture pitch for the Grand Finals.</strong>
             </p>
           </div>
@@ -652,7 +652,7 @@ and elsewhere), so no functionality was lost from the live site.
             <div class="james-input-group">
               <label class="james-label" for="james-box-pitch">1. Executive Positioning & 2-Sentence Investor Hook</label>
               <div class="james-sublabel">How should we pitch Project Q-Rotate in 30 seconds to sovereign wealth judges (SGInnovate/CQT) and biopharma venture scouts?</div>
-              <textarea id="james-box-pitch" class="james-textarea" placeholder="e.g. Project Q-Rotate introduces the first zero-knowledge molecular pattern matching engine on trapped-ion quantum hardware, replacing months of supercomputer spatial docking with instant O(1) quantum parity readout without exposing proprietary chemical IP..."></textarea>
+              <textarea id="james-box-pitch" class="james-textarea" placeholder="e.g. Project Q-Rotate introduces the first coordinate-free molecular pose search engine on trapped-ion quantum hardware, replacing months of supercomputer spatial docking with instant O(1) quantum parity readout without exposing proprietary chemical IP..."></textarea>
             </div>
 
             <!-- Box 2 -->
@@ -666,21 +666,21 @@ and elsewhere), so no functionality was lost from the live site.
             <div class="james-input-group">
               <label class="james-label" for="james-box-roi">3. Commercial ROI & Quantified Business Value (30% of Judging Score!)</label>
               <div class="james-sublabel">What is the quantified savings in compute cost, screening time, or IP protection?</div>
-              <textarea id="james-box-roi" class="james-textarea" placeholder="e.g. Cuts initial virtual hit-screening compute costs from $250k on classical GPU clusters down to minutes of QPU time; eliminates multi-million dollar chemical IP leakage risks through blind zero-knowledge verification..."></textarea>
+              <textarea id="james-box-roi" class="james-textarea" placeholder="e.g. Cuts initial virtual hit-screening compute costs from $250k on classical GPU clusters down to minutes of QPU time; reduces chemical IP exposure through coordinate-free blind parity verification..."></textarea>
             </div>
 
             <!-- Box 4 -->
             <div class="james-input-group">
               <label class="james-label" for="james-box-partners">4. Prospective Biopharma Partners & Pilot Syndicates</label>
               <div class="james-sublabel">Which enterprise contacts or venture syndicates in your network can we approach for an exploratory pilot or Letter of Intent (LOI)?</div>
-              <textarea id="james-box-partners" class="james-textarea" placeholder="e.g. Reaching out to biopharma venture scouts in Singapore, SGInnovate deeptech EIRs, and healthtech venture funds to test appetite for exploratory zero-knowledge docking pilot..."></textarea>
+              <textarea id="james-box-partners" class="james-textarea" placeholder="e.g. Reaching out to biopharma venture scouts in Singapore, SGInnovate deeptech EIRs, and healthtech venture funds to test appetite for an exploratory coordinate-free docking pilot..."></textarea>
             </div>
 
             <!-- Box 5 -->
             <div class="james-input-group">
               <label class="james-label" for="james-box-finals">5. Singapore Grand Finals Presentation Notes (November 19)</label>
               <div class="james-sublabel">What are the essential slide narrative beats or judge objection handlers we must nail on stage?</div>
-              <textarea id="james-box-finals" class="james-textarea" placeholder="e.g. Slide 1: The $50B docking bottleneck. Slide 2: Trapped-ion rotation breakthrough. Slide 3: Live 3D resonance demo. Slide 4: Zero-knowledge pharma licensing business model. Slide 5: The team & commercial roadmap..."></textarea>
+              <textarea id="james-box-finals" class="james-textarea" placeholder="e.g. Slide 1: The $50B docking bottleneck. Slide 2: Trapped-ion rotation breakthrough. Slide 3: Live 3D resonance demo. Slide 4: Coordinate-free pharma licensing business model. Slide 5: The team & commercial roadmap..."></textarea>
             </div>
 
             <!-- Action Toolbar -->

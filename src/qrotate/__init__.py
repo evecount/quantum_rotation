@@ -1,4 +1,4 @@
-"""Project Q-Rotate: Efficient Molecular Pattern Matching for Biomolecular Simulation.
+"""Project Q-Rotate: Coordinate-Free Molecular Pose Search for Biomolecular Simulation.
 
 Translates 3D structural alignment and ligand-protein pocket lock-and-key matching
 into an information-theoretic quantum blind parity check with adaptive RUS loops.

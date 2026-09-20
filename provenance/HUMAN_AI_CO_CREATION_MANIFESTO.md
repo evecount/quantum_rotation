@@ -1,6 +1,6 @@
 # 📜 Human-AI Co-Creation Manifesto & Integrity Statement
 
-**Project:** Q-Rotate: Efficient Molecular Pattern Matching  
+**Project:** Q-Rotate: Coordinate-Free Molecular Pose Search  
 **Challenge:** Quantinuum Singapore Grand Challenge 2026  
 **Track:** Biomolecular Simulation  
 **Lead Inventor:** Gwendalynn (婉婷) Lim ("1ightray")  
