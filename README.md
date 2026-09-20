@@ -403,7 +403,7 @@ The cost is real and is reported rather than hidden: `arg(Mₖ)/k` is only defin
 Two honest caveats:
 
 * **The redesign did not make the headline benchmark faster.** Pose recovery still takes 1–5 iterations, because the old encoder was already rotation-equivariant once the branch-cut bug was fixed. What changed is correctness the benchmark never tested.
-* **The 4-site register is weak at telling molecules apart** (worst case 0.78). Eight shells fix that (0.51) at the cost of noise tolerance, since each shell then holds fewer atoms. Use 8 when coordinates are good and discrimination matters; 4 when they are rough. The H2 row is the one exception in the mirror column (0.99) and it is correct: H2 lies along x with z = 0, so it genuinely *is* its own reflection.
+* **The 4-site register is weak at telling molecules apart** (worst case 0.78). Eight shells fix that (0.51) at the cost of noise tolerance, since each shell then holds fewer atoms, and of cost: 22.04 HQC per circuit against 13.64. Use 8 when coordinates are good and discrimination matters; 4 when they are rough. The Constellation's 4Q/8Q toggle shows this directly — its false-match bar is fed from `benchmarks/encoding_diagnostics.json` and moves when you switch registers. Note that the register size makes no difference to recovering a ligand's *own* pose, which is what the landscape measures; the larger register buys discrimination, not accuracy. The H2 row is the one exception in the mirror column (0.99) and it is correct: H2 lies along x with z = 0, so it genuinely *is* its own reflection.
 
 ### Key Takeaways for the Submission Package
 
