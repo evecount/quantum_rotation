@@ -131,6 +131,89 @@ def test_phase_encoding_is_rotation_equivariant():
     print("PASS: test_phase_encoding_is_rotation_equivariant")
 
 
+def test_second_order_moment_rescues_centrosymmetric_molecules():
+    """A centrosymmetric shell cancels the first-order moment exactly, so the
+    encoder falls back to the second order. H2 is the extreme case: it used to
+    encode as all zeros at every orientation, which made any "match" against it
+    two empty registers agreeing."""
+    from qrotate.hpc_bridge import (
+        shell_moment_orders, shell_anisotropy, is_encoding_degenerate,
+        has_180_degree_ambiguity,
+    )
+
+    h2 = np.array([[-0.3707, 0.0, 0.0], [0.3707, 0.0, 0.0]])
+    geom = MolecularGeometry("h2", ["H", "H"], h2)
+
+    assert shell_moment_orders(geom, 4)[0] == 2, "first shell should fall back to second order"
+    assert shell_anisotropy(geom, 4)[0] > 0.9, "two opposed atoms give a maximal second moment"
+    assert not is_encoding_degenerate(geom, 4), "H2 is encodable via the second order"
+    assert has_180_degree_ambiguity(geom, 4), "a second-order-only register is mod 180 degrees"
+
+    # The register must still move with the molecule: a rotation by alpha
+    # shifts arg(M2)/2 by exactly alpha.
+    base = pocket_ligand_to_qubit_phases(geom, n_qubits=4)[0]
+    for deg in (20.0, 45.0, 80.0):
+        theta = np.radians(deg)
+        rot = np.array([[np.cos(theta), -np.sin(theta), 0.0],
+                        [np.sin(theta), np.cos(theta), 0.0],
+                        [0.0, 0.0, 1.0]])
+        turned = h2 @ rot.T
+        moved = pocket_ligand_to_qubit_phases(
+            MolecularGeometry("h2", ["H", "H"], turned), n_qubits=4)[0]
+        # Modulo pi, because the second order cannot see a 180 degree flip.
+        err = np.angle(np.exp(2j * (moved - base - theta))) / 2.0
+        assert abs(err) < 1e-9, f"{deg} deg moved the phase by {moved - base}"
+
+    # And that ambiguity is a statement about the molecule, not a defect:
+    # H2 turned by 180 degrees is the same arrangement.
+    flipped = MolecularGeometry("h2", ["H", "H"], -h2)
+    assert abs(pocket_ligand_to_qubit_phases(flipped, n_qubits=4)[0] - base) < 1e-9
+
+    print("PASS: test_second_order_moment_rescues_centrosymmetric_molecules")
+
+
+def test_moment_ladder_handles_rotational_symmetry():
+    """A k-fold symmetric ring cancels every angular moment below order k, so
+    the encoder climbs the ladder until one survives. Benzene's six-fold ring
+    is the case that matters: it is everywhere in drug-like molecules, and with
+    only first and second moments it would encode as nothing."""
+    from qrotate.hpc_bridge import (
+        shell_moment_orders, rotational_ambiguity_deg, is_encoding_degenerate,
+        MAX_MOMENT_ORDER,
+    )
+
+    def ring(n, radius=1.4):
+        a = np.linspace(0, 2 * np.pi, n, endpoint=False)
+        return np.column_stack([radius * np.cos(a), radius * np.sin(a), np.zeros(n)])
+
+    for n in (2, 3, 4, 6):
+        geom = MolecularGeometry(f"ring{n}", ["C"] * n, ring(n))
+        assert shell_moment_orders(geom, 1)[0] == n, f"{n}-fold ring should use order {n}"
+        assert not is_encoding_degenerate(geom, 1), f"{n}-fold ring should be encodable"
+        # Its register necessarily repeats every 360/n degrees, which is a fact
+        # about the molecule: those orientations are the same arrangement.
+        assert abs(rotational_ambiguity_deg(geom, 1) - 360.0 / n) < 1e-9
+
+        # Equivariance still holds: rotating by alpha moves the phase by alpha.
+        base = pocket_ligand_to_qubit_phases(geom, n_qubits=1)[0]
+        theta = np.radians(360.0 / n / 3.0)      # safely inside one period
+        rot = np.array([[np.cos(theta), -np.sin(theta), 0.0],
+                        [np.sin(theta), np.cos(theta), 0.0],
+                        [0.0, 0.0, 1.0]])
+        moved = pocket_ligand_to_qubit_phases(
+            MolecularGeometry("r", ["C"] * n, ring(n) @ rot.T), n_qubits=1)[0]
+        err = np.angle(np.exp(1j * n * (moved - base - theta))) / n
+        assert abs(err) < 1e-9, f"{n}-fold ring: phase moved by {moved - base}, expected {theta}"
+
+    # Beyond the ladder's top the encoder must report nothing rather than
+    # silently encode noise.
+    too_symmetric = MolecularGeometry("ring", ["C"] * (MAX_MOMENT_ORDER + 2),
+                                      ring(MAX_MOMENT_ORDER + 2))
+    assert is_encoding_degenerate(too_symmetric, 1)
+
+    print(f"PASS: test_moment_ladder_handles_rotational_symmetry (orders 2-{MAX_MOMENT_ORDER})")
+
+
 def test_phase_encoding_is_permutation_invariant():
     """The register must describe the molecule, not the order its atoms happen
     to appear in. The previous encoder chunked atoms by input order, so a
@@ -288,6 +371,8 @@ if __name__ == "__main__":
     test_guppy_circuit_compilation()
     test_metrics_cost()
     test_phase_encoding_is_rotation_equivariant()
+    test_second_order_moment_rescues_centrosymmetric_molecules()
+    test_moment_ladder_handles_rotational_symmetry()
     test_phase_encoding_is_permutation_invariant()
     test_phase_encoding_sees_chirality()
     test_active_sites_are_real_structures()

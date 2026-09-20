@@ -19,6 +19,7 @@ try:
     from .hpc_bridge import (
         MolecularGeometry, pocket_ligand_to_qubit_phases,
         shell_anisotropy, is_encoding_degenerate,
+        shell_moment_orders, has_180_degree_ambiguity,
     )
     from .structures import site_coordinates, site_elements, load_active_sites
     from .circuits import (
@@ -31,6 +32,7 @@ except ImportError:
     from src.qrotate.hpc_bridge import (
         MolecularGeometry, pocket_ligand_to_qubit_phases,
         shell_anisotropy, is_encoding_degenerate,
+        shell_moment_orders, has_180_degree_ambiguity,
     )
     from src.qrotate.structures import site_coordinates, site_elements, load_active_sites
     from src.qrotate.circuits import (
@@ -575,13 +577,17 @@ def run_molecular_showdown(
         # mean nothing, so the lock below would be an artefact, not a result.
         anisotropy = shell_anisotropy(target_geom, n_qubits=n_qubits)
         degenerate = is_encoding_degenerate(target_geom, n_qubits=n_qubits)
+        moment_orders = shell_moment_orders(target_geom, n_qubits=n_qubits)
+        ambiguous_180 = has_180_degree_ambiguity(target_geom, n_qubits=n_qubits)
 
         entry = {
             "system_id": sys["id"],
             "start_offset_deg": sys["optimal_angle_deg"],
             "start_p0": round(start_p0, 4),
             "shell_anisotropy": [round(a, 4) for a in anisotropy],
+            "shell_moment_orders": moment_orders,
             "encoding_degenerate": degenerate,
+            "ambiguous_180_deg": ambiguous_180,
             "system_name": sys["name"],
             "system_tag": sys["tag"],
             # Where the coordinates came from, so a reader can check them.
@@ -617,6 +623,11 @@ def run_molecular_showdown(
             print("  WARNING     : every angular moment of this molecule cancels, so its")
             print("                register is all zeros at every orientation. Any 'lock'")
             print("                below is two empty registers agreeing, NOT a result.")
+        elif ambiguous_180:
+            print("  NOTE        : first-order moments cancel here, so the register comes")
+            print("                from the second order and is known only modulo 180 deg.")
+            print("                The pose is recovered up to that flip, which for a")
+            print("                centrosymmetric molecule is the same arrangement.")
         print(f"  Q-Rotate    : {'Locked in' if locked else 'NO LOCK after'} {iterations} RUS iterations"
               f" | final P(0)={rus_result.final_p0_hat:.3f} | {hqc_info['n_qubits']} qubits | 0 SWAPs")
         print(f"  HQC Cost    : {hqc_info['estimated_hqcs']:.2f} HQCs ({hqc_info['circuit_runs']} circuit runs x {hqc_info['hqc_per_circuit']:.2f}) | Speedup: ~{speedup:,.0f}x")
@@ -826,6 +837,10 @@ def export_constellation_profiles(
             best_i = int(np.argmax(p0_curve))
             registers[str(n_qubits)] = {
                 "n_sites": n_qubits,
+                "moment_orders": shell_moment_orders(pocket_geom, n_qubits=n_qubits),
+                # Second-order-only registers repeat every 180 degrees, so the
+                # landscape has two equally correct peaks rather than a trap.
+                "ambiguous_180_deg": has_180_degree_ambiguity(pocket_geom, n_qubits=n_qubits),
                 "total_qubits": 2 * n_qubits + 1,
                 "pocket_phases": [round(float(x), 3) for x in pocket_phases],
                 "p0_curve": p0_curve,

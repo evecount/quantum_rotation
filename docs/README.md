@@ -353,11 +353,11 @@ These six run on **experimental coordinates** pulled from the RCSB PDB and PubCh
 | SARS-CoV-2 Mpro + Nirmatrelvir | PDB 7VH8 | 4WI | 35 | −50° | 0.701 | 2 | 1.000 | 27.28 |
 | COX-2 + Celecoxib | PDB 3LN1 | CEL | 26 | +80° | 0.573 | 2 | 0.960 | 27.28 |
 | Azobenzene Switch | PubChem 2272 | AZO | 14 | −115° | 0.502 | 5 | 0.950 | 68.20 |
-| ~~H2 Hardware Benchmark~~ | exact | H2 | 2 | +15° | — | — | — | — |
+| H2 Hardware Benchmark | exact | H2 | 2 | +15° | 0.990 | 1 | 0.990 | 13.64 |
 
-Five of five usable systems recover, in 2–5 iterations.
+Six of six recover, in 1–5 iterations.
 
-**H2 is struck out because its result was meaningless, not because it failed.** Its two atoms sit exactly opposite each other, so the first-order angular moment the encoding is built on cancels to zero. Its register is all zeros at *every* orientation, which means the "lock in 1 iteration" earlier versions of this table reported was two empty registers agreeing — an artefact, not a measurement. `is_encoding_degenerate` now detects this, the benchmark excludes it from the headline, and the Constellation refuses to call it a lock. This is a real limit of any dipole-style moment on a centrosymmetric molecule, and it is worth knowing before someone screens one.
+All six recover now, including H2, which the second-order moment rescued (see the moment ladder above). **Read H2's row with its caveat:** it starts at P(0) 0.990 because a 2-atom molecule barely changes under a 15° turn, and its register is only determined modulo 180°, so "1 iteration" is close to free. Azobenzene, starting at 0.502 with no overlap signal at all, is the one that had to work.
 
 Two corrections make these numbers different from earlier versions of this table, and both were bugs rather than tuning:
 
@@ -381,7 +381,24 @@ Pose recovery measures how fast the loop finds a known answer. It says nothing a
 | Two *different* ligands, worst case | 0.83 | 0.78 | **0.51** | How often it would report a false match |
 | Coordinates jittered by 0.1 Å | — | 0.70–0.99 | 0.57–0.92 | Tolerance of experimental uncertainty |
 
-The redesign (`molecular_shell_phases` in `src/qrotate/hpc_bridge.py`) sorts atoms into shells by radius instead of by file order, and weights each atom by √Z·e^(κẑ). Radius and z are both unchanged by a rotation about z, so the encoding stays exactly rotation-equivariant — the property pose recovery depends on — while becoming permutation invariant and reflection-sensitive. Three tests pin those properties.
+The redesign (`molecular_shell_phases` in `src/qrotate/hpc_bridge.py`) sorts atoms into shells by radius instead of by file order, and weights each atom by √Z·e^(κẑ). Radius and z are both unchanged by a rotation about z, so the encoding stays exactly rotation-equivariant — the property pose recovery depends on — while becoming permutation invariant and reflection-sensitive. Five tests pin those properties.
+
+#### The moment ladder, and what symmetry costs
+
+Each shell contributes the argument of a complex moment M₁ = Σ wᵢ e^(iφᵢ). A symmetric arrangement cancels it exactly: H2's two atoms sit at φ = 0 and π with equal weights, so M₁ = 0 and the whole register was zeros at *every* orientation. That is why earlier versions of this table reported "H2: locked in 1 iteration" — two empty registers agreeing.
+
+Higher moments are what survive there. A k-fold symmetric arrangement cancels every order below k, so the encoder climbs the ladder and uses the first order with magnitude: H2 needs M₂, a benzene ring needs M₆. Crucially `arg(Mₖ)/k` shifts by exactly α under a rotation of α, so equivariance is preserved at every order.
+
+The cost is real and is reported rather than hidden: `arg(Mₖ)/k` is only defined modulo 360/k degrees, so a shell encoded at order k cannot tell α from α + 360/k. For a k-fold symmetric molecule that is not lost information — those orientations *are* the same arrangement. H2's landscape now has two equally correct peaks 180° apart, and the Constellation says so instead of calling the second one a trap.
+
+| Arrangement | Order used | Register repeats every |
+| :--- | :---: | :---: |
+| The five benchmark ligands | 1 | 360° (no ambiguity) |
+| H2, or any opposed pair | 2 | 180° |
+| A benzene-like 6-fold ring | 6 | 60° |
+| 7-fold or higher symmetry | — | flagged as degenerate, not encoded |
+
+`rotational_ambiguity_deg` reports the period and `is_encoding_degenerate` catches what the ladder still cannot reach, so a symmetry beyond order 6 is refused rather than silently mis-encoded.
 
 Two honest caveats:
 
