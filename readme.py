@@ -103,6 +103,8 @@ def _(mo):
 
     To satisfy the **Technical Performance (30%)** and **Scientific Merit (20%)** criteria for the Grand Challenge, we benchmarked classical 3D spatial grid-search against our **Q-Rotate Repeat-Until-Success (RUS)** engine across scaling atom counts:
 
+    All rows below use the 4-site / 9-qubit configuration.
+
     | Atom Count ($N$) | Classical Grid Steps (30°) | Q-Rotate RUS Loops | Register Size | Native 2Q Gates | Trapped-Ion SWAPs | Estimated HQCs | Operation Speedup |
     | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
     | **10** | 17,280 steps | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
@@ -114,7 +116,7 @@ def _(mo):
     These synthetic point clouds lock on the first try (best case). The six real active sites take 1–15 RUS iterations and an estimated 13.6–395.6 HQCs per screen (`benchmarks/molecular_showdown.json`). HQCs are estimated from the compiled circuit with the H-series formula, not billed jobs, and "speedup" is a step-count ratio, not wall-clock.
 
     - **Zero SWAP Gates:** Trapped-ion all-to-all connectivity allows direct 2Q coupling without circuit degradation.
-    - **Constant 9-Qubit Footprint:** Fixed register size regardless of macromolecular atom count.
+    - **Register size does not grow with the molecule:** 9 qubits at 4 sites, 17 at 8, whatever the atom count. Both are benchmarked in `benchmarks/molecular_showdown.json`; the larger one buys discrimination between ligands, not better pose recovery.
     - **Reproduce Locally:** Run `python -m src.qrotate.metrics` from the repository root.
     """)
     return
