@@ -9,6 +9,7 @@ from __future__ import annotations
 import time
 import json
 import os
+import warnings
 import zlib
 import numpy as np
 from dataclasses import dataclass, asdict
@@ -16,6 +17,7 @@ from typing import Sequence, Optional
 
 try:
     from .hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
+    from .structures import site_coordinates, load_active_sites
     from .circuits import (
         build_pytket_swap_test_circuit,
         rebase_to_h2_gateset,
@@ -24,6 +26,7 @@ try:
     )
 except ImportError:
     from src.qrotate.hpc_bridge import MolecularGeometry, pocket_ligand_to_qubit_phases
+    from src.qrotate.structures import site_coordinates, load_active_sites
     from src.qrotate.circuits import (
         build_pytket_swap_test_circuit,
         rebase_to_h2_gateset,
@@ -441,7 +444,7 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
     },
     {
         "id": "mpro",
-        "name": "SARS-CoV-2 Mpro + Paxlovid",
+        "name": "SARS-CoV-2 Mpro + Nirmatrelvir",
         "tag": "Antiviral Covalent Inhibitor",
         "desc": "Main viral 3CL protease with Nirmatrelvir. Catalytic dyad Cys145 / His41 with zero-tolerance covalent pyrrolidone geometry.",
         "n_atoms_proxy": 49,       # Nirmatrelvir + binding pocket residues: ~49 heavy atoms
@@ -451,7 +454,7 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
     },
     {
         "id": "cox2",
-        "name": "COX-2 vs COX-1 Channel",
+        "name": "COX-2 + Celecoxib",
         "tag": "Single-Residue Selectivity",
         "desc": "Val523 (COX-2) vs Ile523 (COX-1) — single residue substitution opening the secondary NSAID binding pocket. Clinical target for anti-inflammatory drugs without GI toxicity.",
         "n_atoms_proxy": 35,       # Active site contact residues: ~35 heavy atoms
@@ -471,7 +474,7 @@ REAL_MOLECULE_SYSTEMS: list[dict] = [
     },
     {
         "id": "h2bench",
-        "name": "Quantinuum H2 Hardware Benchmark",
+        "name": "H2 Hardware Benchmark",
         "tag": "Trapped-Ion Physical Stress Test",
         "desc": "Gate-level benchmark: PhasedX, ZZPhase, mid-circuit reset across 4-site and 8-site stress manifolds. Validates QCCD all-to-all connectivity with zero SWAP overhead.",
         "n_atoms_proxy": 8,        # 8-site stress manifold
@@ -503,37 +506,29 @@ def run_molecular_showdown(
     print("6 Pharmaceutical Targets × Classical 3D Grid vs. Q-Rotate RUS on H2")
     print("=" * 80)
 
+    sites = load_active_sites()
+
     for sys in REAL_MOLECULE_SYSTEMS:
-        N = sys["n_atoms_proxy"]
         n_qubits = sys["n_qubits"]
-        delta_phi = sys["base_delta_phi"]
+        seed = zlib.crc32(sys["id"].encode()) % (2**31)
 
-        # Build realistic coordinates: pocket on a sphere, ligand misaligned by optimal_angle
-        radius = 3.5
-        phi_grid = np.linspace(0, 2 * np.pi, N, endpoint=False)
-        x = radius * np.cos(phi_grid)
-        y = radius * np.sin(phi_grid)
-        z = np.sin(phi_grid * 2) * 0.8
-        pocket_coords = np.column_stack([x, y, z])
-
-        # Rotate ligand by the optimal_angle_deg for this molecule
-        angle_rad = np.radians(sys["optimal_angle_deg"])
-        rot = np.array([
-            [np.cos(angle_rad), -np.sin(angle_rad), 0.0],
-            [np.sin(angle_rad),  np.cos(angle_rad), 0.0],
-            [0.0,               0.0,               1.0],
-        ])
-        ligand_coords = pocket_coords @ rot.T + np.random.normal(0, 0.05, pocket_coords.shape)
+        # Experimental coordinates when we have them (see structures.py); the
+        # ligand starts rotated off its reference pose by optimal_angle_deg.
+        pocket_coords, ligand_coords = _system_coordinates(
+            sys["id"], sys["n_atoms_proxy"], sys["optimal_angle_deg"], seed)
+        site = sites.get(sys["id"])
+        N = len(ligand_coords)
 
         # Benchmark classical docking
         class_res = benchmark_classical_docking(pocket_coords, ligand_coords)
 
-        # Benchmark Q-Rotate with real molecule phase fingerprints. The pocket's
-        # fingerprint is the (hidden) target; the ligand starts from an
-        # uninformed all-zero phase guess so the blind RUS search has genuine
+        # The pocket's phase fingerprint is the (hidden) target, derived from
+        # its real atoms rather than a hand-picked constant. The ligand starts
+        # from an uninformed all-zero guess so the blind RUS search has genuine
         # work to do instead of starting 90%-pre-converged.
-        pocket_phases = [float(dp) for dp in delta_phi]
-        ligand_phases_init = [0.0 for _ in delta_phi]
+        pocket_geom = MolecularGeometry(f"{sys['id']}_pocket", ["C"] * len(pocket_coords), pocket_coords)
+        pocket_phases = pocket_ligand_to_qubit_phases(pocket_geom, n_qubits=n_qubits)
+        ligand_phases_init = [0.0 for _ in pocket_phases]
 
         circ = build_pytket_swap_test_circuit(pocket_phases, ligand_phases_init, tau=0.25, omega=(1.0, 0.5, 0.25))
         rebased = rebase_to_h2_gateset(circ)
@@ -544,7 +539,7 @@ def run_molecular_showdown(
             # and would make this benchmark non-reproducible run-to-run; zlib.crc32
             # is stable across runs/machines, which is what "reproducible benchmark
             # logs" (Engineering & Reproducibility criterion) actually requires.
-            max_retries=15, shots=100, seed=zlib.crc32(sys["id"].encode()) % (2**31),
+            max_retries=15, shots=100, seed=seed,
         )
         iterations = rus_result.iterations
         locked = rus_result.locked
@@ -557,6 +552,13 @@ def run_molecular_showdown(
             "system_id": sys["id"],
             "system_name": sys["name"],
             "system_tag": sys["tag"],
+            # Where the coordinates came from, so a reader can check them.
+            "structure_source": (
+                f"{site['source']['db']} {site['source']['id']}" if site else "synthetic fallback"
+            ),
+            "ligand_resname": site["ligand"]["resname"] if site else None,
+            "n_ligand_atoms": N,
+            "n_pocket_atoms": len(pocket_coords),
             "n_atoms_proxy": N,
             "classical_time_sec": class_res.execution_time_sec,
             "classical_steps": class_res.computational_steps,
@@ -574,8 +576,12 @@ def run_molecular_showdown(
 
         print(f"\n[{sys['id'].upper():10s}] {sys['name']}")
         print(f"  Tag         : {sys['tag']}")
+        print(f"  Structure   : {entry['structure_source']}"
+              + (f" | ligand {entry['ligand_resname']} ({N} heavy atoms)"
+                 f" | pocket {entry['n_pocket_atoms']} atoms" if site else ""))
         print(f"  Active Site : {N} atoms | Classical grid: {class_res.computational_steps:,} steps in {class_res.execution_time_sec:.4f}s")
-        print(f"  Q-Rotate    : Locked in {iterations} RUS iterations | {hqc_info['n_qubits']} qubits | 0 SWAPs")
+        print(f"  Q-Rotate    : {'Locked in' if locked else 'NO LOCK after'} {iterations} RUS iterations"
+              f" | final P(0)={rus_result.final_p0_hat:.3f} | {hqc_info['n_qubits']} qubits | 0 SWAPs")
         print(f"  HQC Cost    : {hqc_info['estimated_hqcs']:.2f} HQCs ({hqc_info['circuit_runs']} circuit runs x {hqc_info['hqc_per_circuit']:.2f}) | Speedup: ~{speedup:,.0f}x")
 
     n_locked = sum(1 for r in results if r["qrotate_locked"])
@@ -611,10 +617,32 @@ def run_molecular_showdown(
 # 5. Constellation Resonance Profiles (real P(0) landscapes for the 3D page)
 # =====================================================================
 
-def _system_coordinates(n_atoms: int, angle_deg: float, seed: int) -> tuple[np.ndarray, np.ndarray]:
-    """Pocket point cloud plus a ligand copy offset by -angle_deg, so rotating
-    the ligand by +angle_deg brings it back into register. Same construction as
-    `run_molecular_showdown`, with seeded noise so the export is reproducible."""
+def _system_coordinates(
+    system_id: str,
+    n_atoms: int,
+    angle_deg: float,
+    seed: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """(pocket, ligand) for one system, ligand rotated -angle_deg off its
+    reference pose so that dialling +angle_deg brings it back into register.
+
+    Uses the experimental coordinates in benchmarks/active_sites.json when they
+    are present (see src/qrotate/structures.py). Falls back to the old synthetic
+    ring only if that file is missing, and says so, because a run on synthetic
+    points must never be mistaken for a run on a real active site.
+    """
+    real = site_coordinates(system_id)
+    if real is not None:
+        pocket, ligand_reference = real
+        return pocket, _rotate_z(ligand_reference, -angle_deg)
+
+    warnings.warn(
+        f"{system_id}: benchmarks/active_sites.json not found — falling back to "
+        "a synthetic ring, which is NOT real molecular geometry. Run "
+        "`python -m src.qrotate.structures` to fetch the real structures.",
+        RuntimeWarning,
+        stacklevel=2,
+    )
     radius = 3.5
     phi_grid = np.linspace(0, 2 * np.pi, n_atoms, endpoint=False)
     pocket = np.column_stack([
@@ -628,13 +656,16 @@ def _system_coordinates(n_atoms: int, angle_deg: float, seed: int) -> tuple[np.n
 
 
 def _rotate_z(coords: np.ndarray, angle_deg: float) -> np.ndarray:
+    """Rotates about z through the cloud's own centroid, so a rotation stays a
+    rotation instead of swinging the molecule around the crystal origin."""
     a = np.radians(angle_deg)
     rot = np.array([
         [np.cos(a), -np.sin(a), 0.0],
         [np.sin(a), np.cos(a), 0.0],
         [0.0, 0.0, 1.0],
     ])
-    return coords @ rot.T
+    centroid = coords.mean(axis=0)
+    return (coords - centroid) @ rot.T + centroid
 
 
 def export_constellation_profiles(
@@ -662,7 +693,8 @@ def export_constellation_profiles(
 
     for sys in REAL_MOLECULE_SYSTEMS:
         seed = zlib.crc32(sys["id"].encode()) % (2**31)
-        pocket, ligand_base = _system_coordinates(sys["n_atoms_proxy"], sys["optimal_angle_deg"], seed)
+        pocket, ligand_base = _system_coordinates(
+            sys["id"], sys["n_atoms_proxy"], sys["optimal_angle_deg"], seed)
         pocket_geom = MolecularGeometry("pocket", ["C"] * len(pocket), pocket)
 
         # Both register sizes the page offers: 4 sites (H2) and 8 (Helios).

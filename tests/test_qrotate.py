@@ -101,6 +101,45 @@ def test_metrics_cost():
     print(f"PASS: test_metrics_cost (Estimate: {cost_info['estimated_hqcs']} HQCs)")
 
 
+def test_active_sites_are_real_structures():
+    """The six benchmark systems must come from experimental coordinates, and
+    each pocket must contain the residues that site is actually known for. This
+    is the guard against quietly sliding back to synthetic point clouds."""
+    from qrotate.structures import load_active_sites
+
+    sites = load_active_sites()
+    if not sites:
+        print("SKIP: benchmarks/active_sites.json missing "
+              "(run `python -m src.qrotate.structures` to fetch the structures)")
+        return
+
+    expected_sources = {
+        "rhodopsin": "1U19", "gfp": "1EMA", "mpro": "7VH8",
+        "cox2": "3LN1", "azobenzene": "2272", "h2bench": "H2",
+    }
+    # Residues each active site is defined by in the literature.
+    expected_residues = {
+        "rhodopsin": ["LYS296", "GLU113"],
+        "gfp": ["HIS148", "THR203", "GLU222"],
+        "mpro": ["CYS145", "HIS41"],
+        "cox2": ["VAL523", "ARG120", "TYR355"],
+    }
+
+    assert set(sites) == set(expected_sources), sorted(sites)
+    for sid, source_id in expected_sources.items():
+        assert sites[sid]["source"]["id"] == source_id, sid
+        assert sites[sid]["ligand"]["n_atoms"] > 0, sid
+        assert len(sites[sid]["ligand"]["coords"]) == sites[sid]["ligand"]["n_atoms"], sid
+
+    for sid, residues in expected_residues.items():
+        present = set(sites[sid]["pocket"]["residues"])
+        missing = [r for r in residues if r not in present]
+        assert not missing, f"{sid} pocket is missing {missing}"
+
+    print(f"PASS: test_active_sites_are_real_structures "
+          f"({len(sites)} sites, catalytic residues present)")
+
+
 def test_hqc_cost_counts_compiled_circuit():
     """The HQC estimate must come from the rebased circuit's real gate counts,
     and a multi-run screen must cost exactly runs x one circuit."""
@@ -173,6 +212,7 @@ if __name__ == "__main__":
     test_pytket_circuit()
     test_guppy_circuit_compilation()
     test_metrics_cost()
+    test_active_sites_are_real_structures()
     test_hqc_cost_counts_compiled_circuit()
     test_swap_test_statevector_matches_closed_form()
     test_blind_rus_protocol_does_not_cheat()
