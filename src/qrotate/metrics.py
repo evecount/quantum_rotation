@@ -607,6 +607,136 @@ def run_molecular_showdown(
     return payload
 
 
+# =====================================================================
+# 5. Constellation Resonance Profiles (real P(0) landscapes for the 3D page)
+# =====================================================================
+
+def _system_coordinates(n_atoms: int, angle_deg: float, seed: int) -> tuple[np.ndarray, np.ndarray]:
+    """Pocket point cloud plus a ligand copy offset by -angle_deg, so rotating
+    the ligand by +angle_deg brings it back into register. Same construction as
+    `run_molecular_showdown`, with seeded noise so the export is reproducible."""
+    radius = 3.5
+    phi_grid = np.linspace(0, 2 * np.pi, n_atoms, endpoint=False)
+    pocket = np.column_stack([
+        radius * np.cos(phi_grid),
+        radius * np.sin(phi_grid),
+        np.sin(phi_grid * 2) * 0.8,
+    ])
+    rng = np.random.default_rng(seed)
+    ligand = _rotate_z(pocket, -angle_deg) + rng.normal(0, 0.05, pocket.shape)
+    return pocket, ligand
+
+
+def _rotate_z(coords: np.ndarray, angle_deg: float) -> np.ndarray:
+    a = np.radians(angle_deg)
+    rot = np.array([
+        [np.cos(a), -np.sin(a), 0.0],
+        [np.sin(a), np.cos(a), 0.0],
+        [0.0, 0.0, 1.0],
+    ])
+    return coords @ rot.T
+
+
+def export_constellation_profiles(
+    step_deg: int = 2,
+    json_path: Optional[str] = "benchmarks/constellation_profiles.json",
+    js_path: Optional[str] = "assets/constellation_profiles.js",
+) -> dict:
+    """Sweeps each benchmark system through a full turn and records the real
+    SWAP-test P(0) at every angle, plus the phase register the rotation
+    produces.
+
+    This is the same pipeline the benchmarks use — coordinates through
+    `pocket_ligand_to_qubit_phases` into `simulate_swap_test_statevector` — so
+    the 3D Constellation page can plot measured landscapes instead of a
+    textbook cos^2 curve. The JS file is written because the page must work
+    from file:// too, where fetch() of a local JSON is blocked.
+    """
+    tau, omega = 0.25, (1.0, 0.5, 0.25)
+    angles = list(range(-180, 181, step_deg))
+    profiles = []
+
+    print("=" * 80)
+    print("CONSTELLATION RESONANCE PROFILES (real statevector P(0) landscapes)")
+    print("=" * 80)
+
+    for sys in REAL_MOLECULE_SYSTEMS:
+        seed = zlib.crc32(sys["id"].encode()) % (2**31)
+        pocket, ligand_base = _system_coordinates(sys["n_atoms_proxy"], sys["optimal_angle_deg"], seed)
+        pocket_geom = MolecularGeometry("pocket", ["C"] * len(pocket), pocket)
+
+        # Both register sizes the page offers: 4 sites (H2) and 8 (Helios).
+        registers = {}
+        for n_qubits in (4, 8):
+            pocket_phases = pocket_ligand_to_qubit_phases(pocket_geom, n_qubits=n_qubits)
+            p0_curve, phase_curve = [], []
+            for ang in angles:
+                rotated = _rotate_z(ligand_base, ang)
+                geom = MolecularGeometry("ligand", ["C"] * len(rotated), rotated)
+                phases = pocket_ligand_to_qubit_phases(geom, n_qubits=n_qubits)
+                p0_curve.append(round(simulate_swap_test_statevector(pocket_phases, phases, tau, omega), 4))
+                phase_curve.append([round(float(x), 3) for x in phases])
+
+            best_i = int(np.argmax(p0_curve))
+            registers[str(n_qubits)] = {
+                "n_sites": n_qubits,
+                "total_qubits": 2 * n_qubits + 1,
+                "pocket_phases": [round(float(x), 3) for x in pocket_phases],
+                "p0_curve": p0_curve,
+                "ligand_phases_by_angle": phase_curve,
+                "best_angle_deg": angles[best_i],
+                "best_p0": p0_curve[best_i],
+                "worst_p0": min(p0_curve),
+                # Decoy peaks: local maxima that a hill-climbing search can
+                # settle on without reaching the true optimum.
+                "local_maxima_deg": [
+                    angles[i] for i in range(1, len(p0_curve) - 1)
+                    if p0_curve[i] > p0_curve[i - 1] and p0_curve[i] >= p0_curve[i + 1] and p0_curve[i] > 0.7
+                ],
+            }
+
+        r4 = registers["4"]
+        profiles.append({
+            "id": sys["id"],
+            "name": sys["name"],
+            "n_atoms_proxy": sys["n_atoms_proxy"],
+            "angles_deg": angles,
+            "registers": registers,
+        })
+        print(f"[{sys['id']:10s}] 4-site peak P(0)={r4['best_p0']:.4f} at {r4['best_angle_deg']:+4d} deg "
+              f"| floor {r4['worst_p0']:.4f} | {len(r4['local_maxima_deg'])} local maxima "
+              f"| 8-site peak {registers['8']['best_p0']:.4f} at {registers['8']['best_angle_deg']:+4d} deg")
+
+    payload = {
+        "constellation_profiles": profiles,
+        "tau": tau,
+        "omega": list(omega),
+        "step_deg": step_deg,
+        "source": "src/qrotate/metrics.py::export_constellation_profiles",
+        "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+
+    if json_path:
+        os.makedirs(os.path.dirname(os.path.abspath(json_path)), exist_ok=True)
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+        print(f"\n[Saved constellation profiles to {json_path}]")
+
+    if js_path:
+        os.makedirs(os.path.dirname(os.path.abspath(js_path)), exist_ok=True)
+        with open(js_path, "w", encoding="utf-8") as f:
+            f.write("// Generated by src/qrotate/metrics.py::export_constellation_profiles\n")
+            f.write("// Real SWAP-test P(0) landscapes. Do not edit by hand: re-run\n")
+            f.write("// `python -m src.qrotate.metrics` to regenerate.\n")
+            f.write("window.QROTATE_PROFILES = ")
+            json.dump(payload, f, separators=(",", ":"))
+            f.write(";\n")
+        print(f"[Saved constellation profiles to {js_path}]")
+
+    return payload
+
+
 if __name__ == "__main__":
     run_performance_showdown(output_json_path="benchmarks/showdown_results.json")
     run_molecular_showdown(output_json_path="benchmarks/molecular_showdown.json")
+    export_constellation_profiles()
