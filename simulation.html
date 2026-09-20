@@ -1481,7 +1481,10 @@
       stdErr,
       ciLow,
       ciHigh,
-      isLocked: empiricalP >= 0.90 || App.rusIteration >= 3
+      // Lock only when the LOWER confidence bound clears 0.90, matching
+      // run_blind_rus_protocol in src/qrotate/metrics.py. The old condition
+      // also locked on `rusIteration >= 3`, so the demo always "succeeded".
+      isLocked: (empiricalP - 1.645 * stdErr) >= 0.90
     };
   }
 
@@ -1553,6 +1556,7 @@
 
     fidelity: 0.5,
     rusIteration: 0,
+    circuitEvals: 0,
     maxRus: 5,
     isLocked: false,
     classicalStepCounter: 0,
@@ -2218,7 +2222,7 @@
     'Classical atom positions are compressed via spherical harmonics into an invariant 4-phase register. Regardless of whether N=10 or N=1000 atoms, only 4 continuous ion phases are utilized.',
     'The parameter τ continuously rotates the ligand wavefunction in phase space. Under Trapped-Ion native ZZPhase gates, Euler rotations orient the molecule into alignment.',
     'A central ancilla ion mediates a blind controlled-SWAP parity measurement. The overlap fidelity is evaluated non-destructively without collapsing or revealing molecular secrets.',
-    'If parity measurement fails (|1⟩), mid-circuit quantum feedback dampens the angular error and repeats. Once |0⟩ is detected, the target molecule snaps into optimal lock.'
+    'If parity measurement fails (|1⟩), the blind search tries another perturbation and re-measures, keeping it only if the measured parity improved. The pocket phases are never read, so a hard mismatch can run out of iterations without locking. Once the lower confidence bound clears 90%, the pose settles into optimal lock.'
   ];
 
   function resetState() {
@@ -2226,6 +2230,7 @@
     App.isRunning = false;
     App.isLocked = false;
     App.rusIteration = 0;
+    App.circuitEvals = 0;
 
     App.molecule = generateMolecularStructure(App.numAtoms, App.misalignDeg, App.noiseSigma);
     App.pocketPhases = projectCoordinatesToPhases(App.molecule.pocketCoords, App.molecule.pocketCharges, App.qubitMode);
@@ -2357,6 +2362,7 @@
     App.ciHigh = shotRes.ciHigh;
     App.isLocked = shotRes.isLocked;
     App.rusIteration = 1;
+    App.circuitEvals += 1;
 
     if (App.isLocked) {
       playLockChord();
@@ -2376,22 +2382,34 @@
       return;
     }
 
+    // Blind SPSA-style search, mirroring run_blind_rus_protocol in
+    // src/qrotate/metrics.py: the pocket phases are never read. Each iteration
+    // tries a random perturbation and keeps it only if the MEASURED parity
+    // improved, so the search can genuinely fail to lock within maxRus.
     const n = App.qubitMode;
     for (let it = 2; it <= App.maxRus; it++) {
       App.rusIteration = it;
-      for (let i = 0; i < n; i++) {
-        App.currentLigandPhases[i] += (App.pocketPhases[i] - App.currentLigandPhases[i]) * 0.55;
+
+      const scale = 0.6 / Math.sqrt(it);
+      const trial = App.currentLigandPhases.map(
+        (ph) => ph + scale * (Math.random() < 0.5 ? -1 : 1)
+      );
+
+      const trialProbZero = 0.5 * (1.0 + calculateFidelity(App.pocketPhases, trial));
+      const trialRes = sampleProjectiveMeasurements(trialProbZero, App.shotMode);
+      App.circuitEvals += 1;
+
+      if (trialRes.empiricalP > App.empiricalProb) {
+        App.currentLigandPhases = trial;
+        App.fidelity = calculateFidelity(App.pocketPhases, trial);
+        App.measuredCounts0 = trialRes.counts0;
+        App.measuredCounts1 = trialRes.counts1;
+        App.empiricalProb = trialRes.empiricalP;
+        App.stdError = trialRes.stdErr;
+        App.ciLow = trialRes.ciLow;
+        App.ciHigh = trialRes.ciHigh;
+        App.isLocked = trialRes.isLocked;
       }
-      App.fidelity = calculateFidelity(App.pocketPhases, App.currentLigandPhases);
-      const probZero = 0.5 * (1.0 + App.fidelity);
-      const shotRes = sampleProjectiveMeasurements(probZero, App.shotMode);
-      App.measuredCounts0 = shotRes.counts0;
-      App.measuredCounts1 = shotRes.counts1;
-      App.empiricalProb = shotRes.empiricalP;
-      App.stdError = shotRes.stdErr;
-      App.ciLow = shotRes.ciLow;
-      App.ciHigh = shotRes.ciHigh;
-      App.isLocked = shotRes.isLocked;
 
       if (App.isLocked) {
         playLockChord();
@@ -2404,19 +2422,17 @@
         await delay(1200);
       }
     }
+
+    if (!App.isLocked) {
+      playSynthTone(174.61, 0.5, 'sawtooth', 0.07);
+      updateUI();
+    }
   }
 
+  // Visual only: settles the pose and lights the ancilla. It must NOT touch
+  // fidelity / empiricalProb / ciLow — those stay as measured, or the readout
+  // would report a perfect result the shots never produced.
   function snapDockingSuccess() {
-    const n = App.qubitMode;
-    for (let i = 0; i < n; i++) {
-      App.currentLigandPhases[i] = App.pocketPhases[i];
-    }
-    App.fidelity = 1.0;
-    App.empiricalProb = 1.0;
-    App.stdError = 0.0;
-    App.ciLow = 1.0;
-    App.ciHigh = 1.0;
-
     new TWEEN.Tween(ligandGroup.rotation)
       .to({ y: 0 }, 600)
       .easing(TWEEN.Easing.Back.Out)
@@ -2452,9 +2468,11 @@
 
   async function runFullPipeline() {
     getAudioContext();
-    App.isRunning = true;
     document.getElementById('btn-run').textContent = '⏹ Stop';
     resetState();
+    // resetState() clears isRunning, so this must come after it — otherwise the
+    // `if (!App.isRunning) return;` guard below aborts the run after stage 0.
+    App.isRunning = true;
     startClassicalCounterRace();
     await delay(300);
 
@@ -2498,7 +2516,7 @@
      ══════════════════════════════════════════════════════════════ */
   function updateUI() {
     const isFlex = App.dockingMode === 'flexible';
-    const cost = computeHqcCost(App.qubitMode, Math.max(1, App.rusIteration), App.shotMode || 500, isFlex);
+    const cost = computeHqcCost(App.qubitMode, Math.max(1, App.circuitEvals), App.shotMode || 500, isFlex);
 
     document.getElementById('badge-atoms').textContent = `N = ${App.numAtoms} Atoms`;
     const modeLabel = App.qubitMode === 4 ? '4 Phase Qubits + 1 Ancilla (9 Ions)' : '8 Dual-Shell Qubits + 1 Ancilla (17 Ions)';
@@ -2544,7 +2562,7 @@
       ? `${cost.twoQGates} <span class="metric-sub">ZZ gates</span>`
       : `0 <span class="metric-sub">gates</span>`;
 
-    const quantumQueries = App.rusIteration > 0 ? App.rusIteration : 1;
+    const quantumQueries = Math.max(1, App.circuitEvals);
     document.getElementById('race-quantum-val').textContent = `${quantumQueries} Query (${cost.hqc} HQC)`;
 
     const speedup = Math.round(App.targetClassicalSteps / (quantumQueries * cost.totalQubits));
