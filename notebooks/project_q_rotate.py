@@ -150,7 +150,7 @@ def _():
             color="Metric:N",
             tooltip=["Angle (deg):Q", "Value:Q", "Metric:N"],
         )
-        .properties(width="container", height=320, title="Zero-Knowledge Parity Resonance (1.0 = Perfect Lock)")
+        .properties(width="container", height=320, title="Coordinate-Free Parity Resonance (1.0 = Perfect Lock)")
     )
     chart
     return

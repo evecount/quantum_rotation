@@ -1,7 +1,7 @@
 # ⚡ Systems Architecture Brief: Benjamin Lim ("Sedilix")
 
 **Role:** Co-Founder & Systems Architect, Eve Count & Cybrdeck  
-**Project:** Q-Rotate: Efficient Molecular Pattern Matching  
+**Project:** Q-Rotate: Coordinate-Free Molecular Pose Search  
 **Repository Branch:** [`ben/frontend-systems`](https://github.com/evecount/quantum_rotation/tree/ben/frontend-systems)
 
 ---

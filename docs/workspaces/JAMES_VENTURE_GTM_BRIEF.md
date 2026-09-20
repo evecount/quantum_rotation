@@ -1,7 +1,7 @@
 # 💼 Venture & GTM Strategy Brief: James Sun
 
 **Role:** Commercial Architecture & Global GTM Lead, Eve Count | Founder @ Mamba Partners  
-**Project:** Q-Rotate: Efficient Molecular Pattern Matching  
+**Project:** Q-Rotate: Coordinate-Free Molecular Pose Search  
 **Focus:** $120M–$280M Biopharma Licensing Roadmap & Sovereign DeepTech Positioning
 
 ---
@@ -16,21 +16,38 @@ James, when communicating our technical moat to venture syndicates, corporate bi
 
 ---
 
-## 🛡️ The Decisive Commercial Moat: Zero-Knowledge Proof for Pharma
+## 🛡️ The Decisive Commercial Moat: Coordinate-Free Screening for Pharma
 
-> **By executing an ancilla-mediated blind parity test, Project Q-Rotate verifies whether a candidate ligand achieves lock-and-key resonance with a target protein active site without disclosing the exact 3D atomic coordinates. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, this coordinate-free zero-knowledge matching protocol provides an unassailable commercial advantage.**
+> **By executing an ancilla-mediated blind parity test, Project Q-Rotate checks whether a candidate ligand achieves lock-and-key resonance with a target protein active site while only ever exchanging a compressed phase fingerprint and a single ancilla readout — not the raw 3D atomic coordinates. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, reducing what has to leave either party's system during a screening pass is a genuine commercial advantage — though, to be precise with judges and partners, it is not a cryptographic zero-knowledge guarantee (see `docs/03_the_blind_parity_test.md`).**
 
-### Why This Closes Enterprise Biopharma Deals (James's Key Pitch Points)
+### Why This Could Close Enterprise Biopharma Deals (James's Key Pitch Points)
 1. **The Cloud Quantum Adoption Barrier:**  
-   Pharmaceutical enterprises spend hundreds of millions of dollars synthesizing and patenting novel molecular scaffolds. They are fiercely protective of these assets and will **not** send unpatented 3D atomic coordinates over public cloud APIs to external quantum computing centers due to corporate espionage and leakage fears.
-2. **The Zero-Knowledge Solution:**  
-   Project Q-Rotate evaluates structural fit via quantum state overlap on an ancilla qubit. The biopharma client inputs phase field parameters; the QPU outputs a single scalar parity metric $P(0)$ without the cloud provider or QPU operator ever accessing the raw $(x, y, z)$ atomic coordinates.
-3. **The Licensing Playbook ($120M–$280M):**  
-   We position Q-Rotate as an **encrypted quantum screening enclave** for tier-1 biopharma co-development campaigns, eliminating false positives before wet-lab synthesis while providing airtight mathematical protection of client chemical IP.
+   Pharmaceutical enterprises spend hundreds of millions of dollars synthesizing and patenting novel molecular scaffolds. They are fiercely protective of these assets and are reluctant to send unpatented 3D atomic coordinates over public cloud APIs to external quantum computing centers due to corporate espionage and leakage fears.
+2. **The Coordinate-Free Solution:**  
+   Project Q-Rotate evaluates structural fit via quantum state overlap on an ancilla qubit. The biopharma client inputs phase field parameters; the QPU outputs a single scalar parity metric $P(0)$ without the cloud provider or QPU operator ever accessing the raw $(x, y, z)$ atomic coordinates directly.
+3. **The Licensing Playbook:**  
+   We position Q-Rotate as a reduced-exposure quantum screening service for tier-1 biopharma co-development campaigns — see the scenario model below for how the headline range is built, and its current evidence level.
+
+---
+
+## 💰 The $120M–$280M Figure: Scenario Model, Not a Market-Validated Forecast
+
+**Honesty note:** the range below is an illustrative back-of-envelope scenario model built from round, stated assumptions — it has not been benchmarked against real comparable licensing deals, and under the Grand Challenge's own 0–5 evidence scale (`Competition.md`) it currently sits at **evidence level 1–2 ("assertion" to "plausible, limited proof")** for the Problem & Value criterion. Treat it as a framework to validate, not a number to cite as fact.
+
+**Illustrative build-up (all figures are placeholder assumptions to be replaced with real market research):**
+| Assumption | Illustrative value |
+| :--- | :--- |
+| Pilot screening engagements signed in years 1–3 | 3–5 biopharma partners |
+| Upfront platform-access fee per pilot | $2M–$5M |
+| Programs that advance past pilot into a milestone-based co-development license | ~30–50% of pilots |
+| Milestone + royalty value per advancing program (preclinical → early clinical) | $25M–$60M |
+| **Resulting aggregate range across the portfolio** | **~$120M–$280M** |
+
+Every row above is an assumption, not a sourced data point — the actual next step (tracked in Milestone 6 / post-Oct-15 work, not something already done) is to replace each row with real comparable deals (e.g. published computational-screening or AI-drug-discovery platform licensing agreements) and a genuine TAM/SAM/SOM breakdown before presenting this range as evidence to judges or investors as anything more than a scenario.
 
 ---
 
 ## 🎯 James's Core Deliverables & Action Items
-* [ ] **Pitch Narrative:** Anchor our 5-minute Grand Challenge finals presentation around the **Zero-Knowledge Pharma IP Moat** and the elimination of the $O(N^3)$ grid bottleneck.
-* [ ] **Licensing Framework:** Finalize the tiered enterprise licensing structure ($120M–$280M milestones) for prospective pharmaceutical partners.
-* [ ] **Network Syndication:** Activate outreach across Mamba Partners' 11,000+ deep-tech and venture network.
+* [ ] **Pitch Narrative:** Anchor our 5-minute Grand Challenge finals presentation around the **coordinate-free pharma IP advantage** and the elimination of the $O(N^3)$ grid bottleneck — framed honestly as a reduced-exposure screening angle, not a formal zero-knowledge proof.
+* [ ] **Licensing Framework:** Replace the illustrative scenario-model assumptions above with real comparable-deal research before finalizing a tiered enterprise licensing structure for prospective pharmaceutical partners.
+* [ ] **Network Syndication:** Activate outreach across Mamba Partners' network to pressure-test both the technical pitch and the licensing assumptions with real prospective partners.

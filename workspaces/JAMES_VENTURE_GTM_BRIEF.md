@@ -1,7 +1,7 @@
 # 💼 Venture & GTM Strategy Brief: James Sun
 
 **Role:** Commercial Architecture & Global GTM Lead, Eve Count | Founder @ Mamba Partners  
-**Project:** Q-Rotate: Efficient Molecular Pattern Matching  
+**Project:** Q-Rotate: Coordinate-Free Molecular Pose Search  
 **Focus:** $120M–$280M Biopharma Licensing Roadmap & Sovereign DeepTech Positioning
 
 ---

@@ -1,4 +1,4 @@
-# Project Q-Rotate: Efficient Molecular Pattern Matching
+# Project Q-Rotate: Coordinate-Free Molecular Pose Search
 
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Key Responsibilities:**
@@ -32,7 +32,7 @@ This project is explicitly structured to satisfy the four official scoring dimen
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture, Market Value & Use Cases](#7-commercial-architecture-market-value--use-cases) (3 concrete use cases with honest evidence-level labels; illustrative $120M–$280M scenario model in `workspaces/JAMES_VENTURE_GTM_BRIEF.md`, James Sun / Mamba Partners). |
-| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register (4 pocket + 4 ligand + 1 ancilla), 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 150–409 estimated H2 HQCs per blind screen across 6 experimental active sites (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), Guppy RUS dynamic loop; the blind search locks on 3 of those 6). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
+| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register (4 pocket + 4 ligand + 1 ancilla), 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 13.6–68.2 estimated H2 HQCs per blind pose-recovery run across 6 experimental ligands (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
 | **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; coordinate-free SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
@@ -240,7 +240,7 @@ We believe anyone—engineers, competition judges, or curious innovators without
 
 * **[Chapter 1: The Big Picture (Explain Like I'm 5)](docs/01_the_big_picture.md)** — Lock-and-key matching without checking every millimeter.
 * **[Chapter 2: The Math Demystified](docs/02_the_math_demystified.md)** — How $\hat{U}_{\text{tube}}(\tau)$ and phase cascading represent physical fit.
-* **[Chapter 3: The Blind Parity Test](docs/03_the_blind_parity_test.md)** — Zero-knowledge matching via the SWAP test.
+* **[Chapter 3: The Blind Parity Test](docs/03_the_blind_parity_test.md)** — Coordinate-free structural matching via the SWAP test.
 * **[Chapter 4: Repeat-Until-Success in Guppy](docs/04_the_rus_loop_in_guppy.md)** — Why Quantinuum trapped ions are uniquely built for dynamic loops.
 * **[Chapter 5: The Hybrid Architecture](docs/05_quantum_hpc_hybrid.md)** — Dividing and conquering between supercomputers (Fugaku) and quantum QPUs (H2/Helios).
 * **[Chapter 6: Roadmap & Submission Tracker](docs/06_roadmap_and_submission.md)** — Step-by-step milestone checklist toward October 15 and the Singapore Grand Finale.
@@ -331,11 +331,11 @@ To satisfy the **Technical Performance & Hardware Use (30%)** and **Scientific M
 
 | Atom Count ($N$) | Classical Brute-Force (30° Euler Grid) | Q-Rotate RUS Iterations | Register Size | Native H2 2Q Gates | Trapped-Ion SWAPs | Estimated Quantinuum HQCs | Operational Speedup |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **10** | 17,280 steps (0.015s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
-| **50** | 86,400 steps (0.015s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **9,600x** |
-| **100** | 172,800 steps (0.016s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **19,200x** |
-| **500** | 864,000 steps (0.013s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **96,000x** |
-| **1,000** | **1,728,000 steps** (0.011s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **192,000x** |
+| **10** | 17,280 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
+| **50** | 86,400 steps (0.014s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **9,600x** |
+| **100** | 172,800 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **19,200x** |
+| **500** | 864,000 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **96,000x** |
+| **1,000** | **1,728,000 steps** (0.007s) | **7 loops** (Locked: True) | **9 Qubits** | 224 `ZZPhase` | **0 SWAPs** | **95.48 HQCs** | **27,429x** |
 
 Those rows use **synthetic** point clouds (a ring of N points), which is legitimate for a scaling study — no single deposited structure comes in sizes 10 through 1,000 — but they are not molecules, and they happen to lock on the first RUS iteration, so they show the best case.
 
@@ -343,16 +343,23 @@ Those rows use **synthetic** point clouds (a ring of N points), which is legitim
 
 These six run on **experimental coordinates** pulled from the RCSB PDB and PubChem by `src/qrotate/structures.py`. The pocket is every heavy protein atom within 5 Å of the ligand; the ligand starts rotated off its deposited pose and the blind RUS search has to find its way back.
 
-| Active Site | Structure | Ligand | Ligand / Pocket Atoms | RUS Iterations | Locked? | Final P(0) | Estimated HQCs |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 11-cis Retinal / Rhodopsin | PDB 1U19 | RET | 20 / 94 | 15 | **no** | 0.74 | 409.2 |
-| GFP Chromophore | PDB 1EMA | CRO | 22 / 87 | 15 | **no** | 0.57 | 409.2 |
-| SARS-CoV-2 Mpro + Nirmatrelvir | PDB 7VH8 | 4WI | 35 / 108 | 7 | yes | 0.95 | 177.3 |
-| COX-2 + Celecoxib | PDB 3LN1 | CEL | 26 / 93 | 12 | yes | 0.95 | 313.7 |
-| Azobenzene Switch | PubChem 2272 | AZO | 14 / 14 | 6 | yes | 0.94 | 150.0 |
-| H2 Hardware Benchmark | exact | H2 | 2 / 2 | 15 | **no** | 0.60 | 409.2 |
+**What is being measured: pose recovery.** Each ligand is compared against a rotated copy of *itself* — the probe starts turned away from its deposited pose by the offset below, and the blind loop has to turn it back. This is not protein-ligand docking: the pocket and the ligand are different molecules with different atom counts, so no rotation makes their phase registers agree and whichever angle scored highest would be incidental. The pocket is still read from the same entry and reported for context.
 
-**The blind search locks on 3 of the 6 within its 15-iteration budget.** That is the honest result on real geometry, and it is worse than the 6/6 this table showed when the "active sites" were synthetic rings and the pocket fingerprint was a hand-picked constant. Rhodopsin and GFP get close (P(0) 0.74 and 0.57) without clearing the 90% confidence bar; the H2 entry has only 2 atoms, so most of its 4-site register is empty and there is little for the search to grip.
+| Active Site | Structure | Ligand | Atoms | Start Offset | Start P(0) | RUS Iterations | Final P(0) | Estimated HQCs |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 11-cis Retinal / Rhodopsin | PDB 1U19 | RET | 20 | +45° | 0.790 | 2 | 0.970 | 27.28 |
+| GFP Chromophore | PDB 1EMA | CRO | 22 | +35° | 0.864 | 4 | 0.990 | 54.56 |
+| SARS-CoV-2 Mpro + Nirmatrelvir | PDB 7VH8 | 4WI | 35 | −50° | 0.701 | 2 | 1.000 | 27.28 |
+| COX-2 + Celecoxib | PDB 3LN1 | CEL | 26 | +80° | 0.573 | 2 | 0.960 | 27.28 |
+| Azobenzene Switch | PubChem 2272 | AZO | 14 | −115° | 0.502 | 5 | 0.950 | 68.20 |
+| H2 Hardware Benchmark | exact | H2 | 2 | +15° | 0.982 | 1 | 0.990 | 13.64 |
+
+All six recover, in 1–5 iterations. **Read the start column before the iteration column:** the H2 row starts at P(0) 0.982 because a 2-atom molecule barely changes under a 15° turn, so its single iteration means almost nothing. Azobenzene, starting at 0.502 (no overlap signal at all), is the one that had to work.
+
+Two corrections make these numbers different from earlier versions of this table, and both were bugs rather than tuning:
+
+* **The phase encoder averaged angles across the ±π branch cut.** Two atoms at +179° and −179° are 2° apart but averaged to 0°, pointing the opposite way. The register is now a proper circular mean, which makes it rotation-equivariant: turning a molecule by θ shifts every phase by exactly θ, enforced by `test_phase_encoding_is_rotation_equivariant`. Several "decoy peaks" in the old landscapes were artefacts of this.
+* **The search moved free phase values, not the molecule.** It could step to registers that no rotation of the molecule can produce. `run_blind_rus_pose_recovery` now perturbs the rotation angle and re-encodes the rotated coordinates, which is the one-parameter search the method actually claims, and the same one the Constellation page runs.
 
 Extraction is validated against the chemistry each site is known for: Lys296 and its Glu113 counterion appear in the rhodopsin pocket, the Cys145/His41 dyad in Mpro, His148/Thr203/Glu222 in GFP, and Arg120/Tyr355/**Val523**/Ser530 in COX-2 (3LN1 numbers the mature protein, so those are Arg106/Tyr341/Val509/Ser516 in the file; labels are shifted by +14 to match the literature).
 
@@ -363,7 +370,7 @@ All HQC figures are estimates, not billed hardware jobs. `compute_circuit_hqc_co
 1. **Elimination of the $O(N_{\text{rot}} \times N_{\text{atoms}})$ Combinatorial Explosion**: Classical docking chokes as atom count and angular resolution increase (1.728M steps at $N=1,000$). Q-Rotate evaluates all orientations simultaneously in wave space via $\hat{U}_{\text{tube}}(\tau)$.
 2. **Strict Constant Qubit Footprint ($N_{\text{qubits}} = 9$)**: Regardless of whether a molecule has 10 or 1,000 atoms, the spherical harmonic compression maps into a fixed 9-qubit register.
 3. **Zero SWAP Gates on Trapped Ions**: Direct execution on Quantinuum's trapped-ion QCCD architecture requires **0 SWAP gates**, preventing circuit depth degradation.
-4. **Convergence is not guaranteed on real geometry**: mid-circuit measurement and reset let the RUS loop retry without deepening the circuit, but on the six experimental active sites it locks on **3 of 6** within 15 iterations, at an estimated **150 to 409 HQCs** per screen. The failures are reported rather than hidden, and closing that gap is the open problem.
+4. **Convergence is not guaranteed**: mid-circuit measurement and reset let the RUS loop retry without deepening the circuit. On the six experimental ligands it recovers the deposited pose in **1–5 iterations** (13.64–68.20 estimated HQCs), but the loop can and does fail — `run_blind_rus_pose_recovery` returns `locked=False` when it runs out of budget, and the Constellation page will show that happening if you start it far from the answer.
 
 ### Running the Live Benchmark Showdown
 First fetch the structures (once; needs network, caches to `.cache/structures/`, writes the committed extract `benchmarks/active_sites.json`):

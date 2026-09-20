@@ -6,7 +6,7 @@
 | **Search Paradigm** | Discretized 3D Cartesian grid ($10^6+$ voxels) | Continuous Lie algebra manifold ($SU(2)$) |
 | **Search Path** | Mountain hike over rugged potential energy barriers | **Geodesic burrowing** directly through wave space |
 | **Hardware Overhead** | Megawatts on GPU clusters (days to weeks) | **≈13.6 HQCs** per 100-shot circuit on Quantinuum H2 (estimated) |
-| **IP Protection** | Plaintext atomic coordinates exposed in memory | **Zero-Knowledge Blind Parity** (100% encrypted) |
+| **IP Protection** | Plaintext atomic coordinates exposed in memory | **Coordinate-Free Blind Parity** (coordinates never transmitted) |
 
 - **The Helios Opportunity:** Trapped ions physically shuttle across optical zones, executing continuous Hamiltonian time-evolution without grid discretization.
 ---
@@ -57,13 +57,13 @@ Second, think of H-phase as the teeth on a physical key. In chemistry, positive 
 
 When you put the steering wheel and the key teeth together into our continuous operator, you create a quantum tunnel. In a single continuous flow, the quantum state sweeps through all possible angles and shapes simultaneously, searching for that natural electrostatic lock-and-key fit.
 
-# Zero-Knowledge Blind Parity
+# Coordinate-Free Blind Parity
 - The Quantum Match Sensor Equation:
 $$ P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right) $$
 - **The Ancilla Qubit (The "Blindfolded Referee"):** Evaluates binding resonance without ever learning or exposing private 3D atomic coordinates.
 - **$P(0) = 1.0$ (Constructive Resonance):** Perfect lock-and-key fit; quantum waves reinforce each other, returning a 100% clean match signal.
 - **$P(0) = 0.5$ (Destructive Clashing):** Misaligned molecule; quantum waves cancel out into random 50/50 coin-flip noise.
-- **Zero-Knowledge Pharma Moat:** Proves binding match with mathematical certainty while keeping proprietary drug scaffolds 100% confidential.
+- **Coordinate-Free Pharma Moat:** Scores binding match from a compressed phase fingerprint, so proprietary drug scaffolds never leave the client as raw 3D coordinates.
 ---
 Now from a software and security perspective, how do we actually verify whether the drug fits the target pocket? In classical chemistry software, you have to load and compare thousands of 3D atomic coordinates in plaintext memory.
 
@@ -77,7 +77,7 @@ If the drug doesn't fit or clashes chemically, the quantum waves cancel each oth
 
 But when the drug achieves a perfect lock-and-key fit, the quantum waves reinforce each other constructively, and our referee gives an unmistakable, 100% clean green light.
 
-And here is the decisive advantage for biopharma: the referee never sees or exposes the proprietary 3D shape of the drug. The wave interference alone proves the fit. This is Zero-Knowledge Blind Parity—mathematical proof of fit with zero risk of IP leaks.
+And here is the decisive advantage for biopharma: the referee never sees or exposes the proprietary 3D shape of the drug. The wave interference alone proves the fit. This is Coordinate-Free Blind Parity—a quantitative fit score obtained without the raw coordinates ever crossing the wire.
 
 # The Interactive Quantum Workbook
 - Live Marimo Notebook Execution & Dynamic Telemetry
@@ -92,7 +92,7 @@ To make this easy for chemists, judges, and developers to explore, we packaged t
 
 In this workbook, we don't just show static code—we allow you to interactively stress-test the quantum pipeline. You can adjust the number of active binding contact points from 2 to 6 sites. You can inject thermal coordinate noise from 0 to 0.2 Angstroms to simulate physiological body temperature in human tissue. And you can sweep the spatial misalignment angle from zero to 45 degrees.
 
-As you drag the misalignment slider, the workbook dynamically recomputes the zero-knowledge parity curve. At zero degrees misalignment, the fidelity is one point zero and the match probability is 100 percent. As the molecule tilts away from the active pocket, the curve smoothly traces the quantum resonance curve down to baseline.
+As you drag the misalignment slider, the workbook dynamically recomputes the coordinate-free parity curve. At zero degrees misalignment, the fidelity is one point zero and the match probability is 100 percent. As the molecule tilts away from the active pocket, the curve smoothly traces the quantum resonance curve down to baseline.
 
 More importantly, our compiler pipeline automatically takes this circuit, optimizes it, translates it into native Quantinuum laser pulses, and displays the exact execution cost in real time before submitting to the hardware emulator.
 
@@ -152,25 +152,25 @@ If it's an immediate lock-and-key match, the loop finishes instantly. But if it'
 Think of it like an auto-tuning radio that dials itself into the clearest station automatically. We compiled this Guppy code through HUGR and lowered it directly into QIR bitcode, taking full advantage of Quantinuum's millisecond ion coherence times and real-time classical logic engine.
 
 # The 6 Biomolecular Benchmarks
-- Validated across 6 diverse real-world therapeutic scenarios:
-  1. **Retinal / Rhodopsin**: Photochemical $cis \to trans$ isomerization (Vision & Optogenetics)
-  2. **GFP Chromophore**: Catalytic triad hydrogen-bond cyclization (Fluorescence Imaging)
-  3. **SARS-CoV-2 Mpro**: Covalent protease catalytic pocket (Antiviral Drug Discovery)
-  4. **Kinase ATP-Pocket**: Type-I/II competitive kinase inhibitors (Oncology)
-  5. **Heme Porphyrin Fe-O2**: Dynamic oxygen coordination (Cardiovascular & Hematology)
-  6. **Diazepam / GABA-A**: Neurotransmitter allosteric modulation (CNS Pharmacology)
+- Six benchmark systems, every one on experimental coordinates (`benchmarks/active_sites.json`):
+  1. **11-cis Retinal / Rhodopsin** (PDB 1U19, ligand RET, 20 atoms): vision and optogenetics
+  2. **GFP Chromophore** (PDB 1EMA, CRO, 22 atoms): fluorescence imaging
+  3. **SARS-CoV-2 Mpro + Nirmatrelvir** (PDB 7VH8, 4WI, 35 atoms): antiviral drug discovery
+  4. **COX-2 + Celecoxib** (PDB 3LN1, CEL, 26 atoms): selective anti-inflammatories
+  5. **Azobenzene** (PubChem 2272, 14 atoms): photopharmacological switch
+  6. **H2** (exact 0.7414 A geometry, 2 atoms): smallest possible hardware stress test
 ---
 As software engineers coming into this domain, we wanted to ensure our software solves real pharmacological challenges, not just toy models. So we stress-tested our engine across six of the most notorious molecular challenges in modern medicine.
 
 Look at this list:
-1. **Retinal and Rhodopsin**: The benchmark for photochemistry, where a photon triggers a double-bond rotation in 200 femtoseconds.
-2. **The GFP Chromophore**: Essential for modern biomedical imaging, involving a complex tripeptide cyclization.
-3. **SARS-CoV-2 Main Protease**: The primary target of antiviral therapeutics like Paxlovid, featuring an intricate catalytic dyad.
-4. **Kinase ATP-Binding Pockets**: The cornerstone of targeted oncology, where differentiating between kinase conformations determines whether a cancer drug is a cure or toxic.
-5. **Heme Porphyrin Coordination**: The spin-state transition of iron upon oxygen binding, a multi-reference challenge that classical density functional theory notoriously miscalculates.
-6. **Diazepam at GABA-A**: An allosteric neuroreceptor site where conformational phase shifts dictate central nervous system sedation.
+1. **Retinal and Rhodopsin** (PDB 1U19): the benchmark for photochemistry, where a photon triggers a double-bond rotation in 200 femtoseconds. Our extraction picks up Lys296, the lysine retinal is bound to, and its Glu113 counterion.
+2. **The GFP Chromophore** (PDB 1EMA): essential for biomedical imaging; the chromophore is modelled as the single modified residue CRO 66, with His148, Thr203 and Glu222 in the pocket.
+3. **SARS-CoV-2 Main Protease** (PDB 7VH8): nirmatrelvir, the antiviral half of Paxlovid, bound at the Cys145/His41 dyad - both present in the extracted site.
+4. **COX-2 with Celecoxib** (PDB 3LN1): the side pocket that exists only because residue 523 is valine here and isoleucine in COX-1.
+5. **Azobenzene** (PubChem 2272): the trans conformer of a light-driven molecular switch.
+6. **H2**: two atoms at the exact equilibrium bond length, the smallest input the pipeline accepts.
 
-Across all six distinct chemical environments, our software successfully mapped the continuous 3D molecular rotations, compiled the corresponding trapped-ion circuits, and demonstrated distinct parity resonance curves. It proved that this quantum software architecture generalizes across real chemistry.
+Be precise about what we measured across those six: **pose recovery**. Each ligand is matched against a rotated copy of itself, and the blind loop has to turn it back to the deposited pose, which it does in 1 to 5 iterations. That is not protein-ligand docking - the pocket and the ligand are different molecules, so no rotation makes their phase registers agree. What it does show is that the encoding, the circuit and the repeat-until-success loop work end to end on real experimental geometry rather than on invented point clouds.
 
 # The 3D WebGL Resonance Constellation
 - Bridging the Gap: Transforming Quantum State Vectors into Human Intuition
@@ -196,7 +196,7 @@ You can drag the angle slider, tilt the 3D pitch, and watch the exact moment the
 - **The $120M–$280M Biopharma Licensing Roadmap:**
   * High-throughput quantum pre-screening before expensive chemical synthesis
   * A small, fixed-size circuit per candidate on Quantinuum trapped ions (≈13.6 estimated HQCs per 100-shot run)
-- **Zero-Knowledge Pharma Moat (The Decisive Commercial Advantage):**
+- **Coordinate-Free Pharma Moat (The Decisive Commercial Advantage):**
   * Proves lock-and-key binding parity without exposing 3D atomic coordinates
   * Eliminates cloud corporate espionage and IP leak fears for unpatented drug scaffolds
   * Unlocks confidential quantum screening enclaves for enterprise biopharma
@@ -210,17 +210,17 @@ In the pharmaceutical sector, bringing a single therapeutic to market costs an a
 
 Project Q-Rotate helps solve this by acting as an ultra-precise, ultra-cheap quantum filter. Because each compiled test circuit is small (about 13.6 estimated credits per 100-shot run), drug discovery teams could use it as a pre-screen before ordering expensive chemical reagents.
 
-And here is the decisive breakthrough for enterprise biopharma: our Zero-Knowledge Blind Parity protocol.
+And here is the decisive breakthrough for enterprise biopharma: our Coordinate-Free Blind Parity protocol.
 
 In drug development, novel molecular scaffolds are multi-billion-dollar trade secrets. Pharma companies have historically avoided sending unpatented molecules across third-party cloud quantum APIs because of the fear of coordinate leaks or corporate espionage.
 
-With Project Q-Rotate, that fear disappears. Our blind parity test mathematically proves whether a candidate drug achieves lock-and-key resonance with a target receptor without ever disclosing its confidential 3D atomic coordinates. You get mathematical proof of fit with zero risk of IP leaks.
+With Project Q-Rotate, that fear disappears. Our blind parity test scores whether a candidate drug achieves lock-and-key resonance with a target receptor without ever transmitting its confidential 3D atomic coordinates. What crosses the wire is a compressed phase fingerprint and a single parity bit — not the structure itself.
 
 We built this as software developers to bridge the gap between quantum hardware and practical medicine.
 
 # Key Takeaways
 - **The Core Breakthrough:** Replaced $O(N^3)$ classical Cartesian grid docking with continuous quantum rotations $\hat{U}_{\text{tube}}(\tau)$.
-- **Zero-Knowledge Security:** Ancilla-mediated SWAP test verifies binding parity without leaking proprietary atomic coordinates.
+- **Coordinate-Free Screening:** Ancilla-mediated SWAP test evaluates binding parity without transmitting proprietary atomic coordinates.
 - **Compact Hardware Footprint:** Rebased to Quantinuum H2 native gates (`PhasedX`, `ZZPhase`) at ≈13.6 estimated HQCs per 100-shot circuit.
 - **Dynamic Superpower:** Native mid-circuit measurement and conditional reset feedback loop implemented in Quantinuum `guppylang`.
 - **The Clinical & Commercial Vision:** High-precision, zero-leakage quantum screening accelerating life-saving therapies for global medicine.
@@ -229,7 +229,7 @@ To wrap up our presentation, here is what we accomplished with Project Q-Rotate:
 
 First, we tackled a fundamental bottleneck in computational biology from a coder's perspective. We showed that finding a molecular fit doesn't require brute-forcing rigid 3D cubic grids—continuous quantum rotations burrow straight through to the optimal fit along the shortest quantum path.
 
-Second, we introduced Zero-Knowledge Blind Parity, allowing pharmaceutical teams and quantum cloud providers to verify molecular fits without exposing confidential chemical coordinates.
+Second, we introduced Coordinate-Free Blind Parity, allowing pharmaceutical teams and quantum cloud providers to verify molecular fits without exposing confidential chemical coordinates.
 
 Third, we engineered our compiler for maximum efficiency on Quantinuum's H-series processors, compiling each binding test to a 9-qubit circuit of about 13.6 estimated credits per 100-shot run, with no SWAP routing thanks to native trapped-ion all-to-all connectivity.
 
