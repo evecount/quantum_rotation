@@ -2408,6 +2408,16 @@
       }
       if (landscapeSource) landscapeSource.innerText = `${reg.total_qubits} qubits · statevector`;
 
+      if (reg.ambiguous_180_deg) {
+        landscapeCaption.innerHTML =
+          '<strong style="color:#38bdf8;">Two correct answers.</strong> '
+          + 'The first-order moments of this molecule cancel, so its register comes from the '
+          + 'second-order moment and repeats every 180&deg;. Both peaks are the deposited pose: '
+          + 'for a centrosymmetric molecule, turning it half a turn gives the same arrangement. '
+          + 'The amber marker is not a trap here.';
+        return;
+      }
+
       if (isFlatLandscape(reg)) {
         landscapeCaption.innerHTML = '<strong style="color:#f59e0b;">No orientation signal.</strong> '
           + 'The angular moments of this molecule cancel by symmetry, so its phase register is the same '
@@ -2816,7 +2826,9 @@
         parityResult.innerHTML = `
           <strong>LOCKED after ${iteration} iteration${iteration > 1 ? 's' : ''} (${evaluations} circuit runs)</strong><br />
           Settled at ${angle.toFixed(1)}° · measured overlap ${(best.empP * 100).toFixed(1)}%, lower bound ${(best.lowerBound * 100).toFixed(1)}% ≥ 90%<br />
-          <span style="font-size:0.75rem;">The true optimum is ${trueBest}°, which the search never read — it only ever saw the parity bit.</span>
+          <span style="font-size:0.75rem;">${reg && reg.ambiguous_180_deg
+            ? `The optimum is ${trueBest}° or its 180° partner — both are the same arrangement for this molecule. Neither was read: the search only ever saw the parity bit.`
+            : `The true optimum is ${trueBest}°, which the search never read — it only ever saw the parity bit.`}</span>
         `;
         playPulseSound('lock');
       } else {
@@ -2830,6 +2842,9 @@
         let diagnosis;
         if (best.empP < 0.6) {
           diagnosis = `It never found a basin: out here P(0) is flat at about 0.5, so the parity bit gives the search nothing to climb. The optimum is at ${trueBest}°.`;
+        } else if (reg && reg.ambiguous_180_deg && Math.abs(Math.abs(offBy) - 180) <= 8) {
+          diagnosis = `It settled half a turn from ${trueBest}°, which for this molecule is the `
+            + `same arrangement — the register repeats every 180°. Not a miss.`;
         } else if (nearestDecoy.deg !== null && nearestDecoy.gap <= 8) {
           diagnosis = `It stalled on the decoy peak at ${nearestDecoy.deg}°, ${offBy.toFixed(0)}° away from the real optimum (${trueBest}°) — exactly the failure this landscape's shape invites.`;
         } else if (offBy > 8) {

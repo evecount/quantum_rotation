@@ -141,26 +141,52 @@ def _radial_shells(r: np.ndarray, n_shells: int) -> list[np.ndarray]:
     return [np.array(sorted(s), dtype=int) for s in shells]
 
 
-def shell_anisotropy(
-    geometry: "MolecularGeometry",
-    n_qubits: int = 4,
-    z_weight: float = 1.5,
-) -> list[float]:
-    r"""Per-shell :math:`|m_q| / \sum_i w_i`, in [0, 1]: how much angular
-    structure each shell actually has.
+MOMENT_THRESHOLD = 1e-3
 
-    This is the confidence that belongs with `molecular_shell_phases`. The
-    encoding keeps the argument of a complex moment, and an argument is only
-    meaningful when the moment has magnitude. A centrosymmetric arrangement
-    cancels exactly -- H2's two atoms sit at \phi = 0 and \pi with equal
-    weights, so every shell reports 0 and the register carries no orientation
-    information at all. Callers must check this before believing a match:
-    two all-zero registers agree perfectly and mean nothing.
+# Highest angular moment the encoder will climb to. Six covers a benzene ring,
+# the most common symmetric motif in drug-like molecules.
+MAX_MOMENT_ORDER = 6
+
+
+def _shell_moments(
+    geometry: "MolecularGeometry",
+    n_qubits: int,
+    z_weight: float,
+    max_order: int = MAX_MOMENT_ORDER,
+) -> list[dict]:
+    r"""Per shell: the first- and second-order angular moments, the phase the
+    encoder should use, and which order produced it.
+
+    The encoder keeps the argument of :math:`M_1 = \sum_i w_i e^{i\phi_i}`, and
+    an argument only means something when the moment has magnitude. A
+    centrosymmetric shell cancels :math:`M_1` exactly -- H2's two atoms sit at
+    \phi = 0 and \pi with equal weights -- and such a shell used to encode as
+    0.0, i.e. as no information at all.
+
+    The higher moments :math:`M_k = \sum_i w_i e^{ik\phi_i}` are what survive
+    there: an opposed pair cancels :math:`M_1` but contributes
+    :math:`2 e^{2i\phi}` to :math:`M_2`. More generally a k-fold symmetric
+    arrangement cancels every order below k, so the encoder climbs the ladder
+    and uses the first order with magnitude. H2's opposed pair needs
+    :math:`M_2`; a benzene ring needs :math:`M_6`.
+
+    Using ``arg(M_k) / k`` keeps the property the search depends on, because a
+    rotation by \alpha multiplies :math:`M_k` by :math:`e^{ik\alpha}` and so
+    moves ``arg(M_k)/k`` by exactly \alpha, the same as the first-order
+    channel.
+
+    The cost is honest and unavoidable: ``arg(M_k)/k`` is defined modulo
+    :math:`2\pi/k`, so a shell encoded at order k cannot tell \alpha from
+    \alpha + 360/k degrees. For a k-fold symmetric arrangement that is not lost
+    information but a statement of fact -- those orientations are the same
+    arrangement. It would be a loss for an asymmetric shell, which is why a
+    higher order is used only where every lower one has nothing to say.
     """
     coords = np.asarray(geometry.coordinates, dtype=float)
     n_atoms = len(coords)
     if n_atoms == 0:
-        return [0.0] * n_qubits
+        return [{"phase": 0.0, "order": 0, "anisotropy": 0.0, "magnitudes": []}
+                for _ in range(n_qubits)]
 
     rel = coords - coords.mean(axis=0)
     phi = np.arctan2(rel[:, 1], rel[:, 0])
@@ -168,24 +194,99 @@ def shell_anisotropy(
     weights = _element_weights(getattr(geometry, "atom_names", None), n_atoms)
     weights = weights * np.exp(z_weight * rel[:, 2] / z_span)
 
-    out = []
+    shells = []
     for idx in _radial_shells(np.linalg.norm(rel, axis=1), n_qubits):
         if len(idx) == 0:
-            out.append(0.0)
+            shells.append({"phase": 0.0, "order": 0, "anisotropy": 0.0, "magnitudes": []})
             continue
+
         scale = float(np.sum(weights[idx]))
-        moment = np.sum(weights[idx] * np.exp(1j * phi[idx]))
-        out.append(float(abs(moment) / scale) if scale > 0 else 0.0)
-    return out
+        if scale <= 0:
+            shells.append({"phase": 0.0, "order": 0, "anisotropy": 0.0, "magnitudes": []})
+            continue
+
+        # Climb the ladder of angular moments until one survives. An m-fold
+        # symmetric arrangement cancels every order below m, so this is what
+        # decides whether the shell says anything at all.
+        magnitudes = []
+        chosen = None
+        for order in range(1, max_order + 1):
+            moment = np.sum(weights[idx] * np.exp(1j * order * phi[idx]))
+            magnitude = abs(moment) / scale
+            magnitudes.append(float(magnitude))
+            if chosen is None and magnitude >= MOMENT_THRESHOLD:
+                chosen = {
+                    "phase": float(np.angle(moment) / order),
+                    "order": order,
+                    "anisotropy": float(magnitude),
+                }
+
+        if chosen is None:
+            chosen = {"phase": 0.0, "order": 0, "anisotropy": 0.0}
+        chosen["magnitudes"] = magnitudes
+        shells.append(chosen)
+    return shells
+
+
+def shell_anisotropy(
+    geometry: "MolecularGeometry",
+    n_qubits: int = 4,
+    z_weight: float = 1.5,
+) -> list[float]:
+    """Per-shell angular structure in [0, 1], for whichever moment order that
+    shell actually used. Zero means the shell says nothing about orientation."""
+    return [s["anisotropy"] for s in _shell_moments(geometry, n_qubits, z_weight)]
+
+
+def shell_moment_orders(
+    geometry: "MolecularGeometry",
+    n_qubits: int = 4,
+    z_weight: float = 1.5,
+) -> list[int]:
+    """Which moment order encoded each shell: 1, 2, or 0 for an empty shell.
+    A shell reported as 2 is only determined modulo 180 degrees."""
+    return [s["order"] for s in _shell_moments(geometry, n_qubits, z_weight)]
+
+
+def rotational_ambiguity_deg(
+    geometry: "MolecularGeometry",
+    n_qubits: int = 4,
+    z_weight: float = 1.5,
+) -> float:
+    """The angle by which this register repeats, in degrees.
+
+    A shell encoded at order k is determined only modulo 360/k degrees. The
+    register as a whole repeats at the coarsest such period among the shells
+    that carry information, so 360 means no ambiguity at all, 180 means the
+    molecule cannot be told from its half-turn, and so on. Returns 0.0 when
+    nothing is encodable.
+    """
+    orders = [s["order"] for s in _shell_moments(geometry, n_qubits, z_weight) if s["order"]]
+    if not orders:
+        return 0.0
+    # The lowest order present sets the coarsest repeat that still fits every
+    # informative shell.
+    return 360.0 / max(orders)
+
+
+def has_180_degree_ambiguity(
+    geometry: "MolecularGeometry",
+    n_qubits: int = 4,
+    z_weight: float = 1.5,
+) -> bool:
+    """True when the register repeats before a full turn, i.e. some symmetry
+    made the first-order moment vanish everywhere it carries information."""
+    period = rotational_ambiguity_deg(geometry, n_qubits=n_qubits, z_weight=z_weight)
+    return 0.0 < period < 359.9
 
 
 def is_encoding_degenerate(
     geometry: "MolecularGeometry",
     n_qubits: int = 4,
-    threshold: float = 1e-3,
+    threshold: float = MOMENT_THRESHOLD,
 ) -> bool:
-    """True when no shell has usable angular structure, so any "match" against
-    this molecule is an artefact of comparing two empty registers."""
+    """True when no shell has usable angular structure at either moment order,
+    so any "match" against this molecule compares two empty registers."""
     return max(shell_anisotropy(geometry, n_qubits=n_qubits), default=0.0) < threshold
 
 
@@ -241,35 +342,7 @@ def molecular_shell_phases(
     1.5 is where mirror discrimination has essentially saturated while a
     tenth-Angstrom of coordinate noise still costs under 0.05 of overlap.
     """
-    coords = np.asarray(geometry.coordinates, dtype=float)
-    n_atoms = len(coords)
-    if n_atoms == 0:
-        return [0.0] * n_qubits
-
-    rel = coords - coords.mean(axis=0)
-    r = np.linalg.norm(rel, axis=1)
-    phi = np.arctan2(rel[:, 1], rel[:, 0])
-
-    z_span = float(np.max(np.abs(rel[:, 2]))) or 1.0
-    weights = _element_weights(getattr(geometry, "atom_names", None), n_atoms)
-    weights = weights * np.exp(z_weight * rel[:, 2] / z_span)
-
-    shells = _radial_shells(r, n_qubits)
-
-    phases: list[float] = []
-    for idx in shells:
-        if len(idx) == 0:
-            phases.append(0.0)
-            continue
-        moment = np.sum(weights[idx] * np.exp(1j * phi[idx]))
-        scale = np.sum(weights[idx])
-        # |m| / sum(w) is the shell's angular anisotropy in [0, 1].
-        if scale <= 0 or abs(moment) / scale < 1e-6:
-            phases.append(0.0)
-            continue
-        phases.append(float(np.angle(moment)))
-
-    return phases
+    return [s["phase"] for s in _shell_moments(geometry, n_qubits, z_weight)]
 
 
 def _circular_mean(angles: np.ndarray) -> float:

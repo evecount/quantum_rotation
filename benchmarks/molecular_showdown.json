@@ -10,7 +10,14 @@
         0.1778,
         0.4571
       ],
+      "shell_moment_orders": [
+        1,
+        1,
+        1,
+        1
+      ],
       "encoding_degenerate": false,
+      "ambiguous_180_deg": false,
       "system_name": "11-cis Retinal / Rhodopsin",
       "system_tag": "Photochemical Master Switch",
       "structure_source": "RCSB 1U19",
@@ -19,7 +26,7 @@
       "n_pocket_atoms": 94,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 20,
-      "classical_time_sec": 0.00657,
+      "classical_time_sec": 0.0051,
       "classical_steps": 34560,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 2,
@@ -41,7 +48,14 @@
         0.3306,
         0.145
       ],
+      "shell_moment_orders": [
+        1,
+        1,
+        1,
+        1
+      ],
       "encoding_degenerate": false,
+      "ambiguous_180_deg": false,
       "system_name": "GFP Chromophore",
       "system_tag": "Bioluminescent Proton Transfer",
       "structure_source": "RCSB 1EMA",
@@ -50,7 +64,7 @@
       "n_pocket_atoms": 87,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 22,
-      "classical_time_sec": 0.00606,
+      "classical_time_sec": 0.00719,
       "classical_steps": 38016,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 4,
@@ -72,7 +86,14 @@
         0.2332,
         0.6799
       ],
+      "shell_moment_orders": [
+        1,
+        1,
+        1,
+        1
+      ],
       "encoding_degenerate": false,
+      "ambiguous_180_deg": false,
       "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
       "system_tag": "Antiviral Covalent Inhibitor",
       "structure_source": "RCSB 7VH8",
@@ -81,7 +102,7 @@
       "n_pocket_atoms": 108,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 35,
-      "classical_time_sec": 0.00623,
+      "classical_time_sec": 0.01126,
       "classical_steps": 60480,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 2,
@@ -103,7 +124,14 @@
         0.6841,
         0.4628
       ],
+      "shell_moment_orders": [
+        1,
+        1,
+        1,
+        1
+      ],
       "encoding_degenerate": false,
+      "ambiguous_180_deg": false,
       "system_name": "COX-2 + Celecoxib",
       "system_tag": "Single-Residue Selectivity",
       "structure_source": "RCSB 3LN1",
@@ -112,7 +140,7 @@
       "n_pocket_atoms": 93,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 26,
-      "classical_time_sec": 0.00653,
+      "classical_time_sec": 0.00581,
       "classical_steps": 44928,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 2,
@@ -134,7 +162,14 @@
         0.201,
         0.5062
       ],
+      "shell_moment_orders": [
+        1,
+        1,
+        1,
+        1
+      ],
       "encoding_degenerate": false,
+      "ambiguous_180_deg": false,
       "system_name": "Azobenzene Molecular Switch",
       "system_tag": "Photopharmacological Motor",
       "structure_source": "PubChem 2272",
@@ -143,7 +178,7 @@
       "n_pocket_atoms": 14,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 14,
-      "classical_time_sec": 0.00608,
+      "classical_time_sec": 0.0052,
       "classical_steps": 24192,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 5,
@@ -158,14 +193,21 @@
     {
       "system_id": "h2bench",
       "start_offset_deg": 15.0,
-      "start_p0": 0.9903,
+      "start_p0": 0.986,
       "shell_anisotropy": [
-        0.0,
+        1.0,
         0.0,
         0.0,
         0.0
       ],
-      "encoding_degenerate": true,
+      "shell_moment_orders": [
+        2,
+        0,
+        0,
+        0
+      ],
+      "encoding_degenerate": false,
+      "ambiguous_180_deg": true,
       "system_name": "H2 Hardware Benchmark",
       "system_tag": "Trapped-Ion Physical Stress Test",
       "structure_source": "exact H2",
@@ -174,12 +216,12 @@
       "n_pocket_atoms": 2,
       "comparison": "pose recovery: ligand vs a rotated copy of itself",
       "n_atoms_proxy": 2,
-      "classical_time_sec": 0.00557,
+      "classical_time_sec": 0.00478,
       "classical_steps": 3456,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
       "qrotate_locked": true,
-      "qrotate_final_p0": 1.0,
+      "qrotate_final_p0": 0.99,
       "qrotate_two_qubit_gates": 32,
       "qrotate_swap_gates": 0,
       "qrotate_hqcs": 13.64,
@@ -187,6 +229,6 @@
       "circuit_depth": 68
     }
   ],
-  "generated_at": "2026-09-21 01:53:21",
+  "generated_at": "2026-09-21 02:38:56",
   "systems_count": 6
 }
