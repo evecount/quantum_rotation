@@ -20,15 +20,24 @@
 >   - 🏛️ Decentralized Quantum Testing Facility Business Case (internal: kept off the public repo, ask Gwen)
 >   - 🇸🇬 Singapore DeepTech Ecosystem Roadmap (internal: kept off the public repo, ask Gwen)
 
-### 🌟 What This Means for James:
-> **Zero Homework / Zero Friction:** Gwen and Ben are actively handling 100% of the technical development, benchmark code, physical trapped-ion compilations, and competition submissions. You don't have to write code or manage operations. 
-> 
-> Your role is purely strategic: having the 30-second story in your back pocket, showing off the 3D demo when chatting with fellow venture partners or biopharma leaders, and advising on deal terms whenever you have a moment.
+### 🚀 What Gwen & Ben Are Executing (The Engine):
+* **100% Technical Execution:** We are running the end-to-end Q-Rotate pipeline, trapped-ion compilation scripts, and empirical benchmarks across all 6 real crystallographic PDB targets (Paxlovid, Rhodopsin, COX-2, etc.).
+* **Grand Challenge Submissions:** Aqora Grand Challenge v2.0.0 is submitted, verified, and running cleanly.
+* **Live Investor & Partner Collateral:** We built and deployed the zero-install 3D WebGL Constellation and a mobile-friendly 7-slide Interactive Pitch Deck.
+* **Direct Peer Outreach:** We're actively sharing the technical data and submission with technical reviewers, academic contacts, and peers (Claude, and Aqora evaluators like Irfan & Pierre).
 
-### 💡 Optional Strategic Touchpoints (Whenever Convenient):
-1. **Investor Syndicate Intros:** If you'd like to bring in friendly co-investors or syndicates from your Mamba Partners network, point them to our [Interactive Pitch Deck](https://evecount.github.io/quantum_rotation/pitch.html).
-2. **Advisory Gut-Check:** When you have a free minute, let Gwen know if the $250k–$750k/yr platform access + milestone royalty model feels right for your US/Singapore biopharma relationships.
-3. **Cheering the Team on:** We'll keep this brief updated as we advance through the Grand Challenge finals!
+### 🎯 Who We Would Love to Talk To (Ideal Target Conversations):
+As our GTM lead, here is the profile of conversations that move the needle most for Eve Count right now:
+
+1. **Biopharma Discovery Chemistry & CADD Leads:**
+   * **Profiles:** Heads of Computer-Aided Drug Discovery (CADD), VPs of Early Discovery, or Structural Biology Directors at biopharma hubs (e.g., A*STAR EDDC / Biopolis in Singapore, or Boston/Bay Area biotechs).
+   * **The Hook:** They burn huge computational budgets on classical docking and are deeply paranoid about uploading unpatented 3D molecular coordinates to external cloud servers. Our coordinate-free screening solves their biggest IP fear.
+2. **DeepTech, Bio-AI, & Quantum Venture Syndicates:**
+   * **Profiles:** Partners and syndicate leads with high conviction in computational biology, AI drug discovery, or sovereign deep tech infrastructure.
+   * **The Hook:** 2 syndicates have already requested POC evaluation terms following our submission. We want to connect with investors who grasp the **"AWS / CRO for Quantum Testing"** platform model ($250k–$750k/yr recurring SaaS + milestone upside).
+3. **Sovereign Quantum & Ecosystem Hubs:**
+   * **Profiles:** Decision-makers at regional quantum initiatives (e.g., Singapore National Quantum Office, A*STAR, SGInnovate, regional HPC/QPU centers).
+   * **The Hook:** Q-Rotate represents the high-value, real-world life-sciences application running directly on trapped-ion hardware (Quantinuum H2 / Helios in Singapore).
 
 ---
 
@@ -130,7 +139,17 @@ Every row above is an assumption, not a sourced data point — the actual next s
 
 ---
 
-## 🎯 James's Core Deliverables & Action Items
-* [ ] **Pitch Narrative:** Anchor our 5-minute Grand Challenge finals presentation around the **coordinate-free pharma IP advantage** and the elimination of the $O(N^3)$ grid bottleneck — framed honestly as a reduced-exposure screening angle, not a formal zero-knowledge proof.
-* [ ] **Licensing Framework:** Replace the illustrative scenario-model assumptions above with real comparable-deal research before finalizing a tiered enterprise licensing structure for prospective pharmaceutical partners.
-* [ ] **Network Syndication:** Activate outreach across Mamba Partners' network to pressure-test both the technical pitch and the licensing assumptions with real prospective partners.
+## 🤝 GTM Collaboration & Live Resources
+
+James, as our GTM lead, you know this venture landscape and these players inside out. We're keeping this brief continuously updated so you always have real-time visibility into technical milestones, benchmark proof points, and the types of partners we want in the room.
+
+### 🧰 Your Ready-to-Share Toolkit:
+* **Interactive Pitch Deck (Mobile-friendly):** [`https://evecount.github.io/quantum_rotation/pitch.html`](https://evecount.github.io/quantum_rotation/pitch.html)  
+  *Great for sending to investors or pulling up on your phone during conversations.*
+* **Live 3D Constellation Demo:** [`https://evecount.github.io/quantum_rotation/constellation.html`](https://evecount.github.io/quantum_rotation/constellation.html)  
+  *Zero-install WebGL viewer showing real PDB ligands, continuous Lie group rotation, and the ancilla parity match.*
+* **Investor & Partner POC Guide:** [`commercial/POC_INVESTOR_EVALUATION_GUIDE.md`](../commercial/POC_INVESTOR_EVALUATION_GUIDE.md)  
+  *The technical due-diligence memo answering pilot timelines, QPU costs, and hardware readiness.*
+
+Whenever you spot an angle we should tweak or a conversation that makes sense to tee up, let us know—the engine is running at full speed and ready to support you.
+
