@@ -32,6 +32,18 @@ As you refine the 3D WebGL engine ([`constellation.html`](../constellation.html)
 
 ---
 
+## ⏱️ Systems Note for Ben: Clarifying the "Femtoseconds" Metric
+
+Ben, to keep our frontend telemetry and UI labels 100% scientifically grounded:
+* **The Physical Biology ("Femtoseconds"):** In nature, molecular bond vibrations, electronic polarization, and ligand rearrangements occur on the **femtosecond ($10^{-15}\text{ s}$)** scale (e.g. Rhodopsin PDB 1U19 retinal photoisomerization takes ~200 fs). The continuous Hamiltonian evolution parameter $\tau$ in Gwen's formula represents this natural physical interaction timescale in wave space.
+* **The QPU Hardware Execution ("Milliseconds"):** Physical trapped-ion quantum computers (Quantinuum H2) operate with physical gate times on the **microsecond ($\sim 100\ \mu\text{s}$)** scale. A full 100-shot circuit runs in **milliseconds to a few seconds** of machine wall-clock time.
+* **UI Labeling in Constellation:** In `constellation.html` and any reactive telemetry dials:
+  - Label simulated continuous interaction time as $\tau$ (physical interaction: femtoseconds).
+  - Label hardware execution time as QPU Circuit Latency (hardware clock: milliseconds).
+  This keeps our presentation bulletproof against scrutiny from both quantum physicists and computational chemists.
+
+---
+
 ## 🛠️ Ben's Core Deliverables & Action Items
 * [ ] **Performance Optimization:** Ensure Three.js draw calls on `constellation.html` maintain a rock-solid 60 FPS across stage displays and offline presentation modes.
 * [ ] **Audio-Visual Telemetry:** Tie the Web Audio synthesizer resonance frequencies directly to the ancilla parity probability metric $P(0)$.
