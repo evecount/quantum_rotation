@@ -307,7 +307,7 @@ D:\Quantinuum_GrandChallenge\
 
 Experience Project Q-Rotate directly in your browser or local environment:
 
-* 🌌 **[3D Resonance Constellation Universe](https://evecount.github.io/quantum_rotation/constellation.html)**: Interactive toy model of the core idea: rotate a ligand until it lines up with the pocket and watch the SWAP-test fidelity signal (cos²(θ/2)) rise. Six biomolecular systems serve as example settings; their target angles and HQC figures are illustrative, not simulation output.
+* 🌌 **[3D Resonance Constellation Universe](https://evecount.github.io/quantum_rotation/constellation.html)**: Turn a real ligand back into its deposited pose (shown as a gold ghost) and watch the simulated SWAP-test signal rise, or let the blind search find it. The six systems use their experimental coordinates, and every curve and HQC figure on the page comes from the benchmark and simulation outputs in `benchmarks/`.
 * 📓 **[View Jupyter Notebook on GitHub](notebooks/project_q_rotate.ipynb)**: Native, instant rendering on GitHub displaying 3D coordinate parsing, phase spectra, Altair resonance curves, H2 rebased circuits, and HQC cost estimates.
 * 🌐 **[Interactive Marimo Web App](notebooks/project_q_rotate.py)**: Full-featured reactive dashboard with live sliders for rotation angle misalignment, Gaussian noise, interactive H2 native circuit tiles, and live job submission to the Quantinuum `nexus:H2-2E` emulator.
 * 📄 **[Standalone HTML Session](notebooks/project_q_rotate.html)**: Self-contained pre-rendered workbook session ready to view in any browser.
