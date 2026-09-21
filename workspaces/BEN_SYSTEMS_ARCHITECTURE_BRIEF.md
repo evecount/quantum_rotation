@@ -35,11 +35,11 @@ As you refine the 3D WebGL engine ([`constellation.html`](../constellation.html)
 ## ⏱️ Systems Note for Ben: Clarifying the "Femtoseconds" Metric
 
 Ben, to keep our frontend telemetry and UI labels 100% scientifically grounded:
-* **The Physical Biology ("Femtoseconds"):** In nature, molecular bond vibrations, electronic polarization, and ligand rearrangements occur on the **femtosecond ($10^{-15}\text{ s}$)** scale (e.g. Rhodopsin PDB 1U19 retinal photoisomerization takes ~200 fs). The continuous Hamiltonian evolution parameter $\tau$ in Gwen's formula represents this natural physical interaction timescale in wave space.
-* **The QPU Hardware Execution ("Milliseconds"):** Physical trapped-ion quantum computers (Quantinuum H2) operate with physical gate times on the **microsecond ($\sim 100\ \mu\text{s}$)** scale. A full 100-shot circuit runs in **milliseconds to a few seconds** of machine wall-clock time.
+* **The Physical Biology ("Femtoseconds"):** In nature, molecular bond vibrations, electronic polarization, and ligand rearrangements occur on the **femtosecond ($10^{-15}\text{ s}$)** scale (e.g. Rhodopsin PDB 1U19 retinal photoisomerization takes ~200 fs). Q-Rotate does not simulate those dynamics: the evolution parameter $\tau$ in Gwen's formula is a fixed, dimensionless circuit parameter (0.25 in every benchmark), not a physical time.
+* **The QPU Hardware Execution ("Milliseconds"):** Physical trapped-ion quantum computers (Quantinuum H2 and Helios) have gate times on the **microsecond** scale, and circuit layers take **milliseconds**. A full 100-shot circuit should take roughly **seconds** of machine wall-clock time, plus queue time; not yet measured on hardware.
 * **UI Labeling in Constellation:** In `constellation.html` and any reactive telemetry dials:
-  - Label simulated continuous interaction time as $\tau$ (physical interaction: femtoseconds).
-  - Label hardware execution time as QPU Circuit Latency (hardware clock: milliseconds).
+  - Label $\tau$ as a dimensionless evolution parameter. Do not attach femtoseconds (or any unit) to it.
+  - Label hardware execution time as QPU circuit runtime, and show it as "not yet measured" until we have real hardware timings.
   This keeps our presentation bulletproof against scrutiny from both quantum physicists and computational chemists.
 
 ---

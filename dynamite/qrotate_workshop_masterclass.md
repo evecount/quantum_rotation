@@ -16,7 +16,7 @@ To be completely upfront: I am not a wet-lab biologist or an academic researcher
 
 For decades, drug discovery teams have run into a frustrating computational wall. When they model how a drug candidate fits into a flexible protein pocket on classical computers, the software is forced to slice physical space into rigid 3D cubic grids. As molecules grow, the number of grid boxes and angles explodes exponentially, burning days or weeks of cluster compute just to test a single candidate.
 
-But as coders in quantum, we know that nature doesn't compute in cubic grids. An enzyme and its binding partner find each other in femtoseconds through continuous, natural quantum resonance.
+But as coders in quantum, we know that nature doesn't compute in cubic grids. Molecules move continuously, their atoms rearranging on femtosecond timescales.
 
 We built Project Q-Rotate to give biology teams a fundamentally better, faster engine: replacing brute-force grid searching with smooth, continuous quantum rotations running natively on Quantinuum's trapped-ion processors.
 
@@ -37,7 +37,7 @@ We asked a simple engineering question: why hike over the mountain when quantum 
 
 In physics, three-dimensional rotations are completely smooth and continuous. So instead of chopping rotations into discrete grid steps, our continuous quantum operator tunnels straight through the quantum state space along the shortest possible path.
 
-Instead of testing one orientation at a time on a computer cluster, the quantum wave sweeps through all continuous angles simultaneously. And when the candidate drug achieves that natural resonance with the protein pocket, the quantum waves lock together like a key in a lock—signaling a match in femtoseconds.
+Instead of testing one orientation at a time on a computer cluster, the quantum wave sweeps through all continuous angles simultaneously. And when the candidate drug achieves that natural resonance with the protein pocket, the quantum waves lock together like a key in a lock—signaling a match within a few quantum iterations.
 
 This is the geometric intuition at the heart of our engine: replacing an exponential classical mountain hike with an exact, continuous quantum tunnel on trapped ions.
 

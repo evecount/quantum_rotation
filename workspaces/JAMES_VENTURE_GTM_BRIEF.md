@@ -44,7 +44,7 @@ As our GTM lead, here is the profile of conversations that move the needle most 
 ## 💡 The 60-Second Business Overview: "AWS / CRO for Quantum Drug Testing"
 
 ### The One-Liner Pitch:
-> **Eve Count (Project Q-Rotate) is the decentralized quantum testing platform that lets pharmaceutical labs screen proprietary drug candidates against disease targets by simulating natural femtosecond resonance in milliseconds—without ever exposing confidential 3D molecular coordinates.**
+> **Eve Count (Project Q-Rotate) is the decentralized quantum testing platform that lets pharmaceutical labs screen proprietary drug candidates on Quantinuum's trapped-ion quantum computers—without their raw 3D molecular coordinates ever leaving the lab.**
 
 ```
 ┌────────────────────────────────┐       ┌─────────────────────────────────┐       ┌────────────────────────────────┐
@@ -74,7 +74,7 @@ In quantum mechanics and cryptography, **"Eve"** is the textbook name for the ea
   Traditional docking tools (AutoDock, Schrödinger) try to find a fit by measuring every atom and angle one by one in a giant 3D Cartesian grid. It’s like a locksmith wandering through a pitch-black maze, bumping into walls, trying millions of combinations one-by-one ($O(N^3)$). It burns megawatts of cluster compute and frequently gets stuck in dead ends.
 * **Eve Count's Clever Method (Two Tuning Forks in Resonance):**  
   Imagine two tuning forks on opposite sides of a room. You don't need a microscope to measure the physical shape of the second fork. You simply strike your fork. If they share the same physical frequency, the second fork **sings back through pure acoustic resonance**.  
-  We encode the molecule into a continuous quantum phase manifold. We don't hike over the rough 3D landscape; **our quantum wave burrows through the state space and resonates with the pocket instantly**. If they are a structural match, the quantum states synchronize into lock-and-key resonance within 1–5 quantum iterations (simulating natural femtosecond interaction dynamics in milliseconds of QPU runtime).
+  We encode the molecule into a continuous quantum phase manifold. We don't hike over the rough 3D landscape; **our quantum wave burrows through the state space and resonates with the target**. If they are a structural match, the quantum states synchronize into lock-and-key resonance within 1–5 quantum iterations. Each iteration is one 100-shot circuit, roughly seconds of machine time on the hardware (not yet timed on a real machine).
 
 ---
 
