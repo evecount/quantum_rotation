@@ -20,10 +20,15 @@
 >   - 🏛️ Decentralized Quantum Testing Facility Business Case (internal: kept off the public repo, ask Gwen)
 >   - 🇸🇬 Singapore DeepTech Ecosystem Roadmap (internal: kept off the public repo, ask Gwen)
 
-### 🎯 Immediate High-Leverage Contributions from James:
-1. **Investor Syndicate Briefing:** Review the 1-page POC Evaluation Guide and advise on structuring the initial SAFE / pilot access terms for the 2 interested syndicates.
-2. **Biopharma Pilot Introductions:** Leverage Mamba Partners' network across Singapore/US life sciences to connect Eve Count with 1–2 computational chemistry heads at Biopolis (A*STAR EDDC) or regional pharma R&D hubs for non-binding letters of intent (LOIs).
-3. **Fireside Narrative Polish:** Help Gwen and Ben refine the 5-minute Grand Challenge finals pitch to cleanly articulate the coordinate-free reduced exposure moat.
+### 🌟 What This Means for James:
+> **Zero Homework / Zero Friction:** Gwen and Ben are actively handling 100% of the technical development, benchmark code, physical trapped-ion compilations, and competition submissions. You don't have to write code or manage operations. 
+> 
+> Your role is purely strategic: having the 30-second story in your back pocket, showing off the 3D demo when chatting with fellow venture partners or biopharma leaders, and advising on deal terms whenever you have a moment.
+
+### 💡 Optional Strategic Touchpoints (Whenever Convenient):
+1. **Investor Syndicate Intros:** If you'd like to bring in friendly co-investors or syndicates from your Mamba Partners network, point them to our [Interactive Pitch Deck](https://evecount.github.io/quantum_rotation/pitch.html).
+2. **Advisory Gut-Check:** When you have a free minute, let Gwen know if the $250k–$750k/yr platform access + milestone royalty model feels right for your US/Singapore biopharma relationships.
+3. **Cheering the Team on:** We'll keep this brief updated as we advance through the Grand Challenge finals!
 
 ---
 
