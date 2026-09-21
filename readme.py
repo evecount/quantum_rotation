@@ -109,14 +109,14 @@ def _(mo):
     | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
     | **10** | 17,280 steps | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
     | **50** | 86,400 steps | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **9,600x** |
-    | **100** | 172,800 steps | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **19,200x** |
-    | **500** | 864,000 steps | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **96,000x** |
-    | **1,000** | **1,728,000 steps** | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **192,000x** |
+    | **100** | 172,800 steps | **No lock** in 15 loops | **9 Qubits** | 512 `ZZPhase` | **0 SWAPs** | **218.24 HQCs** | — |
+    | **500** | 864,000 steps | **8 loops** (Locked) | **9 Qubits** | 256 `ZZPhase` | **0 SWAPs** | **109.12 HQCs** | **12,000x** |
+    | **1,000** | **1,728,000 steps** | **11 loops** (Locked) | **9 Qubits** | 352 `ZZPhase` | **0 SWAPs** | **150.04 HQCs** | **17,455x** |
 
-    These synthetic point clouds lock on the first try (best case). The six real active sites take 1–15 RUS iterations and an estimated 13.6–395.6 HQCs per screen (`benchmarks/molecular_showdown.json`). HQCs are estimated from the compiled circuit with the H-series formula, not billed jobs, and "speedup" is a step-count ratio, not wall-clock.
+    These are synthetic point clouds, and each "ligand" is the cloud with 0.5 Å of noise on every atom, so the test is whether the blind loop can lock onto a noisy copy at all: four of five do, and N = 100 does not within 15 loops. The six real active sites lock in 1–5 RUS iterations at 9 qubits (13.64–68.20 estimated HQCs per screen) and 1–8 at 17 (22.04–176.32), landing 0.4–20° from the true pose (`benchmarks/molecular_showdown.json`). HQCs are estimated from the compiled circuit with the H-series formula, not billed jobs, and "speedup" is a step-count ratio, not wall-clock.
 
     - **Zero SWAP Gates:** Trapped-ion all-to-all connectivity allows direct 2Q coupling without circuit degradation.
-    - **Register size does not grow with the molecule:** 9 qubits at 4 sites, 17 at 8, whatever the atom count. Both are benchmarked in `benchmarks/molecular_showdown.json`; the larger one buys discrimination between ligands, not better pose recovery.
+    - **Register size does not grow with the molecule:** 9 qubits at 4 sites, 17 at 8, whatever the atom count. Both are benchmarked in `benchmarks/molecular_showdown.json`; the larger one is no faster, but locks closer to the true pose and separates different ligands better, at about 1.6x the HQC per circuit.
     - **Reproduce Locally:** Run `python -m src.qrotate.metrics` from the repository root.
     """)
     return
