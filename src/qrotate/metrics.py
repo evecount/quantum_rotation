@@ -941,6 +941,11 @@ def export_constellation_profiles(
             "id": sys["id"],
             "name": sys["name"],
             "n_atoms_proxy": sys["n_atoms_proxy"],
+            # The true answer: how far the probe was turned away from the
+            # deposited pose. The landscape peak sits a few degrees short of it
+            # because U_tube(tau) evolves the probe register only (at tau=0 the
+            # peak is exactly here, with P(0)=1).
+            "pose_offset_deg": sys["optimal_angle_deg"],
             "angles_deg": angles,
             "registers": registers,
         })
@@ -956,7 +961,15 @@ def export_constellation_profiles(
         "source": "src/qrotate/metrics.py::export_constellation_profiles",
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
+    _write_constellation_profiles(payload, json_path, js_path)
+    return payload
 
+
+def _write_constellation_profiles(
+    payload: dict,
+    json_path: Optional[str] = "benchmarks/constellation_profiles.json",
+    js_path: Optional[str] = "assets/constellation_profiles.js",
+) -> None:
     if json_path:
         os.makedirs(os.path.dirname(os.path.abspath(json_path)), exist_ok=True)
         with open(json_path, "w", encoding="utf-8") as f:
@@ -973,8 +986,6 @@ def export_constellation_profiles(
             json.dump(payload, f, separators=(",", ":"))
             f.write(";\n")
         print(f"[Saved constellation profiles to {js_path}]")
-
-    return payload
 
 
 if __name__ == "__main__":

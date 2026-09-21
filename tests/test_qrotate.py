@@ -259,6 +259,32 @@ def test_phase_encoding_sees_chirality():
     print(f"PASS: test_phase_encoding_sees_chirality (mirror P(0)={overlap:.3f})")
 
 
+def test_constellation_profiles_carry_the_true_pose():
+    """The Constellation draws its gold ghost and "exact answer" tick from
+    pose_offset_deg, so it must be the offset the benchmark actually applied,
+    and each landscape must peak close to it: U_tube(tau) shifts the peak a few
+    degrees, but a peak far from the true pose would mean the page and the
+    benchmark describe different rotations."""
+    import json
+    from qrotate.metrics import REAL_MOLECULE_SYSTEMS
+
+    path = Path(__file__).resolve().parent.parent / "benchmarks" / "constellation_profiles.json"
+    if not path.exists():
+        print("SKIP: benchmarks/constellation_profiles.json missing")
+        return
+    profiles = {p["id"]: p for p in json.loads(path.read_text(encoding="utf-8"))["constellation_profiles"]}
+
+    for sys_spec in REAL_MOLECULE_SYSTEMS:
+        prof = profiles[sys_spec["id"]]
+        assert prof["pose_offset_deg"] == sys_spec["optimal_angle_deg"], sys_spec["id"]
+        for size, reg in prof["registers"].items():
+            gap = abs((reg["best_angle_deg"] - prof["pose_offset_deg"] + 180) % 360 - 180)
+            if reg["ambiguous_180_deg"]:
+                gap = min(gap, 180 - gap)
+            assert gap <= 6, (sys_spec["id"], size, reg["best_angle_deg"], prof["pose_offset_deg"])
+    print(f"PASS: test_constellation_profiles_carry_the_true_pose ({len(REAL_MOLECULE_SYSTEMS)} systems, every peak within 6 deg)")
+
+
 def test_active_sites_are_real_structures():
     """The six benchmark systems must come from experimental coordinates, and
     each pocket must contain the residues that site is actually known for. This
@@ -376,6 +402,7 @@ if __name__ == "__main__":
     test_phase_encoding_is_permutation_invariant()
     test_phase_encoding_sees_chirality()
     test_active_sites_are_real_structures()
+    test_constellation_profiles_carry_the_true_pose()
     test_hqc_cost_counts_compiled_circuit()
     test_swap_test_statevector_matches_closed_form()
     test_blind_rus_protocol_does_not_cheat()
