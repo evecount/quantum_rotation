@@ -144,6 +144,8 @@ Every row above is an assumption, not a sourced data point — the actual next s
 James, as our GTM lead, you know this venture landscape and these players inside out. We're keeping this brief continuously updated so you always have real-time visibility into technical milestones, benchmark proof points, and the types of partners we want in the room.
 
 ### 🧰 Your Ready-to-Share Toolkit:
+* **🎟️ Private Cohort 1 Luma Briefing:** [`https://luma.com/e142ovra`](https://luma.com/e142ovra)  
+  *Exclusive, approval-required online briefing on Wed Oct 14 @ 4:00 PM SGT. Perfect link to text or DM to discovery chemistry directors, diagnostic lab heads, and venture syndicates.*
 * **Interactive Pitch Deck (Mobile-friendly):** [`https://evecount.github.io/quantum_rotation/pitch.html`](https://evecount.github.io/quantum_rotation/pitch.html)  
   *Great for sending to investors or pulling up on your phone during conversations.*
 * **Live 3D Constellation Demo:** [`https://evecount.github.io/quantum_rotation/constellation.html`](https://evecount.github.io/quantum_rotation/constellation.html)  

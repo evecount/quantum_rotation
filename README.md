@@ -14,6 +14,7 @@
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
+**🎟️ Technical Briefing & Evaluation Cohort (Oct 14):** [luma.com/e142ovra](https://luma.com/e142ovra)  
 **📊 Interactive Pitch Deck:** [evecount.github.io/quantum_rotation/pitch.html](https://evecount.github.io/quantum_rotation/pitch.html)  
 **🌌 3D Resonance Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)  
 **Live Interactive Documentation:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)  
