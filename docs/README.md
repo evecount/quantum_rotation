@@ -14,6 +14,7 @@
 
 **Track:** Chemistry and Biomolecular Simulation  
 **Event:** Quantinuum SG Grand Challenge 2026  
+**📊 Interactive Pitch Deck:** [evecount.github.io/quantum_rotation/pitch.html](https://evecount.github.io/quantum_rotation/pitch.html)  
 **🌌 3D Resonance Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)  
 **Live Interactive Documentation:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)  
 **📜 Intellectual Genesis & Provenance:** [provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md)  
@@ -84,9 +85,19 @@ By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies li
 >   $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
 >   Neither the cloud platform nor the quantum hardware provider ever receives the raw 3D molecular coordinates during a run.
 > * **Honesty note:** this is *not* a cryptographic zero-knowledge proof. The measured $P(0)$ value (and its statistics across repeated shots or queries) is itself information correlated with the overlap, so we describe this as coordinate-free / reduced-exposure screening rather than a formal ZK guarantee — see [Chapter 3](docs/03_the_blind_parity_test.md) for the precise claim.
+>
+> ---
+>
+> ### 🕵️‍♂️ The Story Behind the Name: Why "Eve Count"?
+> In quantum physics and cryptography, **"Eve"** is the textbook name for the eavesdropper trying to intercept secrets on the wire.
+> * **The Classical Cloud Vulnerability:** In conventional screening, if a pharma lab uploads a proprietary scaffold to an external cloud or server, any "Eve" (a hacker, competitor, or untrusted cloud admin) can steal the exact 3D atomic blueprint of a multi-hundred-million-dollar drug scaffold.
+> * **The Eve Count Guarantee:** With Project Q-Rotate, **the eavesdropper’s stolen coordinate count is exactly ZERO ("Eve Count = 0")**. Because the test is coordinate-free, even if someone tapped directly into the quantum processor, they would only observe an abstract interference wave and a single yes/no parity bit $P(0)$. Raw 3D coordinates never exist on the cloud.
+>
+> ### 🎻 The Intuition (Zero Math): The "Locksmith with a Ruler" vs. "Two Tuning Forks"
+> * **The Classical Way (The Locksmith with a Ruler):** Traditional docking tools (AutoDock, Schrödinger) try to find a fit by measuring every atom and angle one by one in a giant 3D Cartesian grid ($O(N^3)$). It is like a locksmith wandering through a pitch-black maze, bumping into walls, trying millions of combinations one-by-one. It burns megawatts of compute and gets stuck in local valleys.
+> * **Eve Count's Clever Method (Two Tuning Forks in Harmonic Resonance):** Imagine two tuning forks on opposite sides of a room. You don't need a microscope to measure the physical shape of the second fork. You simply strike your fork. If they share the same physical frequency, the second fork **sings back through pure acoustic resonance**. We encode the molecule into a continuous quantum phase manifold; if the drug matches the disease pocket, the quantum states synchronize in femtoseconds.
 
-
-### 🏔️ The Intuition: The Classical "Mountain Hike" vs. The Lie Group "Burrowing"
+### 🏔️ The Technical View: The Classical "Mountain Hike" vs. The Lie Group "Burrowing"
 
 To understand why Project Q-Rotate scales where classical supercomputers fail, consider how both paradigms traverse molecular binding:
 

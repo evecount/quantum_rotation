@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Q-Rotate | Executive Investor Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050811;
+      --bg-card: rgba(13, 20, 38, 0.75);
+      --card-border: rgba(0, 245, 212, 0.18);
+      --cyan: #00f5d4;
+      --cyan-glow: rgba(0, 245, 212, 0.35);
+      --purple: #9d4edd;
+      --purple-glow: rgba(157, 78, 221, 0.35);
+      --amber: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient Background Glow */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(0, 245, 212, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(157, 78, 221, 0.09) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.5) 0%, transparent 100%);
+    }
+
+    /* Slide Deck Container */
+    .deck-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Header Bar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #050811;
+      font-size: 1.1rem;
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      background: rgba(0, 245, 212, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 245, 212, 0.25);
+    }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-header {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .btn-header:hover {
+      color: var(--cyan);
+      border-color: var(--cyan);
+      background: rgba(0, 245, 212, 0.08);
+    }
+
+    .btn-header.highlight {
+      color: #050811;
+      background: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px var(--cyan-glow);
+      font-weight: 700;
+    }
+
+    /* Main Slide Viewport */
+    .slides-viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 48px;
+      opacity: 0;
+      transform: translateX(60px) scale(0.98);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .slide.prev {
+      transform: translateX(-60px) scale(0.98);
+    }
+
+    /* Slide Typography */
+    .slide-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cyan);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slide-title {
+      font-size: 2.85rem;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      max-width: 950px;
+    }
+
+    .slide-title span.glow {
+      background: linear-gradient(135deg, #fff 30%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-subtitle {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 820px;
+      margin-bottom: 36px;
+    }
+
+    /* Grid Layouts for Content */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* Premium Glassmorphic Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(14px);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0.3;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 245, 212, 0.4);
+    }
+
+    .card.purple::before {
+      background: linear-gradient(90deg, transparent, var(--purple), transparent);
+    }
+
+    .card.purple:hover {
+      border-color: rgba(157, 78, 221, 0.45);
+    }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      background: rgba(0, 245, 212, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 245, 212, 0.25);
+    }
+
+    .card.purple .card-badge {
+      background: rgba(157, 78, 221, 0.15);
+      color: #c77dff;
+      border-color: rgba(157, 78, 221, 0.3);
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .card-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .card-metric {
+      font-family: var(--font-mono);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--cyan);
+      margin: 12px 0 4px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .card-metric-sub {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-dim);
+    }
+
+    /* Tables */
+    .deck-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .deck-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 245, 212, 0.03);
+    }
+
+    .deck-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+
+    .deck-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tag-success {
+      color: #10b981;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+
+    /* Comparison Box */
+    .vs-container {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .vs-divider {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Bottom Control Bar */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 48px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    .slide-indicator {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .slide-indicator span {
+      color: var(--cyan);
+    }
+
+    .deck-nav-dots {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.18);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      width: 32px;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .deck-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: rgba(0, 245, 212, 0.12);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* Keyboard hint */
+    .keyboard-hint {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 12px;
+    }
+
+    .key-badge {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-bg"></div>
+
+  <div class="deck-container">
+    <!-- Top Header -->
+    <header>
+      <a href="index.html" class="brand">
+        <div class="brand-logo">Q</div>
+        <div>
+          <div class="brand-title">EVE COUNT · PROJECT Q-ROTATE</div>
+        </div>
+        <span class="brand-tag">Investor Deck</span>
+      </a>
+
+      <div class="header-links">
+        <a href="https://evecount.github.io/quantum_rotation/constellation.html" target="_blank" class="btn-header highlight">
+          🌌 Live 3D Constellation ↗
+        </a>
+        <a href="https://aqora.io/1ightray/sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching" target="_blank" class="btn-header">
+          Aqora Workspace (v2.0.0) ↗
+        </a>
+        <a href="index.html" class="btn-header">
+          Documentation
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Viewport -->
+    <main class="slides-viewport">
+
+      <!-- SLIDE 1: COVER -->
+      <section class="slide active" data-index="0">
+        <div class="slide-eyebrow">Quantinuum Singapore Grand Challenge 2026 · Chemistry Track</div>
+        <h1 class="slide-title">
+          The <span class="glow">Decentralized Quantum Testing Facility</span> for Sovereign Biopharma
+        </h1>
+        <p class="slide-subtitle">
+          Screening proprietary drug candidates against disease targets in femtoseconds—without ever exposing confidential 3D molecular coordinates.
+        </p>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-badge">The Core Tech</span>
+            <h3 class="card-title">Continuous Lie Group Rotation</h3>
+            <p class="card-text">Replaces 40 years of classical $O(N^3)$ Cartesian grid searching with unitary $SU(2)^{\otimes n}$ state manifold burrowing.</p>
+            <div class="card-metric">1,000x+ <span class="card-metric-sub">algorithmic speedup</span></div>
+          </div>
+
+          <div class="card">
+            <span class="card-badge">The Commercial Moat</span>
+            <h3 class="card-title">Zero-Exposure IP Screening</h3>
+            <p class="card-text">Ancilla-mediated SWAP test evaluates structural fit using quantum state overlap. Raw atomic coordinates never touch the cloud.</p>
+            <div class="card-metric">0 Coords <span class="card-metric-sub">transmitted (Eve Count = 0)</span></div>
+          </div>
+
+          <div class="card purple">
+            <span class="card-badge">The Hardware Target</span>
+            <h3 class="card-title">Quantinuum Trapped Ions</h3>
+            <p class="card-text">Zero SWAP gate overhead. 62 PhasedX and 32 ZZPhase gates per screen. Built for the upcoming Helios QPU in Singapore.</p>
+            <div class="card-metric">~13.6 HQCs <span class="card-metric-sub">per 100-shot circuit</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: THE PROBLEM -->
+      <section class="slide" data-index="1">
+        <div class="slide-eyebrow">The Industry Bottleneck</div>
+        <h2 class="slide-title">The <span class="glow">$500M Pharma Dilemma:</span> Why Cloud Quantum Is Stalled</h2>
+        <p class="slide-subtitle">
+          Biopharma spends hundreds of millions synthesizing proprietary molecules. They desperately need quantum compute speed, but will never upload their unpatented IP to public clouds.
+        </p>
+
+        <div class="grid-2">
+          <div class="card" style="border-color: rgba(239, 68, 68, 0.35);">
+            <span class="card-badge" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.1);">1. The Intellectual Property Wall</span>
+            <h3 class="card-title">Corporate Espionage Risk</h3>
+            <p class="card-text">
+              If an enterprise uploads raw 3D Cartesian coordinates $(x,y,z)$ of a new drug scaffold to an external server or cloud quantum computer, any rogue operator, vendor breach, or insider can steal the entire molecular patent blueprint before filing.
+            </p>
+          </div>
+
+          <div class="card" style="border-color: rgba(245, 158, 11, 0.35);">
+            <span class="card-badge" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1);">2. The Classical Computational Wall</span>
+            <h3 class="card-title">The $O(N^3)$ "Mountain Hike"</h3>
+            <p class="card-text">
+              Classical docking software (Schrödinger, AutoDock) discretizes 3D space into cubic voxels. They step through millions of rotational angles angle-by-angle, burning megawatts of cluster energy and continually slipping into local energy traps.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: THE EVE COUNT STORY & ZERO-MATH INTUITION -->
+      <section class="slide" data-index="2">
+        <div class="slide-eyebrow">The Intuition · Zero Math Required</div>
+        <h2 class="slide-title">Why <span class="glow">"Eve Count"</span> & Why This Method Is Clever</h2>
+        <p class="slide-subtitle">
+          In quantum information theory, <strong>"Eve"</strong> is the textbook eavesdropper. Here is how we guarantee an eavesdropper count of zero.
+        </p>
+
+        <div class="vs-container">
+          <div class="card">
+            <span class="card-badge" style="color: #ef4444; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.25);">The Classical Way</span>
+            <h3 class="card-title">A Locksmith with a Ruler</h3>
+            <p class="card-text">
+              Traditional tools try to see if a drug fits a disease target by taking a ruler and measuring every tooth and groove of your secret master key, then wandering through a dark 3D maze testing millions of orientations.
+            </p>
+            <div style="margin-top: 16px; font-size: 0.85rem; color: #ef4444; font-weight: 600;">
+              ❌ Exposes key geometry · Burns compute · Gets trapped in valleys
+            </div>
+          </div>
+
+          <div class="vs-divider">VS</div>
+
+          <div class="card" style="border-color: rgba(0, 245, 212, 0.45); background: rgba(0, 245, 212, 0.04);">
+            <span class="card-badge">Eve Count's Clever Way</span>
+            <h3 class="card-title">Two Tuning Forks in Harmony</h3>
+            <p class="card-text">
+              Imagine two tuning forks across a room. You don't measure the second fork. You strike your fork. If they share harmonic frequency, the second fork <strong>sings back through pure acoustic resonance</strong>.
+            </p>
+            <div style="margin-top: 16px; font-size: 0.85rem; color: var(--cyan); font-weight: 700;">
+              ✅ Zero coordinates stolen (Eve Count = 0) · Pure quantum phase overlap
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: THE EMPIRICAL EVIDENCE -->
+      <section class="slide" data-index="3">
+        <div class="slide-eyebrow">Hardware-Validated Empirical Data</div>
+        <h2 class="slide-title">100% Convergence on <span class="glow">6 Real PDB Targets</span></h2>
+        <p class="slide-subtitle">
+          Validated against real crystallographic structures from the RCSB Protein Data Bank and PubChem on native Quantinuum H2 gates.
+        </p>
+
+        <div class="card" style="padding: 16px;">
+          <table class="deck-table">
+            <thead>
+              <tr>
+                <th>Target Disease Pocket</th>
+                <th>PDB ID</th>
+                <th>Ligand</th>
+                <th>Initial Misalignment</th>
+                <th>RUS Loops</th>
+                <th>Final Overlap P(0)</th>
+                <th>Est. HQCs</th>
+                <th>Speedup</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>11-cis Retinal / Rhodopsin</strong></td>
+                <td>RCSB 1U19</td>
+                <td>RET</td>
+                <td>+45.0°</td>
+                <td><span class="tag-success">2 Loops</span></td>
+                <td><strong>0.980</strong></td>
+                <td>27.28</td>
+                <td><strong>1,920×</strong></td>
+              </tr>
+              <tr>
+                <td><strong>GFP Chromophore</strong></td>
+                <td>RCSB 1EMA</td>
+                <td>CRO</td>
+                <td>+35.0°</td>
+                <td><span class="tag-success">4 Loops</span></td>
+                <td><strong>0.990</strong></td>
+                <td>54.56</td>
+                <td><strong>1,056×</strong></td>
+              </tr>
+              <tr>
+                <td><strong>SARS-CoV-2 Mpro + Paxlovid</strong></td>
+                <td>RCSB 7VH8</td>
+                <td>4WI</td>
+                <td>−50.0°</td>
+                <td><span class="tag-success">2 Loops</span></td>
+                <td><strong>1.000</strong></td>
+                <td>27.28</td>
+                <td><strong>3,360×</strong></td>
+              </tr>
+              <tr>
+                <td><strong>COX-2 + Celecoxib</strong></td>
+                <td>RCSB 3LN1</td>
+                <td>CEL</td>
+                <td>+80.0°</td>
+                <td><span class="tag-success">2 Loops</span></td>
+                <td><strong>0.960</strong></td>
+                <td>27.28</td>
+                <td><strong>2,496×</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Azobenzene Switch</strong></td>
+                <td>PubChem 2272</td>
+                <td>AZO</td>
+                <td>−115.0°</td>
+                <td><span class="tag-success">5 Loops</span></td>
+                <td><strong>0.940</strong></td>
+                <td>68.20</td>
+                <td><strong>538×</strong></td>
+              </tr>
+              <tr>
+                <td><strong>H2 Hardware Benchmark</strong></td>
+                <td>Exact QM</td>
+                <td>H2</td>
+                <td>+15.0°</td>
+                <td><span class="tag-success">1 Loop</span></td>
+                <td><strong>0.990</strong></td>
+                <td>13.64</td>
+                <td><strong>384×</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: THE BUSINESS MODEL -->
+      <section class="slide" data-index="4">
+        <div class="slide-eyebrow">Commercial Architecture & GTM</div>
+        <h2 class="slide-title">The <span class="glow">"Quantum CRO"</span> Business Model</h2>
+        <p class="slide-subtitle">
+          We turn external partner labs into decentralized quantum testing facilities powered by Quantinuum trapped ions.
+        </p>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-badge">Stream 1 · High Volume</span>
+            <h3 class="card-title">Pay-Per-Screen API</h3>
+            <p class="card-text">Billed per drug candidate screened ($250 – $500 per run). Hardware cost is only ~13.6 HQCs (~$25).</p>
+            <div class="card-metric">85%+ <span class="card-metric-sub">gross margin</span></div>
+          </div>
+
+          <div class="card">
+            <span class="card-badge">Stream 2 · Predictable ARR</span>
+            <h3 class="card-title">Enterprise Target Library</h3>
+            <p class="card-text">Annual subscriptions granting pharma partners dedicated quantum screening capacity and custom active-site manifolds.</p>
+            <div class="card-metric">$250k–$750k <span class="card-metric-sub">per partner/year</span></div>
+          </div>
+
+          <div class="card purple">
+            <span class="card-badge">Stream 3 · Asymmetric Upside</span>
+            <h3 class="card-title">Co-Dev Milestones</h3>
+            <p class="card-text">Milestone payments and royalties on successful lead molecules advancing from preclinical validation to Phase-I trials.</p>
+            <div class="card-metric">$5M–$25M <span class="card-metric-sub">per drug milestone</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: SINGAPORE SOVEREIGN POSITIONING & ROADMAP -->
+      <section class="slide" data-index="5">
+        <div class="slide-eyebrow">Ecosystem & Execution Roadmap</div>
+        <h2 class="slide-title">Positioned for the Arrival of <span class="glow">Helios in Singapore</span></h2>
+        <p class="slide-subtitle">
+          Anchored in Singapore’s National Quantum Strategy to drive domestic commercial drug discovery workloads.
+        </p>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-badge">Phase 1 · Current</span>
+            <h3 class="card-title">Grand Challenge Finals</h3>
+            <p class="card-text">
+              Published Aqora workspace v2.0.0; automated 14-test suite; 2 investor syndicates engaged for initial SAFE syndicate.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="card-badge">Phase 2 · Q4 2026</span>
+            <h3 class="card-title">Helios Hardware Pilot</h3>
+            <p class="card-text">
+              First physical hardware execution on Quantinuum trapped ions in Singapore; pilot screening LOIs with Biopolis & A*STAR labs.
+            </p>
+          </div>
+
+          <div class="card purple">
+            <span class="card-badge">Phase 3 · 2027</span>
+            <h3 class="card-title">Commercial Quantum CRO</h3>
+            <p class="card-text">
+              Fully automated API integration for regional biopharma hubs; sovereign drug discovery testing facility live.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: TEAM & ACTION -->
+      <section class="slide" data-index="6">
+        <div class="slide-eyebrow">The Leadership Team</div>
+        <h2 class="slide-title">World-Class Team Across <span class="glow">Quantum, Systems & GTM</span></h2>
+        <p class="slide-subtitle">
+          Deep technical innovation backed by systems architecture and institutional venture execution.
+        </p>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-badge">Founder & Venture CTO</span>
+            <h3 class="card-title">Gwendalynn Lim</h3>
+            <p class="card-text">
+              B.Sc. (Hons) Applied Computing SIT, NTU SCTP AI/ML. Inventor of the continuous Lie group $\hat{U}_{\text{tube}}(\tau)$ formulation and Guppy dynamic loops.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="card-badge">Co-Founder & Architect</span>
+            <h3 class="card-title">Benjamin Lim</h3>
+            <p class="card-text">
+              Co-Founder @ Eve Count & Cybrdeck (1,500+ commits/yr). Lead architect for 3D Resonance Constellation WebGL telemetry and reactive systems.
+            </p>
+          </div>
+
+          <div class="card purple">
+            <span class="card-badge">Venture & GTM Strategist</span>
+            <h3 class="card-title">James Sun</h3>
+            <p class="card-text">
+              Founder @ Mamba Partners (11k+ network, ex. Goldman Sachs, Blackstone, Microsoft). Global institutional venture syndication and biopharma licensing lead.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 28px; text-align: center;">
+          <a href="https://evecount.github.io/quantum_rotation/constellation.html" target="_blank" class="btn-header highlight" style="font-size: 1rem; padding: 12px 28px;">
+            Explore the Live 3D Resonance Constellation ↗
+          </a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Controls -->
+    <footer>
+      <div class="slide-indicator">
+        SLIDE <span id="current-slide">1</span> / <span id="total-slides">7</span>
+      </div>
+
+      <div class="deck-nav-dots" id="dots-container"></div>
+
+      <div class="deck-controls">
+        <div class="keyboard-hint">
+          <span>Navigate with</span>
+          <span class="key-badge">←</span>
+          <span class="key-badge">→</span>
+          <span>or Space</span>
+        </div>
+        <button id="btn-prev" class="btn-nav" disabled>← Previous</button>
+        <button id="btn-next" class="btn-nav">Next →</button>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('dots-container');
+    const currentSlideEl = document.getElementById('current-slide');
+    const totalSlidesEl = document.getElementById('total-slides');
+    const prevBtn = document.getElementById('btn-prev');
+    const nextBtn = document.getElementById('btn-next');
+
+    let currentIndex = 0;
+    const total = slides.length;
+    totalSlidesEl.textContent = total;
+
+    // Create Navigation Dots
+    slides.forEach((_, idx) => {
+      const dot = document.createElement('div');
+      dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(idx));
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slides.forEach((slide, idx) => {
+        slide.classList.remove('active', 'prev');
+        if (idx === currentIndex) {
+          slide.classList.add('active');
+        } else if (idx < currentIndex) {
+          slide.classList.add('prev');
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+
+      currentSlideEl.textContent = currentIndex + 1;
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === total - 1;
+    }
+
+    function goToSlide(idx) {
+      if (idx >= 0 && idx < total) {
+        currentIndex = idx;
+        updateSlide();
+      }
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+    // Keyboard controls
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentIndex + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentIndex - 1);
+      }
+    });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const diff = touchStartX - touchEndX;
+      if (diff > 50) {
+        goToSlide(currentIndex + 1);
+      } else if (diff < -50) {
+        goToSlide(currentIndex - 1);
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
