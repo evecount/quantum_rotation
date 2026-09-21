@@ -27,10 +27,20 @@ This submission is strictly engineered to satisfy the four official scoring crit
 
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
-| **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | **James Sun's Commercial Thesis:** Eliminates multi-billion-dollar classical docking bottlenecks; replaces wet-lab trial-and-error with continuous phase synchronization; $120M–$280M biopharma licensing roadmap. |
+| **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | **James Sun's Commercial Thesis:** Eliminates multi-billion-dollar classical docking bottlenecks; replaces wet-lab trial-and-error with continuous phase synchronization; $120M–$280M biopharma licensing roadmap, now benchmarked against 5 real 2024–2025 AI-drug-discovery licensing deals ($51M–$150M upfronts, $1B–$6B milestone ceilings — see [`workspaces/JAMES_VENTURE_GTM_BRIEF.md`](workspaces/JAMES_VENTURE_GTM_BRIEF.md)) rather than presented as an unsourced assumption. |
 | **Technical Performance & Hardware Use** | **30%** | Correctness, benchmark gains, scalability, hardware utilization | **Quantinuum Native Compilation:** Each SWAP-test circuit rebases to 9 qubits, 62 `PhasedX`, 32 `ZZPhase`, 1 measurement (depth 68), ≈13.6 estimated HQCs per 100-shot run; dynamic mid-circuit measurement/reset loop in **Guppy**; 6 benchmark systems on experimental coordinates (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), each locking onto its deposited pose in 1–5 RUS iterations at 9 qubits (0.4–20° from the exact angle), or 1–8 at 17 (0.4–15°). |
-| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | **Gwen's Lie Algebra $\hat{U}_{\text{tube}}(\tau)$:** Replaced 40 years of classical $O(N^3)$ Cartesian grid docking with continuous $SU(2)^{\otimes n}$ rotations; coordinate-free blind parity interference curve. Documented in full in [`provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md`](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md). |
-| **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | **Ben's Systems Architecture:** Clean modular `src/qrotate/` package, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, comprehensive docstrings, `pyproject.toml`, and clean Git history. |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | **Gwen's Lie Algebra $\hat{U}_{\text{tube}}(\tau)$:** Replaced 40 years of classical $O(N^3)$ Cartesian grid docking with continuous $SU(2)^{\otimes n}$ rotations; coordinate-free blind parity interference curve. Documented in full in [`provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md`](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md). **Error analysis:** 30 independent shot-noise trials per system (180 total, `benchmarks/statistical_robustness.json`) give a 93.3% overall lock rate with a 95% Wilson confidence interval of [88.7%, 96.1%] — see §3b. |
+| **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | **Ben's Systems Architecture:** Clean modular `src/qrotate/` package, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, comprehensive docstrings, `pyproject.toml`, clean Git history, and a 19-case `pytest` suite (`tests/test_qrotate.py`, all passing). |
+
+---
+
+## ⚠️ Emulator vs. Hardware Disclosure
+
+**All benchmark numbers in this document — the molecular showdown table, HQC estimates, and the statistical robustness study — are produced by exact statevector simulation plus binomial shot-noise sampling (`src/qrotate/circuits.py::simulate_swap_test_statevector` / `simulate_shot_sampling`), not by execution on Quantinuum H2 physical hardware.** We state this plainly rather than let the H2-native gate counts (`PhasedX`/`ZZPhase` rebase, HQC costing) imply a hardware run they are not.
+
+What *is* real: the circuits are compiled and rebased to the actual H2 native gateset via Pytket (`rebase_to_h2_gateset`), so the gate counts, circuit depth, and HQC costs are the real costs an H2 job would incur — only the measurement outcomes are simulated rather than sampled from physical qubits. Real device noise (T1/T2 decoherence, crosstalk, leakage) is therefore not captured, and the 93.3% lock rate in §3b should be read as an emulator-noise floor, not a hardware-validated number.
+
+**Path to hardware validation:** per the [Official Event Timeline](Competition.md#-event-timeline), H2 hardware access and dedicated compute allocations are granted to shortlisted teams during the Grand Finale Acceleration stage (Oct 21) ahead of Submission 2 (Nov 14). Our plan for that window is to re-run the six-system molecular showdown and the 30-trial robustness study on H2 emulator-with-noise-model first, then on physical H2 qubits, and report both alongside the current pure-statevector numbers rather than replacing them — so the jury can see the degradation (or lack of it) directly.
 
 ---
 
@@ -101,8 +111,28 @@ All six run on experimental coordinates (`benchmarks/active_sites.json`, extract
 
 ---
 
+## 3b. Statistical Robustness: 30 Independent Shot-Noise Trials per System
+
+The table above reports one RUS run per system (one shot-noise seed). To answer the Scientific Merit rubric's call for error and validation analysis, each of the six systems was re-run **30 times** with independent shot-noise seeds (180 trials total, `src/qrotate/metrics.py::run_statistical_robustness`, data in `benchmarks/statistical_robustness.json`). Lock rate is reported with a 95% Wilson confidence interval, which — unlike the normal approximation — stays inside [0, 1] at small sample sizes.
+
+| System | Locked / Trials | Lock Rate | 95% CI | Iterations (mean ± std) | Pose Error at Lock (mean ± std) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Rhodopsin (1U19)** | 30/30 | 100.0% | [88.6, 100.0]% | 3.5 ± 1.8 | 11.8° ± 6.1° |
+| **GFP (1EMA)** | 30/30 | 100.0% | [88.6, 100.0]% | 3.6 ± 1.4 | 12.2° ± 10.0° |
+| **Mpro (7VH8)** | 30/30 | 100.0% | [88.6, 100.0]% | 3.1 ± 1.3 | 10.7° ± 3.1° |
+| **COX-2 (3LN1)** | 26/30 | 86.7% | [70.3, 94.7]% | 4.2 ± 3.1 | 17.5° ± 6.3° |
+| **Azobenzene (PubChem 2272)** | 22/30 | 73.3% | [55.6, 85.8]% | 6.1 ± 3.2 | 10.2° ± 5.8° |
+| **H2 (exact QM)** | 30/30 | 100.0% | [88.6, 100.0]% | 1.0 ± 0.0 | 15.0° ± 0.0° |
+| **Overall (180 trials)** | 168/180 | **93.3%** | **[88.7, 96.1]%** | — | — |
+
+**This is a more honest number than "6/6 systems locked."** The single-seed showdown table happened to draw a lucky seed for COX-2 and azobenzene; resampling shows those two systems lock reliably but not universally (73–87%), while the other four are robust across the full trial set (100%, CI floor ≥88.6%). Azobenzene's lower rate tracks its largest start misalignment (−115.0°, by far the hardest case in the set) and its all-organic composition (no metal/heteroatom shell contrast to lock onto), which is a plausible mechanism rather than an unexplained failure mode.
+
+---
+
 ## 4. Submission Artifacts Included
 
 1. **`PROJECT_QROTATE_SUBMISSION_RELEASE.md`**: This formal executive summary and rubric cross-reference.
 2. **`qrotate_solution.zip`**: Complete reproducible solution bundle including `src/qrotate/` package, Pytket compilation scripts, Guppy RUS definitions, and tests.
 3. **`Linked Workspace`**: Official Marimo interactive workspace version `v1.0.1` (`readme.py`).
+4. **`benchmarks/molecular_showdown.json`** / **`benchmarks/statistical_robustness.json`**: Raw single-seed and 180-trial benchmark data, regenerable with `python -m src.qrotate.metrics`.
+5. **`tests/test_qrotate.py`**: 19-case `pytest` suite covering circuit compilation, phase encoding, RUS convergence, and the statistical-robustness confidence interval — run with `pytest tests/`.

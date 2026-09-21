@@ -1017,7 +1017,127 @@ def _write_constellation_profiles(
         print(f"[Saved constellation profiles to {js_path}]")
 
 
+# =====================================================================
+# 6. Statistical Robustness (repeated-trial shot-noise resampling)
+# =====================================================================
+
+def _wilson_interval(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """95% Wilson score interval for a binomial proportion (safe at small n,
+    unlike the normal approximation, which can escape [0, 1])."""
+    if n == 0:
+        return (0.0, 0.0)
+    phat = successes / n
+    denom = 1 + z**2 / n
+    center = (phat + z**2 / (2 * n)) / denom
+    half = (z / denom) * np.sqrt((phat * (1 - phat) / n) + (z**2 / (4 * n**2)))
+    return (max(0.0, center - half), min(1.0, center + half))
+
+
+def run_statistical_robustness(
+    output_json_path: Optional[str] = "benchmarks/statistical_robustness.json",
+    n_sites: int = 4,
+    n_trials: int = 30,
+) -> dict:
+    """Resamples each of the 6 molecular-showdown systems `n_trials` times with
+    independent shot-noise seeds, to report lock rate and iteration/pose-error
+    spread with confidence intervals instead of one seed's point estimate.
+
+    This is still an emulator (statevector + binomial shot-noise sampling)
+    study, not a hardware run — see the "Emulator vs Hardware" disclosure in
+    PROJECT_QROTATE_SUBMISSION_RELEASE.md. What it adds is the error/validation
+    analysis the Scientific Merit criterion asks for: does a lock reflect the
+    real resonance, or a lucky draw of shot noise?
+    """
+    n_qubits = n_sites
+    sites = load_active_sites()
+    per_system = []
+
+    print("=" * 80)
+    print(f"PROJECT Q-ROTATE: STATISTICAL ROBUSTNESS ({n_trials} shot-noise trials/system)")
+    print("=" * 80)
+
+    for sys in REAL_MOLECULE_SYSTEMS:
+        base_seed = zlib.crc32(sys["id"].encode()) % (2**31)
+        target_coords, probe_coords = _system_coordinates(
+            sys["id"], sys["n_atoms_proxy"], sys["optimal_angle_deg"], base_seed)
+        site = sites.get(sys["id"])
+        elements = site_elements(sys["id"]) or ["C"] * len(probe_coords)
+
+        target_geom = MolecularGeometry(f"{sys['id']}_target", elements, target_coords)
+        pocket_phases = pocket_ligand_to_qubit_phases(target_geom, n_qubits=n_qubits)
+        degenerate = is_encoding_degenerate(target_geom, n_qubits=n_qubits)
+        ambiguous_180 = has_180_degree_ambiguity(target_geom, n_qubits=n_qubits)
+
+        locks, iters, errs = [], [], []
+        for trial in range(n_trials):
+            trial_seed = (base_seed * 1_000_003 + trial) % (2**31)
+            rus_result = run_blind_rus_pose_recovery(
+                pocket_phases, probe_coords, n_qubits=n_qubits,
+                tau=0.25, omega=(1.0, 0.5, 0.25),
+                max_retries=15, shots=100, seed=trial_seed, elements=elements,
+            )
+            locks.append(rus_result.locked)
+            if rus_result.locked:
+                iters.append(rus_result.iterations)
+                errs.append(pose_error_deg(rus_result.final_angle_deg, sys["optimal_angle_deg"], ambiguous_180))
+
+        n_locked = sum(locks)
+        ci_lo, ci_hi = _wilson_interval(n_locked, n_trials)
+        entry = {
+            "system_id": sys["id"],
+            "system_name": sys["name"],
+            "structure_source": f"{site['source']['db']} {site['source']['id']}" if site else "synthetic fallback",
+            "encoding_degenerate": degenerate,
+            "n_trials": n_trials,
+            "n_locked": n_locked,
+            "lock_rate": round(n_locked / n_trials, 4),
+            "lock_rate_95ci": [round(ci_lo, 4), round(ci_hi, 4)],
+            "iterations_mean": round(float(np.mean(iters)), 2) if iters else None,
+            "iterations_std": round(float(np.std(iters)), 2) if iters else None,
+            "pose_error_deg_mean": round(float(np.mean(errs)), 2) if errs else None,
+            "pose_error_deg_std": round(float(np.std(errs)), 2) if errs else None,
+        }
+        per_system.append(entry)
+
+        print(f"[{sys['id']:10s}] {n_locked:3d}/{n_trials} locked "
+              f"({entry['lock_rate']*100:5.1f}%, 95% CI "
+              f"[{ci_lo*100:.1f}, {ci_hi*100:.1f}]%)"
+              + (f" | iters {entry['iterations_mean']:.1f}+/-{entry['iterations_std']:.1f}"
+                 f" | pose err {entry['pose_error_deg_mean']:.1f}+/-{entry['pose_error_deg_std']:.1f} deg"
+                 if iters else " | NEVER LOCKED"))
+
+    meaningful = [r for r in per_system if not r["encoding_degenerate"]]
+    overall_locked = sum(r["n_locked"] for r in meaningful)
+    overall_trials = sum(r["n_trials"] for r in meaningful)
+    overall_ci = _wilson_interval(overall_locked, overall_trials)
+
+    print("-" * 80)
+    print(f"OVERALL (usable encodings only): {overall_locked}/{overall_trials} trials locked "
+          f"({overall_locked/overall_trials*100:.1f}%, 95% CI "
+          f"[{overall_ci[0]*100:.1f}, {overall_ci[1]*100:.1f}]%)")
+    print("=" * 80)
+
+    payload = {
+        "n_sites": n_sites,
+        "n_qubits": 2 * n_sites + 1,
+        "n_trials_per_system": n_trials,
+        "per_system": per_system,
+        "overall_lock_rate": round(overall_locked / overall_trials, 4),
+        "overall_lock_rate_95ci": [round(overall_ci[0], 4), round(overall_ci[1], 4)],
+        "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+
+    if output_json_path:
+        os.makedirs(os.path.dirname(os.path.abspath(output_json_path)), exist_ok=True)
+        with open(output_json_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+        print(f"\n[Saved statistical robustness results to {output_json_path}]")
+
+    return payload
+
+
 if __name__ == "__main__":
     run_performance_showdown(output_json_path="benchmarks/showdown_results.json")
     run_molecular_showdown_all_registers(output_json_path="benchmarks/molecular_showdown.json")
     export_constellation_profiles()
+    run_statistical_robustness(output_json_path="benchmarks/statistical_robustness.json")

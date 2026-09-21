@@ -34,6 +34,7 @@ from qrotate.circuits import (
     simulate_swap_test_statevector,
 )
 from qrotate.metrics import run_blind_rus_protocol
+from qrotate.metrics import _wilson_interval
 import utils
 
 try:
@@ -516,6 +517,23 @@ def test_blind_rus_protocol_does_not_cheat():
     )
 
 
+def test_wilson_interval_brackets_the_point_estimate():
+    """The 95% CI used to report lock-rate robustness must contain the raw
+    proportion and widen as the sample size shrinks (so a 6-system, 1-seed
+    showdown can't be quoted with the same confidence as a 180-trial one)."""
+    lo, hi = _wilson_interval(30, 30)
+    assert lo < 1.0 <= hi
+    assert 0.85 < lo
+
+    lo_small, hi_small = _wilson_interval(3, 3)
+    lo_big, hi_big = _wilson_interval(30, 30)
+    assert (hi_small - lo_small) > (hi_big - lo_big)
+
+    lo_zero, hi_zero = _wilson_interval(0, 0)
+    assert (lo_zero, hi_zero) == (0.0, 0.0)
+    print("PASS: test_wilson_interval_brackets_the_point_estimate")
+
+
 if __name__ == "__main__":
     test_hpc_bridge()
     test_operators()
@@ -535,4 +553,5 @@ if __name__ == "__main__":
     test_swap_test_statevector_matches_closed_form()
     test_blind_rus_protocol_does_not_cheat()
     test_pose_recovery_reports_where_it_stopped()
+    test_wilson_interval_brackets_the_point_estimate()
     print("\nALL PROJECT Q-ROTATE TESTS PASSED SUCCESSFULLY!")
