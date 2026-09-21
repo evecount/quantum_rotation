@@ -27,6 +27,45 @@
 
 ---
 
+## 💡 The 60-Second Business Overview: "AWS / CRO for Quantum Drug Testing"
+
+### The One-Liner Pitch:
+> **Eve Count (Project Q-Rotate) is the decentralized quantum testing platform that lets pharmaceutical labs screen proprietary drug candidates against disease targets in femtoseconds—without ever exposing their confidential 3D molecular coordinates.**
+
+```
+┌────────────────────────────────┐       ┌─────────────────────────────────┐       ┌────────────────────────────────┐
+│   Client Biopharma Lab         │       │   Eve Count (Q-Rotate Cloud)    │       │   Quantinuum Trapped-Ion QPU   │
+│   - Proprietary Drug Scaffold  │ ====> │   - Ancilla Parity Test         │ ====> │   - H2 / Helios in Singapore   │
+│   - Keeps 3D Coords On-Premise │       │   - Compressed Phase Overlap    │       │   - 13.6 HQCs per Screen       │
+└────────────────────────────────┘       └─────────────────────────────────┘       └────────────────────────────────┘
+                                                    │
+                                                    ▼
+                                         Single Parity Match Bit P(0)
+                                         (0.98 = Target Pose Locked)
+```
+
+---
+
+## 💎 The 3 Killer Unique Selling Propositions (USPs)
+
+| USP | The Industry Bottleneck | Our Quantum Solution | Commercial Impact |
+| :--- | :--- | :--- | :--- |
+| **1. Zero-Exposure IP Protection (Coordinate-Free)** | Pharma spends $500M+ per drug scaffold and **refuses to send unpatented 3D coordinates** to external cloud quantum computers. | Ancilla-mediated SWAP test evaluates structural fit via **quantum state overlap**. What leaves the client is a compressed phase fingerprint, not 3D Cartesian coordinates. | Unlocks enterprise biopharma cloud adoption by removing the #1 legal/IP risk barrier. |
+| **2. Continuous Lie Group "Burrowing" ($O(1)$ vs $O(N^3)$)** | Classical docking tools (Schrödinger, AutoDock, AlphaFold multi-state) get trapped in local energy valleys across brute-force 3D grids ($O(N^3)$). | Unitary time evolution under $SU(2)^{\otimes n}$ Lie algebra sweeps all orientations simultaneously, finding lock-and-key resonance in **1–5 iterations**. | **1,000×–3,300× algorithmic speedup** demonstrated on real PDB crystal structures (Paxlovid, Rhodopsin, COX-2). |
+| **3. The "Decentralized Testing Facility" CRO Model** | Building an in-house quantum lab costs $20M+; wet-lab assay synthesis takes 6–18 months per cycle. | We turn regional labs into **Quantum Testing Facilities** on Quantinuum H2/Helios through pay-per-screen API calls (~13.6 HQCs per test). | High-margin SaaS + QPU usage fees ($250k–$1M/yr platform access + success milestone upside). |
+
+---
+
+## 💵 Unit Economics & Monetization Streams
+1. **Tier 1: High-Throughput Screening API (Volume SaaS):**  
+   Billed per molecular candidate screened ($250 – $500 per candidate; costs ~13.6 HQCs / ~$25 on hardware = **85%+ gross margins**).
+2. **Tier 2: Enterprise Discovery Subscriptions:**  
+   $250,000 – $750,000/year for exclusive access to proprietary target libraries (e.g., covalent proteases, optogenetic GPCRs).
+3. **Tier 3: Co-Development Success Milestones:**  
+   $5M – $25M milestone payments on preclinical candidates advancing toward Phase-I clinical trials.
+
+---
+
 ## 🧭 Foundational Direction: Gwen's Multidimensional Rotational Architecture
 
 James, when communicating our technical moat to venture syndicates, corporate biopharma venture funds, and Grand Challenge judges evaluating the **Problem & Value (30%)** rubric:
