@@ -32,7 +32,7 @@ This project is explicitly structured to satisfy the four official scoring dimen
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture, Market Value & Use Cases](#7-commercial-architecture-market-value--use-cases) (3 concrete use cases with honest evidence-level labels; illustrative $120M–$280M scenario model in `workspaces/JAMES_VENTURE_GTM_BRIEF.md`, James Sun / Mamba Partners). |
-| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register at 4 sites and 17 at 8, both benchmarked; 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 13.6–68.2 estimated H2 HQCs per blind pose-recovery run across 6 experimental ligands (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
+| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register at 4 sites and 17 at 8, both benchmarked; 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 13.6–68.2 estimated H2 HQCs per blind pose-recovery run, locking 0.4–20° from the true pose, across 6 experimental ligands (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
 | **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; coordinate-free SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
@@ -41,30 +41,31 @@ This project is explicitly structured to satisfy the four official scoring dimen
 ## ⚡ Executive Benchmark Summary: Real PDB Experimental Validation
 
 > [!IMPORTANT]
-> ### 🏆 6/6 Real PDB Biological Scenarios Locked on Quantinuum H-Series Architecture
-> Unlike classical docking tools that get trapped in local energy minima across $O(N^3)$ Cartesian grid searches, **Project Q-Rotate** achieves coordinate-free lock-and-key resonance using trapped-ion Repeat-Until-Success (RUS) phase synchronization. All benchmarks below were executed using real crystallographic coordinates from the **RCSB Protein Data Bank (PDB)** and **PubChem**, compiled down to native Quantinuum H2 gates (`PhasedX`, `ZZPhase`, 0 SWAPs).
+> ### 🏆 6/6 Real PDB Biological Scenarios Locked in Simulation of Quantinuum H-Series Circuits
+> Unlike classical docking tools that get trapped in local energy minima across $O(N^3)$ Cartesian grid searches, **Project Q-Rotate** achieves coordinate-free lock-and-key resonance using trapped-ion Repeat-Until-Success (RUS) phase synchronization. All benchmarks below were simulated on real crystallographic coordinates from the **RCSB Protein Data Bank (PDB)** and **PubChem**, compiled down to native Quantinuum H2 gates (`PhasedX`, `ZZPhase`, 0 SWAPs).
 
-| Active Site Target | Structure Source | Ligand (PDB ID) | Heavy Atoms | Start Misalignment | Initial Overlap $P(0)$ | RUS Loops to Lock | Final Overlap $P(0)$ | Circuit 2Q Gates (`ZZPhase`) | Total Est. HQCs | Classical Speedup Ratio |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **11-cis Retinal / Rhodopsin** | **RCSB 1U19** | RET | 20 | +45.0° | 0.791 | **2** | **0.980** | 64 | **27.28** | **1,920×** |
-| **GFP Chromophore** | **RCSB 1EMA** | CRO | 22 | +35.0° | 0.864 | **4** | **0.990** | 128 | **54.56** | **1,056×** |
-| **SARS-CoV-2 Mpro + Nirmatrelvir** | **RCSB 7VH8** | 4WI | 35 | −50.0° | 0.701 | **2** | **1.000** | 64 | **27.28** | **3,360×** |
-| **COX-2 + Celecoxib** | **RCSB 3LN1** | CEL | 26 | +80.0° | 0.573 | **2** | **0.960** | 64 | **27.28** | **2,496×** |
-| **Azobenzene Molecular Switch** | **PubChem 2272** | AZO | 14 | −115.0° | 0.502 | **5** | **0.940** | 160 | **68.20** | **538×** |
-| **$H_2$ Hardware Benchmark** | **Exact QM** | H2 | 2 | +15.0° | 0.990 | **1** | **0.990** | 32 | **13.64** | **384×** |
+| Active Site Target | Structure Source | Ligand (PDB ID) | Heavy Atoms | Start Misalignment | Initial Overlap $P(0)$ | RUS Loops to Lock | Final Overlap $P(0)$ | Pose Error at Lock | Circuit 2Q Gates (`ZZPhase`) | Total Est. HQCs | Classical Speedup Ratio |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **11-cis Retinal / Rhodopsin** | **RCSB 1U19** | RET | 20 | +45.0° | 0.791 | **2** | **0.980** | 15.0° | 64 | **27.28** | **1,920×** |
+| **GFP Chromophore** | **RCSB 1EMA** | CRO | 22 | +35.0° | 0.864 | **4** | **0.990** | 0.4° | 128 | **54.56** | **1,056×** |
+| **SARS-CoV-2 Mpro + Nirmatrelvir** | **RCSB 7VH8** | 4WI | 35 | −50.0° | 0.701 | **2** | **1.000** | 10.0° | 64 | **27.28** | **3,360×** |
+| **COX-2 + Celecoxib** | **RCSB 3LN1** | CEL | 26 | +80.0° | 0.573 | **2** | **0.960** | 20.0° | 64 | **27.28** | **2,496×** |
+| **Azobenzene Molecular Switch** | **PubChem 2272** | AZO | 14 | −115.0° | 0.502 | **5** | **0.940** | 17.4° | 160 | **68.20** | **538×** |
+| **$H_2$ Hardware Benchmark** | **Exact QM** | H2 | 2 | +15.0° | 0.986 | **1** | **0.990** | 15.0° | 32 | **13.64** | **384×** |
 
-*All 6 of 6 real systems recover their deposited crystallographic pose within 1–5 RUS iterations on 9 qubits. Estimates use the official Quantinuum H-series costing formula in `src/qrotate/metrics.py`.*
+*All 6 of 6 real systems lock onto their deposited crystallographic pose within 1–5 RUS iterations on 9 qubits, landing 0.4–20° from the exact angle. A lock means the measured P(0) cleared a 95%-confidence bar, which it does across a band of angles, not that the angle is exact. H2 locked where it started: two atoms barely change under a 15° turn. Estimates use the official Quantinuum H-series costing formula in `src/qrotate/metrics.py`.*
 
 ### Register Architecture Scaling: 9 Qubits (4 Sites) vs. 17 Qubits (8 Sites)
 
 | Benchmark Metric | 4 Sites / **9 Qubits** (Default Pose Recovery) | 8 Sites / **17 Qubits** (High-Resolution Fingerprinting) | Strategic Recommendation |
 | :--- | :---: | :---: | :--- |
-| **Deposited Pose Recovery** | **6 / 6 (100%)** | **6 / 6 (100%)** | Both register sizes reliably converge to native crystallographic pose |
-| **RUS Iterations to Lock** | **1 – 5 iterations** | **1 – 7 iterations** | 9-qubit register converges faster with lower gate overhead |
-| **Estimated HQC Cost / Circuit** | **13.64 HQCs** | **22.04 HQCs** | 9-qubit circuit costs ~38% less hardware quota per evaluation |
-| **Total Screen Cost per Ligand** | **13.64 – 68.20 HQCs** | **22.04 – 154.28 HQCs** | Highly cost-effective for commercial high-throughput screening runs |
-| **Worst False Match (Off-Target)** | $P(0) \le 0.777$ | **$P(0) \le 0.510$** | **17-qubit register provides near-orthogonal ligand discrimination** |
-| **Thermal / Jitter Noise (0.1 Å)** | **$P(0) \in [0.70, 0.99]$** | $P(0) \in [0.57, 0.92]$ | 9-qubit register is more robust to cryogenic crystal thermal noise |
+| **Deposited Pose Recovery** | **6 / 6 (100%)** | **6 / 6 (100%)** | Both register sizes lock onto every deposited pose |
+| **Pose Error at Lock** | 0.4 – 20.0° | **0.4 – 15.0°** | 17-qubit register locks closer to the exact pose (lock band ±15–17° vs ±21–23° at 100 shots) |
+| **RUS Iterations to Lock** | **1 – 5 iterations** | 1 – 8 iterations | 9-qubit register converges faster with lower gate overhead |
+| **Estimated HQC Cost / Circuit** | **13.64 HQCs** | 22.04 HQCs | 9-qubit circuit costs ~38% less hardware quota per evaluation |
+| **Total Screen Cost per Ligand** | **13.64 – 68.20 HQCs** | 22.04 – 176.32 HQCs | Highly cost-effective for commercial high-throughput screening runs |
+| **Worst False Match (Off-Target)** | $P(0) \le 0.706$ | **$P(0) \le 0.558$** | **17-qubit register separates different ligands better** (0.5 means nothing in common) |
+| **Coordinate Noise (0.1 Å jitter, 5 ligands)** | $P(0) \in [0.80, 0.99]$ | **$P(0) \in [0.91, 0.98]$** | With soft shell edges, the 17-qubit register holds up at least as well |
 
 ---
 
@@ -360,17 +361,17 @@ To satisfy the **Technical Performance & Hardware Use (30%)** and **Scientific M
 
 ### Performance & Resource Telemetry (`benchmarks/showdown_results.json`)
 
-This scaling study runs the **4-site / 9-qubit** configuration throughout; see [Register Size](#register-size-9-qubits-or-17) below for the 17-qubit comparison.
+This scaling study runs the **4-site / 9-qubit** configuration throughout; see [Register Size](#register-size-9-qubits-or-17-benchmarksmolecular_showdownjson) below for the 17-qubit comparison.
 
 | Atom Count ($N$) | Classical Brute-Force (30° Euler Grid) | Q-Rotate RUS Iterations | Register Size | Native H2 2Q Gates | Trapped-Ion SWAPs | Estimated Quantinuum HQCs | Operational Speedup |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **10** | 17,280 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
-| **50** | 86,400 steps (0.014s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **9,600x** |
-| **100** | 172,800 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **19,200x** |
-| **500** | 864,000 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **96,000x** |
-| **1,000** | **1,728,000 steps** (0.007s) | **7 loops** (Locked: True) | **9 Qubits** | 224 `ZZPhase` | **0 SWAPs** | **95.48 HQCs** | **27,429x** |
+| **10** | 17,280 steps (0.004s) | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
+| **50** | 86,400 steps (0.005s) | **1 loop** (Locked) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **9,600x** |
+| **100** | 172,800 steps (0.006s) | **No lock** in 15 loops | **9 Qubits** | 512 `ZZPhase` | **0 SWAPs** | **218.24 HQCs** | — |
+| **500** | 864,000 steps (0.006s) | **8 loops** (Locked) | **9 Qubits** | 256 `ZZPhase` | **0 SWAPs** | **109.12 HQCs** | **12,000x** |
+| **1,000** | **1,728,000 steps** (0.005s) | **11 loops** (Locked) | **9 Qubits** | 352 `ZZPhase` | **0 SWAPs** | **150.04 HQCs** | **17,455x** |
 
-Those rows use **synthetic** point clouds (a ring of N points), which is legitimate for a scaling study — no single deposited structure comes in sizes 10 through 1,000 — but they are not molecules, and they happen to lock on the first RUS iteration, so they show the best case.
+Those rows use **synthetic** point clouds, which is legitimate for a scaling study — no single deposited structure comes in sizes 10 through 1,000 — but they are not molecules. Each "ligand" is the random cloud with 0.5 Å of Gaussian noise on every atom, not a rotated copy, so the right answer is 0° and the question is whether the blind loop can lock onto a noisy copy at all. Four of five do; at N = 100 the noisy copy never scores high enough within 15 iterations, and a search that finds nothing has no speedup to report. An earlier version of this table showed every row locking on the first iteration, which the benchmark output it cited did not support.
 
 ### Experimental Active Sites (`benchmarks/molecular_showdown.json`)
 
@@ -378,18 +379,18 @@ These six run on **experimental coordinates** pulled from the RCSB PDB and PubCh
 
 **What is being measured: pose recovery.** Each ligand is compared against a rotated copy of *itself* — the probe starts turned away from its deposited pose by the offset below, and the blind loop has to turn it back. This is not protein-ligand docking: the pocket and the ligand are different molecules with different atom counts, so no rotation makes their phase registers agree and whichever angle scored highest would be incidental. The pocket is still read from the same entry and reported for context.
 
-| Active Site | Structure | Ligand | Atoms | Start Offset | Start P(0) | RUS Iterations | Final P(0) | Estimated HQCs |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 11-cis Retinal / Rhodopsin | PDB 1U19 | RET | 20 | +45° | 0.790 | 2 | 0.970 | 27.28 |
-| GFP Chromophore | PDB 1EMA | CRO | 22 | +35° | 0.864 | 4 | 0.990 | 54.56 |
-| SARS-CoV-2 Mpro + Nirmatrelvir | PDB 7VH8 | 4WI | 35 | −50° | 0.701 | 2 | 1.000 | 27.28 |
-| COX-2 + Celecoxib | PDB 3LN1 | CEL | 26 | +80° | 0.573 | 2 | 0.960 | 27.28 |
-| Azobenzene Switch | PubChem 2272 | AZO | 14 | −115° | 0.502 | 5 | 0.950 | 68.20 |
-| H2 Hardware Benchmark | exact | H2 | 2 | +15° | 0.990 | 1 | 0.990 | 13.64 |
+| Active Site | Structure | Ligand | Atoms | Start Offset | Start P(0) | RUS Iterations | Final P(0) | Stopped At | Pose Error | Estimated HQCs |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 11-cis Retinal / Rhodopsin | PDB 1U19 | RET | 20 | +45° | 0.791 | 2 | 0.980 | +60.0° | 15.0° | 27.28 |
+| GFP Chromophore | PDB 1EMA | CRO | 22 | +35° | 0.864 | 4 | 0.990 | +34.6° | 0.4° | 54.56 |
+| SARS-CoV-2 Mpro + Nirmatrelvir | PDB 7VH8 | 4WI | 35 | −50° | 0.701 | 2 | 1.000 | −60.0° | 10.0° | 27.28 |
+| COX-2 + Celecoxib | PDB 3LN1 | CEL | 26 | +80° | 0.573 | 2 | 0.960 | +60.0° | 20.0° | 27.28 |
+| Azobenzene Switch | PubChem 2272 | AZO | 14 | −115° | 0.502 | 5 | 0.940 | −132.4° | 17.4° | 68.20 |
+| H2 Hardware Benchmark | exact | H2 | 2 | +15° | 0.986 | 1 | 0.990 | 0.0° | 15.0° | 13.64 |
 
-Six of six recover, in 1–5 iterations.
+All six lock, in 1–5 iterations, and **land 0.4–20° from the true pose.** A lock is not the exact angle. It means the measured P(0) cleared the bar, and at the benchmark's 100 shots the bar is cleared anywhere the true P(0) is above about 0.94, which is a band of angles around the answer (see [Register Size](#register-size-9-qubits-or-17-benchmarksmolecular_showdownjson)). The search takes large early steps (60°, then 42°, then 35°), so it usually stops on the first step that lands inside that band rather than at the peak. `run_blind_rus_pose_recovery` now returns where it stopped, and the showdown records the error.
 
-All six recover now, including H2, which the second-order moment rescued (see the moment ladder above). **Read H2's row with its caveat:** it starts at P(0) 0.990 because a 2-atom molecule barely changes under a 15° turn, and its register is only determined modulo 180°, so "1 iteration" is close to free. Azobenzene, starting at 0.502 with no overlap signal at all, is the one that had to work.
+H2's row needs its caveat: its 1 iteration and its 15° error are the same fact. It locked where it started, because a 2-atom molecule turned 15° still scores 0.986, and its register is only determined modulo 180°. Azobenzene, starting at 0.502 with no overlap signal at all, is the one that had to work.
 
 Two corrections make these numbers different from earlier versions of this table, and both were bugs rather than tuning:
 
@@ -406,25 +407,29 @@ Both configurations run the same blind pose recovery on the same six ligands, so
 
 | | 4 sites / **9 qubits** | 8 sites / **17 qubits** |
 | :--- | :---: | :---: |
-| Recovered the deposited pose | 6/6 | 6/6 |
-| RUS iterations | 1-5 | 1-7 |
-| HQC per circuit | 13.64 | 22.04 |
-| HQC per screen | 13.64-68.20 | 22.04-154.28 |
-| Worst false match between different ligands | 0.777 | **0.510** |
-| Self-overlap under 0.1 A coordinate noise | **0.70-0.99** | 0.57-0.92 |
+| Locked onto the deposited pose | 6/6 | 6/6 |
+| Pose error where it locked | 0.4–20.0° | **0.4–15.0°** |
+| Lock band: how far off a lock *can* land (100 shots) | ±21–23° | **±15–17°** |
+| RUS iterations | **1–5** | 1–8 |
+| HQC per circuit | **13.64** | 22.04 |
+| HQC per screen | **13.64–68.20** | 22.04–176.32 |
+| Worst false match between different ligands | 0.706 | **0.558** |
+| Self-overlap under 0.1 Å coordinate noise | 0.80–0.99 | **0.91–0.98** |
+
+The lock band and noise rows cover the five ligands. H2 is its own case: two atoms barely change under a turn, so its band is ±41° and ±37°, and its self-overlap under noise is 0.70 and 0.69.
 
 Per system:
 
-| Active Site | 9 qb: iterations / HQC | 17 qb: iterations / HQC |
+| Active Site | 9 qb: iterations / HQC / pose error | 17 qb: iterations / HQC / pose error |
 | :--- | :---: | :---: |
-| Rhodopsin | 2 / 27.28 | 2 / 44.08 |
-| GFP | 4 / 54.56 | 4 / 88.16 |
-| Mpro | 2 / 27.28 | 2 / 44.08 |
-| COX-2 | 2 / 27.28 | 4 / 88.16 |
-| Azobenzene | 5 / 68.20 | 7 / 154.28 |
-| H2 | 1 / 13.64 | 1 / 22.04 |
+| Rhodopsin | 2 / 27.28 / 15.0° | 2 / 44.08 / 15.0° |
+| GFP | 4 / 54.56 / 0.4° | 4 / 88.16 / 0.4° |
+| Mpro | 2 / 27.28 / 10.0° | 2 / 44.08 / 10.0° |
+| COX-2 | 2 / 27.28 / 20.0° | 8 / 176.32 / 8.0° |
+| Azobenzene | 5 / 68.20 / 17.4° | 7 / 154.28 / 7.1° |
+| H2 | 1 / 13.64 / 15.0° | 1 / 22.04 / 15.0° |
 
-**The larger register does not recover poses better.** It is the same job at both sizes and costs roughly twice as much to do. What it buys is discrimination — telling one ligand from another — where 17 qubits drops the worst false match from 0.78 to 0.51. So 9 qubits stays the default for pose recovery, and 17 is the right choice when the question is "which of these molecules is this?" and the coordinates are good enough to afford the lower noise tolerance. The Constellation's 4Q/8Q toggle shows both sides live.
+**The larger register is not faster, but it is more precise.** Both sizes lock on all six, and 17 qubits takes as many iterations or more at about 1.6× the HQC per circuit. What it buys is precision and discrimination. A lock can land at most ±15–17° from the true pose instead of ±21–23°, and where the two searches took different paths the larger register stopped closer (COX-2 8° against 20°, azobenzene 7.1° against 17.4°). The worst false match between different ligands drops from 0.706 to 0.558. Since the soft shell edges (below), it no longer pays for this in noise tolerance: under 0.1 Å of coordinate error it holds up at least as well as the 9-qubit register. So 9 qubits is the cheap default when a pose within about 20° is enough, and 17 is the choice when precision, or telling molecules apart, matters. An earlier version of this section said register size made no difference to recovering a ligand's own pose; the lock band shows it does. The Constellation's 4/8-shell toggle shows both sides live.
 
 ### What the Encoding Can Tell Apart (`benchmarks/encoding_diagnostics.json`)
 
@@ -435,11 +440,25 @@ Pose recovery measures how fast the loop finds a known answer. It says nothing a
 | Property | Old encoder | Current, 4 sites | Current, 8 sites | What it means |
 | :--- | :---: | :---: | :---: | :--- |
 | Same molecule, atoms reordered | **0.52–0.91** | **equal to self (gap 0.0000)** | equal to self | The register described the input file's atom order, not the molecule |
-| Mirror image (reflected through z) | **0.99** | **0.50–0.52** | 0.50–0.51 | Enantiomers are different drugs; the old encoder could not see chirality at all |
-| Two *different* ligands, worst case | 0.83 | 0.78 | **0.51** | How often it would report a false match |
-| Coordinates jittered by 0.1 Å | — | 0.70–0.99 | 0.57–0.92 | Tolerance of experimental uncertainty |
+| Mirror image (reflected through z) | **0.99** | **0.50–0.66** | 0.50–0.51 | Enantiomers are different drugs; the old encoder could not see chirality at all |
+| Two *different* ligands, worst case | 0.83 | 0.71 | **0.56** | How often it would report a false match |
+| Coordinates jittered by 0.1 Å | — | 0.80–0.99 | **0.91–0.98** | Tolerance of experimental uncertainty |
 
-The redesign (`molecular_shell_phases` in `src/qrotate/hpc_bridge.py`) sorts atoms into shells by radius instead of by file order, and weights each atom by √Z·e^(κẑ). Radius and z are both unchanged by a rotation about z, so the encoding stays exactly rotation-equivariant — the property pose recovery depends on — while becoming permutation invariant and reflection-sensitive. Five tests pin those properties.
+The redesign (`molecular_shell_phases` in `src/qrotate/hpc_bridge.py`) sorts atoms into shells by radius instead of by file order, and weights each atom by √Z·e^(κẑ). Radius and z are both unchanged by a rotation about z, so the encoding stays exactly rotation-equivariant — the property pose recovery depends on — while becoming permutation invariant and reflection-sensitive. Seven tests pin those properties.
+
+#### Shell boundaries: no empty qubits, and no cliff edges
+
+The shells used to be filled one at a time, moving on once a shell had its share. That overfilled the early shells and starved the last: at eight shells, four of the five ligands encoded **nothing on q7**, so the 17-qubit register was measured with a qubit pair doing no work. The split is now balanced exactly (`_radial_shells`), and every shell gets atoms whenever the molecule has at least as many distinct radii as shells.
+
+Balancing alone made the encoding worse, though. A count-based split can put a boundary between two atoms at almost the same radius. Trans-azobenzene is nearly centrosymmetric, so its atoms come in near-equal pairs. A tenth of an Ångström of error then flips an atom from one qubit to the next and the register jumps. So atoms near a boundary are now shared between the two shells over a 0.25 Å soft edge (`radial_shell_membership`), which makes the register change smoothly with the coordinates:
+
+| Shell split | Empty qubits | 0.1 Å noise, 4 shells | 0.1 Å noise, 8 shells |
+| :--- | :---: | :---: | :---: |
+| Old: fill each shell, then move on | q7, for 4 of 5 ligands | 0.942 | 0.792 |
+| Balanced only | none | 0.857 | 0.740 |
+| **Balanced, with 0.25 Å soft edges (current)** | **none** | **0.967** | **0.925** |
+
+Means over the five ligands, 30 noise draws each. The cost is some radial resolution: GFP's mirror image scores 0.66 at four shells (0.51 before), and at eight shells the worst false match rose from 0.51 to 0.56.
 
 #### The moment ladder, and what symmetry costs
 
@@ -461,14 +480,14 @@ The cost is real and is reported rather than hidden: `arg(Mₖ)/k` is only defin
 Two honest caveats:
 
 * **The redesign did not make the headline benchmark faster.** Pose recovery still takes 1–5 iterations, because the old encoder was already rotation-equivariant once the branch-cut bug was fixed. What changed is correctness the benchmark never tested.
-* **The 4-site register is weak at telling molecules apart** (worst case 0.78). Eight shells fix that (0.51) at the cost of noise tolerance, since each shell then holds fewer atoms, and of cost: 22.04 HQC per circuit against 13.64. Use 8 when coordinates are good and discrimination matters; 4 when they are rough. The Constellation's 4Q/8Q toggle shows this directly — its false-match bar is fed from `benchmarks/encoding_diagnostics.json` and moves when you switch registers. Note that the register size makes no difference to recovering a ligand's *own* pose, which is what the landscape measures; the larger register buys discrimination, not accuracy. The H2 row is the one exception in the mirror column (0.99) and it is correct: H2 lies along x with z = 0, so it genuinely *is* its own reflection.
+* **The 4-shell register is weaker at telling molecules apart** (worst case 0.71). Eight shells do better (0.56), lock closer to the true pose (±15–17° against ±21–23°), and with soft edges hold up at least as well under coordinate noise. The price is 22.04 HQC per circuit against 13.64, and on some ligands more iterations. Use 8 when precision or discrimination matters; 4 when cost does. The Constellation's 4/8-shell toggle shows this directly — its false-match bar is fed from `benchmarks/encoding_diagnostics.json` and moves when you switch registers. GFP's mirror score at four shells (0.66) is the weakest chirality signal in the set. The H2 row is the one exception in the mirror column (0.99) and it is correct: H2 lies along x with z = 0, so it genuinely *is* its own reflection.
 
 ### Key Takeaways for the Submission Package
 
 1. **Elimination of the $O(N_{\text{rot}} \times N_{\text{atoms}})$ Combinatorial Explosion**: Classical docking chokes as atom count and angular resolution increase (1.728M steps at $N=1,000$). Q-Rotate evaluates all orientations simultaneously in wave space via $\hat{U}_{\text{tube}}(\tau)$.
 2. **The register does not grow with the molecule**: 10 atoms or 1,000, the encoding compresses into the same register. That register is **9 qubits** in the 4-site configuration (4 target + 4 probe + 1 ancilla) and **17** in the 8-site one. What is invariant is the independence from atom count, not the number 9 — both sizes are benchmarked above, and choosing between them is a real trade, not a detail.
 3. **Zero SWAP Gates on Trapped Ions**: Direct execution on Quantinuum's trapped-ion QCCD architecture requires **0 SWAP gates**, preventing circuit depth degradation.
-4. **Convergence is not guaranteed**: mid-circuit measurement and reset let the RUS loop retry without deepening the circuit. On the six experimental ligands it recovers the deposited pose in **1–5 iterations** (13.64–68.20 estimated HQCs), but the loop can and does fail — `run_blind_rus_pose_recovery` returns `locked=False` when it runs out of budget, and the Constellation page will show that happening if you start it far from the answer.
+4. **Convergence is not guaranteed**: mid-circuit measurement and reset let the RUS loop retry without deepening the circuit. On the six experimental ligands it locks onto the deposited pose in **1–5 iterations** (13.64–68.20 estimated HQCs), 0.4–20° from the exact angle, but the loop can and does fail — `run_blind_rus_pose_recovery` returns `locked=False` when it runs out of budget, and the Constellation page will show that happening if you start it far from the answer.
 
 ### Running the Live Benchmark Showdown
 First fetch the structures (once; needs network, caches to `.cache/structures/`, writes the committed extract `benchmarks/active_sites.json`):
