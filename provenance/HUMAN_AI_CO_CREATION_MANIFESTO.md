@@ -1,6 +1,6 @@
 # 📜 Human-AI Co-Creation Manifesto & Integrity Statement
 
-**Project:** Q-Rotate: Efficient Molecular Pattern Matching  
+**Project:** Q-Rotate: Coordinate-Free Molecular Pose Search  
 **Challenge:** Quantinuum Singapore Grand Challenge 2026  
 **Track:** Biomolecular Simulation  
 **Lead Inventor:** Gwendalynn (婉婷) Lim ("1ightray")  
@@ -22,7 +22,7 @@ This manifesto provides full transparency regarding the **division of intellect,
 | Project Dimension | Human Originator (Gwen Lim / Eve Count) | Role of AI Engineering Assistants |
 | :--- | :--- | :--- |
 | **Core Scientific Hypothesis** | **100% Human.** Conception of continuous Lie resonance architecture: mapping 3D molecular misalignment into Lie algebra generators ($SU(2)^{\otimes n}$) to eliminate classical Cartesian grids. | Zero contribution. LLMs default to standard literature patterns (e.g., standard discrete grid docking). |
-| **Algorithmic Architecture** | **100% Human.** Design of the continuous Tube Hamiltonian $\hat{U}_{\text{tube}}(\tau)$ and Zero-Knowledge Blind Parity SWAP test. | Mathematical formatting assistance (LaTeX syntax verification and KaTeX compatibility). |
+| **Algorithmic Architecture** | **100% Human.** Design of the continuous Tube Hamiltonian $\hat{U}_{\text{tube}}(\tau)$ and the coordinate-free Blind Parity SWAP test. | Mathematical formatting assistance (LaTeX syntax verification and KaTeX compatibility). |
 | **Hardware Specialization** | **100% Human.** Strategic decision to exploit Quantinuum H-Series trapped ions for their mid-circuit measurement and coherent qubit reset capabilities. | Syntax validation of `guppylang` decorators and HUGR compilation wrappers. |
 | **Dynamic RUS Feedback** | **100% Human.** Design of real-time classical conditional branching for phase-kick error correction. | Circuit decomposition scaffolding and Pytket gate count unit tests. |
 | **3D Topology & Frontend** | **100% Human.** Architectural direction by Benjamin Lim ("Sedilix") to create the interactive Three.js Resonance Constellation. | WebGL boilerplate generation and CSS glassmorphism token styling. |

@@ -69,12 +69,12 @@ def qrotate_rus_loop(pocket_q: qubit, ligand_q: qubit, anc: qubit) -> int:
 ```
 If the ancilla measures zero, resonance is locked. If it measures one, the ion trap's classical controller dynamically applies a corrective phase kick and loops back—all without destroying register coherence.
 
-### Pillar III: Zero-Knowledge Blind Parity for Biopharma IP
+### Pillar III: Coordinate-Free Blind Parity for Biopharma IP
 In the commercial pharmaceutical sector, molecular coordinates are multi-billion-dollar trade secrets. Traditional contract research organizations (CROs) and cloud simulation vendors require full coordinate disclosure to evaluate binding.
 
 By implementing an **ancilla-mediated SWAP test**:
 $$ P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right) $$
-Project Q-Rotate proves whether a drug candidate binds to a target receptor **without revealing the underlying atomic coordinates**. Only the scalar parity probability $P(0)$ is measured. This solves the biopharma industry's greatest barrier to cloud quantum adoption.
+Project Q-Rotate checks whether a drug candidate resonates with a target receptor **without directly transmitting the underlying atomic coordinates** — only the scalar parity probability $P(0)$ crosses the wire. This is a genuine reduction in what has to be disclosed, addressing a real barrier to biopharma cloud quantum adoption — but it is a coordinate-free screening protocol, not a formal cryptographic zero-knowledge proof, since $P(0)$ (and its statistics across repeated queries) is itself information correlated with the underlying structures.
 
 ---
 

@@ -28,8 +28,8 @@ This submission is strictly engineered to satisfy the four official scoring crit
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
 | **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | **James Sun's Commercial Thesis:** Eliminates multi-billion-dollar classical docking bottlenecks; replaces wet-lab trial-and-error with continuous phase synchronization; $120M–$280M biopharma licensing roadmap. |
-| **Technical Performance & Hardware Use** | **30%** | Correctness, benchmark gains, scalability, hardware utilization | **Quantinuum Native Execution:** Reduced to 7 qubits, 47 `PhasedX`, 24 `ZZPhase`, 11.5 HQCs; dynamic mid-circuit measurement/reset loop in **Guppy**; 6 real-world benchmark active sites. |
-| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | **Gwen's Lie Algebra $\hat{U}_{\text{tube}}(\tau)$:** Replaced 40 years of classical $O(N^3)$ Cartesian grid docking with continuous $SU(2)^{\otimes n}$ rotations; Zero-Knowledge blind parity interference curve. Documented in full in [`provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md`](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md). |
+| **Technical Performance & Hardware Use** | **30%** | Correctness, benchmark gains, scalability, hardware utilization | **Quantinuum Native Compilation:** Each SWAP-test circuit rebases to 9 qubits, 62 `PhasedX`, 32 `ZZPhase`, 1 measurement (depth 68), ≈13.6 estimated HQCs per 100-shot run; dynamic mid-circuit measurement/reset loop in **Guppy**; 6 benchmark systems on experimental coordinates (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), each recovering its deposited pose in 1-5 RUS iterations at 9 qubits, or 1-7 at 17. |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | **Gwen's Lie Algebra $\hat{U}_{\text{tube}}(\tau)$:** Replaced 40 years of classical $O(N^3)$ Cartesian grid docking with continuous $SU(2)^{\otimes n}$ rotations; coordinate-free blind parity interference curve. Documented in full in [`provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md`](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | **Ben's Systems Architecture:** Clean modular `src/qrotate/` package, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, comprehensive docstrings, `pyproject.toml`, and clean Git history. |
 
 ---
@@ -42,7 +42,7 @@ Traditional computational docking models (AutoDock, Schrödinger, DFT) discretiz
 1. **Continuous Lie Algebra Unitary ($\hat{U}_{\text{tube}}(\tau)$)**:
    $$\hat{U}_{\text{tube}}(\tau) = \exp\left(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}})\right)$$
    $$\hat{H}_{\text{rot}} = \vec{\omega} \cdot \sum_{k=1}^N \hat{\vec{\sigma}}_k, \quad \hat{H}_{\text{phase}} = \sum_{m=1}^N \Delta \Phi_m \hat{Z}_m$$
-2. **Zero-Knowledge Blind Parity (SWAP Test)**:
+2. **Coordinate-Free Blind Parity (SWAP Test)**:
    $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
    Verifies active site fit without exposing proprietary chemical coordinates.
 3. **Dynamic Repeat-Until-Success (RUS) in Guppy**:
@@ -52,11 +52,14 @@ Traditional computational docking models (AutoDock, Schrödinger, DFT) discretiz
 
 ## 2. Quantinuum H2 Hardware Resource Profile
 
-* **Qubits Allocated:** 7 Qubits (All-to-all trapped-ion connectivity)
-* **Single-Qubit Rotations (`PhasedX`):** 47 Gates
-* **Two-Qubit Entanglers (`ZZPhase`):** 24 Gates
-* **Measurements:** 1 Gate
-* **Hardware Quantum Credits (HQC):** **11.5 HQCs** per 100 shots on Quantinuum H2-2E
+Counts are for one SWAP-test circuit after `rebase_to_h2_gateset` (`src/qrotate/circuits.py`). They are the same for every input tested (8–49 atoms).
+
+* **Qubits Allocated:** 9 Qubits in the default 4-site configuration (4 target + 4 probe + 1 ancilla), or 17 in the 8-site one; all-to-all trapped-ion connectivity, 0 SWAPs. Both are benchmarked end to end on the same six ligands (`benchmarks/molecular_showdown.json`): each recovers all six deposited poses, the 17-qubit register costing roughly twice as much (22.04 vs 13.64 HQC per circuit) and buying discrimination between different ligands rather than better pose recovery.
+* **Single-Qubit Rotations (`PhasedX`):** 62 Gates (plus 82 virtual `Rz`, which are free)
+* **Two-Qubit Entanglers (`ZZPhase`):** 32 Gates
+* **Measurements:** 1
+* **Circuit Depth:** 68
+* **Hardware Quantum Credits (HQC):** **≈13.6 HQCs** per 100-shot circuit, estimated with the H-series formula (HQC = 5 + (N₁q + 10·N₂q + 5·(Nq + Nm)) · shots / 5000). This is not a billed hardware job. A full blind RUS screen runs this circuit several times (1–15 iterations across the six benchmark sites), so it costs a multiple of this: 13.6–395.6 estimated HQCs across the six sites (`benchmarks/molecular_showdown.json`).
 
 ---
 

@@ -41,6 +41,6 @@ If the answer is *"almost, but you're tilted by 5 degrees,"* our quantum loop im
 ---
 
 ### 3. Why This Matters to Real-World Healthcare
-* **Blazing-Fast Virtual Screening**: Test drug candidates in minutes instead of months of supercomputer cluster runtime.
-* **Photochemical Biology**: Accurately predict how light-activated drugs and biological sensors behave in excited states where classical DFT fails.
-* **Zero-Knowledge Matching**: Two pharmaceutical companies can verify if a proprietary molecule fits a patented biological target without ever revealing the confidential 3D atomic coordinates of the drug!
+* **Faster Screening Iteration**: A compact, fixed-size quantum register lets a screening pass run without re-deriving a full 3D grid for every candidate.
+* **A Different Angle on Photochemical Biology**: The Lie-algebra rotation framing is a complementary lens on excited-state behavior (e.g. light-activated drugs), not a replacement for multi-reference electronic-structure methods — see the honesty note in [Chapter 2](02_the_math_demystified.md).
+* **Coordinate-Free Matching**: Two pharmaceutical companies can check whether a proprietary molecule resonates with a patented biological target by exchanging a compact phase fingerprint and a single ancilla readout, rather than transmitting raw 3D atomic coordinates directly. This is *not* a cryptographic zero-knowledge proof — the ancilla readout and its statistics are themselves information about the overlap — but it substantially reduces what has to leave either party's system. See [Chapter 3](03_the_blind_parity_test.md) for exactly what is and isn't protected.

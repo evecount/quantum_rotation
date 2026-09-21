@@ -1,4 +1,4 @@
-# Project Q-Rotate: Efficient Molecular Pattern Matching
+# Project Q-Rotate: Coordinate-Free Molecular Pose Search
 
 **Team:** Eve Count (`1ightray`)  
 **Core Team & Key Responsibilities:**
@@ -31,9 +31,9 @@ This project is explicitly structured to satisfy the four official scoring dimen
 
 | Scoring Dimension | Weight | Required Evidence | Project Q-Rotate Direct Citation |
 | :--- | :---: | :--- | :--- |
-| **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture & GTM Thesis](#7-commercial-architecture--market-value) ($120M–$280M Biopharma licensing roadmap, 100x cost reduction vs wet lab synthesis, James Sun / Mamba Partners). |
-| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 4: Hardware Benchmarks](#4-hardware-compilation--quantinuum-native-execution) (7 Qubits, 47 `PhasedX`, 24 `ZZPhase`, 11.5 HQCs on Quantinuum H2, Guppy RUS dynamic loop, 6 benchmark active sites). |
-| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; Zero-Knowledge SWAP test; thermal perturbation analysis). |
+| **Problem & Value** | **30%** | Need clarity, solution fit, quantified customer/business value, ROI | [Section 7: Commercial Architecture, Market Value & Use Cases](#7-commercial-architecture-market-value--use-cases) (3 concrete use cases with honest evidence-level labels; illustrative $120M–$280M scenario model in `workspaces/JAMES_VENTURE_GTM_BRIEF.md`, James Sun / Mamba Partners). |
+| **Technical Performance & Hardware Use** | **30%** | Benchmark data, run logs, job metadata, demo results | [Section 9: Benchmarking Showdown](#9-benchmarking-showdown-classical-brute-force-vs-q-rotate-rus-quantinuum-h2) (9-qubit register at 4 sites and 17 at 8, both benchmarked; 0 SWAPs, 62 `PhasedX` + 32 `ZZPhase` per compiled circuit, 13.6–68.2 estimated H2 HQCs per blind pose-recovery run across 6 experimental ligands (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2), Guppy RUS dynamic loop). HQCs are estimates from the H-series costing formula in `src/qrotate/metrics.py`, not billed hardware jobs. |
+| **Scientific Merit** | **20%** | Novelty, methodological rigor, improvement versus baseline, error analysis | [Section 2 & 3: Mathematical Core & Blind Parity](#2-the-mathematical-core) and [Provenance Dossier](provenance/INTELLECTUAL_GENESIS_AND_PROVENANCE.md) (Gwen's Lie algebra $\hat{U}_{\text{tube}}(\tau)$ continuous rotation vs $O(N^3)$ Cartesian grid docking; coordinate-free SWAP test; thermal perturbation analysis). |
 | **Engineering & Reproducibility** | **20%** | Code structure, testing, documentation, repeatable setup | [Section 5 & 6: Codebase Architecture & Installation](#5-repository-structure--reproducibility) (Modular `src/qrotate/`, interactive Marimo notebook `readme.py`, 3D WebGL Constellation, unit tests, `pyproject.toml`). |
 
 ---
@@ -42,16 +42,17 @@ This project is explicitly structured to satisfy the four official scoring dimen
 
 Project Q-Rotate replaces traditional, computationally expensive 3D spatial docking models with a quantum-native, information-theoretic approach. Standard computational docking and biomolecular simulations face severe scaling bottlenecks when modeling complex molecular geometries and photochemical active sites. Conventional classical methods (such as grid-based DFT or brute-force spatial sampling) scale poorly with system size, while multi-configurational methods (CASSCF, DMRG) hit an exponential wall when exploring multi-reference excited states.
 
-By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies ligand-protein structural and electronic alignment via a **blind parity test**, completely circumventing the need to compute massive overarching molecular geometries or discretize high-dimensional 3D spatial grids.
+By utilizing Quantinuum's trapped-ion architecture, Project Q-Rotate verifies ligand-protein structural alignment via a **blind parity test** over a compressed, phase-encoded representation of each molecule's geometry and partial charges, avoiding the need to discretize high-dimensional 3D spatial grids. (This version does not model electronic structure directly — see [Section 2](#2-the-mathematical-core) for exactly what the phase encoding does and doesn't capture.)
 
 > [!IMPORTANT]
-> ### 🛡️ Zero-Knowledge Proof for Pharma: The Decisive Commercial Moat
-> **By executing an ancilla-mediated blind parity test, Project Q-Rotate verifies whether a candidate ligand achieves lock-and-key resonance with a target protein active site without disclosing the exact 3D atomic coordinates. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, this coordinate-free zero-knowledge matching protocol provides an unassailable commercial advantage.**
-> 
+> ### 🛡️ Coordinate-Free Screening for Pharma: A Reduced-Exposure Commercial Angle
+> **By executing an ancilla-mediated blind parity test, Project Q-Rotate checks whether a candidate ligand achieves lock-and-key resonance with a target protein active site while only ever exchanging a compressed phase fingerprint and a single-bit ancilla readout — never the raw 3D atomic coordinates themselves. In the global pharmaceutical sector, where molecular structures represent multi-billion-dollar proprietary intellectual property, reducing what has to leave either party's system during a screening pass is a genuine commercial advantage.**
+>
 > * **The Commercial Bottleneck:** Enterprise biopharma companies invest hundreds of millions of dollars synthesizing and patenting novel molecular scaffolds. They are notoriously reluctant to transmit raw 3D atomic coordinates across external cloud computing environments due to the risk of IP exposure and corporate espionage.
 > * **The Quantum Mathematical Solution:** In Project Q-Rotate, the ancilla-mediated quantum SWAP test evaluates structural fit using quantum state overlap. The output is a single scalar interference parity metric:
 >   $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
->   Neither the cloud platform nor the quantum hardware provider ever gains access to the underlying 3D molecular coordinates, unlocking sovereign, confidential quantum drug screening for global biopharma sponsors.
+>   Neither the cloud platform nor the quantum hardware provider ever receives the raw 3D molecular coordinates during a run.
+> * **Honesty note:** this is *not* a cryptographic zero-knowledge proof. The measured $P(0)$ value (and its statistics across repeated shots or queries) is itself information correlated with the overlap, so we describe this as coordinate-free / reduced-exposure screening rather than a formal ZK guarantee — see [Chapter 3](docs/03_the_blind_parity_test.md) for the precise claim.
 
 
 ### 🏔️ The Intuition: The Classical "Mountain Hike" vs. The Lie Group "Burrowing"
@@ -96,7 +97,7 @@ When the ligand and pocket topologies are a perfect structural and electronic ma
 
 ### Core Modules
 
-* **Blind Parity Verification (`src/qrotate/circuits.py`):** An ancilla-mediated quantum SWAP test that acts as a zero-knowledge proof for structural fit without exposing raw atomic coordinates.
+* **Blind Parity Verification (`src/qrotate/circuits.py`):** An ancilla-mediated quantum SWAP test that checks structural fit without exposing raw atomic coordinates directly (a coordinate-free check, not a cryptographic zero-knowledge proof — see docs/03).
 * **Adaptive QPE & Phase Feedback:** Dynamically reads phase deviations ($\Delta \Phi_m$) if the initial parity check fails.
 * **Repeat-Until-Success (RUS) Control Loop:** Guppy's native classical `while` loops execute a mid-circuit Repeat-Until-Success protocol, applying real-time phase corrections mid-circuit until zero parity is measured.
 * **Classical HPC Bridge (`src/qrotate/hpc_bridge.py`):** Compresses multi-thousand-atom 3D macromolecular environments into compact $N$-qubit phase registers.
@@ -239,7 +240,7 @@ We believe anyone—engineers, competition judges, or curious innovators without
 
 * **[Chapter 1: The Big Picture (Explain Like I'm 5)](docs/01_the_big_picture.md)** — Lock-and-key matching without checking every millimeter.
 * **[Chapter 2: The Math Demystified](docs/02_the_math_demystified.md)** — How $\hat{U}_{\text{tube}}(\tau)$ and phase cascading represent physical fit.
-* **[Chapter 3: The Blind Parity Test](docs/03_the_blind_parity_test.md)** — Zero-knowledge matching via the SWAP test.
+* **[Chapter 3: The Blind Parity Test](docs/03_the_blind_parity_test.md)** — Coordinate-free structural matching via the SWAP test.
 * **[Chapter 4: Repeat-Until-Success in Guppy](docs/04_the_rus_loop_in_guppy.md)** — Why Quantinuum trapped ions are uniquely built for dynamic loops.
 * **[Chapter 5: The Hybrid Architecture](docs/05_quantum_hpc_hybrid.md)** — Dividing and conquering between supercomputers (Fugaku) and quantum QPUs (H2/Helios).
 * **[Chapter 6: Roadmap & Submission Tracker](docs/06_roadmap_and_submission.md)** — Step-by-step milestone checklist toward October 15 and the Singapore Grand Finale.
@@ -254,6 +255,8 @@ D:\Quantinuum_GrandChallenge\
 │   └── qrotate\
 │       ├── __init__.py        # Module entrypoint & exports
 │       ├── operators.py       # U_tube definition & SU(2) Euler angle decomposition
+│       ├── structures.py      # Fetches PDB/PubChem entries, extracts the six active sites
+│       ├── encoding_diagnostics.py  # What the phase register can and cannot tell apart
 │       ├── hpc_bridge.py      # Classical parser mapping 3D coords to qubit phases
 │       ├── circuits.py        # Guppy & Pytket circuit builders (RUS loop & SWAP test)
 │       └── metrics.py         # Overlap fidelity & Quantinuum HQC costing model
@@ -273,7 +276,7 @@ D:\Quantinuum_GrandChallenge\
 
 Experience Project Q-Rotate directly in your browser or local environment:
 
-* 🌌 **[3D Resonance Constellation Universe](https://evecount.github.io/quantum_rotation/constellation.html)**: Interactive Starry Night celestial map featuring 3,500 turbulent stardust particles across 6 real-world biomolecular case studies with live 3D ligand rotation and blind parity testing.
+* 🌌 **[3D Resonance Constellation Universe](https://evecount.github.io/quantum_rotation/constellation.html)**: Interactive toy model of the core idea: rotate a ligand until it lines up with the pocket and watch the SWAP-test fidelity signal (cos²(θ/2)) rise. Six biomolecular systems serve as example settings; their target angles and HQC figures are illustrative, not simulation output.
 * 📓 **[View Jupyter Notebook on GitHub](notebooks/project_q_rotate.ipynb)**: Native, instant rendering on GitHub displaying 3D coordinate parsing, phase spectra, Altair resonance curves, H2 rebased circuits, and HQC cost estimates.
 * 🌐 **[Interactive Marimo Web App](notebooks/project_q_rotate.py)**: Full-featured reactive dashboard with live sliders for rotation angle misalignment, Gaussian noise, interactive H2 native circuit tiles, and live job submission to the Quantinuum `nexus:H2-2E` emulator.
 * 📄 **[Standalone HTML Session](notebooks/project_q_rotate.html)**: Self-contained pre-rendered workbook session ready to view in any browser.
@@ -297,45 +300,166 @@ python tests\test_qrotate.py
 
 ---
 
-## 7. Hardware Utilization Highlights (Quantinuum H2 / Helios)
+## 7. Commercial Architecture, Market Value & Use Cases
 
-* **Native Gate Optimization**: Compiles directly into Quantinuum trapped-ion physical primitives: `PhasedX`, `ZZPhase`, and virtual `Rz` rotations.
-* **All-to-All Connectivity**: CSWAP and ancilla parity tests execute with zero SWAP network routing overhead.
-* **Mid-Circuit Dynamic Control**: The Repeat-Until-Success (RUS) loop uses mid-circuit measurement and qubit reset directly on the ion trap, keeping circuit depth shallow while driving phase error to zero.
+This section exists to satisfy the **Problem & Value (30%)** judging criterion directly: who has this problem, why existing options fall short, and what evidence backs the value claim (see `Competition.md`'s 0–5 evidence scale — each item below is labeled with its honest current level).
+
+### 7.1 Three Concrete Use Cases
+
+1. **Cross-company IP-safe fit screening.** Two biopharma organizations (or a biopharma and a CRO) want to check whether Company A's candidate ligand resonates with Company B's patented, undisclosed binding pocket — without either party transmitting raw 3D atomic coordinates to the other or to a third-party cloud vendor. Today's alternative is a legal NDA-mediated coordinate exchange, or not screening at all. Q-Rotate's blind parity test lets both parties exchange only a compressed phase fingerprint and a single ancilla readout. *Evidence level: 2 (plausible, demonstrated on synthetic and illustrative data — see `docs/03_the_blind_parity_test.md` for exactly what is and isn't protected; not yet validated on a real cross-party pilot).*
+2. **Cheap pre-triage before expensive classical screening.** A computational chemistry team has thousands of candidate poses/orientations to check before committing to full DFT or wet-lab synthesis. Q-Rotate's fixed, small qubit footprint (`benchmark_qrotate_engine`, `run_molecular_showdown` in `src/qrotate/metrics.py`) gives a cheap first-pass orientation/overlap filter to cut down what reaches the expensive stage. *Evidence level: 3 (demonstrated with direct evidence — real statevector-simulated circuit runs and honest per-molecule benchmark numbers, regenerated in `benchmarks/*.json`; not yet benchmarked against a real classical screening pipeline's actual hit-rate).*
+3. **A fast geometric lens on photochemical/excited-state systems.** Teams working on light-activated biology (retinal/rhodopsin-style photoswitches, fluorescent biomarkers) need to explore orientation space quickly. Q-Rotate's continuous-rotation framing is a fast, complementary geometric screen — explicitly **not** a replacement for multi-reference electronic-structure methods (CASSCF/DMRG/QSCI) — that can help narrow down which orientations are worth a full quantum-chemistry treatment. *Evidence level: 1–2 (the geometric framing is implemented and tested; the "useful pre-filter for real photochemistry" claim itself is not yet validated against a real electronic-structure benchmark).*
+
+### 7.2 Licensing & Market Model
+
+See `workspaces/JAMES_VENTURE_GTM_BRIEF.md` for the full, honestly-labeled scenario model behind the commercial narrative — it is presented as a transparent, assumption-based framework (currently evidence level 1–2), not a sourced market forecast, with an explicit list of what would need to be validated to move up the evidence scale.
 
 ---
 
-## 8. Benchmarking Showdown: Classical Brute-Force vs. Q-Rotate RUS (Quantinuum H2)
+## 8. Hardware Utilization Highlights (Quantinuum H2 / Helios)
+
+* **Native Gate Optimization**: Compiles directly into Quantinuum trapped-ion physical primitives: `PhasedX`, `ZZPhase`, and virtual `Rz` rotations.
+* **All-to-All Connectivity**: CSWAP and ancilla parity tests execute with zero SWAP network routing overhead.
+* **Mid-Circuit Dynamic Control**: The Repeat-Until-Success (RUS) loop uses mid-circuit measurement and qubit reset directly on the ion trap, keeping circuit depth shallow while driving phase error toward zero (see `src/qrotate/metrics.py::run_blind_rus_protocol` for the honest, non-guaranteed convergence model — RUS can genuinely fail to lock within the iteration budget for a hard enough mismatch).
+
+---
+
+## 9. Benchmarking Showdown: Classical Brute-Force vs. Q-Rotate RUS (Quantinuum H2)
 
 To satisfy the **Technical Performance & Hardware Use (30%)** and **Scientific Merit (20%)** judging criteria, we pitted a standard classical 3D spatial rotation search ($30^\circ$ discrete Euler grid) against the **Q-Rotate Repeat-Until-Success (RUS)** quantum engine across scaling atom counts ($N = 10 \to 1,000$).
 
 ### Performance & Resource Telemetry (`benchmarks/showdown_results.json`)
 
+This scaling study runs the **4-site / 9-qubit** configuration throughout; see [Register Size](#register-size-9-qubits-or-17) below for the 17-qubit comparison.
+
 | Atom Count ($N$) | Classical Brute-Force (30° Euler Grid) | Q-Rotate RUS Iterations | Register Size | Native H2 2Q Gates | Trapped-Ion SWAPs | Estimated Quantinuum HQCs | Operational Speedup |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **10** | 17,280 steps (0.033s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **1,920x** |
-| **50** | 86,400 steps (0.019s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **9,600x** |
-| **100** | 172,800 steps (0.016s) | **2 loops** (Locked: True) | **9 Qubits** | 24 `ZZPhase` | **0 SWAPs** | **11.40 HQCs** | **9,600x** |
-| **500** | 864,000 steps (0.014s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **96,000x** |
-| **1,000** | **1,728,000 steps** (0.031s) | **1 loop** (Locked: True) | **9 Qubits** | 12 `ZZPhase` | **0 SWAPs** | **8.60 HQCs** | **192,000x** |
+| **10** | 17,280 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **1,920x** |
+| **50** | 86,400 steps (0.014s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **9,600x** |
+| **100** | 172,800 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **19,200x** |
+| **500** | 864,000 steps (0.007s) | **1 loop** (Locked: True) | **9 Qubits** | 32 `ZZPhase` | **0 SWAPs** | **13.64 HQCs** | **96,000x** |
+| **1,000** | **1,728,000 steps** (0.007s) | **7 loops** (Locked: True) | **9 Qubits** | 224 `ZZPhase` | **0 SWAPs** | **95.48 HQCs** | **27,429x** |
+
+Those rows use **synthetic** point clouds (a ring of N points), which is legitimate for a scaling study — no single deposited structure comes in sizes 10 through 1,000 — but they are not molecules, and they happen to lock on the first RUS iteration, so they show the best case.
+
+### Experimental Active Sites (`benchmarks/molecular_showdown.json`)
+
+These six run on **experimental coordinates** pulled from the RCSB PDB and PubChem by `src/qrotate/structures.py`. The pocket is every heavy protein atom within 5 Å of the ligand; the ligand starts rotated off its deposited pose and the blind RUS search has to find its way back.
+
+**What is being measured: pose recovery.** Each ligand is compared against a rotated copy of *itself* — the probe starts turned away from its deposited pose by the offset below, and the blind loop has to turn it back. This is not protein-ligand docking: the pocket and the ligand are different molecules with different atom counts, so no rotation makes their phase registers agree and whichever angle scored highest would be incidental. The pocket is still read from the same entry and reported for context.
+
+| Active Site | Structure | Ligand | Atoms | Start Offset | Start P(0) | RUS Iterations | Final P(0) | Estimated HQCs |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 11-cis Retinal / Rhodopsin | PDB 1U19 | RET | 20 | +45° | 0.790 | 2 | 0.970 | 27.28 |
+| GFP Chromophore | PDB 1EMA | CRO | 22 | +35° | 0.864 | 4 | 0.990 | 54.56 |
+| SARS-CoV-2 Mpro + Nirmatrelvir | PDB 7VH8 | 4WI | 35 | −50° | 0.701 | 2 | 1.000 | 27.28 |
+| COX-2 + Celecoxib | PDB 3LN1 | CEL | 26 | +80° | 0.573 | 2 | 0.960 | 27.28 |
+| Azobenzene Switch | PubChem 2272 | AZO | 14 | −115° | 0.502 | 5 | 0.950 | 68.20 |
+| H2 Hardware Benchmark | exact | H2 | 2 | +15° | 0.990 | 1 | 0.990 | 13.64 |
+
+Six of six recover, in 1–5 iterations.
+
+All six recover now, including H2, which the second-order moment rescued (see the moment ladder above). **Read H2's row with its caveat:** it starts at P(0) 0.990 because a 2-atom molecule barely changes under a 15° turn, and its register is only determined modulo 180°, so "1 iteration" is close to free. Azobenzene, starting at 0.502 with no overlap signal at all, is the one that had to work.
+
+Two corrections make these numbers different from earlier versions of this table, and both were bugs rather than tuning:
+
+* **The phase encoder averaged angles across the ±π branch cut.** Two atoms at +179° and −179° are 2° apart but averaged to 0°, pointing the opposite way. The register is now a proper circular mean, which makes it rotation-equivariant: turning a molecule by θ shifts every phase by exactly θ, enforced by `test_phase_encoding_is_rotation_equivariant`. Several "decoy peaks" in the old landscapes were artefacts of this.
+* **The search moved free phase values, not the molecule.** It could step to registers that no rotation of the molecule can produce. `run_blind_rus_pose_recovery` now perturbs the rotation angle and re-encodes the rotated coordinates, which is the one-parameter search the method actually claims, and the same one the Constellation page runs.
+
+Extraction is validated against the chemistry each site is known for: Lys296 and its Glu113 counterion appear in the rhodopsin pocket, the Cys145/His41 dyad in Mpro, His148/Thr203/Glu222 in GFP, and Arg120/Tyr355/**Val523**/Ser530 in COX-2 (3LN1 numbers the mature protein, so those are Arg106/Tyr341/Val509/Ser516 in the file; labels are shifted by +14 to match the literature).
+
+All HQC figures are estimates, not billed hardware jobs. `compute_circuit_hqc_cost` in `src/qrotate/metrics.py` counts gates on the rebased circuit (62 `PhasedX` + 32 `ZZPhase` + 1 measurement on 9 qubits) and applies the H-series formula HQC = 5 + (N₁q + 10·N₂q + 5·N_m)·shots/5000 (100 shots, ≈13.64 HQCs per circuit). Each RUS circuit evaluation (up to two per iteration) runs a different circuit, so it is costed as its own job. 2Q gate totals likewise sum over all evaluations. "Speedup" / "step-count ratio" compares classical grid steps with RUS circuit evaluations. It is not a wall-clock comparison.
+
+### Register Size: 9 Qubits or 17 (`benchmarks/molecular_showdown.json`)
+
+Both configurations run the same blind pose recovery on the same six ligands, so the choice rests on measured numbers rather than assumption:
+
+| | 4 sites / **9 qubits** | 8 sites / **17 qubits** |
+| :--- | :---: | :---: |
+| Recovered the deposited pose | 6/6 | 6/6 |
+| RUS iterations | 1-5 | 1-7 |
+| HQC per circuit | 13.64 | 22.04 |
+| HQC per screen | 13.64-68.20 | 22.04-154.28 |
+| Worst false match between different ligands | 0.777 | **0.510** |
+| Self-overlap under 0.1 A coordinate noise | **0.70-0.99** | 0.57-0.92 |
+
+Per system:
+
+| Active Site | 9 qb: iterations / HQC | 17 qb: iterations / HQC |
+| :--- | :---: | :---: |
+| Rhodopsin | 2 / 27.28 | 2 / 44.08 |
+| GFP | 4 / 54.56 | 4 / 88.16 |
+| Mpro | 2 / 27.28 | 2 / 44.08 |
+| COX-2 | 2 / 27.28 | 4 / 88.16 |
+| Azobenzene | 5 / 68.20 | 7 / 154.28 |
+| H2 | 1 / 13.64 | 1 / 22.04 |
+
+**The larger register does not recover poses better.** It is the same job at both sizes and costs roughly twice as much to do. What it buys is discrimination — telling one ligand from another — where 17 qubits drops the worst false match from 0.78 to 0.51. So 9 qubits stays the default for pose recovery, and 17 is the right choice when the question is "which of these molecules is this?" and the coordinates are good enough to afford the lower noise tolerance. The Constellation's 4Q/8Q toggle shows both sides live.
+
+### What the Encoding Can Tell Apart (`benchmarks/encoding_diagnostics.json`)
+
+Pose recovery measures how fast the loop finds a known answer. It says nothing about whether the register actually *describes the molecule*, and the encoder this project ran for most of its life failed precisely there. `src/qrotate/encoding_diagnostics.py` measures those properties directly on the six ligands.
+
+`self` is the ceiling, below 1.0 because the circuit evolves the probe register and leaves the target alone. `permuted` should equal it; everything else should sit far below.
+
+| Property | Old encoder | Current, 4 sites | Current, 8 sites | What it means |
+| :--- | :---: | :---: | :---: | :--- |
+| Same molecule, atoms reordered | **0.52–0.91** | **equal to self (gap 0.0000)** | equal to self | The register described the input file's atom order, not the molecule |
+| Mirror image (reflected through z) | **0.99** | **0.50–0.52** | 0.50–0.51 | Enantiomers are different drugs; the old encoder could not see chirality at all |
+| Two *different* ligands, worst case | 0.83 | 0.78 | **0.51** | How often it would report a false match |
+| Coordinates jittered by 0.1 Å | — | 0.70–0.99 | 0.57–0.92 | Tolerance of experimental uncertainty |
+
+The redesign (`molecular_shell_phases` in `src/qrotate/hpc_bridge.py`) sorts atoms into shells by radius instead of by file order, and weights each atom by √Z·e^(κẑ). Radius and z are both unchanged by a rotation about z, so the encoding stays exactly rotation-equivariant — the property pose recovery depends on — while becoming permutation invariant and reflection-sensitive. Five tests pin those properties.
+
+#### The moment ladder, and what symmetry costs
+
+Each shell contributes the argument of a complex moment M₁ = Σ wᵢ e^(iφᵢ). A symmetric arrangement cancels it exactly: H2's two atoms sit at φ = 0 and π with equal weights, so M₁ = 0 and the whole register was zeros at *every* orientation. That is why earlier versions of this table reported "H2: locked in 1 iteration" — two empty registers agreeing.
+
+Higher moments are what survive there. A k-fold symmetric arrangement cancels every order below k, so the encoder climbs the ladder and uses the first order with magnitude: H2 needs M₂, a benzene ring needs M₆. Crucially `arg(Mₖ)/k` shifts by exactly α under a rotation of α, so equivariance is preserved at every order.
+
+The cost is real and is reported rather than hidden: `arg(Mₖ)/k` is only defined modulo 360/k degrees, so a shell encoded at order k cannot tell α from α + 360/k. For a k-fold symmetric molecule that is not lost information — those orientations *are* the same arrangement. H2's landscape now has two equally correct peaks 180° apart, and the Constellation says so instead of calling the second one a trap.
+
+| Arrangement | Order used | Register repeats every |
+| :--- | :---: | :---: |
+| The five benchmark ligands | 1 | 360° (no ambiguity) |
+| H2, or any opposed pair | 2 | 180° |
+| A benzene-like 6-fold ring | 6 | 60° |
+| 7-fold or higher symmetry | — | flagged as degenerate, not encoded |
+
+`rotational_ambiguity_deg` reports the period and `is_encoding_degenerate` catches what the ladder still cannot reach, so a symmetry beyond order 6 is refused rather than silently mis-encoded.
+
+Two honest caveats:
+
+* **The redesign did not make the headline benchmark faster.** Pose recovery still takes 1–5 iterations, because the old encoder was already rotation-equivariant once the branch-cut bug was fixed. What changed is correctness the benchmark never tested.
+* **The 4-site register is weak at telling molecules apart** (worst case 0.78). Eight shells fix that (0.51) at the cost of noise tolerance, since each shell then holds fewer atoms, and of cost: 22.04 HQC per circuit against 13.64. Use 8 when coordinates are good and discrimination matters; 4 when they are rough. The Constellation's 4Q/8Q toggle shows this directly — its false-match bar is fed from `benchmarks/encoding_diagnostics.json` and moves when you switch registers. Note that the register size makes no difference to recovering a ligand's *own* pose, which is what the landscape measures; the larger register buys discrimination, not accuracy. The H2 row is the one exception in the mirror column (0.99) and it is correct: H2 lies along x with z = 0, so it genuinely *is* its own reflection.
 
 ### Key Takeaways for the Submission Package
 
 1. **Elimination of the $O(N_{\text{rot}} \times N_{\text{atoms}})$ Combinatorial Explosion**: Classical docking chokes as atom count and angular resolution increase (1.728M steps at $N=1,000$). Q-Rotate evaluates all orientations simultaneously in wave space via $\hat{U}_{\text{tube}}(\tau)$.
-2. **Strict Constant Qubit Footprint ($N_{\text{qubits}} = 9$)**: Regardless of whether a molecule has 10 or 1,000 atoms, the spherical harmonic compression maps into a fixed 9-qubit register.
+2. **The register does not grow with the molecule**: 10 atoms or 1,000, the encoding compresses into the same register. That register is **9 qubits** in the 4-site configuration (4 target + 4 probe + 1 ancilla) and **17** in the 8-site one. What is invariant is the independence from atom count, not the number 9 — both sizes are benchmarked above, and choosing between them is a real trade, not a detail.
 3. **Zero SWAP Gates on Trapped Ions**: Direct execution on Quantinuum's trapped-ion QCCD architecture requires **0 SWAP gates**, preventing circuit depth degradation.
-4. **Fast Convergence without Barren Plateaus**: Mid-circuit measurement snaps the spectator ancilla into zero-parity ground state in 1–2 iterations, costing just **8.60 to 11.40 HQCs**.
+4. **Convergence is not guaranteed**: mid-circuit measurement and reset let the RUS loop retry without deepening the circuit. On the six experimental ligands it recovers the deposited pose in **1–5 iterations** (13.64–68.20 estimated HQCs), but the loop can and does fail — `run_blind_rus_pose_recovery` returns `locked=False` when it runs out of budget, and the Constellation page will show that happening if you start it far from the answer.
 
 ### Running the Live Benchmark Showdown
-To re-run the benchmark suite and reproduce all hardware metrics:
+First fetch the structures (once; needs network, caches to `.cache/structures/`, writes the committed extract `benchmarks/active_sites.json`):
+```powershell
+python -m src.qrotate.structures
+```
+
+Then re-run the benchmark suite, which works offline from that extract:
 ```powershell
 python -m src.qrotate.metrics
+```
+
+And to reproduce the encoding table above:
+```powershell
+python -m src.qrotate.encoding_diagnostics
 ```
 Structured JSON results are automatically exported to `benchmarks/showdown_results.json`.
 
 ---
 
-## 9. 🏛️ About Eve Count & Leadership Bio
+## 10. 🏛️ About Eve Count & Leadership Bio
 
 ### Organization Overview: Eve Count
 **Eve Count** is a Singapore-based DeepTech quantum research laboratory and venture studio pioneering coordinate-free biomolecular simulation and next-generation sovereign algorithmic systems. Combining human mathematical domain invention with high-performance WebGL visualization and institutional capital strategy, Eve Count engineers high-leverage computational engines designed natively for trapped-ion quantum architectures.
@@ -351,7 +475,7 @@ Structured JSON results are automatically exported to `benchmarks/showdown_resul
 #### ⚛️ Gwendalynn (婉婷) Lim ("1ightray") — Founder & DeepTech Venture CTO
 * **Role:** Lead Quantum Architect & Inventor of Project Q-Rotate Core Engine
 * **Credentials:** B.Sc. (Hons) in Applied Computing (Singapore Institute of Technology), Advanced Machine Learning & Deep Learning Credentials (NTU SCTP).
-* **Domain Focus:** Continuous Hamiltonian time-evolution, Lie group representations ($SU(2)^{\otimes n}$), Zero-Knowledge quantum parity verification, and native trapped-ion kernel compilation in Quantinuum `guppylang` and Pytket.
+* **Domain Focus:** Continuous Hamiltonian time-evolution, Lie group representations ($SU(2)^{\otimes n}$), Coordinate-free quantum parity verification, and native trapped-ion kernel compilation in Quantinuum `guppylang` and Pytket.
 * **Bio:** Gwendalynn is a Singaporean computer scientist, machine learning practitioner, and deep-tech founder. Rejecting four decades of classical Cartesian grid discretization ($O(N^3)$ computational bottlenecks in molecular docking), Gwendalynn formulated the continuous Tube Hamiltonian ($\hat{U}_{\text{tube}}(\tau) = \exp(-i\tau(\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}))$), transforming spatial and electrostatic molecular binding into an analytical, coordinate-free Lie algebra resonance problem. Gwendalynn directs the core mathematical architecture, algorithmic proofs, and physical trapped-ion execution across Quantinuum H1/H2 systems.
 * **Direct Contact:** [gwen@evecount.com](mailto:gwen@evecount.com) | [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/)
 

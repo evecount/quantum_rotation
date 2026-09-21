@@ -42,15 +42,16 @@ Every step has a verified status and placeholder tracking:
   - [x] Created `docs/` knowledge base with 6 comprehensive chapters
   - [x] Plain-English explanations demystifying lock-and-key matching without a PhD
 
-- [ ] **Milestone 4: Cloud Emulator Benchmarks (Upcoming)**
+- [x] **Milestone 4a: Honest Local Benchmark Engine (done)**
+  - [x] Replaced the fixed-iteration RUS mock with a real dense-statevector simulation of the actual SWAP-test circuit (`src/qrotate/circuits.py::simulate_swap_test_statevector`), verified against the closed-form single-qubit SWAP-test formula in `tests/test_qrotate.py`
+  - [x] Replaced the target-phases-leaking feedback loop with a blind, target-never-read SPSA-style search (`src/qrotate/metrics.py::run_blind_rus_protocol`) — iteration counts and lock/no-lock outcomes now genuinely vary by molecule (regenerated `benchmarks/*.json`)
   - [ ] Log in with `aqora login` to link local CLI with `1ightray` account
-  - [ ] Execute `project_q_rotate.py` against Quantinuum `nexus:H2-2E` emulator
-  - [ ] Capture run logs, job IDs, and HQC consumption records
+  - [ ] Execute `project_q_rotate.py` against Quantinuum `nexus:H2-2E` emulator for real hardware/emulator job logs and job IDs (this step needs the team's own Aqora credentials — not something that can be done from a local dev pass)
 
-- [ ] **Milestone 5: Benchmark against Classical Baselines (Upcoming)**
-  - [ ] Run comparison against classical brute-force grid search
-  - [ ] Quantify speedup and scaling advantage as number of contact sites increases
-  - [ ] Compare fidelity curves against theoretical resonance bounds
+- [x] **Milestone 5: Benchmark against Classical Baselines (done, locally)**
+  - [x] Ran comparison against classical brute-force grid search (`run_performance_showdown`, `run_molecular_showdown`)
+  - [x] Quantified the combinatorial step-count reduction as contact-site count scales (documented as a step-count comparison, not a proven wall-clock quantum-advantage claim)
+  - [x] RUS iteration counts now emerge from real per-molecule phase mismatch instead of a fixed cap — see the honest-vs-mocked comparison note in `PROJECT_QROTATE_SUBMISSION_RELEASE.md`
 
 - [ ] **Milestone 6: Submission 1 Packaging (Target: October 15, 2026)**
   - [ ] Publish version `1.1.0` to team workspace on Aqora
