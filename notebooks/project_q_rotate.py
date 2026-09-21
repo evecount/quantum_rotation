@@ -48,6 +48,8 @@ with app.setup:
         build_pytket_swap_test_circuit,
         rebase_to_h2_gateset,
         guppy_qrotate_rus_demo,
+        simulate_swap_test_statevector,
+        simulate_shot_sampling,
     )
     from hugr_qir.hugr_to_qir import hugr_to_qir
     from hugr_qir.output import OutputFormat
@@ -148,7 +150,7 @@ def _():
             color="Metric:N",
             tooltip=["Angle (deg):Q", "Value:Q", "Metric:N"],
         )
-        .properties(width="container", height=320, title="Zero-Knowledge Parity Resonance (1.0 = Perfect Lock)")
+        .properties(width="container", height=320, title="Coordinate-Free Parity Resonance (1.0 = Perfect Lock)")
     )
     chart
     return
@@ -223,7 +225,7 @@ def _():
 
 
 @app.cell
-def _(rebased_circuit, run_btn, shots_ui):
+def _(ligand_phases, pocket_phases, rebased_circuit, run_btn, shots_ui):
     mo.stop(
         not run_btn.value,
         mo.callout(
@@ -232,6 +234,7 @@ def _(rebased_circuit, run_btn, shots_ui):
         )
     )
 
+    counts_source = "hardware"
     try:
         qpu = QPU(platform="nexus:H2-2E")
         job = qpu.run(rebased_circuit, shots=shots_ui.value)
@@ -239,17 +242,32 @@ def _(rebased_circuit, run_btn, shots_ui):
         counts = job.counts(timeout=600)[0]
     except Exception as e:
         mo.callout(
-            mo.md(f"**Aqora Connection Notice**: `{e}`\n\nRun `aqora login` in terminal to sync team credentials with your H2 quota."),
+            mo.md(
+                f"**Aqora Connection Notice**: `{e}`\n\n"
+                "Run `aqora login` in terminal to sync team credentials with your H2 quota. "
+                "Showing a **local statevector simulation** of this exact circuit below instead — "
+                "it is not a hardware or emulator measurement."
+            ),
             kind="warn"
         )
-        # Provide local emulation fallback counts
-        counts = {"0": int(shots_ui.value * 0.85), "1": int(shots_ui.value * 0.15)}
+        counts_source = "local_simulation"
+        # Honest local fallback: actually simulate this circuit's true P(0) from
+        # its own pocket/ligand phases, then draw real binomial shot noise from
+        # it — never a fabricated fixed count presented as if it were real.
+        p0_true = simulate_swap_test_statevector(pocket_phases, ligand_phases, tau=0.5, omega=(0.0, 0.1, 0.2))
+        shot_res = simulate_shot_sampling(p0_true, n_shots=shots_ui.value)
+        counts = {"0": shot_res["counts_0"], "1": shot_res["counts_1"]}
 
-    return counts,
+    return counts, counts_source
 
 
 @app.cell
-def _(counts):
+def _(counts, counts_source):
+    if counts_source == "local_simulation":
+        mo.callout(
+            mo.md("**SIMULATED — not connected to hardware.** These counts come from a local statevector simulation, not a Quantinuum job."),
+            kind="warn",
+        )
     utils.counts_histogram(counts)
     return
 

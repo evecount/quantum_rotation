@@ -23,7 +23,7 @@ $$\hat{H}_{\text{rot}} = \vec{\omega} \cdot \sum_{k=1}^{N} \hat{\vec{\sigma}}_k 
 #### What it means physically:
 Imagine a 3D compass needle sitting in space. The vector $\vec{\omega} = (\omega_x, \omega_y, \omega_z)$ is the axis of rotation—how much you are twisting the key around the $X$, $Y$, and $Z$ dimensions.
 * On a trapped-ion quantum computer, twisting a qubit around the $X$, $Y$, or $Z$ axis is done using single-qubit laser pulses ($R_y$ and $R_z$).
-* In fact, on Quantinuum's H2 trapped-ion machine, $R_z$ rotations are **virtual**—they cost zero laser power and zero physical error!
+* In fact, on Quantinuum's H2 trapped-ion machine, $R_z$ rotations are **virtual**—implemented as a classical frame change rather than a laser pulse, so they cost no laser power and carry negligible physical error compared to a driven gate (not literally zero — every real gate has some residual error budget).
 
 ---
 

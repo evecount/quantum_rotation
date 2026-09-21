@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#01040c" />
   <title>Official Competition Brief | Quantinuum SG Grand Challenge 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,10 +28,8 @@
       font-family: 'Outfit', -apple-system, sans-serif;
       line-height: 1.65;
       padding-bottom: 80px;
-      background-image: 
-        radial-gradient(circle at 15% 20%, rgba(0, 245, 212, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 60%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
-      background-attachment: fixed;
+      /* Clean deep void ground */
+      
     }
     header {
       background: rgba(7, 9, 14, 0.9);
@@ -88,7 +87,7 @@
     }
     .btn:hover { transform: translateY(-2px); text-decoration: none; }
     .btn-back { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; }
-    .btn-warroom { background: linear-gradient(135deg, #f59e0b, #00f5d4); color: #07090e; font-weight: 800; }
+    .btn-warroom { background: #00f5d4; color: #01040c; font-weight: 700; border: none; }
   </style>
 </head>
 <body>
@@ -96,10 +95,30 @@
     <div class="header-inner">
       <div style="display:flex; align-items:center; gap:12px;">
         <a href="index.html#war-room" class="btn btn-back">← Back to War Room</a>
-        <span style="color:var(--text-muted); font-size:0.85rem;">Official Brief: <strong>Competition.md</strong></span>
+        <span style="display:inline-flex; align-items:center; color:var(--text-muted); font-size:0.85rem;"><span class="q-brand-emblem" aria-hidden="true" style="display:inline-flex; align-items:center; vertical-align:middle; line-height:0; filter:drop-shadow(0 0 6px rgba(0,245,212,0.4)); margin-right:6px;">
+          <svg class="q-logo-svg" viewBox="0 0 36 36" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="qBrandGradComp" x1="2" y1="4" x2="34" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#00f5d4" />
+                <stop offset="50%" stop-color="#38bdf8" />
+                <stop offset="100%" stop-color="#818cf8" />
+              </linearGradient>
+            </defs>
+            <circle cx="18" cy="18" r="15" stroke="rgba(255, 255, 255, 0.18)" stroke-width="1" stroke-dasharray="2 2.5" />
+            <circle cx="18" cy="3" r="1.3" fill="#00f5d4" />
+            <circle cx="33" cy="18" r="1.3" fill="#38bdf8" />
+            <circle cx="18" cy="33" r="1.3" fill="#818cf8" />
+            <circle cx="3" cy="18" r="1.3" fill="#f59e0b" />
+            <ellipse cx="18" cy="18" rx="14.5" ry="6.2" transform="rotate(-28 18 18)" stroke="url(#qBrandGradComp)" stroke-width="1.4" stroke-dasharray="18 4 8 4" stroke-linecap="round" />
+            <circle cx="18" cy="18" r="7" stroke="url(#qBrandGradComp)" stroke-width="1.8" />
+            <path d="M22 22L28 28" stroke="url(#qBrandGradComp)" stroke-width="2.2" stroke-linecap="round" />
+            <circle cx="18" cy="18" r="2.8" fill="#ffffff" />
+            <circle cx="18" cy="18" r="1.5" fill="#00f5d4" />
+          </svg>
+        </span>Official Brief: <strong style="margin-left:4px; color:#f8fafc;">Competition.md</strong></span>
       </div>
       <div>
-        <a href="index.html#war-room" class="btn btn-warroom">🔒 Mission Control</a>
+        <a href="index.html#war-room" class="btn btn-warroom"> Mission Control</a>
       </div>
     </div>
   </header>
