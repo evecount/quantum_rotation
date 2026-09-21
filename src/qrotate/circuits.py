@@ -413,16 +413,14 @@ if HAS_GUPPY:
         h(ancilla)
 
         # 5. Measure and output parity
-        # measure() returns a lazy `Measurement`; it must be `.read()` into a
-        # bool before it can cross the `output`/`result` boundary.
         m_parity = measure(ancilla)
-        output("parity_error", m_parity.read())
+        output("parity_error", m_parity)
 
         # 6. Measure remaining qubits
         m_p = measure(q_pocket)
         m_l = measure(q_ligand)
-        output("pocket_state", m_p.read())
-        output("ligand_state", m_l.read())
+        output("pocket_state", m_p)
+        output("ligand_state", m_l)
 else:
     def guppy_qrotate_rus_demo() -> None:
         """Fallback mock for Guppy Q-Rotate execution."""
