@@ -2,7 +2,7 @@
   "benchmark_results": [
     {
       "n_atoms": 10,
-      "classical_time_sec": 0.00721,
+      "classical_time_sec": 0.01337,
       "classical_steps": 17280,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
@@ -14,7 +14,7 @@
     },
     {
       "n_atoms": 50,
-      "classical_time_sec": 0.00756,
+      "classical_time_sec": 0.01282,
       "classical_steps": 86400,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 1,
@@ -26,7 +26,7 @@
     },
     {
       "n_atoms": 100,
-      "classical_time_sec": 0.00749,
+      "classical_time_sec": 0.01424,
       "classical_steps": 172800,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 15,
@@ -38,7 +38,7 @@
     },
     {
       "n_atoms": 500,
-      "classical_time_sec": 0.00748,
+      "classical_time_sec": 0.02063,
       "classical_steps": 864000,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 15,
@@ -50,7 +50,7 @@
     },
     {
       "n_atoms": 1000,
-      "classical_time_sec": 0.0076,
+      "classical_time_sec": 0.00921,
       "classical_steps": 1728000,
       "qrotate_qubits": 9,
       "qrotate_rus_iterations": 7,
@@ -61,5 +61,5 @@
       "qrotate_speedup_factor": 27428.6
     }
   ],
-  "generated_at": "2026-09-20 21:31:22"
+  "generated_at": "2026-09-21 13:20:30"
 }
