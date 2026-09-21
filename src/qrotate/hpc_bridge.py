@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import Sequence
 
 
@@ -120,6 +121,16 @@ def _radial_shells(r: np.ndarray, n_shells: int) -> list[np.ndarray]:
     are therefore kept together, and whole groups are distributed to balance the
     shells. A molecule with fewer distinct radii than shells simply leaves the
     outer shells empty, which is the honest answer for something like H2.
+
+    With at least as many distinct radii as shells, the groups (in radius
+    order) are cut into `n_shells` contiguous, non-empty runs whose sizes are
+    as even as possible: the cut minimising the squared deviation from N/n,
+    found exactly by `_balanced_cuts`. So no qubit is left empty unless the
+    molecule has fewer distinct radii than shells.
+
+    (This used to advance to the next shell only once the current one had met
+    its share, which overfilled the early shells and starved the last: at
+    eight shells, four of the five benchmark ligands encoded nothing on q7.)
     """
     if len(r) == 0:
         return [np.array([], dtype=int) for _ in range(n_shells)]
@@ -130,15 +141,112 @@ def _radial_shells(r: np.ndarray, n_shells: int) -> list[np.ndarray]:
     ]
 
     shells: list[list[int]] = [[] for _ in range(n_shells)]
-    target = len(r) / n_shells
-    shell_idx = 0
-    for group in groups:
-        # Move to the next shell once this one has met its share.
-        if shell_idx < n_shells - 1 and len(shells[shell_idx]) >= target:
-            shell_idx += 1
+    for group, shell_idx in zip(groups, _balanced_cuts(tuple(len(g) for g in groups), n_shells)):
         shells[shell_idx].extend(group.tolist())
 
     return [np.array(sorted(s), dtype=int) for s in shells]
+
+
+# Width, in Angstrom, of the soft edge between neighbouring shells.
+SHELL_EDGE_WIDTH = 0.25
+
+
+def _logistic(x: np.ndarray) -> np.ndarray:
+    return 0.5 * (1.0 + np.tanh(0.5 * x))
+
+
+def radial_shell_membership(
+    r: np.ndarray,
+    n_shells: int,
+    edge_width: float = SHELL_EDGE_WIDTH,
+) -> np.ndarray:
+    """How much each atom belongs to each shell: an (n_shells, N) array whose
+    columns sum to 1.
+
+    `_radial_shells` decides which shell each atom mainly belongs to. A hard
+    boundary, though, makes the encoding jump when coordinate error carries an
+    atom across it, and a count-balanced split will sometimes put a boundary
+    between two atoms at almost the same radius: trans-azobenzene is nearly
+    centrosymmetric, so its atoms come in near-equal pairs, and cutting inside
+    a pair dropped its self-overlap under 0.1 A of noise to 0.55. So each
+    boundary sits at the midpoint between the neighbouring shells' closest
+    atoms, and an atom near it is shared between both shells along a logistic
+    of width `edge_width`. The register then changes smoothly with the
+    coordinates.
+
+    Mean self-overlap under 0.1 A of coordinate noise across the five
+    benchmark ligands (30 draws each):
+
+        split                          4 shells    8 shells
+        hard, old greedy               0.942       0.792    (q7 empty at 8)
+        hard, balanced                 0.857       0.740
+        balanced + 0.25 A soft edge    0.967       0.925
+
+    The cost is some radial resolution: GFP's mirror image scores 0.66 at four
+    shells rather than 0.51, and the worst false match at eight shells rises
+    from 0.51 to 0.56.
+
+    Shells that `_radial_shells` leaves empty (a molecule with fewer distinct
+    radii than shells, like H2) stay empty.
+    """
+    r = np.asarray(r, dtype=float)
+    membership = np.zeros((n_shells, len(r)))
+    hard = _radial_shells(r, n_shells)
+    filled = [k for k in range(n_shells) if len(hard[k])]
+    for pos, k in enumerate(filled):
+        if pos == 0:
+            inner = np.ones(len(r))
+        else:
+            edge = 0.5 * (r[hard[filled[pos - 1]]].max() + r[hard[k]].min())
+            inner = _logistic((r - edge) / edge_width)
+        if pos == len(filled) - 1:
+            outer = np.zeros(len(r))
+        else:
+            edge = 0.5 * (r[hard[k]].max() + r[hard[filled[pos + 1]]].min())
+            outer = _logistic((r - edge) / edge_width)
+        membership[k] = inner - outer
+    return membership
+
+
+@lru_cache(maxsize=512)
+def _balanced_cuts(sizes: tuple[int, ...], n_shells: int) -> tuple[int, ...]:
+    """Shell index for each tie-group, given the groups' sizes in radius order.
+
+    Fewer groups than shells: one group per shell from the centre out, outer
+    shells empty. Otherwise a dynamic programme over contiguous cuts, every
+    shell non-empty, minimising sum((size - N/n)^2). Depends only on the size
+    sequence, so it is cached: a rotation about the centroid never changes it.
+    """
+    n_groups = len(sizes)
+    if n_groups < n_shells:
+        return tuple(range(n_groups))
+
+    target = sum(sizes) / n_shells
+    prefix = [0]
+    for s in sizes:
+        prefix.append(prefix[-1] + s)
+
+    inf = float("inf")
+    # cost[k][j]: best cost of the first j groups in k shells; cut[k][j]: where
+    # shell k starts in that solution.
+    cost = [[inf] * (n_groups + 1) for _ in range(n_shells + 1)]
+    cut = [[0] * (n_groups + 1) for _ in range(n_shells + 1)]
+    cost[0][0] = 0.0
+    for k in range(1, n_shells + 1):
+        for j in range(k, n_groups - (n_shells - k) + 1):
+            for i in range(k - 1, j):
+                c = cost[k - 1][i] + (prefix[j] - prefix[i] - target) ** 2
+                if c < cost[k][j]:
+                    cost[k][j], cut[k][j] = c, i
+
+    assignment = [0] * n_groups
+    j = n_groups
+    for k in range(n_shells, 0, -1):
+        i = cut[k][j]
+        for g in range(i, j):
+            assignment[g] = k - 1
+        j = i
+    return tuple(assignment)
 
 
 MOMENT_THRESHOLD = 1e-3
@@ -195,13 +303,10 @@ def _shell_moments(
     weights = weights * np.exp(z_weight * rel[:, 2] / z_span)
 
     shells = []
-    for idx in _radial_shells(np.linalg.norm(rel, axis=1), n_qubits):
-        if len(idx) == 0:
-            shells.append({"phase": 0.0, "order": 0, "anisotropy": 0.0, "magnitudes": []})
-            continue
-
-        scale = float(np.sum(weights[idx]))
-        if scale <= 0:
+    for membership in radial_shell_membership(np.linalg.norm(rel, axis=1), n_qubits):
+        shell_weights = weights * membership
+        scale = float(np.sum(shell_weights))
+        if scale <= 1e-9:
             shells.append({"phase": 0.0, "order": 0, "anisotropy": 0.0, "magnitudes": []})
             continue
 
@@ -211,7 +316,7 @@ def _shell_moments(
         magnitudes = []
         chosen = None
         for order in range(1, max_order + 1):
-            moment = np.sum(weights[idx] * np.exp(1j * order * phi[idx]))
+            moment = np.sum(shell_weights * np.exp(1j * order * phi))
             magnitude = abs(moment) / scale
             magnitudes.append(float(magnitude))
             if chosen is None and magnitude >= MOMENT_THRESHOLD:
@@ -311,9 +416,10 @@ def molecular_shell_phases(
     The replacement:
 
     1. Centre on the centroid (translation invariance).
-    2. Sort atoms by radius and split into `n_qubits` equal-count shells.
-       Radius is unchanged by any rotation and sorting is canonical, so shell
-       membership is both permutation invariant and rotation invariant.
+    2. Sort atoms by radius and cut them into `n_qubits` shells of as nearly
+       equal size as tied radii allow (`_radial_shells`). Radius is unchanged
+       by any rotation and sorting is canonical, so shell membership is both
+       permutation invariant and rotation invariant.
     3. Per shell, take the weighted complex moment
        :math:`m_q = \sum_i w_i e^{i\phi_i}` and keep its argument. Summing over
        atoms is permutation invariant; the argument is what a z-rotation acts
@@ -331,16 +437,17 @@ def molecular_shell_phases(
     information here" answer rather than amplified numerical noise.
 
     `z_weight` (\kappa) trades chirality sensitivity against tolerance of
-    coordinate error. Measured across the six benchmark ligands:
+    coordinate error. Means over the five benchmark ligands at four shells
+    (H2 excluded: it is its own mirror image), 30 noise draws each:
 
         kappa   mirror overlap   self-overlap at 0.1 A noise
-        0.00    0.992            --          (blind to reflection)
-        0.75    0.678            0.960
-        1.50    0.510            0.944       (default)
-        3.00    0.501            0.923
+        0.00    0.992            0.875       (blind to reflection)
+        0.75    0.594            0.937
+        1.50    0.534            0.950       (default)
+        3.00    0.541            0.961
 
-    1.5 is where mirror discrimination has essentially saturated while a
-    tenth-Angstrom of coordinate noise still costs under 0.05 of overlap.
+    1.5 is where mirror discrimination bottoms out, while a tenth-Angstrom of
+    coordinate noise still costs only 0.05 of overlap.
     """
     return [s["phase"] for s in _shell_moments(geometry, n_qubits, z_weight)]
 
@@ -378,8 +485,8 @@ def pocket_ligand_to_qubit_phases(
       chirality at all.
 
     The current encoder is exactly permutation invariant (phases agree to
-    1e-14), scores ~0.51 against a mirror image, and remains exactly
-    rotation-equivariant about z.
+    1e-14), scores ~0.53 on average against a mirror image, and remains
+    exactly rotation-equivariant about z.
 
     `feature_scale` is accepted for backwards compatibility and ignored: the
     charge term it scaled was always multiplied by all-zero charges.
