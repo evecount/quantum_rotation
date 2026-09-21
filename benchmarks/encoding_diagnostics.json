@@ -4,46 +4,46 @@
       "encoding_diagnostics": [
         {
           "system_id": "rhodopsin",
-          "self": 0.9954,
-          "permuted": 0.9954,
-          "mirrored": 0.5214,
-          "noise_0.1A": 0.794,
+          "self": 0.994,
+          "permuted": 0.994,
+          "mirrored": 0.506,
+          "noise_0.1A": 0.9643,
           "worst_cross_match": {
             "system_id": "h2bench",
-            "p0": 0.5498
+            "p0": 0.6884
           }
         },
         {
           "system_id": "gfp",
-          "self": 0.9916,
-          "permuted": 0.9916,
-          "mirrored": 0.5046,
-          "noise_0.1A": 0.9899,
+          "self": 0.9915,
+          "permuted": 0.9915,
+          "mirrored": 0.6588,
+          "noise_0.1A": 0.988,
           "worst_cross_match": {
             "system_id": "mpro",
-            "p0": 0.7247
+            "p0": 0.6496
           }
         },
         {
           "system_id": "mpro",
           "self": 0.9943,
           "permuted": 0.9943,
-          "mirrored": 0.5079,
-          "noise_0.1A": 0.9104,
+          "mirrored": 0.5019,
+          "noise_0.1A": 0.991,
           "worst_cross_match": {
-            "system_id": "gfp",
-            "p0": 0.7769
+            "system_id": "azobenzene",
+            "p0": 0.7057
           }
         },
         {
           "system_id": "cox2",
-          "self": 0.9947,
-          "permuted": 0.9947,
-          "mirrored": 0.5149,
-          "noise_0.1A": 0.9856,
+          "self": 0.9943,
+          "permuted": 0.9943,
+          "mirrored": 0.503,
+          "noise_0.1A": 0.9874,
           "worst_cross_match": {
             "system_id": "h2bench",
-            "p0": 0.616
+            "p0": 0.6332
           }
         },
         {
@@ -51,10 +51,10 @@
           "self": 0.9903,
           "permuted": 0.9903,
           "mirrored": 0.5,
-          "noise_0.1A": 0.9632,
+          "noise_0.1A": 0.7969,
           "worst_cross_match": {
             "system_id": "mpro",
-            "p0": 0.5929
+            "p0": 0.6983
           }
         },
         {
@@ -65,7 +65,7 @@
           "noise_0.1A": 0.6959,
           "worst_cross_match": {
             "system_id": "cox2",
-            "p0": 0.6513
+            "p0": 0.6718
           }
         }
       ],
@@ -84,57 +84,57 @@
       "encoding_diagnostics": [
         {
           "system_id": "rhodopsin",
-          "self": 0.9874,
-          "permuted": 0.9874,
-          "mirrored": 0.5126,
-          "noise_0.1A": 0.6768,
+          "self": 0.9894,
+          "permuted": 0.9894,
+          "mirrored": 0.5,
+          "noise_0.1A": 0.9358,
           "worst_cross_match": {
-            "system_id": "gfp",
-            "p0": 0.5012
+            "system_id": "h2bench",
+            "p0": 0.5132
           }
         },
         {
           "system_id": "gfp",
-          "self": 0.9836,
-          "permuted": 0.9836,
-          "mirrored": 0.5016,
-          "noise_0.1A": 0.8668,
+          "self": 0.9837,
+          "permuted": 0.9837,
+          "mirrored": 0.508,
+          "noise_0.1A": 0.968,
           "worst_cross_match": {
             "system_id": "mpro",
-            "p0": 0.5048
+            "p0": 0.5344
           }
         },
         {
           "system_id": "mpro",
-          "self": 0.9875,
-          "permuted": 0.9875,
-          "mirrored": 0.5004,
-          "noise_0.1A": 0.8403,
+          "self": 0.9884,
+          "permuted": 0.9884,
+          "mirrored": 0.5,
+          "noise_0.1A": 0.9772,
           "worst_cross_match": {
             "system_id": "gfp",
-            "p0": 0.5099
+            "p0": 0.5578
           }
         },
         {
           "system_id": "cox2",
-          "self": 0.9886,
-          "permuted": 0.9886,
-          "mirrored": 0.503,
-          "noise_0.1A": 0.9154,
+          "self": 0.9905,
+          "permuted": 0.9905,
+          "mirrored": 0.5036,
+          "noise_0.1A": 0.9762,
           "worst_cross_match": {
             "system_id": "h2bench",
-            "p0": 0.505
+            "p0": 0.5372
           }
         },
         {
           "system_id": "azobenzene",
-          "self": 0.983,
-          "permuted": 0.983,
+          "self": 0.9808,
+          "permuted": 0.9808,
           "mirrored": 0.5,
-          "noise_0.1A": 0.5717,
+          "noise_0.1A": 0.9096,
           "worst_cross_match": {
             "system_id": "mpro",
-            "p0": 0.5007
+            "p0": 0.5396
           }
         },
         {
@@ -145,7 +145,7 @@
           "noise_0.1A": 0.6921,
           "worst_cross_match": {
             "system_id": "cox2",
-            "p0": 0.5036
+            "p0": 0.5553
           }
         }
       ],

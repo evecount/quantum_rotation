@@ -226,6 +226,22 @@ class BlindRusResult:
     circuit_evaluations: int
     final_p0_hat: float
     final_p0_true: float
+    # Where a pose search stopped, in degrees within [-180, 180). None for the
+    # phase-space search, which has no single angle.
+    final_angle_deg: Optional[float] = None
+
+
+def _wrap_deg(angle: float) -> float:
+    return float((angle + 180.0) % 360.0 - 180.0)
+
+
+def pose_error_deg(final_angle_deg: float, true_offset_deg: float, ambiguous_180: bool = False) -> float:
+    """How far a recovered pose is from the true one. A lock only says the
+    measured P(0) cleared the bar, and the bar is cleared across a band of
+    angles, so the benchmark reports this alongside it. For a molecule whose
+    register repeats every 180 degrees, the half-turn partner counts as right."""
+    err = abs(_wrap_deg(final_angle_deg - true_offset_deg))
+    return min(err, 180.0 - err) if ambiguous_180 else err
 
 
 def run_blind_rus_protocol(
@@ -581,6 +597,7 @@ def run_molecular_showdown(
         degenerate = is_encoding_degenerate(target_geom, n_qubits=n_qubits)
         moment_orders = shell_moment_orders(target_geom, n_qubits=n_qubits)
         ambiguous_180 = has_180_degree_ambiguity(target_geom, n_qubits=n_qubits)
+        error_deg = pose_error_deg(rus_result.final_angle_deg, sys["optimal_angle_deg"], ambiguous_180)
 
         entry = {
             "system_id": sys["id"],
@@ -607,6 +624,10 @@ def run_molecular_showdown(
             "qrotate_rus_iterations": iterations,
             "qrotate_locked": locked,
             "qrotate_final_p0": round(rus_result.final_p0_hat, 4),
+            # Where the search stopped and how far that is from the true pose:
+            # a lock means P(0) cleared the bar, which it does across a band.
+            "qrotate_final_angle_deg": round(rus_result.final_angle_deg, 2),
+            "qrotate_pose_error_deg": round(error_deg, 2),
             "qrotate_two_qubit_gates": int(hqc_info["two_qubit_gates"]),
             "qrotate_swap_gates": 0,
             "qrotate_hqcs": hqc_info["estimated_hqcs"],
@@ -632,6 +653,8 @@ def run_molecular_showdown(
             print("                centrosymmetric molecule is the same arrangement.")
         print(f"  Q-Rotate    : {'Locked in' if locked else 'NO LOCK after'} {iterations} RUS iterations"
               f" | final P(0)={rus_result.final_p0_hat:.3f} | {hqc_info['n_qubits']} qubits | 0 SWAPs")
+        print(f"  Pose        : stopped at {rus_result.final_angle_deg:+.1f} deg, true offset "
+              f"{sys['optimal_angle_deg']:+.1f} deg -> {error_deg:.1f} deg off")
         print(f"  HQC Cost    : {hqc_info['estimated_hqcs']:.2f} HQCs ({hqc_info['circuit_runs']} circuit runs x {hqc_info['hqc_per_circuit']:.2f}) | Speedup: ~{speedup:,.0f}x")
 
     n_locked = sum(1 for r in results if r["qrotate_locked"])
@@ -649,9 +672,13 @@ def run_molecular_showdown(
         print(f"  ({len(results) - len(meaningful)} excluded as encoding-degenerate: "
               f"{', '.join(excluded)} — see the WARNING above)")
     iter_values = [r["qrotate_rus_iterations"] for r in meaningful] or iter_values
+    err_values = [r["qrotate_pose_error_deg"] for r in meaningful if r["qrotate_locked"]]
     print(f"  (min {min(iter_values)}, max {max(iter_values)} iterations across those systems —")
     print("   this is a blind search measured against the real simulated circuit each")
     print("   iteration, so it varies by molecule instead of being fixed.)")
+    if err_values:
+        print(f"  Locked poses landed {min(err_values):.1f}-{max(err_values):.1f} deg from the true pose")
+        print("  (a lock means the measured P(0) cleared the bar, not that the angle is exact).")
     print("  Classical grid search requires millions of operations per molecule.")
     print("  Zero SWAP overhead across all scenarios on Quantinuum H2 QCCD.")
     print("  Q-Rotate qubit footprint stays fixed regardless of active-site atom count")
@@ -767,17 +794,18 @@ def run_molecular_showdown_all_registers(
     print("\n" + "=" * 80)
     print("REGISTER SIZE COMPARISON (pose recovery on the same six ligands)")
     print("=" * 80)
-    print(f"{'register':>10} {'locked':>8} {'iterations':>12} {'HQC/screen':>22} {'HQC/circuit':>12}")
+    print(f"{'register':>10} {'locked':>8} {'iterations':>12} {'HQC/screen':>22} {'HQC/circuit':>12} {'pose error':>14}")
     for n_sites in register_sizes:
         rows = by_size[str(n_sites)]["molecular_showdown_results"]
         usable = [r for r in rows if not r.get("encoding_degenerate")]
         locked = sum(1 for r in usable if r["qrotate_locked"])
         iters = [r["qrotate_rus_iterations"] for r in usable]
         hqcs = [r["qrotate_hqcs"] for r in usable]
+        errs = [r["qrotate_pose_error_deg"] for r in usable if r["qrotate_locked"]]
         per_circuit = compute_circuit_hqc_cost(_reference_swap_test_circuit(n_sites), shots=100)
         print(f"{2 * n_sites + 1:>7} qb {locked:>4}/{len(usable):<3} "
               f"{min(iters):>5}-{max(iters):<6} {min(hqcs):>10.2f}-{max(hqcs):<10.2f} "
-              f"{per_circuit['hqc_cost']:>12.2f}")
+              f"{per_circuit['hqc_cost']:>12.2f} {min(errs):>6.1f}-{max(errs):<5.1f}deg")
     print("=" * 80)
 
     if output_json_path:
@@ -803,6 +831,7 @@ def _write_screen_costs_js(payload: dict, js_path: str) -> None:
                 "rus_iterations": row["qrotate_rus_iterations"],
                 "register_qubits": run["register_qubits"],
                 "locked": row["qrotate_locked"],
+                "pose_error_deg": row["qrotate_pose_error_deg"],
             }
 
     os.makedirs(os.path.dirname(os.path.abspath(js_path)), exist_ok=True)
@@ -859,7 +888,7 @@ def run_blind_rus_pose_recovery(
     for attempt in range(max_retries):
         iterations = attempt + 1
         if p0_hat - lock_confidence_sigma * shot_res["std_err"] >= 0.90:
-            return BlindRusResult(True, iterations, circuit_evals, p0_hat, p0_true)
+            return BlindRusResult(True, iterations, circuit_evals, p0_hat, p0_true, _wrap_deg(angle))
 
         trial_angle = angle + (step_deg / np.sqrt(attempt + 1.0)) * rng.choice([-1.0, 1.0])
         trial_p0_true, trial_shot = measure(trial_angle)
@@ -869,7 +898,7 @@ def run_blind_rus_pose_recovery(
             p0_hat = trial_shot["empirical_prob"]
 
     locked = p0_hat - lock_confidence_sigma * shot_res["std_err"] >= 0.90
-    return BlindRusResult(locked, max_retries, circuit_evals, p0_hat, p0_true)
+    return BlindRusResult(locked, max_retries, circuit_evals, p0_hat, p0_true, _wrap_deg(angle))
 
 
 def export_constellation_profiles(
@@ -941,6 +970,11 @@ def export_constellation_profiles(
             "id": sys["id"],
             "name": sys["name"],
             "n_atoms_proxy": sys["n_atoms_proxy"],
+            # The true answer: how far the probe was turned away from the
+            # deposited pose. The landscape peak sits a few degrees short of it
+            # because U_tube(tau) evolves the probe register only (at tau=0 the
+            # peak is exactly here, with P(0)=1).
+            "pose_offset_deg": sys["optimal_angle_deg"],
             "angles_deg": angles,
             "registers": registers,
         })
@@ -956,7 +990,15 @@ def export_constellation_profiles(
         "source": "src/qrotate/metrics.py::export_constellation_profiles",
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
+    _write_constellation_profiles(payload, json_path, js_path)
+    return payload
 
+
+def _write_constellation_profiles(
+    payload: dict,
+    json_path: Optional[str] = "benchmarks/constellation_profiles.json",
+    js_path: Optional[str] = "assets/constellation_profiles.js",
+) -> None:
     if json_path:
         os.makedirs(os.path.dirname(os.path.abspath(json_path)), exist_ok=True)
         with open(json_path, "w", encoding="utf-8") as f:
@@ -973,8 +1015,6 @@ def export_constellation_profiles(
             json.dump(payload, f, separators=(",", ":"))
             f.write(";\n")
         print(f"[Saved constellation profiles to {js_path}]")
-
-    return payload
 
 
 if __name__ == "__main__":

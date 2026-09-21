@@ -103,27 +103,28 @@ def _(mo):
 
     To satisfy the **Technical Performance (30%)** and **Scientific Merit (20%)** criteria for the Grand Challenge Jury (**Irfan Khan** and **Megan**), we benchmarked classical 3D spatial grid-search against our **Q-Rotate Repeat-Until-Success (RUS)** engine across 6 real crystallographic structures from the **RCSB Protein Data Bank (PDB)** and **PubChem**:
 
-    | Active Site Target | Structure Source | Ligand (PDB ID) | Heavy Atoms | Start Misalignment | Initial Overlap $P(0)$ | RUS Loops to Lock | Final Overlap $P(0)$ | Circuit 2Q Gates (`ZZPhase`) | Total Est. HQCs | Classical Speedup Ratio |
-    | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-    | **11-cis Retinal / Rhodopsin** | **RCSB 1U19** | RET | 20 | +45.0° | 0.791 | **2** | **0.980** | 64 | **27.28** | **1,920×** |
-    | **GFP Chromophore** | **RCSB 1EMA** | CRO | 22 | +35.0° | 0.864 | **4** | **0.990** | 128 | **54.56** | **1,056×** |
-    | **SARS-CoV-2 Mpro + Nirmatrelvir** | **RCSB 7VH8** | 4WI | 35 | −50.0° | 0.701 | **2** | **1.000** | 64 | **27.28** | **3,360×** |
-    | **COX-2 + Celecoxib** | **RCSB 3LN1** | CEL | 26 | +80.0° | 0.573 | **2** | **0.960** | 64 | **27.28** | **2,496×** |
-    | **Azobenzene Molecular Switch** | **PubChem 2272** | AZO | 14 | −115.0° | 0.502 | **5** | **0.940** | 160 | **68.20** | **538×** |
-    | **$H_2$ Hardware Benchmark** | **Exact QM** | H2 | 2 | +15.0° | 0.990 | **1** | **0.990** | 32 | **13.64** | **384×** |
+    | Active Site Target | Structure Source | Ligand (PDB ID) | Heavy Atoms | Start Misalignment | Initial Overlap $P(0)$ | RUS Loops to Lock | Final Overlap $P(0)$ | Pose Error at Lock | Circuit 2Q Gates (`ZZPhase`) | Total Est. HQCs | Classical Speedup Ratio |
+    | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+    | **11-cis Retinal / Rhodopsin** | **RCSB 1U19** | RET | 20 | +45.0° | 0.791 | **2** | **0.980** | 15.0° | 64 | **27.28** | **1,920×** |
+    | **GFP Chromophore** | **RCSB 1EMA** | CRO | 22 | +35.0° | 0.864 | **4** | **0.990** | 0.4° | 128 | **54.56** | **1,056×** |
+    | **SARS-CoV-2 Mpro + Nirmatrelvir** | **RCSB 7VH8** | 4WI | 35 | −50.0° | 0.701 | **2** | **1.000** | 10.0° | 64 | **27.28** | **3,360×** |
+    | **COX-2 + Celecoxib** | **RCSB 3LN1** | CEL | 26 | +80.0° | 0.573 | **2** | **0.960** | 20.0° | 64 | **27.28** | **2,496×** |
+    | **Azobenzene Molecular Switch** | **PubChem 2272** | AZO | 14 | −115.0° | 0.502 | **5** | **0.940** | 17.4° | 160 | **68.20** | **538×** |
+    | **$H_2$ Hardware Benchmark** | **Exact QM** | H2 | 2 | +15.0° | 0.986 | **1** | **0.990** | 15.0° | 32 | **13.64** | **384×** |
 
-    *All 6 of 6 real systems recover their deposited crystallographic pose within 1–5 RUS iterations on 9 qubits. Estimates use the official Quantinuum H-series costing formula in `src/qrotate/metrics.py`.*
+    *All 6 of 6 real systems lock onto their deposited crystallographic pose within 1–5 RUS iterations on 9 qubits, landing 0.4–20° from the exact angle. A lock means the measured P(0) cleared a 95%-confidence bar, which it does across a band of angles, not that the angle is exact. H2 locked where it started: two atoms barely change under a 15° turn. Estimates use the official Quantinuum H-series costing formula in `src/qrotate/metrics.py`.*
 
     ### Register Architecture Scaling: 9 Qubits (4 Sites) vs. 17 Qubits (8 Sites)
 
     | Benchmark Metric | 4 Sites / **9 Qubits** (Default Pose Recovery) | 8 Sites / **17 Qubits** (High-Resolution Fingerprinting) | Strategic Recommendation |
     | :--- | :---: | :---: | :--- |
-    | **Deposited Pose Recovery** | **6 / 6 (100%)** | **6 / 6 (100%)** | Both register sizes reliably converge to native crystallographic pose |
-    | **RUS Iterations to Lock** | **1 – 5 iterations** | **1 – 7 iterations** | 9-qubit register converges faster with lower gate overhead |
-    | **Estimated HQC Cost / Circuit** | **13.64 HQCs** | **22.04 HQCs** | 9-qubit circuit costs ~38% less hardware quota per evaluation |
-    | **Total Screen Cost per Ligand** | **13.64 – 68.20 HQCs** | **22.04 – 154.28 HQCs** | Highly cost-effective for commercial high-throughput screening runs |
-    | **Worst False Match (Off-Target)** | $P(0) \le 0.777$ | **$P(0) \le 0.510$** | **17-qubit register provides near-orthogonal ligand discrimination** |
-    | **Thermal / Jitter Noise (0.1 Å)** | **$P(0) \in [0.70, 0.99]$** | $P(0) \in [0.57, 0.92]$ | 9-qubit register is more robust to cryogenic crystal thermal noise |
+    | **Deposited Pose Recovery** | **6 / 6 (100%)** | **6 / 6 (100%)** | Both register sizes lock onto every deposited pose |
+    | **Pose Error at Lock** | 0.4 – 20.0° | **0.4 – 15.0°** | 17-qubit register locks closer to the exact pose (lock band ±15–17° vs ±21–23° at 100 shots) |
+    | **RUS Iterations to Lock** | **1 – 5 iterations** | 1 – 8 iterations | 9-qubit register converges faster with lower gate overhead |
+    | **Estimated HQC Cost / Circuit** | **13.64 HQCs** | 22.04 HQCs | 9-qubit circuit costs ~38% less hardware quota per evaluation |
+    | **Total Screen Cost per Ligand** | **13.64 – 68.20 HQCs** | 22.04 – 176.32 HQCs | Highly cost-effective for commercial high-throughput screening runs |
+    | **Worst False Match (Off-Target)** | $P(0) \le 0.706$ | **$P(0) \le 0.558$** | **17-qubit register separates different ligands better** (0.5 means nothing in common) |
+    | **Coordinate Noise (0.1 Å jitter, 5 ligands)** | $P(0) \in [0.80, 0.99]$ | **$P(0) \in [0.91, 0.98]$** | With soft shell edges, the 17-qubit register holds up at least as well |
 
     - **Zero SWAP Gates:** Trapped-ion all-to-all connectivity allows direct 2Q coupling without circuit degradation.
     - **Reproduce Locally:** Run `python -m src.qrotate.metrics` from the repository root.

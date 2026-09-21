@@ -259,6 +259,123 @@ def test_phase_encoding_sees_chirality():
     print(f"PASS: test_phase_encoding_sees_chirality (mirror P(0)={overlap:.3f})")
 
 
+def test_radial_shells_leave_no_qubit_empty():
+    """Every shell must get atoms whenever the molecule has at least as many
+    distinct radii as there are shells, and shell sizes may differ by no more
+    than the largest group of tied atoms (which can never be split). The old
+    split starved the last shell: at eight shells four of the five benchmark
+    ligands encoded nothing on q7."""
+    from qrotate.hpc_bridge import _radial_shells
+    from qrotate.structures import load_active_sites
+
+    def check(radii, n_shells, label):
+        radii = np.asarray(radii, dtype=float)
+        sizes = [len(s) for s in _radial_shells(radii, n_shells)]
+        assert sum(sizes) == len(radii), (label, sizes)
+        _, tie_counts = np.unique(np.round(radii, 6), return_counts=True)
+        if len(tie_counts) >= n_shells:
+            assert min(sizes) > 0, (label, n_shells, sizes)
+            assert max(sizes) - min(sizes) <= tie_counts.max(), (label, n_shells, sizes)
+        else:
+            # Fewer distinct radii than shells: inner shells filled, outer empty.
+            assert all(sizes[:len(tie_counts)]) and not any(sizes[len(tie_counts):]), (label, sizes)
+        return sizes
+
+    for sid, site in load_active_sites().items():
+        c = np.asarray(site["ligand"]["coords"], dtype=float)
+        for n_shells in (4, 8):
+            check(np.linalg.norm(c - c.mean(axis=0), axis=1), n_shells, sid)
+
+    rng = np.random.default_rng(20260921)
+    for trial in range(2000):
+        n_atoms = int(rng.integers(1, 60))
+        n_shells = int(rng.choice([2, 3, 4, 6, 8]))
+        # Coarse radii force plenty of ties, including very large tie-groups.
+        radii = rng.integers(1, int(rng.integers(1, 40)) + 1, size=n_atoms) * 0.5
+        check(radii, n_shells, f"random trial {trial}")
+
+    assert check([0.3707, 0.3707], 8, "H2") == [2, 0, 0, 0, 0, 0, 0, 0]
+    print("PASS: test_radial_shells_leave_no_qubit_empty (6 ligands x 2 sizes, 2000 tie-heavy random molecules)")
+
+
+def test_soft_shells_make_the_register_continuous():
+    """A hard shell boundary makes the register jump whenever coordinate error
+    carries an atom across it, and a count-balanced split sometimes puts a
+    boundary between two atoms at almost the same radius (trans-azobenzene's
+    near-equal pairs). Atoms near a boundary are therefore shared between the
+    two shells, so swapping such a pair barely moves the register."""
+    from qrotate.hpc_bridge import radial_shell_membership, molecular_shell_phases
+    from qrotate.structures import load_active_sites
+
+    sites = load_active_sites()
+    for sid, site in sites.items():
+        c = np.asarray(site["ligand"]["coords"], dtype=float)
+        r = np.linalg.norm(c - c.mean(axis=0), axis=1)
+        for n_shells in (4, 8):
+            m = radial_shell_membership(r, n_shells)
+            assert np.allclose(m.sum(axis=0), 1.0), (sid, n_shells)
+            assert (m >= -1e-12).all(), (sid, n_shells)
+    # H2's two atoms share one radius: everything stays in the first shell.
+    h2 = radial_shell_membership(np.array([0.3707, 0.3707]), 4)
+    assert np.allclose(h2[0], 1.0) and np.allclose(h2[1:], 0.0)
+
+    # Atoms 3 and 4 sit 0.004 A apart in radius, either side of the boundary
+    # between shells 1 and 2. Nudging them so their order swaps must not swap
+    # which shell each belongs to: a hard split moves each one's whole weight
+    # (a change of 1.0), the soft edge barely changes it.
+    def radii(delta):
+        return np.array([1.0, 1.5, 2.0, 3.0 - delta, 3.0 + delta, 3.5, 4.0, 4.5])
+    jump = np.abs(radial_shell_membership(radii(0.002), 4) - radial_shell_membership(radii(-0.002), 4)).max()
+    assert jump < 0.05, jump
+
+    # Regression guard on the property the soft edge exists for: a tenth of an
+    # Angstrom of coordinate error, about experimental precision, costs little.
+    rng = np.random.default_rng(7)
+    scores = []
+    for sid, site in sites.items():
+        if sid == "h2bench":
+            continue
+        c = np.asarray(site["ligand"]["coords"], dtype=float)
+        e = site["ligand"]["elements"]
+        ref = molecular_shell_phases(MolecularGeometry("r", e, c), n_qubits=4)
+        scores.append(np.mean([
+            simulate_swap_test_statevector(
+                ref, molecular_shell_phases(MolecularGeometry("n", e, c + rng.normal(0, 0.1, c.shape)), n_qubits=4),
+                0.25, (1.0, 0.5, 0.25))
+            for _ in range(40)
+        ]))
+    # A hard balanced split scores 0.55 on azobenzene and 0.86 on average here.
+    assert min(scores) >= 0.75 and np.mean(scores) >= 0.90, scores
+    print(f"PASS: test_soft_shells_make_the_register_continuous (pair swap moves membership {jump:.3f}; "
+          f"0.1 A noise self-overlap {min(scores):.2f}-{max(scores):.2f})")
+
+
+def test_constellation_profiles_carry_the_true_pose():
+    """The Constellation draws its gold ghost and "exact answer" tick from
+    pose_offset_deg, so it must be the offset the benchmark actually applied,
+    and each landscape must peak close to it: U_tube(tau) shifts the peak a few
+    degrees, but a peak far from the true pose would mean the page and the
+    benchmark describe different rotations."""
+    import json
+    from qrotate.metrics import REAL_MOLECULE_SYSTEMS
+
+    path = Path(__file__).resolve().parent.parent / "benchmarks" / "constellation_profiles.json"
+    if not path.exists():
+        print("SKIP: benchmarks/constellation_profiles.json missing")
+        return
+    profiles = {p["id"]: p for p in json.loads(path.read_text(encoding="utf-8"))["constellation_profiles"]}
+
+    for sys_spec in REAL_MOLECULE_SYSTEMS:
+        prof = profiles[sys_spec["id"]]
+        assert prof["pose_offset_deg"] == sys_spec["optimal_angle_deg"], sys_spec["id"]
+        for size, reg in prof["registers"].items():
+            gap = abs((reg["best_angle_deg"] - prof["pose_offset_deg"] + 180) % 360 - 180)
+            if reg["ambiguous_180_deg"]:
+                gap = min(gap, 180 - gap)
+            assert gap <= 6, (sys_spec["id"], size, reg["best_angle_deg"], prof["pose_offset_deg"])
+    print(f"PASS: test_constellation_profiles_carry_the_true_pose ({len(REAL_MOLECULE_SYSTEMS)} systems, every peak within 6 deg)")
+
+
 def test_active_sites_are_real_structures():
     """The six benchmark systems must come from experimental coordinates, and
     each pocket must contain the residues that site is actually known for. This
@@ -340,6 +457,41 @@ def test_swap_test_statevector_matches_closed_form():
     print("PASS: test_swap_test_statevector_matches_closed_form")
 
 
+def test_pose_recovery_reports_where_it_stopped():
+    """A lock only says the measured P(0) cleared the bar, and it clears across
+    a band of angles, so the result has to say where the search actually
+    stopped. The benchmark reports the pose error from this."""
+    from qrotate.metrics import (
+        REAL_MOLECULE_SYSTEMS,
+        _system_coordinates,
+        _rotate_z,
+        pose_error_deg,
+        run_blind_rus_pose_recovery,
+    )
+    from qrotate.structures import site_elements
+
+    assert pose_error_deg(170.0, -170.0) == 20.0
+    assert pose_error_deg(-160.0, 15.0) == 175.0
+    assert pose_error_deg(-160.0, 15.0, ambiguous_180=True) == 5.0
+
+    spec = next(s for s in REAL_MOLECULE_SYSTEMS if s["id"] == "rhodopsin")
+    target, probe = _system_coordinates(spec["id"], spec["n_atoms_proxy"], spec["optimal_angle_deg"], 0)
+    elements = site_elements(spec["id"]) or ["C"] * len(probe)
+    target_phases = pocket_ligand_to_qubit_phases(MolecularGeometry("t", elements, target), n_qubits=4)
+
+    res = run_blind_rus_pose_recovery(target_phases, probe, n_qubits=4, seed=7, elements=elements)
+    assert res.final_angle_deg is not None and -180.0 <= res.final_angle_deg < 180.0
+    # final_p0_true must be the circuit at the reported angle, not some other one.
+    phases = pocket_ligand_to_qubit_phases(
+        MolecularGeometry("p", elements, _rotate_z(probe, res.final_angle_deg)), n_qubits=4)
+    assert abs(simulate_swap_test_statevector(target_phases, phases, 0.25, (1.0, 0.5, 0.25))
+               - res.final_p0_true) < 1e-9
+    assert res.locked
+    error = pose_error_deg(res.final_angle_deg, spec["optimal_angle_deg"])
+    assert error <= 30.0, error
+    print(f"PASS: test_pose_recovery_reports_where_it_stopped (rhodopsin locked {error:.1f} deg from the true pose)")
+
+
 def test_blind_rus_protocol_does_not_cheat():
     """The RUS search must never be handed the pocket's own phases as its
     update rule (that was the bug that made the old benchmark self-fulfilling)
@@ -374,9 +526,13 @@ if __name__ == "__main__":
     test_second_order_moment_rescues_centrosymmetric_molecules()
     test_moment_ladder_handles_rotational_symmetry()
     test_phase_encoding_is_permutation_invariant()
+    test_radial_shells_leave_no_qubit_empty()
+    test_soft_shells_make_the_register_continuous()
     test_phase_encoding_sees_chirality()
     test_active_sites_are_real_structures()
+    test_constellation_profiles_carry_the_true_pose()
     test_hqc_cost_counts_compiled_circuit()
     test_swap_test_statevector_matches_closed_form()
     test_blind_rus_protocol_does_not_cheat()
+    test_pose_recovery_reports_where_it_stopped()
     print("\nALL PROJECT Q-ROTATE TESTS PASSED SUCCESSFULLY!")

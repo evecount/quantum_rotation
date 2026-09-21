@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#01040c" />
   <title>The Resonance Constellation | Project Q-Rotate</title>
-  <meta name="description" content="An interactive 3D multidimensional biomolecular universe for Project Q-Rotate, Quantinuum Singapore Grand Challenge 2026." />
+  <meta name="description" content="Can a quantum computer tell when a molecule is turned the right way, without seeing the answer? An interactive demo on real crystal structures for Project Q-Rotate, Quantinuum Singapore Grand Challenge 2026." />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -258,34 +258,10 @@
       justify-content: space-between;
     }
 
-    .telemetry-note {
-      margin-top: 10px;
-      font-size: 0.68rem;
-      line-height: 1.45;
-      color: var(--text-muted);
-    }
-
-    .telemetry-note a {
-      color: var(--accent-cyan);
-    }
-
-    .telemetry-pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent-cyan);
-      box-shadow: 0 0 10px var(--accent-cyan);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; transform: scale(0.9); }
-      50% { opacity: 1; transform: scale(1.3); }
-    }
-
     .telemetry-row {
       display: flex;
       justify-content: space-between;
+      gap: 12px;
       font-size: 0.8rem;
       margin-bottom: 6px;
       font-family: var(--font-mono);
@@ -293,11 +269,13 @@
 
     .telemetry-label {
       color: var(--text-muted);
+      flex-shrink: 0;
     }
 
     .telemetry-val {
       color: #fff;
       font-weight: 600;
+      text-align: right;
     }
 
     /* Bottom Galaxy Selector Carousel */
@@ -614,12 +592,23 @@
     .parity-result-box {
       border-radius: 10px;
       padding: 12px 16px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      text-align: center;
+      font-size: 0.84rem;
+      line-height: 1.5;
       display: none;
       margin-bottom: 18px;
+      background: rgba(6, 10, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
     }
+
+    .parity-result-box strong {
+      display: block;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    .parity-result-box .result-detail { font-family: var(--font-mono); }
 
     .parity-result-box.pass {
       background: rgba(0, 245, 212, 0.15);
@@ -632,6 +621,195 @@
       border: 1px solid #ef4444;
       color: #fca5a5;
     }
+
+    /* ── Plain-language layer: the puzzle, the meter and the hill come first;
+       the qubit-level detail waits under "Under the hood". ── */
+    .story {
+      list-style: none;
+      counter-reset: story;
+      display: grid;
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+    .story li {
+      counter-increment: story;
+      position: relative;
+      padding-left: 30px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+    .story li::before {
+      content: counter(story);
+      position: absolute;
+      left: 0;
+      top: 1px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #030712;
+      background: var(--accent-cyan);
+    }
+    .story b { color: #fff; }
+    .ghost-word { color: #fcd34d; font-weight: 700; }
+
+    .match-meter {
+      background: rgba(6, 10, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px 16px 12px;
+      margin: 14px 0 18px;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .match-meter.is-match {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 22px rgba(0, 245, 212, 0.25);
+    }
+    .match-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .match-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+    .match-verdict { font-size: 0.85rem; font-weight: 800; }
+    .match-value {
+      font-family: var(--font-mono);
+      font-size: 2.1rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 2px 0 8px;
+      color: #fff;
+    }
+    .match-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .match-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 4px;
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+    .match-sub {
+      margin-top: 8px;
+      font-size: 0.74rem;
+      line-height: 1.5;
+      color: #94a3b8;
+    }
+
+    .slider-header label { cursor: pointer; }
+    .slider-foot {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .slider-hint {
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+    kbd {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+    }
+
+    .hill-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      margin-top: 6px;
+      font-size: 0.66rem;
+      color: #94a3b8;
+    }
+    .hill-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .hill-legend i { display: inline-block; }
+    .dot-you { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+    .dot-top { width: 7px; height: 7px; border-radius: 50%; background: #10b981; }
+    .tick-exact { width: 2px; height: 10px; background: #fcd34d; }
+    .dash-bar { width: 12px; height: 0; border-top: 1px dashed rgba(0, 245, 212, 0.7); }
+
+    .shot-label { font-size: 0.66rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+
+    .parity-result-box .result-detail {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.72rem;
+      opacity: 0.85;
+    }
+
+    .under-hood {
+      margin: 4px 0 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(6, 10, 20, 0.55);
+    }
+    .under-hood > summary {
+      cursor: pointer;
+      padding: 12px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      list-style: none;
+    }
+    .under-hood > summary::-webkit-details-marker { display: none; }
+    .under-hood > summary::before {
+      content: '+';
+      display: inline-block;
+      width: 16px;
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+    }
+    .under-hood[open] > summary::before { content: '\2212'; }
+    .under-hood[open] > summary { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .under-hood > :not(summary) { margin-left: 14px; margin-right: 14px; }
+    .under-hood > .inspector-desc { margin-top: 12px; font-size: 0.82rem; }
+    .hood-facts { margin-bottom: 14px; font-size: 0.74rem; line-height: 1.5; }
+    .hood-facts dt { color: #fff; font-weight: 700; margin-top: 10px; }
+    .hood-facts dd { color: #94a3b8; }
+    .hood-facts code { font-size: 0.68rem; }
+
+    .qubit-tile .qubit-shell {
+      font-size: 0.6rem;
+      color: #64748b;
+      font-family: var(--font-mono);
+      margin-top: 1px;
+    }
+
+    .real-list {
+      list-style: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 5px;
+      font-size: 0.68rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+    .real-list li { padding-left: 16px; position: relative; }
+    .real-list li::before { position: absolute; left: 0; font-weight: 800; }
+    .real-list .is-real::before { content: '\2713'; color: #10b981; }
+    .real-list .is-not::before { content: '\2013'; color: #f59e0b; }
+    .real-list b { color: #e2e8f0; }
 
     /* Guide instructions overlay */
     /* ── Responsive: the HUD is a set of absolutely positioned overlays, so
@@ -656,13 +834,34 @@
         max-width: none;
         padding: 18px;
         border-radius: 16px;
+        /* Fade in place rather than slide in from off-screen: a closed drawer
+           parked at translateX(120%) widened the page to about twice the
+           phone's width, the browser zoomed out to fit it, and the 3D canvas
+           then sized itself to the zoomed-out width. */
+        transform: translateY(16px);
+        opacity: 0;
+        visibility: hidden;
+        /* A bottom sheet, so the molecule stays in view above it; the camera
+           is re-framed into that gap (frameToFreeArea). */
+        top: auto;
+        height: 50vh;
+        max-height: calc(100% - var(--hud-h, 72px) - var(--selector-h, 64px) - 120px);
+        transition: transform 0.35s ease, opacity 0.25s ease, visibility 0s linear 0.35s;
+      }
+      .inspector-drawer.open {
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        transition: transform 0.35s ease, opacity 0.25s ease;
       }
       .galaxy-selector { bottom: 14px; max-width: calc(100vw - 20px); padding: 8px 10px; }
     }
 
     @media (max-width: 520px) {
       .hud-title h1 { font-size: 1rem; }
-      .hud-title p { font-size: 0.72rem; }
+      /* The story at the top of the drawer says the same thing, and the
+         space is worth more to the molecule. */
+      .hud-title p { display: none; }
       .hud-btn { font-size: 0.72rem; padding: 6px 10px; }
       .inspector-drawer { padding: 14px; }
     }
@@ -689,34 +888,6 @@
       15% { opacity: 1; transform: translate(-50%, 0); }
       85% { opacity: 1; }
       100% { opacity: 0; pointer-events: none; }
-    }
-
-    /* Trapped-Ion Phase & Pitch Controls */
-    .control-card {
-      background: rgba(6, 10, 20, 0.9);
-      border: 1px solid rgba(0, 245, 212, 0.35);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
-    }
-
-    .control-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .control-title {
-      font-size: 0.76rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent-cyan);
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .scope-box {
@@ -746,16 +917,6 @@
       background: rgba(4, 8, 18, 0.95);
     }
 
-    .scope-legend {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.68rem;
-      font-family: var(--font-mono);
-      margin-top: 6px;
-    }
-
-    .legend-pocket { color: #f59e0b; }
-    .legend-ligand { color: #00f5d4; }
 
     #landscape-canvas { height: 96px; }
 
@@ -821,129 +982,10 @@
     }
 
     .landscape-caption {
-      font-size: 0.66rem;
-      font-family: var(--font-mono);
+      font-size: 0.74rem;
       color: var(--text-muted);
       margin-top: 6px;
       line-height: 1.45;
-    }
-
-    .resonance-meter-bar {
-      height: 4px;
-      border-radius: 2px;
-      background: #00f5d4;
-      transition: width 0.1s ease;
-    }
-
-    .keypad-grid {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      margin: 10px 0;
-    }
-
-    .key-row {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-    }
-
-    .key-btn {
-      width: 64px;
-      height: 50px;
-      background: rgba(16, 24, 44, 0.9);
-      border: 1px solid rgba(66, 153, 225, 0.35);
-      border-bottom: 3px solid rgba(66, 153, 225, 0.7);
-      border-radius: 9px;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.08s ease;
-      user-select: none;
-    }
-
-    .key-btn:hover {
-      background: rgba(28, 40, 72, 0.95);
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .key-btn:active, .key-btn.active {
-      background: rgba(0, 245, 212, 0.25);
-      border-color: var(--accent-cyan);
-      border-bottom-width: 1px;
-      transform: translateY(2px);
-      box-shadow: 0 0 16px rgba(0, 245, 212, 0.6);
-    }
-
-    .key-char {
-      font-family: var(--font-mono);
-      font-size: 1.05rem;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .key-action {
-      font-size: 0.62rem;
-      font-family: var(--font-mono);
-      color: var(--accent-cyan);
-      margin-top: 2px;
-    }
-
-    .space-key-btn {
-      width: 100%;
-      height: 42px;
-      flex-direction: row;
-      gap: 8px;
-      border-color: rgba(245, 158, 11, 0.4);
-      border-bottom: 3px solid rgba(245, 158, 11, 0.8);
-      background: rgba(26, 20, 10, 0.9);
-    }
-
-    .space-key-btn .key-char {
-      color: #f59e0b;
-      font-size: 0.88rem;
-    }
-
-    .space-key-btn .key-action {
-      color: #fbbf24;
-      font-size: 0.72rem;
-      margin-top: 0;
-    }
-
-    .space-key-btn:hover {
-      border-color: #f59e0b;
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
-    }
-
-    .space-key-btn:active, .space-key-btn.active {
-      border-bottom-width: 1px;
-      transform: translateY(2px);
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
-    }
-
-    .gate-ticker {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      background: rgba(10, 18, 34, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 7px;
-      padding: 6px 10px;
-      color: #cbd5e1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 8px;
-    }
-
-    .gate-ticker span.highlight {
-      color: var(--accent-cyan);
-      font-weight: 700;
     }
 
     /* Layman Modal Dialog */
@@ -982,6 +1024,110 @@
       box-shadow: 0 0 50px rgba(0, 245, 212, 0.25);
       position: relative;
     }
+
+    .modal-content.guide {
+      max-width: 780px;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .guide-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .guide-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+    }
+    .guide-head h2 { font-size: 1.45rem; font-weight: 800; color: #fff; line-height: 1.2; }
+    .guide-head p { font-size: 0.8rem; color: #94a3b8; margin-top: 2px; }
+    .guide-body {
+      overflow-y: auto;
+      padding: 16px 4px 4px 0;
+      display: grid;
+      gap: 16px;
+    }
+    .guide h3 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .guide p, .guide li { font-size: 0.8rem; line-height: 1.55; color: #cbd5e1; }
+    .guide-steps {
+      list-style: none;
+      counter-reset: guide;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 10px;
+    }
+    .guide-steps li {
+      counter-increment: guide;
+      position: relative;
+      padding: 12px 14px 12px 46px;
+      border-radius: 12px;
+      background: rgba(12, 18, 34, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .guide-steps li::before {
+      content: counter(guide);
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #030712;
+      background: var(--accent-cyan);
+    }
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 10px;
+    }
+    .guide-grid section {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(12, 18, 34, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .guide-grid ul { list-style: none; display: grid; gap: 6px; }
+    .guide-grid ul:not(.real-list) b { color: #fff; margin-right: 4px; }
+    .guide-grid .real-list { margin-top: 0; padding-top: 0; border-top: 0; }
+    .guide-grid .real-list li { font-size: 0.78rem; }
+    .c-gold { color: #fcd34d !important; }
+    .guide-expert {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 0 14px;
+    }
+    .guide-expert > summary {
+      cursor: pointer;
+      padding: 12px 0;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    .guide-expert .hood-facts dd { font-size: 0.78rem; }
+    .guide-foot {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .guide-foot .btn-fire-parity { margin: 0; padding: 11px; font-size: 0.88rem; }
+    @media (max-width: 520px) {
+      .modal-content.guide { padding: 18px 16px; }
+      .guide-steps, .guide-grid { grid-template-columns: 1fr; }
+    }
+
     /* Embedded Mode in Presentation Slides (Zero Clipping) */
     body.is-embedded .hud-top {
       top: 10px;
@@ -1095,11 +1241,11 @@
       </div>
       <div class="hud-title">
         <h1>The Resonance Constellation</h1>
-        <p>Turn the ligand back into its deposited pose. The overlap readout is a simulated SWAP test on experimental coordinates.</p>
+        <p>Can a quantum computer tell when a molecule is turned the right way, without ever seeing the answer? Real crystal structures, simulated quantum circuit.</p>
       </div>
     </div>
     <div class="hud-nav">
-      <button class="hud-btn" id="btn-how-to-play" style="border-color: rgba(245, 158, 11, 0.4); color: #f59e0b;"><span>Constellation Guide</span></button>
+      <button class="hud-btn" id="btn-how-to-play" style="border-color: rgba(245, 158, 11, 0.4); color: #f59e0b;"><span>How it works</span></button>
       <button class="hud-btn" id="btn-toggle-sound">
         <span id="sound-label">Audio: ON</span>
       </button>
@@ -1118,34 +1264,35 @@
   <!-- Telemetry HUD Left -->
   <div class="telemetry-box">
     <div class="telemetry-title">
-      <span>Simulated Readout</span>
+      <span>At a glance</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">Model</span>
-      <span class="telemetry-val">Rotation + SWAP test</span>
+      <span class="telemetry-label">Molecule</span>
+      <span class="telemetry-val" id="active-star-name">&mdash;</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">Active System</span>
-      <span class="telemetry-val" id="active-star-name">Rhodopsin / Retinal</span>
+      <span class="telemetry-label">Off by</span>
+      <span class="telemetry-val" id="telemetry-delta-phi" style="color: var(--accent-cyan);">&mdash;</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">Angle Error ΔΦ</span>
-      <span class="telemetry-val" id="telemetry-delta-phi" style="color: var(--accent-cyan);">0.14 rad</span>
+      <span class="telemetry-label" title="The benchmark's blind search for this molecule (benchmarks/molecular_showdown.json): 100 flips per step, cost estimated in Quantinuum H-series credits (HQC), and how far from the true pose it locked">Benchmark run</span>
+      <span class="telemetry-val" id="telemetry-hqc">&mdash;</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label">HQC per screen (est.)</span>
-      <span class="telemetry-val" id="telemetry-hqc">150.0 HQC</span>
+      <span class="telemetry-label">Built for</span>
+      <span class="telemetry-val" style="color: #fff;">Quantinuum H2</span>
     </div>
-    <div class="telemetry-row">
-      <span class="telemetry-label">Target HW</span>
-      <span class="telemetry-val" style="color: #fff;">Quantinuum H2-2E</span>
-    </div>
-    <p class="telemetry-note">Coordinates are experimental (RCSB PDB / PubChem, see <code>benchmarks/active_sites.json</code>). This is <strong>pose recovery</strong>: the ligand is matched against a rotated copy of itself, not against the pocket. Overlap comes from simulating the SWAP-test circuit at every angle. HQC is the measured cost of this system's blind pose-recovery run at the selected register size, estimated with the H-series formula rather than billed on hardware.</p>
+    <ul class="real-list" aria-label="What on this page is real">
+      <li class="is-real"><b>Real</b> atom positions, from crystal structures (RCSB PDB, PubChem)</li>
+      <li class="is-real"><b>Real</b> match scores: every point simulates the quantum circuit</li>
+      <li class="is-not"><b>Not yet</b> run on quantum hardware; the cost is an estimate from Quantinuum's formula</li>
+      <li class="is-not"><b>Decoration</b> stars, glow and sound</li>
+    </ul>
   </div>
 
   <!-- Interaction Guide Hint -->
   <div class="guide-hint">
-     Click any celestial cluster to enter the active site • Drag to rotate view • Scroll to zoom
+     Each glowing cluster is a real molecule • Click one or pick from the bar below • Drag to look around
   </div>
 
   <!-- Bottom Galaxy Destination Selector -->
@@ -1186,66 +1333,102 @@
       <button class="btn-close" id="btn-close-drawer" aria-label="Close system inspector">&times;</button>
     </div>
 
-    <p class="inspector-desc" id="drawer-desc">
-      The gold standard photochemical master switch in human vision. As light strikes the chromophore, 11-cis retinal photoisomerizes into all-trans retinal within a tightly constrained opsin pocket.
-    </p>
-
+    <!-- The puzzle, in plain words. Filled per system by renderStory(). -->
+    <ol class="story" id="story">
+      <li><b>A real molecule.</b> <span id="story-molecule">&mdash;</span></li>
+      <li><b>We turned it <span id="story-offset">&mdash;</span> out of place.</b> The <span class="ghost-word">gold ghost</span> shows where it really sits.</li>
+      <li><b>Turn it back.</b> You can see the ghost; the quantum computer can't. All it gets is a coin flip that lands heads more often the more alike two shapes are.</li>
+    </ol>
     <p class="structure-provenance" id="structure-provenance"></p>
 
-    <!-- Qubit Phase Spectrum -->
-    <div class="card-box">
-      <div class="card-label">
-        <span>Qubit Phase Spectrum (Half-Turns)</span>
-        <div class="chip-res-group">
-          <button class="chip-res active" id="btn-const-res-4">4Q (H2)</button>
-          <button class="chip-res" id="btn-const-res-8">8Q (Helios)</button>
-        </div>
+    <!-- How alike the two poses are right now: the SWAP-test readout -->
+    <div class="match-meter" id="match-meter" aria-live="polite">
+      <div class="match-top">
+        <span class="match-label">How alike?</span>
+        <span class="match-verdict" id="match-verdict">&mdash;</span>
       </div>
-      <div class="qubit-grid" id="qubit-grid">
-        <div class="qubit-tile locked">
-          <div class="qubit-id">q0 (Lys296)</div>
-          <div class="qubit-phi" id="q0-val">+0.12π</div>
-        </div>
-        <div class="qubit-tile">
-          <div class="qubit-id">q1 (Glu113)</div>
-          <div class="qubit-phi" id="q1-val">-0.45π</div>
-        </div>
-        <div class="qubit-tile">
-          <div class="qubit-id">q2 (Phe212)</div>
-          <div class="qubit-phi" id="q2-val">+0.88π</div>
-        </div>
-        <div class="qubit-tile">
-          <div class="qubit-id">q3 (Trp265)</div>
-          <div class="qubit-phi" id="q3-val">-0.22π</div>
-        </div>
+      <div class="match-value" id="match-value">&mdash;</div>
+      <div class="match-bar"><div class="match-fill" id="match-fill"></div></div>
+      <p class="match-sub" id="match-sub"></p>
+    </div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <label for="angle-slider">Turn the molecule</label>
+        <span class="slider-val" id="angle-display">0.0°</span>
+      </div>
+      <input type="range" id="angle-slider" min="-180" max="180" value="0" step="1" />
+      <div class="slider-foot">
+        <span>-180°</span>
+        <span style="color:var(--accent-cyan);" id="lock-target-label">&mdash;</span>
+        <span>+180°</span>
+      </div>
+      <p class="slider-hint">Or press <kbd>A</kbd> / <kbd>D</kbd> (or <kbd>&larr;</kbd> <kbd>&rarr;</kbd>) for 5&deg; steps.</p>
+    </div>
+
+    <!-- Real resonance landscape: simulated P(0) across a full turn -->
+    <div class="scope-box" id="landscape-box">
+      <div class="scope-header">
+        <span>THE HILL &middot; HOW ALIKE AT EVERY ANGLE</span>
+        <span id="landscape-source" style="color: #94a3b8;">statevector sim</span>
+      </div>
+      <canvas id="landscape-canvas" width="380" height="110" class="scope-canvas"
+              role="img" aria-label="Simulated probability of the coin landing heads across a full rotation"></canvas>
+      <div class="hill-legend">
+        <span><i class="dot-you"></i>you</span>
+        <span><i class="dot-top"></i>top of the hill</span>
+        <span><i class="tick-exact"></i>exact answer</span>
+        <span><i class="dash-bar"></i>match bar</span>
+      </div>
+      <p id="landscape-caption" class="landscape-caption">Every point is simulated, not drawn by hand.</p>
+    </div>
+
+    <!-- How many times the coin is flipped per test -->
+    <div class="shot-selector-wrap">
+      <span class="shot-label" title="Shots: how many times the circuit is run and the coin qubit read">Coin flips per test</span>
+      <div style="display: flex; gap: 4px;">
+        <button class="chip-shot" data-shots="100">100</button>
+        <button class="chip-shot active" data-shots="500">500</button>
+        <button class="chip-shot" data-shots="1000">1K</button>
+        <button class="chip-shot" data-shots="ideal" title="No sampling noise: the exact probability">Perfect</button>
       </div>
     </div>
 
-    <!-- Phase Resonance Spectrogram & Trapped-Ion Controls -->
-    <div class="control-card">
-      <div class="control-header">
-        <div class="control-title">
-          <span> Resonance Spectrogram: Waveform Interference</span>
+    <button class="btn-fire-parity" id="btn-fire-parity">
+      <span>Test this angle: flip the coin [Space]</span>
+    </button>
+
+    <!-- Runs the same blind RUS search the engine uses, on this landscape -->
+    <button class="btn-run-search" id="btn-run-search">
+      <span>Let the quantum computer find it blind [R]</span>
+    </button>
+
+    <div class="parity-result-box" id="parity-result" aria-live="polite">
+      <!-- Dynamic outcome message -->
+    </div>
+
+    <!-- Everything a quantum chemist will want, one click away -->
+    <details class="under-hood" id="under-hood">
+      <summary>Under the hood: qubits, register size, false matches</summary>
+
+      <p class="inspector-desc" id="drawer-desc"></p>
+
+      <div class="card-box">
+        <div class="card-label">
+          <span>The qubits for your copy</span>
+          <div class="chip-res-group" role="group" aria-label="Register size">
+            <button class="chip-res active" id="btn-const-res-4" title="4 atom shells: 9 qubits in total">4 shells</button>
+            <button class="chip-res" id="btn-const-res-8" title="8 atom shells: 17 qubits in total">8 shells</button>
+          </div>
         </div>
-        <span id="scope-synchrony" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-cyan); font-weight: 700;">50% SYNCHRONY</span>
+        <div class="qubit-grid" id="qubit-grid"></div>
+        <p class="landscape-caption" id="qubit-caption"></p>
       </div>
 
-      <!-- Real resonance landscape: simulated P(0) across a full turn -->
-      <div class="scope-box" id="landscape-box">
-        <div class="scope-header">
-          <span>RESONANCE LANDSCAPE &mdash; SIMULATED P(0) vs ANGLE</span>
-          <span id="landscape-source" style="color: #94a3b8;">statevector sim</span>
-        </div>
-        <canvas id="landscape-canvas" width="380" height="96" class="scope-canvas"
-                role="img" aria-label="Simulated probability of the ancilla reading zero across a full rotation"></canvas>
-        <p id="landscape-caption" class="landscape-caption">Every point is simulated, not drawn by hand.</p>
-      </div>
-
-      <!-- What this register can tell apart -->
       <div class="scope-box" id="discrimination-box">
         <div class="scope-header">
-          <span>FALSE-MATCH RISK vs OTHER LIGANDS</span>
-          <span id="discrimination-register" style="color: #94a3b8;">4 sites</span>
+          <span>COULD IT MISTAKE ANOTHER MOLECULE FOR THIS ONE?</span>
+          <span id="discrimination-register" style="color: #94a3b8;">4 shells</span>
         </div>
         <div class="discrimination-row">
           <div class="discrimination-bar-wrap">
@@ -1257,102 +1440,17 @@
         <p class="landscape-caption" id="discrimination-caption"></p>
       </div>
 
-      <!-- Live Oscilloscope Scope -->
-      <div class="scope-box">
-        <div class="scope-header">
-          <span>WAVEFORM INTERFERENCE SCOPE</span>
-          <span style="color: #94a3b8;">4 Qubit Active Manifold</span>
-        </div>
-        <canvas id="resonance-scope" width="380" height="65" class="scope-canvas"></canvas>
-        <div class="scope-legend">
-          <span class="legend-pocket">● Gold: Deposited Pose |ψ<sub>T</sub>⟩</span>
-          <span class="legend-ligand">● Cyan: Rotated Probe |ψ<sub>P</sub>⟩</span>
-        </div>
-        <div style="background: rgba(255,255,255,0.08); border-radius: 2px; height: 4px; margin-top: 6px; overflow: hidden;">
-          <div id="resonance-meter-bar" class="resonance-meter-bar" style="width: 50%;"></div>
-        </div>
-      </div>
-
-      <!-- WASD Gate Simulation Keypad -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <span style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Trapped-Ion Gate Keypad</span>
-        <span style="font-size: 0.65rem; color: var(--accent-cyan); font-family: var(--font-mono);">Use WASD or Keys</span>
-      </div>
-
-      <div class="keypad-grid">
-        <div class="key-row">
-          <button class="key-btn" data-key="w" id="key-btn-w">
-            <span class="key-char">W</span>
-            <span class="key-action">Rx +5°</span>
-          </button>
-        </div>
-        <div class="key-row">
-          <button class="key-btn" data-key="a" id="key-btn-a">
-            <span class="key-char">A</span>
-            <span class="key-action">Rz -5°</span>
-          </button>
-          <button class="key-btn" data-key="s" id="key-btn-s">
-            <span class="key-char">S</span>
-            <span class="key-action">Rx -5°</span>
-          </button>
-          <button class="key-btn" data-key="d" id="key-btn-d">
-            <span class="key-char">D</span>
-            <span class="key-action">Rz +5°</span>
-          </button>
-        </div>
-        <div class="key-row" style="width: 100%;">
-          <button class="key-btn space-key-btn" data-key="space" id="key-btn-space">
-            <span class="key-char">SPACEBAR</span>
-            <span class="key-action"> Execute Blind Parity Test</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Live Gate Execution Ticker -->
-      <div class="gate-ticker">
-        <span>QCCD Gate: <span class="highlight" id="ticker-gate-name">IDLE</span></span>
-        <span id="ticker-gate-status" style="color: var(--accent-cyan);">Carrier Synced</span>
-      </div>
-    </div>
-
-    <!-- Analog Fine-Tune Slider (Linked with A/D) -->
-    <div class="slider-wrap">
-      <div class="slider-header">
-        <span>Analog Fine-Tune: Û<sub>tube</sub>(τ) Angle (ω<sub>z</sub>)</span>
-        <span class="slider-val" id="angle-display">0.0°</span>
-      </div>
-      <input type="range" id="angle-slider" min="-180" max="180" value="0" />
-      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
-        <span>-180° (Turbulent Mismatch)</span>
-        <span style="color:var(--accent-cyan);" id="lock-target-label">Resonance Lock: 0.0°</span>
-        <span>+180°</span>
-      </div>
-    </div>
-
-    <!-- Quantum Shot Noise Selector -->
-    <div class="shot-selector-wrap">
-      <span style="font-size: 0.64rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Quantum Shot Noise:</span>
-      <div style="display: flex; gap: 4px;">
-        <button class="chip-shot" data-shots="100">100</button>
-        <button class="chip-shot active" data-shots="500">500</button>
-        <button class="chip-shot" data-shots="1000">1K</button>
-        <button class="chip-shot" data-shots="ideal">Ideal (∞)</button>
-      </div>
-    </div>
-
-    <!-- Parity Test Trigger -->
-    <button class="btn-fire-parity" id="btn-fire-parity">
-      <span> Fire Blind Parity Test (SWAP) [SPACE]</span>
-    </button>
-
-    <!-- Runs the same blind RUS search the engine uses, on this landscape -->
-    <button class="btn-run-search" id="btn-run-search">
-      <span>Run Blind RUS Search [R]</span>
-    </button>
-
-    <div class="parity-result-box" id="parity-result">
-      <!-- Dynamic outcome message -->
-    </div>
+      <dl class="hood-facts">
+        <dt>The coin</dt>
+        <dd>A SWAP test. Its ancilla reads 0 with probability P(0) = (1 + F)/2, where F is the overlap of the two registers: identical states always give 0, orthogonal ones give 0 half the time. "How alike" above is F.</dd>
+        <dt>Match rule</dt>
+        <dd>Lock when the one-sided 95% lower bound on P(0) clears 0.90 (p&#770; &minus; 1.645&sigma; &ge; 0.90), as in <code>run_blind_rus_pose_recovery</code>. With perfect flips, P(0) &ge; 0.95.</dd>
+        <dt>Why the peak misses by a few degrees</dt>
+        <dd>The circuit applies U<sub>tube</sub>(&tau;) to your copy's register only. That nudges the peak a few degrees off the exact answer and caps P(0) just under 1. At &tau; = 0 the peak lands on the exact angle with P(0) = 1.</dd>
+        <dt>What is being matched</dt>
+        <dd>Pose recovery: the ligand against a copy of itself turned about the z axis through its centroid. Not docking against the pocket, which is read from the same entry for context only.</dd>
+      </dl>
+    </details>
 
     <!-- External Link -->
     <a href="workbook.html" target="_blank" class="hud-btn" style="text-align:center; justify-content:center;">
@@ -1360,122 +1458,79 @@
     </a>
   </div>
 
-  <!-- How to Play Layman Modal Dialog -->
-  <div class="modal-backdrop" id="how-to-play-modal">
-    <div class="modal-content" style="max-width: 780px; padding: 26px 30px; border-radius: 22px; background: rgba(6, 11, 24, 0.94); border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: 0 28px 70px rgba(0,0,0,0.85), 0 0 50px rgba(0, 245, 212, 0.15);">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 14px;">
+  <!-- How it works: the plain-language version first, the method underneath -->
+  <div class="modal-backdrop" id="how-to-play-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+    <div class="modal-content guide">
+      <div class="guide-head">
         <div>
-          <div style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
-            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);"></span>
-            Constellation Exploration Guide
-          </div>
-          <h2 style="font-size: 1.45rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; line-height: 1.2;">
-            What is this page for?
-          </h2>
-          <p style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
-            A hands-on demo of Q-Rotate's core idea: you find the fit by rotating continuously and checking the overlap, not by searching a grid. Each system uses its experimental coordinates (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, plus exact H2) and plots its own simulated landscape. What you are recovering is the ligand's deposited pose — the molecule is matched against a rotated copy of itself, which is a well-posed question. Matching it against the pocket instead would not be: they are different molecules, so no angle makes their registers agree. The HQC figure is the estimated cost of that system's benchmark screen (<code>benchmarks/molecular_showdown.json</code>).
-          </p>
+          <div class="guide-kicker">How it works</div>
+          <h2 id="guide-title">The 30-second version</h2>
+          <p>No quantum background needed. The exact method is at the bottom.</p>
         </div>
-        <button class="btn-close" id="btn-close-modal" aria-label="Close Guide" style="font-size: 1.2rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #cbd5e1; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
+        <button class="btn-close" id="btn-close-modal" aria-label="Close guide">&times;</button>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 14px; max-height: 65vh; overflow-y: auto; padding-right: 4px;">
-        <!-- Card 1: The 6 Star Systems -->
-        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
-          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-            <span style="color: var(--accent-cyan); font-weight: 800;">1.</span> The 6 Celestial Star Clusters
-          </h3>
-          <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
-            Each cluster is a real deposited structure. The 3D molecule you rotate is that entry’s ligand, drawn from its experimental coordinates:
-          </p>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 8px;">
-            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
-              <strong style="color: #00f5d4;">01. Rhodopsin:</strong> PDB 1U19, 11-cis retinal (RET), 20 atoms
-            </div>
-            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
-              <strong style="color: #38bdf8;">02. GFP Core:</strong> PDB 1EMA, CRO chromophore, 22 atoms
-            </div>
-            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
-              <strong style="color: #a855f7;">03. COVID-19 Mpro:</strong> PDB 7VH8, nirmatrelvir (4WI), 35 atoms
-            </div>
-            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
-              <strong style="color: #f59e0b;">04. COX-2 Pocket:</strong> PDB 3LN1, celecoxib (CEL), 26 atoms
-            </div>
-            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
-              <strong style="color: #ec4899;">05. Azobenzene:</strong> PubChem 2272, trans conformer, 14 atoms
-            </div>
-            <div style="font-size: 0.7rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;">
-              <strong style="color: #10b981;">06. H2 Benchmark:</strong> exact 0.7414 &Aring; geometry, 2 atoms
-            </div>
-          </div>
+      <div class="guide-body">
+        <ol class="guide-steps">
+          <li>
+            <h3>Medicines are keys</h3>
+            <p>A drug works by fitting into a pocket on a protein, like a key in a lock, and a key only works when it is turned the right way. Here we take real drugs out of real crystal structures, turn them out of place, and ask whether a quantum computer can turn them back.</p>
+          </li>
+          <li>
+            <h3>The catch: it is blindfolded</h3>
+            <p>The quantum computer never sees where the molecule belongs. It cannot look at the gold ghost. It can only ask one question: how alike are these two shapes?</p>
+          </li>
+          <li>
+            <h3>The quantum coin</h3>
+            <p>The true pose goes into one set of qubits and your guess into another. A short circuit called a SWAP test then sets one qubit that acts like a coin: identical shapes always land heads, shapes with nothing in common land 50/50. Flip it a few hundred times and count: more heads means a closer match.</p>
+          </li>
+          <li>
+            <h3>Warmer, colder</h3>
+            <p>The blind search turns the molecule by a random amount, flips the coin again, and keeps the turn only if it got more heads. It stops when it is 95% sure that at least 9 flips in 10 land heads. That gets it close, not exact: within about 20&deg; of the answer.</p>
+          </li>
+        </ol>
+
+        <div class="guide-grid">
+          <section>
+            <h3>What is on screen</h3>
+            <ul>
+              <li><b class="c-gold">Gold ghost</b> where the molecule really sits, from the crystal structure</li>
+              <li><b>Coloured molecule</b> your copy. The slider turns it.</li>
+              <li><b>How alike?</b> the coin's verdict at the current angle</li>
+              <li><b>The hill</b> how alike it would be at every angle. The top is the answer, and every point is a simulation of the real circuit, not a drawing.</li>
+              <li><b>Let the quantum computer find it</b> watch the blind search climb the hill using coin flips alone</li>
+            </ul>
+          </section>
+          <section>
+            <h3>What is real</h3>
+            <ul class="real-list">
+              <li class="is-real"><b>Real</b> atom positions: PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, and hydrogen at 0.7414 &Aring;</li>
+              <li class="is-real"><b>Real</b> match scores, from simulating the compiled circuit</li>
+              <li class="is-not"><b>Not yet</b> run on quantum hardware. Costs are estimates from Quantinuum's HQC formula.</li>
+              <li class="is-not"><b>Decoration</b> the stars, the glow and the sound</li>
+            </ul>
+          </section>
         </div>
 
-        <!-- Card 2: Nebulae and Waveforms -->
-        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
-          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-            <span style="color: var(--accent-gold); font-weight: 800;">2.</span> Nebulae &amp; Wave Interference
-          </h3>
-          <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
-            The starfield and nebulae are scene dressing. The waves below are the readout that matters.
-            The <strong style="color: #f59e0b;">Gold wave</strong> is the ligand's deposited pose, the <strong style="color: #00f5d4;">Cyan wave</strong> is the copy you are rotating. Their phase difference is what the SWAP test measures, and the resonance landscape plots the resulting P(0) for every angle.
-            When the waves are out of phase, interference ripples scatter through the nebula.
-          </p>
-        </div>
-
-        <!-- Card 3: Interactive Gate Controls -->
-        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
-          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-            <span style="color: var(--accent-blue); font-weight: 800;">3.</span> Interactive Quantum Gate Controls
-          </h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 8px;">
-            <div style="background: rgba(0,0,0,0.35); border-left: 3px solid var(--accent-cyan); padding: 8px 12px; border-radius: 4px;">
-              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: var(--accent-cyan);">[A] &amp; [D] / Arrows &larr; &rarr;</div>
-              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Phase Modulation (Rz Gate)</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Rotates U_tube(&tau;), sliding the cyan wave in phase.</div>
-            </div>
-            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #60a5fa; padding: 8px 12px; border-radius: 4px;">
-              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #60a5fa;">[W] &amp; [S] / Arrows &uarr; &darr;</div>
-              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Euler Spatial Pitch (Rx Gate)</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Tilts the 3D molecular axis to enter the binding crevice.</div>
-            </div>
-            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #f59e0b; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
-              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #f59e0b;">[SPACEBAR] / Fire Parity Button</div>
-              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Blind Parity SWAP Test (Controlled-SWAP)</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Interferes both registers onto the ancilla. A <strong style="color: #00f5d4;">Zero-Parity Lock (|0&rang;)</strong> fires when the lower confidence bound on the sampled shots clears 90%, the same test the RUS engine uses.</div>
-            </div>
-            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #10b981; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
-              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #10b981;">[R] / Run Blind RUS Search</div>
-              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Let the algorithm search instead of you</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Runs the same repeat-until-success loop as <code>run_blind_rus_protocol</code>: it never reads the target angle, only the sampled parity bit, and keeps a random step when the measurement improves. It can and does fail: start it far from the answer and the random walk may run out of iterations before the parity bit gives it anything to climb.</div>
-            </div>
-            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #a855f7; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
-              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #a855f7;">4Q / 8Q register toggle</div>
-              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Trades cost against the risk of confusing two molecules</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">More shells separate different ligands far better &mdash; the worst false-match score across these six drops from 0.78 to 0.51 &mdash; but each shell then holds fewer atoms, so the encoding tolerates less coordinate error, and the circuit costs 22.04 HQC per run instead of 13.64. Watch the false-match bar change as you toggle. It makes no difference to finding <em>this</em> ligand's own pose, which is what the landscape above measures.</div>
-            </div>
-            <div style="font-size: 0.7rem; background: rgba(0,0,0,0.35); border-left: 3px solid #38bdf8; padding: 8px 12px; border-radius: 4px; grid-column: 1 / -1;">
-              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #38bdf8;">Click the resonance landscape</div>
-              <div style="font-size: 0.7rem; color: #e2e8f0; font-weight: 600; margin-top: 2px;">Jump straight to any angle</div>
-              <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">The chart is the simulated P(0) for every angle of this system. Green marks the optimum; amber would mark any secondary peak, though after the phase-encoding fix these landscapes are single-basin.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 4: Web Audio Harmonics -->
-        <div style="background: rgba(12, 18, 34, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px;">
-          <h3 style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-            <span style="color: var(--accent-green); font-weight: 800;">4.</span> Real-Time Audio Harmonics
-          </h3>
-          <p style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.55;">
-            The Web Audio synthesizer sonifies the quantum phase error &Delta;&Phi;. When out of phase, dissonant intervals and microtonal beating sound. As you align the waveforms, dissonance resolves into a pure harmonic triad chord.
-          </p>
-        </div>
+        <details class="guide-expert">
+          <summary>For quantum folks: the exact method</summary>
+          <dl class="hood-facts">
+            <dt>Task</dt>
+            <dd>Pose recovery, not docking. The ligand is matched against a copy of itself turned about the z axis through its centroid. The pocket (heavy atoms within 5 &Aring;) is read from the same entry for context only: it is a different molecule, so no angle would make the two registers agree.</dd>
+            <dt>Encoding</dt>
+            <dd>Atoms are grouped into radial shells, one qubit per shell, balanced so no qubit is left empty, with atoms within about 0.25&nbsp;&Aring; of a boundary shared between the two shells so coordinate error cannot flip an atom between qubits. Each phase is arg(M<sub>k</sub>)/k of the shell's weighted angular moment M<sub>k</sub> = &Sigma; w<sub>i</sub> e<sup>ik&phi;<sub>i</sub></sup>, with w = &radic;(Z/6)&middot;e<sup>1.5&thinsp;z&#770;</sup> and k the lowest order that does not cancel. A rotation shifts every phase by the same angle, the register ignores atom order, and it tells mirror images apart.</dd>
+            <dt>Circuit</dt>
+            <dd>4 shells: 9 qubits (4 target, 4 probe, 1 ancilla), 62 PhasedX and 32 ZZPhase after rebasing to the H-series gate set. 8 shells: 17 qubits, 122 PhasedX, 64 ZZPhase.</dd>
+            <dt>Cost</dt>
+            <dd>HQC = 5 + (N<sub>1q</sub> + 10&thinsp;N<sub>2q</sub> + 5&thinsp;N<sub>m</sub>)&middot;shots/5000 for each circuit the search runs: 13.64 HQC per 100-shot circuit at 9 qubits, 22.04 at 17.</dd>
+            <dt>Result</dt>
+            <dd>The blind search locks on all six, in 1&ndash;5 steps at 9 qubits and 1&ndash;8 at 17, landing 0.4&ndash;20&deg; and 0.4&ndash;15&deg; from the exact angle (<code>benchmarks/molecular_showdown.json</code>). A lock means the pose is inside the band where P(0) clears the bar: at 500 shots, up to about 25&deg; from the exact angle with 4 shells and 20&deg; with 8 (hydrogen, which barely changes under a turn, about 45&deg;). The larger register is no faster, but it tightens that band and makes different molecules harder to confuse (worst false match 0.71 &rarr; 0.56).</dd>
+          </dl>
+        </details>
       </div>
 
-      <div style="margin-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 14px;">
-        <button class="btn-fire-parity" id="btn-modal-start" style="width: 100%; margin: 0; padding: 10px; font-size: 0.82rem; border-radius: 12px; background: rgba(0, 245, 212, 0.16); border: 1px solid rgba(0, 245, 212, 0.5); cursor: pointer; color: #ffffff; font-weight: 700; box-shadow: 0 0 24px rgba(0, 245, 212, 0.25);">
-          <span>Enter Quantum Constellation</span>
-        </button>
+      <div class="guide-foot">
+        <button class="btn-fire-parity" id="btn-modal-start"><span>Got it, show me</span></button>
       </div>
     </div>
   </div>
@@ -1532,73 +1587,73 @@
     //  - baseDeltaPhi is kept as the seed the benchmark systems were defined
     //    with (REAL_MOLECULE_SYSTEMS in src/qrotate/metrics.py); the phase tiles
     //    now display the simulated register instead.
-    //  - hqcCost is qrotate_hqcs from benchmarks/molecular_showdown.json
-    //    (estimated full RUS screen cost; re-sync if the benchmark is regenerated).
+    //  - plain is the one-line, no-jargon description the story panel shows.
+    //    The measured cost per system comes from assets/screen_costs.js.
     const systems = [
       {
         id: "rhodopsin",
+        plain: "Retinal, the molecule in your eye that catches light, inside the protein rhodopsin.",
         name: "11-cis Retinal / Rhodopsin",
         tag: "Photochemical Master Switch",
         desc: "Human visual photoreceptor chromophore, bound to Lys296 by a protonated Schiff base. Referenced in Yamamoto et al. (arXiv:2601.15677). Lys296 and the Glu113 counterion are both in the extracted pocket.",
         pos: new THREE.Vector3(-45, 15, -20),
         color: 0x00f5d4, // Cyan
         baseDeltaPhi: [0.12, -0.45, 0.88, -0.22],
-        hqcCost: "150.0 HQC",
         optimalAngle: 0.0,
       },
       {
         id: "gfp",
+        plain: "The glowing core of green fluorescent protein, the jellyfish protein biologists use to make cells light up.",
         name: "GFP Chromophore",
         tag: "Bioluminescent Proton Transfer",
         desc: "The chromophore formed from residues 65-67 inside the β-barrel, modelled in 1EMA as the single modified residue CRO 66. Exhibits excited-state proton transfer toward Glu222 via Thr203 and His148.",
         pos: new THREE.Vector3(40, 25, -35),
         color: 0x10b981, // Emerald
         baseDeltaPhi: [-0.62, 0.31, 0.15, -0.08],
-        hqcCost: "95.5 HQC",
         optimalAngle: 35.0,
       },
       {
         id: "mpro",
+        plain: "Nirmatrelvir, the antiviral in Paxlovid, inside the COVID-19 virus enzyme it blocks.",
         name: "SARS-CoV-2 Mpro + Nirmatrelvir",
         tag: "Antiviral Covalent Inhibitor",
         desc: "Main viral 3CL protease with nirmatrelvir, the antiviral component of Paxlovid. The Cys145/His41 catalytic dyad lines the pocket, and both are present in the extracted active site.",
         pos: new THREE.Vector3(60, -20, 10),
         color: 0x3b82f6, // Electric Blue
         baseDeltaPhi: [0.44, 0.92, -0.38, 0.19],
-        hqcCost: "395.6 HQC",
         optimalAngle: -50.0,
       },
       {
         id: "cox2",
+        plain: "Celecoxib (Celebrex), a painkiller, inside the COX-2 enzyme it blocks.",
         name: "COX-2 + Celecoxib",
         tag: "Single-Residue Selectivity",
         desc: "Celecoxib bound in the COX-2 side pocket. That pocket exists because residue 523 is valine here and isoleucine in COX-1 — Val523 is one of the residues extracted around this ligand.",
         pos: new THREE.Vector3(-55, -25, 25),
         color: 0xf59e0b, // Amber Gold
         baseDeltaPhi: [-0.18, 0.25, 0.73, -0.54],
-        hqcCost: "68.2 HQC",
         optimalAngle: 80.0,
       },
       {
         id: "azobenzene",
+        plain: "Azobenzene, a molecule that changes shape when light hits it. There is no protein here, so its own true pose is the target.",
         name: "Azobenzene Molecular Switch",
         tag: "Photopharmacological Motor",
         desc: "Synthetic light-activated actuator, here as its computed trans conformer. Under UV the N=N bond switches trans to cis. With no protein pocket, the reference pose itself is the target.",
         pos: new THREE.Vector3(10, 45, 30),
         color: 0xa855f7, // Purple
         baseDeltaPhi: [0.78, -0.81, 0.35, -0.42],
-        hqcCost: "177.3 HQC",
         optimalAngle: -115.0,
       },
       {
         id: "h2bench",
+        plain: "Hydrogen: two atoms, the simplest molecule there is, used as a hardware test. Two atoms barely change under a small turn, so it scores as a match even 15° off, and it looks identical turned half a circle, so there are two right answers.",
         name: "Quantinuum H2 Benchmark",
         tag: "Trapped-Ion Physical Stress Test",
         desc: "Two hydrogens at the 0.7414 Å equilibrium bond length — the smallest possible input, used to exercise PhasedX, ZZPhase and mid-circuit reset. Only 2 atoms, so most of the phase register sits unused.",
         pos: new THREE.Vector3(0, -45, -30),
         color: 0xec4899, // Pink
         baseDeltaPhi: [0.15, -0.10, 0.20, -0.05],
-        hqcCost: "13.6 HQC",
         optimalAngle: 15.0,
       }
     ];
@@ -1621,6 +1676,22 @@
       const reg = rec.registers[String(nSites)] || rec.registers['4'];
       if (!reg) return null;
       return { angles: rec.angles_deg, ...reg };
+    }
+
+    // The true answer: how far the benchmark turned this ligand away from its
+    // deposited pose. The landscape peak (optimalAngle) sits a few degrees
+    // short of it, because U_tube(tau) evolves the probe register only.
+    function poseOffsetFor(sys) {
+      const rec = PROFILES ? PROFILES.find(p => p.id === sys.id) : null;
+      return rec && typeof rec.pose_offset_deg === 'number' ? rec.pose_offset_deg : sys.optimalAngle;
+    }
+
+    // Degrees between the current turn and the true pose. A molecule whose
+    // register repeats every 180 degrees has two right answers.
+    function degreesFromPose(sys, angleDeg) {
+      const reg = profileFor(sys.id, constQubitMode);
+      const off = Math.abs(wrapAngle(angleDeg - poseOffsetFor(sys)));
+      return reg && reg.ambiguous_180_deg ? Math.min(off, 180 - off) : off;
     }
 
     function wrapAngle(deg) {
@@ -2098,6 +2169,40 @@
       return molGroup;
     }
 
+    // The deposited pose, drawn as a translucent gold ghost that never moves.
+    // The probe is the same atoms turned about z through the centroid, which
+    // is exactly the rotation the benchmark applies (_rotate_z in metrics.py),
+    // so when the probe sits inside the ghost the pose really is recovered.
+    const GHOST_COLOR = 0xfcd34d;
+    function createGhostMesh(sysId) {
+      const molData = realMoleculeData(sysId) || MOLECULAR_DATA[sysId] || MOLECULAR_DATA['rhodopsin'];
+      const ghost = new THREE.Group();
+      const mat = new THREE.MeshBasicMaterial({
+        color: GHOST_COLOR,
+        transparent: true,
+        opacity: 0.3,
+        depthWrite: false,
+      });
+      molData.atoms.forEach(atom => {
+        const pal = ELEMENT_PALETTE[atom.el] || ELEMENT_PALETTE.C;
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(pal.radius * 1.12, 16, 16), mat);
+        mesh.position.set(atom.pos[0], atom.pos[1], atom.pos[2]);
+        ghost.add(mesh);
+      });
+      molData.bonds.forEach(([i, j]) => {
+        const a = molData.atoms[i], b = molData.atoms[j];
+        if (!a || !b) return;
+        const p1 = new THREE.Vector3(...a.pos), p2 = new THREE.Vector3(...b.pos);
+        const bond = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, p1.distanceTo(p2), 8), mat);
+        bond.position.copy(p1).add(p2).multiplyScalar(0.5);
+        bond.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3().subVectors(p2, p1).normalize());
+        ghost.add(bond);
+      });
+      ghost.userData.material = mat;
+      ghost.visible = false; // shown only for the system being inspected
+      return ghost;
+    }
+
     // =========================================================================
     // 6. CELESTIAL STAR SYSTEMS (Refractive Liquid Glass Receptors + CPK Molecules)
     // =========================================================================
@@ -2185,6 +2290,8 @@
       // 5. Authentic 3D Biomolecular Structure (Atoms + Covalent Bonds)
       const ligandGroup = createMoleculeMesh(sys.id);
       group.add(ligandGroup);
+      const ghostGroup = createGhostMesh(sys.id);
+      group.add(ghostGroup);
 
       // 6. Dedicated Internal PointLight for Local Illuminance
       const localLight = new THREE.PointLight(sys.color, 2.2, 28);
@@ -2207,6 +2314,7 @@
         subRingMesh,
         coronaSprite,
         ligandGroup,
+        ghostGroup,
         localLight,
         data: sys
       });
@@ -2256,11 +2364,14 @@
       // Rebuild the phase register tiles for this system's simulated register.
       renderConstellationQubitGrid();
       renderProvenance(sys.id);
+      renderStory(sys);
       renderDiscrimination();
+      focusSystemNode(index);
 
-      // Reset slider & parity
-      angleSlider.value = sys.optimalAngle - 45; // Start with intentional misalignment
-      updateAngleRotation(angleSlider.value);
+      // Start untouched, which is where the benchmark's blind search starts:
+      // the probe is still turned the full offset away from the ghost.
+      angleSlider.value = 0;
+      updateAngleRotation(0);
       parityResult.style.display = 'none';
 
       // Update active button styling
@@ -2283,6 +2394,80 @@
       // Open drawer
       drawer.classList.add('open');
       controls.autoRotate = false; // Pause auto spin while inspecting
+      frameToFreeArea();
+    }
+
+    // Centre the scene in the part of the screen the panels leave uncovered:
+    // left of the drawer on a wide screen, above the bottom sheet on a narrow
+    // one. Without this the molecule rendered at the middle of the window,
+    // which on a phone is underneath the drawer. setViewOffset shifts the
+    // projection without moving the camera, so orbiting and clicking still
+    // work; zoom shrinks the scene to fit a small gap.
+    const framing = { x: 0, y: 0, zoom: 1 };
+    let framingTween = null;
+
+    function applyFraming() {
+      const W = window.innerWidth, H = window.innerHeight;
+      camera.setViewOffset(W, H, framing.x, framing.y, W, H);
+      camera.zoom = framing.zoom;
+      camera.updateProjectionMatrix();
+    }
+
+    function frameToFreeArea(animate = true) {
+      const W = window.innerWidth, H = window.innerHeight;
+      let target = { x: 0, y: 0, zoom: 1 };
+      if (drawer.classList.contains('open')) {
+        const hud = document.querySelector('.hud-top').getBoundingClientRect();
+        const sel = document.querySelector('.galaxy-selector').getBoundingClientRect();
+        // offset* ignore the drawer's slide-in transform, so this is where it
+        // will end up rather than where it is mid-animation.
+        const sideDrawer = W > 860;
+        const free = sideDrawer
+          ? { left: 0, right: drawer.offsetLeft, top: hud.bottom, bottom: sel.top }
+          : { left: 0, right: W, top: hud.bottom, bottom: drawer.offsetTop };
+        const fw = Math.max(1, free.right - free.left), fh = Math.max(1, free.bottom - free.top);
+        target = {
+          x: W / 2 - (free.left + fw / 2),
+          y: H / 2 - (free.top + fh / 2),
+          zoom: Math.min(1, Math.max(0.35, Math.min(fw / W, fh / H) * 1.3)),
+        };
+      }
+      if (framingTween) framingTween.stop();
+      if (!animate || prefersReducedMotion.matches) {
+        Object.assign(framing, target);
+        applyFraming();
+        return;
+      }
+      framingTween = new TWEEN.Tween(framing)
+        .to(target, 900)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .onUpdate(applyFraming)
+        .start();
+    }
+
+    // The star core, corona and glass shell sit exactly where the molecule is
+    // and wash it out. Quiet them for the system being inspected, show its
+    // ghost, and restore everything else.
+    function focusSystemNode(index) {
+      systemNodes.forEach((node, i) => {
+        const focused = i === index;
+        node.coreMesh.visible = !focused;
+        if (node.coronaSprite) node.coronaSprite.material.opacity = focused ? 0.18 : 0.82;
+        node.haloMesh.material.opacity = focused ? 0.16 : 0.72;
+        node.ghostGroup.visible = focused;
+        // The orbit rings cut straight through the molecule; hide them
+        // while it is the thing being looked at.
+        node.ringMesh.visible = !focused;
+        if (node.subRingMesh) node.subRingMesh.visible = !focused;
+      });
+    }
+
+    // The three-step puzzle at the top of the drawer, in plain words.
+    function renderStory(sys) {
+      const mol = document.getElementById('story-molecule');
+      const off = document.getElementById('story-offset');
+      if (mol) mol.innerText = sys.plain || sys.desc;
+      if (off) off.innerText = `${Math.abs(poseOffsetFor(sys)).toFixed(0)}°`;
     }
 
     // =========================================================================
@@ -2366,64 +2551,29 @@
     }
 
     // =========================================================================
-    // 7. Quantum Alignment WASD CONTROLS & GATE SIMULATION
+    // 7. KEYBOARD STEPS (A / D, or the arrow keys)
     // =========================================================================
-    let currentPitch = 0.0; // 3D Pitch tilt (W / S)
-    const tickerGateName = document.getElementById('ticker-gate-name');
-    const tickerGateStatus = document.getElementById('ticker-gate-status');
-    const scopeSynchrony = document.getElementById('scope-synchrony');
-    const resonanceMeterBar = document.getElementById('resonance-meter-bar');
-
-    function logGatePulse(gateName, details) {
-      if (tickerGateName) tickerGateName.innerText = gateName;
-      if (tickerGateStatus) tickerGateStatus.innerText = details;
-    }
-
     function stepGate(key) {
       initAudio();
       const sys = systems[currentSystemIdx];
-      const node = systemNodes[currentSystemIdx];
       let curAngle = parseFloat(angleSlider.value);
-      let keyBtnId = null;
 
       if (key === 'a' || key === 'arrowleft') {
-        keyBtnId = 'key-btn-a';
         curAngle -= 5.0;
         if (curAngle < -180) curAngle = -180;
         angleSlider.value = curAngle;
         updateAngleRotation(curAngle);
-        logGatePulse('Rz(-5.0°)', `Phase shifted to ${curAngle.toFixed(1)}°`);
       } else if (key === 'd' || key === 'arrowright') {
-        keyBtnId = 'key-btn-d';
         curAngle += 5.0;
         if (curAngle > 180) curAngle = 180;
         angleSlider.value = curAngle;
         updateAngleRotation(curAngle);
-        logGatePulse('Rz(+5.0°)', `Phase shifted to ${curAngle.toFixed(1)}°`);
-      } else if (key === 'w' || key === 'arrowup') {
-        keyBtnId = 'key-btn-w';
-        currentPitch += 5.0;
-        if (currentPitch > 50) currentPitch = 50;
-        node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
-        logGatePulse('Rx(+5.0°)', `3D Pitch tilted to ${currentPitch.toFixed(1)}°`);
-      } else if (key === 's' || key === 'arrowdown') {
-        keyBtnId = 'key-btn-s';
-        currentPitch -= 5.0;
-        if (currentPitch < -50) currentPitch = -50;
-        node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
-        logGatePulse('Rx(-5.0°)', `3D Pitch tilted to ${currentPitch.toFixed(1)}°`);
       }
+      // There used to be W/S keys here that tilted the model about x. The
+      // benchmark only ever turns the ligand about z, so the tilt changed the
+      // picture without changing the measurement; it is gone.
 
-      // Visual button feedback
-      if (keyBtnId) {
-        const btn = document.getElementById(keyBtnId);
-        if (btn) {
-          btn.classList.add('active');
-          setTimeout(() => btn.classList.remove('active'), 120);
-        }
-      }
-
-      // Calculate synchrony for pitch tone
+      // Calculate synchrony for the step tone
       const errorDiff = Math.abs(curAngle - sys.optimalAngle);
       const synchronyRatio = Math.max(0, Math.cos(THREE.MathUtils.degToRad(errorDiff) / 2));
       playPulseSound('gate', synchronyRatio);
@@ -2493,7 +2643,7 @@
       const valueEl = document.getElementById('discrimination-value');
       const barEl = document.getElementById('discrimination-bar');
       const captionEl = document.getElementById('discrimination-caption');
-      if (registerLabel) registerLabel.innerText = `${constQubitMode} sites`;
+      if (registerLabel) registerLabel.innerText = `${constQubitMode} shells`;
 
       if (!row) {
         if (valueEl) valueEl.innerText = '—';
@@ -2518,13 +2668,15 @@
         valueEl.style.color = worst >= 0.75 ? '#ef4444' : (worst >= 0.6 ? '#f59e0b' : '#10b981');
       }
       if (captionEl) {
+        const otherSys = systems.find(x => x.id === against);
+        const otherName = otherSys ? otherSys.name : against;
         const otherNote = other
-          ? ` At ${constQubitMode === 4 ? 8 : 4} sites it is ${other.worst_cross_match.p0.toFixed(3)}.`
+          ? ` With ${constQubitMode === 4 ? 8 : 4} shells it is ${other.worst_cross_match.p0.toFixed(3)}.`
           : '';
         captionEl.innerText =
-          `Worst score against a different molecule (${against}), where 0.5 is no overlap and `
-          + `${ceiling.toFixed(3)} is a perfect self-match. Lower is better: a high number here means `
-          + `the register could mistake one ligand for another.${otherNote}`;
+          `The most look-alike other molecule here is ${otherName}, which scores P(0) = ${worst.toFixed(3)} `
+          + `against this one. 0.5 means nothing in common and ${ceiling.toFixed(3)} is this molecule against `
+          + `itself, so lower is safer.${otherNote}`;
       }
     }
 
@@ -2536,30 +2688,35 @@
         if (landscapeSource) landscapeSource.innerText = 'fallback';
         return;
       }
-      if (landscapeSource) landscapeSource.innerText = `${reg.total_qubits} qubits · statevector`;
+      if (landscapeSource) landscapeSource.innerText = `simulated · ${reg.total_qubits} qubits`;
+      const sys = systems[currentSystemIdx];
+      const exact = poseOffsetFor(sys);
 
       if (reg.ambiguous_180_deg) {
         landscapeCaption.innerHTML =
-          '<strong style="color:#38bdf8;">Two correct answers.</strong> '
-          + 'The first-order moments of this molecule cancel, so its register comes from the '
-          + 'second-order moment and repeats every 180&deg;. Both peaks are the deposited pose: '
-          + 'for a centrosymmetric molecule, turning it half a turn gives the same arrangement. '
-          + 'The amber marker is not a trap here.';
+          '<strong style="color:#38bdf8;">Two tops, two right answers.</strong> '
+          + 'This molecule looks the same turned half a circle, so both peaks are its true pose. '
+          + 'Its register comes from the second-order moment, which repeats every 180&deg;. Click the hill to jump.';
         return;
       }
 
       if (isFlatLandscape(reg)) {
-        landscapeCaption.innerHTML = '<strong style="color:#f59e0b;">No orientation signal.</strong> '
-          + 'The angular moments of this molecule cancel by symmetry, so its phase register is the same '
-          + 'at every angle. Rotating it changes nothing measurable, and a "lock" here would be two '
-          + 'empty registers agreeing. The benchmark excludes it for the same reason.';
+        landscapeCaption.innerHTML = '<strong style="color:#f59e0b;">No hill to climb.</strong> '
+          + 'This molecule\'s angular moments cancel by symmetry, so it scores the same at every angle and a '
+          + '"match" would mean nothing. The benchmark excludes it for the same reason.';
         return;
       }
 
       const decoys = (reg.local_maxima_deg || []).filter(d => d !== reg.best_angle_deg);
-      landscapeCaption.innerText = decoys.length
-        ? `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. ${decoys.length} secondary peak${decoys.length > 1 ? 's' : ''} (amber) can trap a hill-climbing search.`
-        : `Peak P(0)=${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg}°. Single basin: overlap rises steadily toward the deposited pose.`;
+      const gap = Math.abs(wrapAngle(reg.best_angle_deg - exact));
+      landscapeCaption.innerText =
+        `Every point is simulated. The top, at ${reg.best_angle_deg}°, lands heads `
+        + `${(reg.best_p0 * 100).toFixed(1)}% of the time; the exact answer is ${exact.toFixed(0)}°, `
+        + `${gap.toFixed(0)}° away (Under the hood says why). `
+        + (decoys.length
+          ? `${decoys.length} smaller bump${decoys.length > 1 ? 's' : ''} (amber) can trap the search. `
+          : '')
+        + 'Anything above the dashed match bar counts as a match. Click the hill to jump there.';
     }
 
     function renderLandscape(currentAngle) {
@@ -2574,7 +2731,7 @@
 
       const { w, h } = sizeLandscapeCanvas();
       if (!w || !h) return;
-      const padL = 26, padR = 8, padT = 8, padB = 14;
+      const padL = 28, padR = 8, padT = 8, padB = 14;
       const plotW = w - padL - padR, plotH = h - padT - padB;
 
       landscapeCtx.clearRect(0, 0, w, h);
@@ -2597,8 +2754,8 @@
 
       landscapeCtx.fillStyle = '#64748b';
       landscapeCtx.font = '8px "JetBrains Mono", monospace';
-      landscapeCtx.fillText('1.0', 2, yOf(1.0) + 3);
-      landscapeCtx.fillText('0.5', 2, yOf(0.5) + 3);
+      landscapeCtx.fillText('100%', 0, yOf(1.0) + 3);
+      landscapeCtx.fillText('50%', 4, yOf(0.5) + 3);
       landscapeCtx.fillText('-180°', padL - 2, h - 3);
       landscapeCtx.fillText('0°', xOf(0) - 6, h - 3);
       landscapeCtx.fillText('+180°', padL + plotW - 24, h - 3);
@@ -2614,11 +2771,13 @@
         return;
       }
 
-      // The lock threshold the parity test uses
-      landscapeCtx.strokeStyle = 'rgba(0, 245, 212, 0.25)';
+      // The match bar at the current flip count: any angle whose curve sits
+      // above it can clear the lock test.
+      const bar = lockableP0(constShotMode);
+      landscapeCtx.strokeStyle = 'rgba(0, 245, 212, 0.45)';
       landscapeCtx.setLineDash([3, 3]);
       landscapeCtx.beginPath();
-      landscapeCtx.moveTo(padL, yOf(0.95)); landscapeCtx.lineTo(padL + plotW, yOf(0.95));
+      landscapeCtx.moveTo(padL, yOf(bar)); landscapeCtx.lineTo(padL + plotW, yOf(bar));
       landscapeCtx.stroke();
       landscapeCtx.setLineDash([]);
 
@@ -2641,7 +2800,20 @@
         landscapeCtx.fill();
       });
 
-      // True optimum
+      // The exact answer: where the ghost is. A molecule whose register
+      // repeats every 180 degrees has a second one half a turn away.
+      const exact = poseOffsetFor(sys);
+      const exactAngles = reg.ambiguous_180_deg ? [exact, wrapAngle(exact + 180)] : [exact];
+      landscapeCtx.strokeStyle = '#fcd34d';
+      landscapeCtx.lineWidth = 2;
+      landscapeCtx.beginPath();
+      exactAngles.forEach(d => {
+        landscapeCtx.moveTo(xOf(d), padT + plotH);
+        landscapeCtx.lineTo(xOf(d), padT + plotH - 10);
+      });
+      landscapeCtx.stroke();
+
+      // Top of the hill: where the simulated P(0) peaks
       landscapeCtx.fillStyle = '#10b981';
       landscapeCtx.beginPath();
       landscapeCtx.arc(xOf(reg.best_angle_deg), yOf(reg.best_p0), 3, 0, Math.PI * 2);
@@ -2663,30 +2835,87 @@
       // Keep the screen-reader description in step with what is plotted.
       landscapeCanvas.setAttribute(
         'aria-label',
-        `Simulated P(0) across a full rotation for ${sys.name}. Peak ${reg.best_p0.toFixed(3)} at ${reg.best_angle_deg} degrees. ` +
-        `Currently at ${cur.toFixed(0)} degrees where P(0) is ${profileP0(reg, cur).toFixed(3)}.`
+        `How often the coin lands heads at every angle for ${sys.name}. Top of the hill ${(reg.best_p0 * 100).toFixed(1)}% at ${reg.best_angle_deg} degrees; ` +
+        `exact answer ${exact.toFixed(0)} degrees. You are at ${cur.toFixed(0)} degrees, ${(profileP0(reg, cur) * 100).toFixed(1)}% heads.`
       );
 
       // The caption and source label were already written at the top of this
       // function, before the canvas-size guard.
     }
 
-    // Each qubit encodes one contiguous chunk of the ligand's atoms (see
-    // pocket_ligand_to_qubit_phases, which splits the atom list in order), so
-    // label the tiles with the atoms they actually cover.
-    function chunkLabels(sysId, nSites) {
+    // Each qubit holds one radial shell of the ligand: atoms grouped by
+    // distance from the centroid, innermost first, with atoms at the same
+    // radius never split, and an atom near a shell edge shared between the two
+    // shells. A port of _radial_shells and radial_shell_membership in
+    // hpc_bridge.py, so the tiles describe what each qubit really encodes.
+    const SHELL_EDGE_WIDTH = 0.25; // Angstrom, as in hpc_bridge.py
+    function radialShells(sysId, nShells) {
       const site = activeSite(sysId);
-      if (!site || !site.ligand.atom_names || !site.ligand.atom_names.length) return [];
-      const names = site.ligand.atom_names;
-      const chunk = Math.max(1, Math.floor(names.length / nSites));
-      return Array.from({ length: nSites }, (_, q) => {
-        const start = q * chunk;
-        const end = q < nSites - 1 ? Math.min(names.length, (q + 1) * chunk) : names.length;
-        if (start >= names.length) return 'unused';
-        const first = names[start];
-        const last = names[end - 1];
-        return first === last ? first : `${first}–${last}`;
+      if (!site || !site.ligand || !site.ligand.coords.length) return null;
+      const coords = site.ligand.coords;
+      const centre = [0, 1, 2].map(k => coords.reduce((sum, p) => sum + p[k], 0) / coords.length);
+      const radii = coords.map(p => Math.hypot(p[0] - centre[0], p[1] - centre[1], p[2] - centre[2]));
+
+      const groups = new Map();
+      radii.forEach((r, i) => {
+        const key = Math.round(r * 1e6) / 1e6;
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(i);
       });
+      const ordered = [...groups.keys()].sort((a, b) => a - b).map(k => groups.get(k));
+
+      const shells = Array.from({ length: nShells }, () => []);
+      const assignment = balancedCuts(ordered.map(g => g.length), nShells);
+      ordered.forEach((group, j) => shells[assignment[j]].push(...group));
+
+      // Soft edges at the midpoint between neighbouring shells' closest atoms.
+      const logistic = x => 0.5 * (1 + Math.tanh(0.5 * x));
+      const filled = shells.map((m, k) => (m.length ? k : -1)).filter(k => k >= 0);
+      const edgeBetween = (a, b) =>
+        0.5 * (Math.max(...shells[a].map(i => radii[i])) + Math.min(...shells[b].map(i => radii[i])));
+      return shells.map((members, k) => {
+        const pos = filled.indexOf(k);
+        if (pos < 0) return { count: 0, rMin: 0, rMax: 0 };
+        const inner = pos === 0 ? null : edgeBetween(filled[pos - 1], k);
+        const outer = pos === filled.length - 1 ? null : edgeBetween(k, filled[pos + 1]);
+        const count = radii.reduce((sum, r) => {
+          const lo = inner === null ? 1 : logistic((r - inner) / SHELL_EDGE_WIDTH);
+          const hi = outer === null ? 0 : logistic((r - outer) / SHELL_EDGE_WIDTH);
+          return sum + (lo - hi);
+        }, 0);
+        return { count, rMin: inner === null ? 0 : inner, rMax: outer === null ? Math.max(...radii) : outer };
+      });
+    }
+
+    // Shell index per tie-group, from the groups' sizes in radius order: the
+    // same dynamic programme as _balanced_cuts in hpc_bridge.py. Fewer groups
+    // than shells: one group per shell, outer shells empty. Otherwise
+    // contiguous non-empty runs minimising sum((size - N/n)^2).
+    function balancedCuts(sizes, nShells) {
+      const nGroups = sizes.length;
+      if (nGroups < nShells) return sizes.map((_, j) => j);
+      const target = sizes.reduce((a, b) => a + b, 0) / nShells;
+      const prefix = [0];
+      sizes.forEach(sz => prefix.push(prefix[prefix.length - 1] + sz));
+      const cost = Array.from({ length: nShells + 1 }, () => new Array(nGroups + 1).fill(Infinity));
+      const cut = Array.from({ length: nShells + 1 }, () => new Array(nGroups + 1).fill(0));
+      cost[0][0] = 0;
+      for (let k = 1; k <= nShells; k++) {
+        for (let j = k; j <= nGroups - (nShells - k); j++) {
+          for (let i = k - 1; i < j; i++) {
+            const c = cost[k - 1][i] + (prefix[j] - prefix[i] - target) ** 2;
+            if (c < cost[k][j]) { cost[k][j] = c; cut[k][j] = i; }
+          }
+        }
+      }
+      const assignment = new Array(nGroups).fill(0);
+      let j = nGroups;
+      for (let k = nShells; k > 0; k--) {
+        const i = cut[k][j];
+        for (let g = i; g < j; g++) assignment[g] = k - 1;
+        j = i;
+      }
+      return assignment;
     }
 
     // Measured cost of the blind pose-recovery run, at the register the viewer
@@ -2699,11 +2928,13 @@
       if (!telemetryHqc) return;
       const entry = SCREEN_COSTS && SCREEN_COSTS[sys.id] && SCREEN_COSTS[sys.id][String(constQubitMode)];
       if (!entry) {
-        telemetryHqc.innerText = sys.hqcCost;
+        telemetryHqc.innerText = 'not loaded';
         return;
       }
+      // Where the benchmark's lock landed, so "locked" is never read as "exact".
+      const off = typeof entry.pose_error_deg === 'number' ? ` · ${entry.pose_error_deg.toFixed(0)}° off` : '';
       telemetryHqc.innerText =
-        `${entry.hqc_per_screen.toFixed(2)} HQC · ${entry.rus_iterations} it · ${entry.register_qubits} qb`;
+        `${entry.rus_iterations} step${entry.rus_iterations > 1 ? 's' : ''} · ${entry.hqc_per_screen.toFixed(1)} HQC${off}`;
     }
 
     // Where this system's coordinates actually come from.
@@ -2741,78 +2972,90 @@
       });
     }
 
+    // Plain-language verdict for an overlap F. "Match" starts where the
+    // noise-free lock does: P(0) >= 0.95, i.e. F >= 0.90.
+    function matchVerdict(fidelity) {
+      if (fidelity >= 0.90) return { text: 'Match!', color: '#00f5d4' };
+      if (fidelity >= 0.60) return { text: 'Very close', color: '#a3e635' };
+      if (fidelity >= 0.25) return { text: 'Getting warmer', color: '#f59e0b' };
+      return { text: 'Far off', color: '#f87171' };
+    }
+
     function updateAngleRotation(val) {
-      angleDisplay.innerText = `${parseFloat(val).toFixed(1)}°`;
+      const angle = parseFloat(val);
+      angleDisplay.innerText = `${angle.toFixed(1)}°`;
       const sys = systems[currentSystemIdx];
       const node = systemNodes[currentSystemIdx];
 
-      // Rotate the 3D ligand wireframe
-      const rad = THREE.MathUtils.degToRad(val);
-      node.ligandGroup.rotation.y = rad;
-      node.ligandGroup.rotation.z = rad * 0.4;
-      node.ligandGroup.rotation.x = THREE.MathUtils.degToRad(currentPitch);
+      // The probe is the deposited pose turned by (angle - offset) about z
+      // through the centroid: the same rotation the benchmark applies, so the
+      // picture and the numbers describe one molecule. At angle = offset it
+      // sits exactly inside the gold ghost.
+      node.ligandGroup.rotation.set(0, 0, THREE.MathUtils.degToRad(angle - poseOffsetFor(sys)));
 
-      // Angle error against the simulated optimum for this system
-      const errorDiff = Math.abs(wrapAngle(parseFloat(val) - sys.optimalAngle));
-      const normalizedError = (errorDiff / 180.0) * Math.PI;
-      telemetryDeltaPhi.innerText = `${normalizedError.toFixed(2)} rad`;
+      const offBy = degreesFromPose(sys, angle);
+      telemetryDeltaPhi.innerText = `${offBy.toFixed(0)}°`;
 
-      // Overlap fidelity from the simulated SWAP test: P(0) = (1 + F) / 2,
-      // so F = 2*P(0) - 1. Real landscape when the profile data is loaded.
-      const p0 = currentP0(sys, parseFloat(val));
+      // Overlap from the simulated SWAP test: P(0) = (1 + F) / 2, so
+      // F = 2*P(0) - 1. Real landscape when the profile data is loaded.
+      const p0 = currentP0(sys, angle);
       const fidelity = Math.max(0, Math.min(1, 2 * p0 - 1));
-      const pct = Math.max(0, Math.min(100, Math.round(fidelity * 100)));
+      const verdict = matchVerdict(fidelity);
+      const isMatch = fidelity >= 0.90;
 
-      if (scopeSynchrony) {
-        scopeSynchrony.innerText = `${pct}% OVERLAP · P(0)=${p0.toFixed(3)}`;
-        scopeSynchrony.style.color = pct >= 95 ? '#00f5d4' : (pct >= 70 ? '#f59e0b' : '#ef4444');
+      const meter = document.getElementById('match-meter');
+      const valueEl = document.getElementById('match-value');
+      const verdictEl = document.getElementById('match-verdict');
+      const fillEl = document.getElementById('match-fill');
+      const subEl = document.getElementById('match-sub');
+      if (meter) meter.classList.toggle('is-match', isMatch);
+      if (valueEl) valueEl.innerText = `${Math.round(fidelity * 100)}%`;
+      if (verdictEl) { verdictEl.innerText = verdict.text; verdictEl.style.color = verdict.color; }
+      if (fillEl) { fillEl.style.width = `${fidelity * 100}%`; fillEl.style.background = verdict.color; }
+      if (subEl) {
+        subEl.innerText = `At this angle the coin lands heads ${(p0 * 100).toFixed(1)}% of the time `
+          + `(P(0) = ${p0.toFixed(3)}). Identical shapes: 100%. Nothing in common: 50%.`;
       }
-      renderLandscape(parseFloat(val));
-      updateQubitPhaseValues(parseFloat(val));
 
-      // This label was hardcoded to 0.0°; show the system's simulated optimum.
+      renderLandscape(angle);
+      updateQubitPhaseValues(angle);
+
       const lockLabel = document.getElementById('lock-target-label');
-      if (lockLabel) lockLabel.innerText = `Resonance Lock: ${sys.optimalAngle.toFixed(1)}°`;
-      if (resonanceMeterBar) {
-        resonanceMeterBar.style.width = `${pct}%`;
+      if (lockLabel) {
+        const reg = profileFor(sys.id, constQubitMode);
+        const tops = reg && reg.ambiguous_180_deg && (reg.local_maxima_deg || []).length > 1
+          ? reg.local_maxima_deg.slice().sort((a, b) => a - b)
+          : null;
+        lockLabel.innerText = tops
+          ? `Tops of the hill: ${tops.map(t => `${t}°`).join(' and ')}`
+          : `Top of the hill: ${sys.optimalAngle.toFixed(0)}°`;
       }
 
-      // Visual feedback on liquid glass receptor & orbital tori
-      if (errorDiff < 6.0) {
-        telemetryDeltaPhi.style.color = '#00f5d4';
-        node.haloMesh.material.color.setHex(0x00f5d4);
-        node.haloMesh.material.emissive.setHex(0x00f5d4);
-        node.haloMesh.material.emissiveIntensity = 0.30;
-      } else {
-        telemetryDeltaPhi.style.color = '#f59e0b';
-        node.haloMesh.material.color.setHex(sys.color);
-        node.haloMesh.material.emissive.setHex(sys.color);
-        node.haloMesh.material.emissiveIntensity = 0.10;
+      // The ghost and the glass shell light up together with the meter.
+      const ghostMat = node.ghostGroup && node.ghostGroup.userData.material;
+      if (ghostMat) {
+        ghostMat.color.setHex(isMatch ? 0x00f5d4 : GHOST_COLOR);
+        ghostMat.opacity = isMatch ? 0.4 : 0.3;
       }
+      telemetryDeltaPhi.style.color = isMatch ? '#00f5d4' : '#f59e0b';
+      const haloColor = isMatch ? 0x00f5d4 : sys.color;
+      node.haloMesh.material.color.setHex(haloColor);
+      node.haloMesh.material.emissive.setHex(haloColor);
+      node.haloMesh.material.emissiveIntensity = isMatch ? 0.30 : 0.10;
     }
 
     angleSlider.addEventListener('input', (e) => {
       initAudio();
       updateAngleRotation(e.target.value);
-      logGatePulse('Ûtube Slider', `Continuous tune: ${parseFloat(e.target.value).toFixed(1)}°`);
     });
 
     // Fire Parity Test (SWAP Test)
     function triggerParityTest() {
       initAudio();
       const sys = systems[currentSystemIdx];
-      const errorDiff = Math.abs(parseFloat(angleSlider.value) - sys.optimalAngle);
-
-      // Highlight Space button
-      const spaceBtn = document.getElementById('key-btn-space');
-      if (spaceBtn) {
-        spaceBtn.classList.add('active');
-        setTimeout(() => spaceBtn.classList.remove('active'), 160);
-      }
 
       // Trigger pulse wave on camera target
       const node = systemNodes[currentSystemIdx];
-      const originalScale = node.ringMesh.scale.x;
       new TWEEN.Tween(node.ringMesh.scale)
         .to({ x: 2.2, y: 2.2, z: 2.2 }, 260)
         .yoyo(true)
@@ -2838,31 +3081,25 @@
       parityResult.style.display = 'block';
       // Simulated P(0) at this angle (real landscape when the profile loaded).
       const probZero = currentP0(sys, parseFloat(angleSlider.value));
+      const hint = `Keep turning: the top of the hill is at ${sys.optimalAngle.toFixed(0)}°.`;
 
       if (constShotMode === null) {
-        // Ideal continuum mode: no shot noise, so judge P(0) directly.
+        // Perfect flips: no sampling noise, so judge P(0) directly.
         if (probZero >= 0.95) {
           parityResult.className = 'parity-result-box pass';
-          parityResult.innerHTML = `
-            <strong>ZERO-PARITY LOCKED (Ideal Overlap: ${(probZero * 100).toFixed(1)}%)</strong><br />
-            Ancilla Readout: |0⟩ • Ground State Synchronized!<br />
-            <span style="font-size:0.75rem;">Pose recovered from the parity bit alone — the target angle was never read.</span>
-          `;
-          logGatePulse('SWAP Ancilla: |0⟩', 'ZERO-PARITY LOCK ACHIEVED!');
+          parityResult.innerHTML = `<strong>MATCH</strong>
+            The coin would land heads ${(probZero * 100).toFixed(1)}% of the time.
+            <span class="result-detail">Perfect flips: exact P(0) = ${probZero.toFixed(3)} &ge; 0.95.</span>`;
           playPulseSound('lock');
         } else {
-          const failProb = (1.0 - probZero).toFixed(2);
           parityResult.className = 'parity-result-box fail';
-          parityResult.innerHTML = `
-            <strong>PARITY MISMATCH (P(fail)=${failProb})</strong><br />
-            Ancilla Readout: |1⟩ • Phase Cascading Error Detected.<br />
-            <span style="font-size:0.75rem;">Use [A]/[D] to tune toward ${sys.optimalAngle.toFixed(1)}° for lock.</span>
-          `;
-          logGatePulse('SWAP Ancilla: |1⟩', `Mismatch P(fail)=${failProb}`);
+          parityResult.innerHTML = `<strong>NOT YET</strong>
+            The coin would land heads ${(probZero * 100).toFixed(1)}% of the time; a match needs 95%.
+            <span class="result-detail">${hint}</span>`;
           playPulseSound('fail');
         }
       } else {
-        // Finite Shot Sampling (Projective Measurements)
+        // Finite shots: sample the ancilla like the hardware would.
         let k = 0;
         for (let i = 0; i < constShotMode; i++) {
           if (Math.random() < probZero) k++;
@@ -2870,28 +3107,24 @@
         const empP = k / constShotMode;
         const stdErr = Math.sqrt(Math.max(1e-9, empP * (1.0 - empP) / constShotMode));
         // Lock only when the lower confidence bound clears 0.90, as in
-        // run_blind_rus_protocol (src/qrotate/metrics.py). The old test also
-        // passed whenever the angle was within 6 degrees, which meant the
+        // run_blind_rus_pose_recovery (src/qrotate/metrics.py). The old test
+        // also passed whenever the angle was within 6 degrees, which meant the
         // shots could disagree and it still reported a lock.
-        const isLocked = (empP - 1.645 * stdErr) >= 0.90;
+        const lowerBound = empP - 1.645 * stdErr;
+        const detail = `${k}/${constShotMode} shots read |0⟩ · P(0) = ${empP.toFixed(3)} ± ${stdErr.toFixed(3)} · `
+          + `95% lower bound ${lowerBound.toFixed(3)} ${lowerBound >= 0.90 ? '&ge;' : '&lt;'} 0.90`;
 
-        if (isLocked) {
+        if (lowerBound >= 0.90) {
           parityResult.className = 'parity-result-box pass';
-          parityResult.innerHTML = `
-            <strong>ZERO-PARITY LOCKED (${k}/${constShotMode} shots |0⟩)</strong><br />
-            Empirical Overlap: ${(empP * 100).toFixed(1)}% ± ${(stdErr * 100).toFixed(1)}% 1σ • lower bound ${((empP - 1.645 * stdErr) * 100).toFixed(1)}% ≥ 90%<br />
-            <span style="font-size:0.75rem;">Structural & electronic fit confirmed on simulated Quantinuum H2.</span>
-          `;
-          logGatePulse('SWAP Ancilla: |0⟩', `Lock: ${k}/${constShotMode} shots (${(empP * 100).toFixed(1)}%)`);
+          parityResult.innerHTML = `<strong>MATCH</strong>
+            ${k} of ${constShotMode} flips landed heads. That is enough to be 95% sure at least 9 in 10 do.
+            <span class="result-detail">${detail}</span>`;
           playPulseSound('lock');
         } else {
           parityResult.className = 'parity-result-box fail';
-          parityResult.innerHTML = `
-            <strong>NO LOCK (${constShotMode - k}/${constShotMode} shots |1⟩)</strong><br />
-            Empirical Overlap: ${(empP * 100).toFixed(1)}% ± ${(stdErr * 100).toFixed(1)}% 1σ • lower bound ${((empP - 1.645 * stdErr) * 100).toFixed(1)}% &lt; 90%<br />
-            <span style="font-size:0.75rem;">Use [A]/[D] or analog slider to tune toward ${sys.optimalAngle.toFixed(1)}°.</span>
-          `;
-          logGatePulse('SWAP Ancilla: |1⟩', `Mismatch: ${constShotMode - k}/${constShotMode} shots |1⟩`);
+          parityResult.innerHTML = `<strong>NOT YET</strong>
+            ${k} of ${constShotMode} flips landed heads. Not enough to be sure at least 9 in 10 do. ${hint}
+            <span class="result-detail">${detail}</span>`;
           playPulseSound('fail');
         }
       }
@@ -2917,13 +3150,55 @@
       return { empP, stdErr, lowerBound: empP - 1.645 * stdErr, counts0: k };
     }
 
+    // HQC for one circuit run of an n-shell register at a given shot count,
+    // from the compiled gate counts (compute_circuit_hqc_cost in metrics.py):
+    // 15n+2 PhasedX, 8n ZZPhase, 2n+1 qubits plus one measurement. Each run is
+    // billed as its own job, hence the 5 per circuit.
+    function hqcPerCircuit(nShells, shots) {
+      const n1q = 15 * nShells + 2, n2q = 8 * nShells, nm = 2 * nShells + 2;
+      return 5 + (n1q + 10 * n2q + 5 * nm) * shots / 5000;
+    }
+
+    function searchCostText(evaluations, shots) {
+      if (shots === null) return `${evaluations} circuit runs (perfect flips have no hardware cost to estimate)`;
+      const hqc = evaluations * hqcPerCircuit(constQubitMode, shots);
+      return `${evaluations} circuits × ${shots} flips ≈ ${hqc.toFixed(1)} HQC`;
+    }
+
+    const SEARCH_LABEL = 'Let the quantum computer find it blind [R]';
+
+    // The smallest true P(0) that can clear the lock test at this many shots,
+    // taking the sampled rate at its expected value: p - 1.645*sqrt(p(1-p)/n)
+    // >= 0.90. Perfect flips use the noise-free bar of 0.95.
+    function lockableP0(shots) {
+      if (shots === null) return 0.95;
+      for (let p = 0.9; p < 1; p += 0.001) {
+        if (p - 1.645 * Math.sqrt(p * (1 - p) / shots) >= 0.90) return p;
+      }
+      return 1;
+    }
+
+    // How far from the exact answer a lock can land: the widest angle whose
+    // simulated P(0) still clears the match bar. A lock means "inside this
+    // band", not "exactly right".
+    function lockToleranceDeg(sys, shots) {
+      const reg = profileFor(sys.id, constQubitMode);
+      if (!reg) return null;
+      const bar = lockableP0(shots);
+      let worst = 0;
+      reg.angles.forEach((a, i) => {
+        if (reg.p0_curve[i] >= bar) worst = Math.max(worst, degreesFromPose(sys, a));
+      });
+      return worst;
+    }
+
     async function runBlindSearch() {
       if (searchRunning) return;
       const btn = document.getElementById('btn-run-search');
       const sys = systems[currentSystemIdx];
       const reg = profileFor(sys.id, constQubitMode);
       searchRunning = true;
-      if (btn) { btn.disabled = true; btn.querySelector('span').innerText = 'Searching…'; }
+      if (btn) { btn.disabled = true; btn.querySelector('span').innerText = 'Searching blind…'; }
 
       const flat = isFlatLandscape(reg);
       const shots = constShotMode;
@@ -2950,33 +3225,37 @@
         locked = best.lowerBound >= 0.90;
         parityResult.style.display = 'block';
         parityResult.className = 'parity-result-box';
-        parityResult.innerHTML = `<strong>RUS iteration ${iteration}/${MAX_RUS_ITERATIONS}</strong><br />` +
-          `Best measured overlap ${(best.empP * 100).toFixed(1)}% at ${angle.toFixed(1)}° · ${evaluations} circuit runs`;
+        parityResult.innerHTML = `<strong>Searching blind: try ${iteration} of ${MAX_RUS_ITERATIONS}</strong>
+          Best so far: ${(best.empP * 100).toFixed(0)}% heads at ${angle.toFixed(0)}°.
+          <span class="result-detail">${searchCostText(evaluations, shots)}</span>`;
         await new Promise(r => setTimeout(r, 220));
       }
 
       const trueBest = reg ? reg.best_angle_deg : sys.optimalAngle;
       const offBy = Math.abs(wrapAngle(angle - trueBest));
+      const detail = `${searchCostText(evaluations, shots)} · P(0) = ${best.empP.toFixed(3)}, `
+        + `95% lower bound ${best.lowerBound.toFixed(3)} ${best.lowerBound >= 0.90 ? '&ge;' : '&lt;'} 0.90`;
       parityResult.style.display = 'block';
 
       if (locked && flat) {
         parityResult.className = 'parity-result-box fail';
-        parityResult.innerHTML = `
-          <strong>NOT A RESULT (${evaluations} circuit runs)</strong><br />
-          It "locked" immediately because this molecule's register is identical at every angle.<br />
-          <span style="font-size:0.75rem;">Its angular moments cancel by symmetry, so there is nothing
-          to search. The benchmark excludes this system for the same reason.</span>
-        `;
+        parityResult.innerHTML = `<strong>NOT A RESULT</strong>
+          It "matched" straight away because this molecule looks identical at every angle, so there was nothing to find.
+          <span class="result-detail">Its angular moments cancel by symmetry. The benchmark excludes it for the same reason.</span>`;
         playPulseSound('fail');
       } else if (locked) {
+        const fromPose = degreesFromPose(sys, angle);
+        const twoAnswers = reg && reg.ambiguous_180_deg
+          ? ' This molecule looks the same turned half a circle, so either top counts.'
+          : '';
+        const tol = lockToleranceDeg(sys, shots);
+        const band = tol === null ? '' : ` Anything within about ${tol.toFixed(0)}° clears the match bar `
+          + `with ${shots === null ? 'perfect flips' : `${shots} flips`} and ${constQubitMode} shells, so a match means "inside that band", not "exact".`;
         parityResult.className = 'parity-result-box pass';
-        parityResult.innerHTML = `
-          <strong>LOCKED after ${iteration} iteration${iteration > 1 ? 's' : ''} (${evaluations} circuit runs)</strong><br />
-          Settled at ${angle.toFixed(1)}° · measured overlap ${(best.empP * 100).toFixed(1)}%, lower bound ${(best.lowerBound * 100).toFixed(1)}% ≥ 90%<br />
-          <span style="font-size:0.75rem;">${reg && reg.ambiguous_180_deg
-            ? `The optimum is ${trueBest}° or its 180° partner — both are the same arrangement for this molecule. Neither was read: the search only ever saw the parity bit.`
-            : `The true optimum is ${trueBest}°, which the search never read — it only ever saw the parity bit.`}</span>
-        `;
+        parityResult.innerHTML = `<strong>FOUND IT</strong>
+          In ${iteration} ${iteration > 1 ? 'tries' : 'try'}, from coin flips alone. It stopped at ${angle.toFixed(0)}°,
+          ${fromPose.toFixed(0)}° from the exact answer.${twoAnswers}${band}
+          <span class="result-detail">${detail}</span>`;
         playPulseSound('lock');
       } else {
         // Say what actually went wrong, which is not always a decoy peak.
@@ -2988,29 +3267,27 @@
 
         let diagnosis;
         if (best.empP < 0.6) {
-          diagnosis = `It never found a basin: out here P(0) is flat at about 0.5, so the parity bit gives the search nothing to climb. The optimum is at ${trueBest}°.`;
-        } else if (reg && reg.ambiguous_180_deg && Math.abs(Math.abs(offBy) - 180) <= 8) {
-          diagnosis = `It settled half a turn from ${trueBest}°, which for this molecule is the `
-            + `same arrangement — the register repeats every 180°. Not a miss.`;
+          diagnosis = 'It started too far away. Out here the coin is 50/50 at every angle, so there is no "warmer" to follow. '
+            + 'Each run takes different random steps, so try again, or start closer.';
+        } else if (reg && reg.ambiguous_180_deg && Math.abs(offBy - 180) <= 8) {
+          diagnosis = 'It reached the other top, half a turn away. For this molecule that is the same arrangement, so it is not really a miss.';
         } else if (nearestDecoy.deg !== null && nearestDecoy.gap <= 8) {
-          diagnosis = `It stalled on the decoy peak at ${nearestDecoy.deg}°, ${offBy.toFixed(0)}° away from the real optimum (${trueBest}°) — exactly the failure this landscape's shape invites.`;
+          diagnosis = `It got stuck on a smaller bump at ${nearestDecoy.deg}°, ${offBy.toFixed(0)}° from the top of the hill.`;
         } else if (offBy > 8) {
-          diagnosis = `It settled ${offBy.toFixed(0)}° off the optimum (${trueBest}°) on a shoulder of the curve.`;
+          diagnosis = `It stopped ${offBy.toFixed(0)}° from the top, on the side of the hill.`;
         } else {
-          diagnosis = 'Close to the optimum, but the shots never cleared the confidence bar.';
+          diagnosis = 'It got close, but the flips never made it 95% sure.';
         }
 
         parityResult.className = 'parity-result-box fail';
-        parityResult.innerHTML = `
-          <strong>NO LOCK in ${MAX_RUS_ITERATIONS} iterations (${evaluations} circuit runs)</strong><br />
-          Stalled at ${angle.toFixed(1)}° · measured overlap ${(best.empP * 100).toFixed(1)}%, lower bound ${(best.lowerBound * 100).toFixed(1)}% &lt; 90%<br />
-          <span style="font-size:0.75rem;">${diagnosis}</span>
-        `;
+        parityResult.innerHTML = `<strong>GAVE UP after ${MAX_RUS_ITERATIONS} tries</strong>
+          ${diagnosis}
+          <span class="result-detail">${detail}</span>`;
         playPulseSound('fail');
       }
 
       searchRunning = false;
-      if (btn) { btn.disabled = false; btn.querySelector('span').innerText = 'Run Blind RUS Search [R]'; }
+      if (btn) { btn.disabled = false; btn.querySelector('span').innerText = SEARCH_LABEL; }
     }
 
     const btnRunSearch = document.getElementById('btn-run-search');
@@ -3021,14 +3298,13 @@
       landscapeCanvas.style.cursor = 'crosshair';
       landscapeCanvas.addEventListener('click', (e) => {
         const rect = landscapeCanvas.getBoundingClientRect();
-        const padL = 26, padR = 8;
+        const padL = 28, padR = 8;
         const plotW = rect.width - padL - padR;
         const x = e.clientX - rect.left - padL;
         const deg = Math.max(-180, Math.min(180, (x / plotW) * 360 - 180));
         initAudio();
         angleSlider.value = deg;
         updateAngleRotation(deg);
-        logGatePulse('Landscape', `Jumped to ${deg.toFixed(1)}°`);
       });
     }
 
@@ -3051,16 +3327,30 @@
       // now come from their own simulated phase register.
       const reg = profileFor(sys.id, constQubitMode);
       const nSites = reg ? reg.n_sites : constQubitMode;
-      const labels = chunkLabels(sys.id, nSites);
+      const shells = radialShells(sys.id, nSites);
 
       qubitGrid.innerHTML = Array.from({ length: nSites }, (_, i) => {
-        const label = labels[i] || (nSites > 4 ? (i < 4 ? `Core ${i}` : `Shell ${i - 4}`) : `Site ${i}`);
+        const sh = shells && shells[i];
+        const detail = !sh ? '' : (sh.count > 1e-6
+          ? `${sh.count.toFixed(1)} atoms · ${sh.rMin.toFixed(1)}–${sh.rMax.toFixed(1)} Å`
+          : 'empty');
         return `
-          <div class="qubit-tile${i === 0 ? ' locked' : ''}">
-            <div class="qubit-id">q${i} (${label})</div>
-            <div class="qubit-phi"${i < 4 ? ` id="q${i}-val"` : ''}>—</div>
+          <div class="qubit-tile" title="Shell ${i + 1} of ${nSites}, counted outward from the centre">
+            <div class="qubit-id">q${i}</div>
+            <div class="qubit-shell">${detail}</div>
+            <div class="qubit-phi">—</div>
           </div>`;
       }).join('');
+
+      const caption = document.getElementById('qubit-caption');
+      if (caption) {
+        caption.innerText = `One qubit per shell of atoms, innermost first (${nSites} shells, `
+          + `${reg ? reg.total_qubits : 2 * nSites + 1} qubits in the circuit: ${nSites} for the true pose, `
+          + `${nSites} for your copy, 1 coin). Each value is the direction that shell points, stored as a phase. `
+          + 'Turn the molecule and every phase moves by the same angle, which is why the coin can feel the turn. '
+          + 'Atoms near a shell edge count partly toward both shells, so a little coordinate error cannot flip '
+          + 'an atom from one qubit to the next; that is why the counts are not whole numbers.';
+      }
 
       // The markup above is a template; fill in the simulated values.
       updateQubitPhaseValues(parseFloat(angleSlider.value));
@@ -3102,45 +3392,40 @@
         this.classList.add('active');
         const s = this.dataset.shots;
         constShotMode = s === 'ideal' ? null : +s;
+        // The match bar on the hill depends on the flip count.
+        renderLandscape(parseFloat(angleSlider.value));
       });
     });
 
-        btnFireParity.addEventListener('click', triggerParityTest);
+    btnFireParity.addEventListener('click', triggerParityTest);
 
-    // Keyboard WASD Controls
+    // Keyboard: A / D or the arrow keys turn, Space or Enter tests, R searches.
+    // Keys aimed at a focused control keep their native meaning, so Enter on
+    // "Under the hood" opens it instead of firing a test.
     window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (howToPlayModal && howToPlayModal.classList.contains('active')) return;
       const key = e.key.toLowerCase();
+      const onControl = e.target.closest && e.target.closest('button, summary, a');
 
-      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+      if (['a', 'd', 'arrowleft', 'arrowright'].includes(key)) {
         e.preventDefault();
         stepGate(key);
-      } else if (key === ' ' || key === 'enter') {
+      } else if ((key === ' ' || key === 'enter') && !onControl) {
         e.preventDefault();
         triggerParityTest();
-      } else if (key === 'r') {
+      } else if (key === 'r' && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
         initAudio();
         runBlindSearch();
       }
     });
 
-    // Click/Tap Handlers on On-Screen Buttons
-    document.querySelectorAll('.key-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const k = btn.dataset.key;
-        if (k === 'space') {
-          triggerParityTest();
-        } else {
-          stepGate(k);
-        }
-      });
-    });
-
     // Close drawer button
     function closeDrawer() {
       drawer.classList.remove('open');
       controls.autoRotate = !prefersReducedMotion.matches;
+      frameToFreeArea();
     }
 
     btnCloseDrawer.addEventListener('click', closeDrawer);
@@ -3158,8 +3443,12 @@
 
     // Galaxy button selectors
     galaxyButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
         selectSystem(parseInt(btn.dataset.idx, 10));
+        // Hand the keyboard back to the page, so the next Space tests the
+        // angle instead of re-clicking this button and resetting the turn.
+        // (Keyboard users arriving by Tab keep focus: e.detail is 0.)
+        if (e.detail > 0) btn.blur();
       });
     });
 
@@ -3223,90 +3512,10 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
       composer.setSize(window.innerWidth, window.innerHeight);
+      frameToFreeArea(false);
       // The drawer (and so the chart) changes width with the viewport.
       renderLandscape(parseFloat(angleSlider.value));
     });
-
-    // =========================================================================
-    // 8. OSCILLOSCOPE WAVEFORM RENDERER
-    // =========================================================================
-    const scopeCanvas = document.getElementById('resonance-scope');
-    const scopeCtx = scopeCanvas ? scopeCanvas.getContext('2d') : null;
-
-    function renderScope(time) {
-      if (!scopeCtx) return;
-      const w = scopeCanvas.width;
-      const h = scopeCanvas.height;
-      const midY = h / 2;
-
-      scopeCtx.clearRect(0, 0, w, h);
-
-      // 1. Subtle Quantum Phase Sub-Grid
-      scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-      scopeCtx.lineWidth = 1;
-      scopeCtx.beginPath();
-      for (let x = 0; x < w; x += 32) {
-        scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, h);
-      }
-      for (let y = 0; y < h; y += 16) {
-        scopeCtx.moveTo(0, y); scopeCtx.lineTo(w, y);
-      }
-      scopeCtx.stroke();
-
-      const sys = systems[currentSystemIdx];
-      const curAngle = parseFloat(angleSlider.value);
-      const errorDiff = Math.abs(curAngle - sys.optimalAngle);
-      const phaseShift = THREE.MathUtils.degToRad(curAngle - sys.optimalAngle);
-
-      // 2. ThreeUI-Style Predictive Multi-Harmonic Wave Packet for Pocket Target |psi_P> (Gold)
-      scopeCtx.strokeStyle = '#f59e0b';
-      scopeCtx.lineWidth = 2;
-      scopeCtx.beginPath();
-      for (let x = 0; x < w; x++) {
-        // Multi-frequency harmonic envelope (carrier + envelope modulation)
-        const fundamental = Math.sin(x * 0.045 + time * 3.2);
-        const harmonic = Math.sin(x * 0.09 + time * 4.8) * 0.35;
-        const envelope = Math.cos(x * 0.015 - time * 0.8);
-        const y = midY + (fundamental + harmonic) * envelope * 15;
-        if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
-      }
-      scopeCtx.stroke();
-
-      // 3. Tunable Ligand State |psi_L(tau)> Wave Packet (Cyan)
-      scopeCtx.strokeStyle = '#00f5d4';
-      scopeCtx.lineWidth = 2;
-      scopeCtx.beginPath();
-      for (let x = 0; x < w; x++) {
-        const fundamental = Math.sin(x * 0.045 + time * 3.2 + phaseShift);
-        const harmonic = Math.sin(x * 0.09 + time * 4.8 + phaseShift * 2) * 0.35;
-        const envelope = Math.cos(x * 0.015 - time * 0.8 + phaseShift * 0.5);
-        const y = midY + (fundamental + harmonic) * envelope * 15;
-        if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
-      }
-      scopeCtx.stroke();
-
-      // 4. Constructive Superposition Fringe Halo (Active Resonance Lock)
-      if (errorDiff < 6.0) {
-        // Draw iridescent interference wavefront beam
-        const grad = scopeCtx.createLinearGradient(0, 0, w, 0);
-        grad.addColorStop(0, '#00f5d4');
-        grad.addColorStop(0.5, '#ffffff');
-        grad.addColorStop(1, '#38bdf8');
-
-        scopeCtx.strokeStyle = grad;
-        scopeCtx.lineWidth = 3.5;
-        scopeCtx.shadowColor = '#00f5d4';
-        scopeCtx.shadowBlur = 12;
-        scopeCtx.beginPath();
-        for (let x = 0; x < w; x++) {
-          const fundamental = Math.sin(x * 0.045 + time * 3.2);
-          const y = midY + fundamental * 18;
-          if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
-        }
-        scopeCtx.stroke();
-        scopeCtx.shadowBlur = 0;
-      }
-    }
 
     // =========================================================================
     // 9. ANIMATION LOOP: Turbulent Swirling Vortex + Scope
@@ -3323,9 +3532,6 @@
       controls.update();
 
       const time = clock.getElapsedTime();
-
-      // Render Oscilloscope
-      renderScope(time);
 
       // Swirl stardust particles in turbulent eddies
       const posAttr = particleGeo.attributes.position;
