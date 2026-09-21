@@ -47,7 +47,7 @@ Project Q-Rotate acts as the **software bridge** connecting Singapore's trapped-
 | :--- | :--- | :--- |
 | **Hummingbird Bioscience** | Singapore-born precision oncology & immunology biotech | Coordinate-free pre-screening of small-molecule binding partners. |
 | **Engine Biosciences** | Singapore/US AI-driven drug discovery | Quantum-AI hybrid verification: using Q-Rotate as the downstream quantum filter for AI-generated candidates. |
-| **Novartis / MSD / Roche (Biopolis R&D)** | Global pharma research facilities in Singapore | Enterprise Screening Enclaves ($2M–$5M licensing pilot) with zero coordinate exposure. |
+| **Novartis / MSD / Roche (Biopolis R&D)** | Global pharma research facilities in Singapore | Enterprise Screening Enclaves ($2M–$5M licensing pilot) without sharing raw coordinates. |
 
 ---
 

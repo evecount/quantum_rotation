@@ -11,10 +11,10 @@
 ## 🎯 Executive Context: Why We Are Reaching Out Today
 
 1. **Major Milestone Achieved (v2.0.0):**  
-   We have officially published `v2.0.0` on the Quantinuum Grand Challenge track on Aqora. The codebase now runs against **6 real crystallographic PDB structures (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2)**, compiling to native Quantinuum H2 gates (`PhasedX`, `ZZPhase`, 0 SWAPs) with dynamic Guppy RUS feedback. All 14 tests in `tests/test_qrotate.py` pass 100%.
+   We have officially published `v2.0.0` on the Quantinuum Grand Challenge track on Aqora. The codebase now runs against **6 real crystallographic PDB structures (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2)**, compiling to native Quantinuum H2 gates (`PhasedX`, `ZZPhase`, 0 SWAPs). All 18 tests in `tests/test_qrotate.py` pass. Everything so far is simulated; no hardware runs yet.
 
 2. **Incoming Commercial Pull (2 Investor Syndicates):**  
-   Following initial pitch conversations, **two investor syndicates have specifically requested a POC evaluation**. They were sold on our commercial thesis: **"The Decentralized Quantum Testing Facility / Quantum CRO"**—enabling wet labs and biopharma teams to screen proprietary drug candidates on quantum hardware without ever exposing confidential 3D molecular coordinates.
+   Following initial pitch conversations, **two investor syndicates have specifically requested a POC evaluation**. They were sold on our commercial thesis: **"The Decentralized Quantum Testing Facility / Quantum CRO"**—enabling wet labs and biopharma teams to screen proprietary drug candidates on quantum hardware without sending their raw 3D molecular coordinates.
 
 3. **Today's Goal:**  
    Send focused, high-clarity communications to ~10 high-value stakeholders across three buckets (Investors, Quantinuum/Aqora, and Singapore Ecosystem) so they see active velocity and clear commercial momentum.
@@ -47,9 +47,9 @@
 We **never** send raw command lines or messy code to clients or investors. We send them:
 1. 🌌 **Interactive 3D WebGL Constellation:** [https://evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)  
    *(Runs in any mobile/desktop browser, zero install, interactive sliders for real PDB targets).*
-2. 📄 **Investor POC Evaluation Guide:** [`commercial/POC_INVESTOR_EVALUATION_GUIDE.md`](file:///d:/Quantinuum_GrandChallenge/commercial/POC_INVESTOR_EVALUATION_GUIDE.md)  
+2. 📄 **Investor POC Evaluation Guide:** [`commercial/POC_INVESTOR_EVALUATION_GUIDE.md`](https://github.com/evecount/quantum_rotation/blob/main/commercial/POC_INVESTOR_EVALUATION_GUIDE.md)  
    *(1-page executive summary covering verified capabilities and unit economics).*
-3. 🏛️ **Testing Facility Architecture:** [`commercial/DECENTRALIZED_QUANTUM_TESTING_FACILITY.md`](file:///d:/Quantinuum_GrandChallenge/commercial/DECENTRALIZED_QUANTUM_TESTING_FACILITY.md)  
+3. 🏛️ **Testing Facility Architecture:** [`commercial/DECENTRALIZED_QUANTUM_TESTING_FACILITY.md`](https://github.com/evecount/quantum_rotation/blob/main/commercial/DECENTRALIZED_QUANTUM_TESTING_FACILITY.md)  
    *(The full commercial thesis: AWS/CRO model for blind molecular screening).*
 
 ---
@@ -68,9 +68,9 @@ You can test the interactive client directly in your browser with zero installat
 🔗 Interactive 3D Constellation POC: https://evecount.github.io/quantum_rotation/constellation.html
 
 Key POC Highlights:
-• 100% Convergence on 6 Real PDB Targets: Validated on experimental crystallographic data (Paxlovid Mpro, Rhodopsin, COX-2, GFP).
-• Coordinate-Free IP Protection: Verifies active-site lock via quantum state overlap without transmitting raw 3D atomic coordinates, solving pharma's cloud security barrier.
-• Quantinuum Native Compilation: Compiles down to ~13.6 HQCs per screen on trapped-ion hardware (~1,000x–3,300x algorithmic speedup vs classical grid search).
+• Locks onto all 6 real structures: tested on experimental crystallographic data (Paxlovid's nirmatrelvir in SARS-CoV-2 Mpro, retinal in rhodopsin, celecoxib in COX-2, the GFP chromophore, azobenzene and H2). In simulation of the compiled circuit, a blind quantum search recovers each molecule's deposited pose to within 20°.
+• Reduced IP exposure: the match is computed from quantum state overlap, so what leaves the client is a compressed phase fingerprint rather than raw 3D atomic coordinates. It is not a cryptographic guarantee, since the fingerprint is derived from the structure.
+• Hardware-ready and costed: each circuit compiles to Quantinuum's native gates with zero SWAPs, at an estimated 13.6 HQC per 100-shot run. A full screen takes 1–5 runs (13.6–68.2 HQC) and 380–3,400× fewer evaluations than a 30° classical grid search (a step count, not wall-clock time). Running on hardware is our next milestone.
 
 Attached are our Investor POC Evaluation Guide and commercial unit economics. I would be happy to host a brief 15-minute walkthrough this week to discuss pilot rollout terms.
 
@@ -89,7 +89,7 @@ Hi Irfan,
 Quick update from Team Eve Count: we have just published Version 2.0.0 of our workspace on Aqora with our complete empirical benchmarking suite:
 🔗 Aqora Workspace: https://aqora.io/1ightray/sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching
 
-We re-ran our benchmarks across 6 real PDB crystal structures (PDB 1U19, 1EMA, 7VH8, 3LN1) on 9-qubit and 17-qubit registers, compiling down to 0 SWAPs, 62 PhasedX, and 32 ZZPhase gates with dynamic Guppy RUS feedback.
+We re-ran our benchmarks across 6 real structures (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272 and exact H2) on 9-qubit and 17-qubit registers. Each 9-qubit circuit compiles to 62 PhasedX and 32 ZZPhase gates with 0 SWAPs (13.64 estimated HQC per 100 shots), and in simulation the blind search locks onto all six deposited poses, within 20°. The circuit also compiles through Guppy to QIR; moving the repeat-until-success loop into the Guppy kernel, and running on H2, are our next steps.
 
 In parallel, we have begun receiving initial pilot inquiries from two regional venture syndicates interested in our decentralized quantum testing facility model as Helios arrives in Singapore. We’d welcome a brief check-in during mentor office hours to align on hardware deployment timelines.
 
@@ -122,6 +122,6 @@ Team Eve Count
 
 ## 🛡️ Action Items for the Team
 
-* **Ben:** Check out the latest commit on `origin/main` (`7d73321`). All UI telemetry and benchmark JSONs are in sync. When emails go out, keep an eye on incoming tech questions from Irfan/Pierre.
+* **Ben:** Check out the latest `origin/main`. The benchmark JSONs were regenerated on the corrected encoder in PR #2 (`8c7992f`), and the UI telemetry reads from them. When emails go out, keep an eye on incoming tech questions from Irfan/Pierre.
 * **Claude / Antigravity:** Ensure documentation integrity, sync all workspaces, and assist with any incoming pilot integration questions.
 * **James:** Briefed in `workspaces/JAMES_VENTURE_GTM_BRIEF.md` on investor inquiries to guide deal structuring.
