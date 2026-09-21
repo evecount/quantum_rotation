@@ -8,8 +8,8 @@
 * **Benjamin Lim ("Sedilix")** ([ben@evecount.com](mailto:ben@evecount.com) / [LinkedIn](https://www.linkedin.com/in/sedilix/) / [GitHub](https://github.com/sedilix)) — **Co-Founder & Systems Architect**, Eve Count & Cybrdeck (1,500+ commits/yr)  
   *In charge of:* Client-facing web applications, 3D WebGL / Three.js data visualization systems (The Resonance Constellation), Marimo dashboard integration, reactive telemetry interfaces, and developer user experience.  
   *Role Brief:* [workspaces/BEN_SYSTEMS_ARCHITECTURE_BRIEF.md](workspaces/BEN_SYSTEMS_ARCHITECTURE_BRIEF.md)
-* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com) / [LinkedIn (11k+)](https://www.linkedin.com/in/jamessun1/)) — **Founder @ Mamba Partners | Venture Advisor & GTM Strategist** (ex. Goldman Sachs, Blackstone, Microsoft)  
-  *In charge of:* Institutional venture capital strategy, global Go-To-Market (GTM) execution, biopharma commercial licensing ($120M–$280M roadmap), strategic network syndication, and investor positioning for the Grand Challenge finals.  
+* **James Sun** ([james@mambapartners.com](mailto:james@mambapartners.com) / [LinkedIn (11k+)](https://www.linkedin.com/in/jamessun1/)) — **Venture Advisor & Global GTM Strategist, Team Eve Count** | Founder @ Mamba Partners (ex. Goldman Sachs, Blackstone, Microsoft)  
+  *In charge of:* Strategic advisory on institutional venture capital, global Go-To-Market (GTM) positioning, biopharma commercialization models, network syndication, and investor positioning for the Grand Challenge finals.  
   *Role Brief:* [workspaces/JAMES_VENTURE_GTM_BRIEF.md](workspaces/JAMES_VENTURE_GTM_BRIEF.md)
 
 **Track:** Chemistry and Biomolecular Simulation  
@@ -546,11 +546,11 @@ Structured JSON results are automatically exported to `benchmarks/showdown_resul
 * **Bio:** Benjamin is an elite systems builder and open-source contributor known in developer communities as *Sedilix*. On Project Q-Rotate, Benjamin engineered **The Resonance Constellation**—an interactive 3D WebGL visualization engine that translates 8-dimensional Lie group rotations and quantum state vectors into intuitive, real-time spatial topologies for computational chemists and biopharma researchers.
 * **Direct Contact:** [ben@evecount.com](mailto:ben@evecount.com) | [LinkedIn](https://www.linkedin.com/in/sedilix/) | [GitHub](https://github.com/sedilix)
 
-#### 💼 James Sun — Venture Advisor & Global GTM Strategist
-* **Role:** Commercial Architecture & Institutional Capital Lead
+#### 💼 James Sun — Venture Advisor & Global GTM Strategist (Team Eve Count)
+* **Role:** Venture Advisor & Global GTM Strategist
 * **Affiliation:** Founder @ Mamba Partners (ex-Goldman Sachs, Blackstone, Microsoft; 11,000+ industry network)
-* **Domain Focus:** Institutional venture capital syndication, sovereign deep-tech positioning, and biopharma co-development licensing ($120M–$280M roadmap).
-* **Bio:** James brings top-tier institutional finance and technology executive experience from Goldman Sachs, Blackstone, and Microsoft. As founder of Mamba Partners, James structures Project Q-Rotate's commercialization pipeline, IP defensibility moats, and enterprise pharma partnership models to ensure sovereign commercial viability and venture-backed scale beyond the Grand Challenge finals.
+* **Domain Focus:** Strategic advisory on institutional venture capital syndication, sovereign deep-tech positioning, and biopharma commercialization models.
+* **Bio:** James brings top-tier institutional finance and technology executive experience from Goldman Sachs, Blackstone, and Microsoft. As founder of Mamba Partners, James advises Team Eve Count on commercialization strategy, IP defensibility moats, and enterprise pharma partnership models for the Grand Challenge finals and beyond.
 * **Direct Contact:** [james@mambapartners.com](mailto:james@mambapartners.com) | [LinkedIn](https://www.linkedin.com/in/jamessun1/)
 
 
