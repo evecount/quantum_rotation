@@ -17,8 +17,8 @@
 >   *(Shows real PDB ligands with their true pose as a gold ghost, a simulated SWAP-test readout, and a blind search you can watch, on mobile or desktop without installing anything).*
 > * **Supporting Commercial Dossier in Repository:**
 >   - 📄 [Investor & Partner POC Evaluation Guide](../commercial/POC_INVESTOR_EVALUATION_GUIDE.md)
->   - 🏛️ [Decentralized Quantum Testing Facility Business Case](../commercial/DECENTRALIZED_QUANTUM_TESTING_FACILITY.md)
->   - 🇸🇬 [Singapore DeepTech Ecosystem Roadmap](../commercial/SINGAPORE_ECOSYSTEM_ROADMAP.md)
+>   - 🏛️ Decentralized Quantum Testing Facility Business Case (internal: kept off the public repo, ask Gwen)
+>   - 🇸🇬 Singapore DeepTech Ecosystem Roadmap (internal: kept off the public repo, ask Gwen)
 
 ### 🎯 Immediate High-Leverage Contributions from James:
 1. **Investor Syndicate Briefing:** Review the 1-page POC Evaluation Guide and advise on structuring the initial SAFE / pilot access terms for the 2 interested syndicates.

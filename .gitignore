@@ -30,3 +30,16 @@ Final Recordings/
 
 # Cached raw structure downloads (PDB/SDF); benchmarks/active_sites.json is the committed extract
 .cache/
+
+# Confidential / internal team material: kept on local machines only.
+# This repository and its GitHub Pages site are public, so these must never be
+# committed. To share one for co-working, send it through a private channel;
+# publishing one here takes a deliberate `git add -f` that the team has agreed to.
+commercial/DECENTRALIZED_QUANTUM_TESTING_FACILITY.md
+commercial/SINGAPORE_ECOSYSTEM_ROADMAP.md
+workspaces/notes_for_ben_and_claude/
+workspaces/WAR_ROOM_INTERNAL_ARCHIVE.md
+# New internal material: put it under private/ or name it *.private.md
+private/
+*.private.md
+*.confidential.md
