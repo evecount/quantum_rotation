@@ -1275,7 +1275,7 @@
       <span class="telemetry-val" id="telemetry-delta-phi" style="color: var(--accent-cyan);">&mdash;</span>
     </div>
     <div class="telemetry-row">
-      <span class="telemetry-label" title="The benchmark's blind search for this molecule (benchmarks/molecular_showdown.json): 100 flips per step, cost estimated in Quantinuum H-series credits (HQC)">Benchmark run</span>
+      <span class="telemetry-label" title="The benchmark's blind search for this molecule (benchmarks/molecular_showdown.json): 100 flips per step, cost estimated in Quantinuum H-series credits (HQC), and how far from the true pose it locked">Benchmark run</span>
       <span class="telemetry-val" id="telemetry-hqc">&mdash;</span>
     </div>
     <div class="telemetry-row">
@@ -1486,7 +1486,7 @@
           </li>
           <li>
             <h3>Warmer, colder</h3>
-            <p>The blind search turns the molecule by a random amount, flips the coin again, and keeps the turn only if it got more heads. It stops when it is 95% sure that at least 9 flips in 10 land heads. That gets it close, not exact: usually within about 20&deg; of the answer.</p>
+            <p>The blind search turns the molecule by a random amount, flips the coin again, and keeps the turn only if it got more heads. It stops when it is 95% sure that at least 9 flips in 10 land heads. That gets it close, not exact: within about 20&deg; of the answer.</p>
           </li>
         </ol>
 
@@ -1518,13 +1518,13 @@
             <dt>Task</dt>
             <dd>Pose recovery, not docking. The ligand is matched against a copy of itself turned about the z axis through its centroid. The pocket (heavy atoms within 5 &Aring;) is read from the same entry for context only: it is a different molecule, so no angle would make the two registers agree.</dd>
             <dt>Encoding</dt>
-            <dd>Atoms are grouped into radial shells, one qubit per shell. Each phase is arg(M<sub>k</sub>)/k of the shell's weighted angular moment M<sub>k</sub> = &Sigma; w<sub>i</sub> e<sup>ik&phi;<sub>i</sub></sup>, with w = &radic;(Z/6)&middot;e<sup>1.5&thinsp;z&#770;</sup> and k the lowest order that does not cancel. A rotation shifts every phase by the same angle, the register ignores atom order, and it tells mirror images apart.</dd>
+            <dd>Atoms are grouped into radial shells, one qubit per shell, balanced so no qubit is left empty, with atoms within about 0.25&nbsp;&Aring; of a boundary shared between the two shells so coordinate error cannot flip an atom between qubits. Each phase is arg(M<sub>k</sub>)/k of the shell's weighted angular moment M<sub>k</sub> = &Sigma; w<sub>i</sub> e<sup>ik&phi;<sub>i</sub></sup>, with w = &radic;(Z/6)&middot;e<sup>1.5&thinsp;z&#770;</sup> and k the lowest order that does not cancel. A rotation shifts every phase by the same angle, the register ignores atom order, and it tells mirror images apart.</dd>
             <dt>Circuit</dt>
             <dd>4 shells: 9 qubits (4 target, 4 probe, 1 ancilla), 62 PhasedX and 32 ZZPhase after rebasing to the H-series gate set. 8 shells: 17 qubits, 122 PhasedX, 64 ZZPhase.</dd>
             <dt>Cost</dt>
             <dd>HQC = 5 + (N<sub>1q</sub> + 10&thinsp;N<sub>2q</sub> + 5&thinsp;N<sub>m</sub>)&middot;shots/5000 for each circuit the search runs: 13.64 HQC per 100-shot circuit at 9 qubits, 22.04 at 17.</dd>
             <dt>Result</dt>
-            <dd>The blind search locks on all six, in 1&ndash;5 steps at 9 qubits and 1&ndash;7 at 17. A lock means the pose is inside the band where P(0) clears the bar: at 500 shots, up to about 25&deg; from the exact angle with 4 shells and 20&deg; with 8 (hydrogen, which barely changes under a turn, about 45&deg;). The larger register is no faster, but it tightens that band and makes different molecules harder to confuse (worst false match 0.78 &rarr; 0.51).</dd>
+            <dd>The blind search locks on all six, in 1&ndash;5 steps at 9 qubits and 1&ndash;8 at 17, landing 0.4&ndash;20&deg; and 0.4&ndash;15&deg; from the exact angle (<code>benchmarks/molecular_showdown.json</code>). A lock means the pose is inside the band where P(0) clears the bar: at 500 shots, up to about 25&deg; from the exact angle with 4 shells and 20&deg; with 8 (hydrogen, which barely changes under a turn, about 45&deg;). The larger register is no faster, but it tightens that band and makes different molecules harder to confuse (worst false match 0.71 &rarr; 0.56).</dd>
           </dl>
         </details>
       </div>
@@ -2845,10 +2845,10 @@
 
     // Each qubit holds one radial shell of the ligand: atoms grouped by
     // distance from the centroid, innermost first, with atoms at the same
-    // radius never split. A port of _radial_shells in hpc_bridge.py, so the
-    // tiles describe the atoms each qubit really encodes. (They used to be
-    // labelled with contiguous runs of the atom list, which was the encoding
-    // before the redesign.)
+    // radius never split, and an atom near a shell edge shared between the two
+    // shells. A port of _radial_shells and radial_shell_membership in
+    // hpc_bridge.py, so the tiles describe what each qubit really encodes.
+    const SHELL_EDGE_WIDTH = 0.25; // Angstrom, as in hpc_bridge.py
     function radialShells(sysId, nShells) {
       const site = activeSite(sysId);
       if (!site || !site.ligand || !site.ligand.coords.length) return null;
@@ -2865,20 +2865,57 @@
       const ordered = [...groups.keys()].sort((a, b) => a - b).map(k => groups.get(k));
 
       const shells = Array.from({ length: nShells }, () => []);
-      const target = radii.length / nShells;
-      let idx = 0;
-      ordered.forEach(group => {
-        if (idx < nShells - 1 && shells[idx].length >= target) idx += 1;
-        shells[idx].push(...group);
+      const assignment = balancedCuts(ordered.map(g => g.length), nShells);
+      ordered.forEach((group, j) => shells[assignment[j]].push(...group));
+
+      // Soft edges at the midpoint between neighbouring shells' closest atoms.
+      const logistic = x => 0.5 * (1 + Math.tanh(0.5 * x));
+      const filled = shells.map((m, k) => (m.length ? k : -1)).filter(k => k >= 0);
+      const edgeBetween = (a, b) =>
+        0.5 * (Math.max(...shells[a].map(i => radii[i])) + Math.min(...shells[b].map(i => radii[i])));
+      return shells.map((members, k) => {
+        const pos = filled.indexOf(k);
+        if (pos < 0) return { count: 0, rMin: 0, rMax: 0 };
+        const inner = pos === 0 ? null : edgeBetween(filled[pos - 1], k);
+        const outer = pos === filled.length - 1 ? null : edgeBetween(k, filled[pos + 1]);
+        const count = radii.reduce((sum, r) => {
+          const lo = inner === null ? 1 : logistic((r - inner) / SHELL_EDGE_WIDTH);
+          const hi = outer === null ? 0 : logistic((r - outer) / SHELL_EDGE_WIDTH);
+          return sum + (lo - hi);
+        }, 0);
+        return { count, rMin: inner === null ? 0 : inner, rMax: outer === null ? Math.max(...radii) : outer };
       });
-      return shells.map(members => {
-        const rs = members.map(i => radii[i]);
-        return {
-          count: members.length,
-          rMin: rs.length ? Math.min(...rs) : 0,
-          rMax: rs.length ? Math.max(...rs) : 0,
-        };
-      });
+    }
+
+    // Shell index per tie-group, from the groups' sizes in radius order: the
+    // same dynamic programme as _balanced_cuts in hpc_bridge.py. Fewer groups
+    // than shells: one group per shell, outer shells empty. Otherwise
+    // contiguous non-empty runs minimising sum((size - N/n)^2).
+    function balancedCuts(sizes, nShells) {
+      const nGroups = sizes.length;
+      if (nGroups < nShells) return sizes.map((_, j) => j);
+      const target = sizes.reduce((a, b) => a + b, 0) / nShells;
+      const prefix = [0];
+      sizes.forEach(sz => prefix.push(prefix[prefix.length - 1] + sz));
+      const cost = Array.from({ length: nShells + 1 }, () => new Array(nGroups + 1).fill(Infinity));
+      const cut = Array.from({ length: nShells + 1 }, () => new Array(nGroups + 1).fill(0));
+      cost[0][0] = 0;
+      for (let k = 1; k <= nShells; k++) {
+        for (let j = k; j <= nGroups - (nShells - k); j++) {
+          for (let i = k - 1; i < j; i++) {
+            const c = cost[k - 1][i] + (prefix[j] - prefix[i] - target) ** 2;
+            if (c < cost[k][j]) { cost[k][j] = c; cut[k][j] = i; }
+          }
+        }
+      }
+      const assignment = new Array(nGroups).fill(0);
+      let j = nGroups;
+      for (let k = nShells; k > 0; k--) {
+        const i = cut[k][j];
+        for (let g = i; g < j; g++) assignment[g] = k - 1;
+        j = i;
+      }
+      return assignment;
     }
 
     // Measured cost of the blind pose-recovery run, at the register the viewer
@@ -2894,8 +2931,10 @@
         telemetryHqc.innerText = 'not loaded';
         return;
       }
+      // Where the benchmark's lock landed, so "locked" is never read as "exact".
+      const off = typeof entry.pose_error_deg === 'number' ? ` · ${entry.pose_error_deg.toFixed(0)}° off` : '';
       telemetryHqc.innerText =
-        `${entry.rus_iterations} step${entry.rus_iterations > 1 ? 's' : ''} · ${entry.hqc_per_screen.toFixed(1)} HQC`;
+        `${entry.rus_iterations} step${entry.rus_iterations > 1 ? 's' : ''} · ${entry.hqc_per_screen.toFixed(1)} HQC${off}`;
     }
 
     // Where this system's coordinates actually come from.
@@ -3292,8 +3331,8 @@
 
       qubitGrid.innerHTML = Array.from({ length: nSites }, (_, i) => {
         const sh = shells && shells[i];
-        const detail = !sh ? '' : (sh.count
-          ? `${sh.count} atom${sh.count > 1 ? 's' : ''} · ${sh.rMin.toFixed(1)}–${sh.rMax.toFixed(1)} Å`
+        const detail = !sh ? '' : (sh.count > 1e-6
+          ? `${sh.count.toFixed(1)} atoms · ${sh.rMin.toFixed(1)}–${sh.rMax.toFixed(1)} Å`
           : 'empty');
         return `
           <div class="qubit-tile" title="Shell ${i + 1} of ${nSites}, counted outward from the centre">
@@ -3308,7 +3347,9 @@
         caption.innerText = `One qubit per shell of atoms, innermost first (${nSites} shells, `
           + `${reg ? reg.total_qubits : 2 * nSites + 1} qubits in the circuit: ${nSites} for the true pose, `
           + `${nSites} for your copy, 1 coin). Each value is the direction that shell points, stored as a phase. `
-          + 'Turn the molecule and every phase moves by the same angle, which is why the coin can feel the turn.';
+          + 'Turn the molecule and every phase moves by the same angle, which is why the coin can feel the turn. '
+          + 'Atoms near a shell edge count partly toward both shells, so a little coordinate error cannot flip '
+          + 'an atom from one qubit to the next; that is why the counts are not whole numbers.';
       }
 
       // The markup above is a template; fill in the simulated values.
