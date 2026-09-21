@@ -170,7 +170,7 @@ Look at this list:
 5. **Azobenzene** (PubChem 2272): the trans conformer of a light-driven molecular switch.
 6. **H2**: two atoms at the exact equilibrium bond length, the smallest input the pipeline accepts.
 
-Be precise about what we measured across those six: **pose recovery**. Each ligand is matched against a rotated copy of itself, and the blind loop has to turn it back to the deposited pose, which it does in 1 to 5 iterations. That is not protein-ligand docking - the pocket and the ligand are different molecules, so no rotation makes their phase registers agree. What it does show is that the encoding, the circuit and the repeat-until-success loop work end to end on real experimental geometry rather than on invented point clouds.
+Be precise about what we measured across those six: **pose recovery**. Each ligand is matched against a rotated copy of itself, and the blind loop has to turn it back to the deposited pose, which it does in 1 to 5 iterations, stopping within 20 degrees of the exact angle. That last part matters: the loop stops as soon as the readout clears its confidence bar, so it lands close to the answer rather than exactly on it. That is not protein-ligand docking - the pocket and the ligand are different molecules, so no rotation makes their phase registers agree. What it does show is that the encoding, the circuit and the repeat-until-success loop work end to end on real experimental geometry rather than on invented point clouds.
 
 # The 3D WebGL Resonance Constellation
 - Bridging the Gap: Transforming Quantum State Vectors into Human Intuition
