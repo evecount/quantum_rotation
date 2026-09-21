@@ -10,11 +10,11 @@
 
 > [!IMPORTANT]
 > ### 🚀 Commercial Pull & Technical Milestone Update
-> * **Challenge Submission v2.0.0 Live:** We officially published `v2.0.0` on Aqora with our complete empirical benchmarking suite across **6 real crystallographic PDB targets** (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2). All 14 tests pass 100%.
+> * **Challenge Submission v2.0.0 Live:** We officially published `v2.0.0` on Aqora with our complete empirical benchmarking suite across **6 real crystallographic PDB targets** (PDB 1U19, 1EMA, 7VH8, 3LN1, PubChem 2272, exact H2). All 18 tests pass. Results are from simulation; no hardware runs yet.
 > * **2 Investor Syndicates Requesting POC:** Following our pitch on the **"Decentralized Quantum Testing Facility / Quantum CRO"** model, two venture syndicates have formally asked for POC evaluation materials and commercial terms.
 > * **Zero-Install Client for Your Network:** When introducing Q-Rotate to institutional investors or pharma partners, send them our browser WebGL link:  
 >   🔗 **Live 3D Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)  
->   *(Renders real PDB active sites, trapped-ion gate controls, and real-time quantum parity resonance on mobile/desktop without installing anything).*
+>   *(Shows real PDB ligands with their true pose as a gold ghost, a simulated SWAP-test readout, and a blind search you can watch, on mobile or desktop without installing anything).*
 > * **Supporting Commercial Dossier in Repository:**
 >   - 📄 [Investor & Partner POC Evaluation Guide](../commercial/POC_INVESTOR_EVALUATION_GUIDE.md)
 >   - 🏛️ [Decentralized Quantum Testing Facility Business Case](../commercial/DECENTRALIZED_QUANTUM_TESTING_FACILITY.md)
