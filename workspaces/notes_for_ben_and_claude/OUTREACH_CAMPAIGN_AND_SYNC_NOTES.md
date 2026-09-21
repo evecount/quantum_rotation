@@ -30,7 +30,7 @@
 
 ### Bucket 2: Challenge Mentors & Platform Partners (Ben CC'd)
 * **Target 3:** **Irfan Khan** (Lead Applications Engineer, Quantinuum) — Update on v2.0.0, real PDB metrics, and hardware demand for Helios Singapore. *(Ben CC'd)*
-* **Target 4:** **Pierre / Julian** (Aqora Engineering & Challenge Platform) — Confirmation of published workspace `v2.0.0` and Marimo kernel compatibility. *(Ben CC'd)*
+* **Target 4:** **Pierre-Augustin Fehr** (Partnership & Operations Lead, Aqora) & **Julian Popescu** (Sr Full Stack Software Engineer, Aqora) — Confirmation of published workspace `v2.0.0`, real PDB benchmark integration, and Marimo kernel compatibility. *(Ben CC'd)*
 * **Target 5:** **Megan** (Grand Challenge Lead / Quantinuum Jury) — Awareness of commercial pilot pipeline and hardware utilization alignment.
 
 ### Bucket 3: Singapore DeepTech & Biotech Ecosystem (Advisory & Pilot Discovery)
@@ -92,6 +92,26 @@ Quick update from Team Eve Count: we have just published Version 2.0.0 of our wo
 We re-ran our benchmarks across 6 real PDB crystal structures (PDB 1U19, 1EMA, 7VH8, 3LN1) on 9-qubit and 17-qubit registers, compiling down to 0 SWAPs, 62 PhasedX, and 32 ZZPhase gates with dynamic Guppy RUS feedback.
 
 In parallel, we have begun receiving initial pilot inquiries from two regional venture syndicates interested in our decentralized quantum testing facility model as Helios arrives in Singapore. We’d welcome a brief check-in during mentor office hours to align on hardware deployment timelines.
+
+Best regards,
+Gwen Lim & Benjamin Lim
+Team Eve Count
+```
+
+### Template C: To Pierre-Augustin Fehr (Aqora) (Ben CC'd)
+```text
+Subject: Re: Quantinuum Grand Challenge — Team Eve Count Workspace v2.0.0 Published
+CC: ben@evecount.com
+
+Hi Pierre,
+
+Following up on our registration and dashboard access, we wanted to let you know that Team Eve Count has just successfully published Version 2.0.0 of our project workspace on the platform!
+
+🔗 Published Workspace: https://aqora.io/1ightray/sg-grand-challenge-evecount-q-rotate-efficient-molecular-pattern-matching
+
+We've verified full compatibility with the Aqora interactive Marimo environment, embedding our complete 6-system PDB experimental benchmarks and Quantinuum H2 emulator execution flow.
+
+Thank you and the Aqora team for organizing a fantastic platform and developer workflow for this Grand Challenge!
 
 Best regards,
 Gwen Lim & Benjamin Lim
