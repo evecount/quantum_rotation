@@ -4,6 +4,7 @@
       "id": "rhodopsin",
       "name": "11-cis Retinal / Rhodopsin",
       "n_atoms_proxy": 20,
+      "pose_offset_deg": 45.0,
       "angles_deg": [
         -180,
         -178,
@@ -3514,6 +3515,7 @@
       "id": "gfp",
       "name": "GFP Chromophore",
       "n_atoms_proxy": 15,
+      "pose_offset_deg": 35.0,
       "angles_deg": [
         -180,
         -178,
@@ -7024,6 +7026,7 @@
       "id": "mpro",
       "name": "SARS-CoV-2 Mpro + Nirmatrelvir",
       "n_atoms_proxy": 49,
+      "pose_offset_deg": -50.0,
       "angles_deg": [
         -180,
         -178,
@@ -10534,6 +10537,7 @@
       "id": "cox2",
       "name": "COX-2 + Celecoxib",
       "n_atoms_proxy": 35,
+      "pose_offset_deg": 80.0,
       "angles_deg": [
         -180,
         -178,
@@ -14044,6 +14048,7 @@
       "id": "azobenzene",
       "name": "Azobenzene Molecular Switch",
       "n_atoms_proxy": 24,
+      "pose_offset_deg": -115.0,
       "angles_deg": [
         -180,
         -178,
@@ -17554,6 +17559,7 @@
       "id": "h2bench",
       "name": "H2 Hardware Benchmark",
       "n_atoms_proxy": 8,
+      "pose_offset_deg": 15.0,
       "angles_deg": [
         -180,
         -178,
