@@ -43,3 +43,8 @@ workspaces/WAR_ROOM_INTERNAL_ARCHIVE.md
 private/
 *.private.md
 *.confidential.md
+
+# Temporary upload bundles & image backups
+aqora_workspace_upload*
+*Copy*
+*.zip
