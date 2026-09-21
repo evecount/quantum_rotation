@@ -28,10 +28,23 @@ try:
         rz,
         toffoli,
     )
+    import guppylang.std.quantum as _guppy_quantum
+
+    # guppylang 1.x made measure() lazy: it returns a `Measurement` that must be
+    # .read() into a bool before it can be output. 0.21.x returns the bool
+    # itself and has no .read(). uv.lock resolves either depending on the
+    # Python version, so support both.
+    MEASURE_IS_LAZY = hasattr(_guppy_quantum, "Measurement")
     HAS_GUPPY = True
 except ImportError:
     guppy = None
     HAS_GUPPY = False
+    MEASURE_IS_LAZY = False
+
+
+def _measured_bit(m):
+    """The bool a measure() call produced, on either guppylang API."""
+    return m.read() if MEASURE_IS_LAZY else m
 
 # Conditional Pytket imports
 try:
@@ -414,13 +427,13 @@ if HAS_GUPPY:
 
         # 5. Measure and output parity
         m_parity = measure(ancilla)
-        output("parity_error", m_parity)
+        output("parity_error", _measured_bit(m_parity))
 
         # 6. Measure remaining qubits
         m_p = measure(q_pocket)
         m_l = measure(q_ligand)
-        output("pocket_state", m_p)
-        output("ligand_state", m_l)
+        output("pocket_state", _measured_bit(m_p))
+        output("ligand_state", _measured_bit(m_l))
 else:
     def guppy_qrotate_rus_demo() -> None:
         """Fallback mock for Guppy Q-Rotate execution."""
