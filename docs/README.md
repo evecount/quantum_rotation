@@ -155,6 +155,11 @@ In Quantinuum’s H-series processors, charged $^{171}\text{Yb}^+$ ions are phys
 
 Explore the live visual bridge connecting high-dimensional quantum states to human spatial perception:
 
+<p align="center">
+  <img src="assets/simulation.png" alt="Project Q-Rotate Trapped-Ion H2 Visualizer & Phase Simulator" width="820">
+  <br><em>Figure 2: Real-time Trapped-Ion H2 Visualizer & Phase Simulator displaying 3D spatial molecular geometry, native gate execution registers, and waveform interference lock.</em>
+</p>
+
 * 🌌 **Interactive 3D WebGL Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)
 * ⚡ **Live Trapped-Ion Phase Simulator:** [evecount.github.io/quantum_rotation/simulation.html](https://evecount.github.io/quantum_rotation/simulation.html)
 * 🎬 **4K Masterclass Video & Portal:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)
