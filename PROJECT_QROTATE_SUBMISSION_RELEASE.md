@@ -34,19 +34,20 @@ This submission is strictly engineered to satisfy the four official scoring crit
 
 ---
 
-## 1. Executive Summary & Core Breakthrough
+## 1. Executive Summary & Core Breakthrough: Quantum-Native Agentic Architecture
 
 Traditional computational docking models (AutoDock, Schrödinger, DFT) discretize 3D Cartesian space into cubic voxels, forcing supercomputers into an exponential combinatorial search ($O(N^3)$) over translational and rotational degrees of freedom.
 
-**Project Q-Rotate** reformulates lock-and-key biomolecular pattern matching as an **information-theoretic quantum state overlap puzzle**:
-1. **Continuous Lie Algebra Unitary ($\hat{U}_{\text{tube}}(\tau)$)**:
+In the vein of **Google DeepMind's AlphaEvolve ([arXiv:2506.13131](https://arxiv.org/abs/2506.13131))**, which introduced autonomous agentic coding loops coupling candidate generators with automated execution evaluators, **Project Q-Rotate** translates this agentic paradigm **natively into quantum mechanics**:
+1. **Generator (Continuous Lie Algebra $\hat{U}_{\text{tube}}(\tau)$)**:
    $$\hat{U}_{\text{tube}}(\tau) = \exp\left(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}})\right)$$
    $$\hat{H}_{\text{rot}} = \vec{\omega} \cdot \sum_{k=1}^N \hat{\vec{\sigma}}_k, \quad \hat{H}_{\text{phase}} = \sum_{m=1}^N \Delta \Phi_m \hat{Z}_m$$
-2. **Coordinate-Free Blind Parity (SWAP Test)**:
+   Continuously explores orientation Hilbert space along smooth geodesics without discrete grid stepping.
+2. **Physical Evaluator (Coordinate-Free Blind Parity)**:
    $$P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right)$$
-   Verifies active site fit without exposing proprietary chemical coordinates.
-3. **Dynamic Repeat-Until-Success (RUS) in Guppy**:
-   Exploits trapped-ion real-time mid-circuit readout and reset to apply corrective phase kicks until zero-parity resonance is achieved.
+   Measures active site overlap mid-circuit via trapped-ion ancilla interferometry without exposing proprietary chemical coordinates.
+3. **Autonomous Dynamic Policy (Quantinuum Guppy Repeat-Until-Success)**:
+   Mid-circuit optical readout tests overlap; if misaligned, real-time classical logic inside Guppy applies adaptive phase kicks ($R_y(\delta\theta)$) directly to the trapped ions until zero-parity resonance locks in.
 
 ---
 
