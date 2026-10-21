@@ -1,5 +1,5 @@
 # The Philosophy of Nature's Geometry: Beyond the Grid
-> **The 40-Year Compromise:** Nature never computes on a Cartesian grid. An enzyme and its ligand find resonance in femtoseconds because physical space is continuous, fluid, and rotational.
+> **The 40-Year Compromise:** Nature never computes on a Cartesian grid. An enzyme and its ligand find resonance because physical space is continuous, fluid, and rotational.
 
 | Metric | Classical Voxel Docking ($O(N^3)$) | Project Q-Rotate (Trapped-Ion Physics) |
 | :--- | :--- | :--- |
@@ -14,7 +14,7 @@ Look closely at how nature actually computes.
 
 When a protein folds in a human cell, or when a virus docks into a receptor, it does not draw a three-dimensional Cartesian coordinate system. It doesn't set up a bounding box. It doesn't divide the universe into little cubic voxels, and it certainly doesn't calculate floating-point distance matrices across billions of grid points. 
 
-Nature computes through continuous, unbroken geometry. A hormone and an active site find each other in femtoseconds through natural, fluid quantum resonance.
+Nature computes through continuous, unbroken geometry. A hormone and an active site find each other through natural, fluid quantum resonance.
 
 Yet for forty years, computational biology has been trapped inside a brute-force compromise. We took continuous, living chemistry and forced it onto the rigid, rectilinear grid of the classical computer. That single decision—chopping continuous space into discrete voxels—is the root cause of the modern two-point-six billion dollar drug discovery wall, producing an agonizing ninety percent wet-lab failure rate because molecules get trapped in artificial, numerical grid artifacts.
 
@@ -105,7 +105,7 @@ This is not a static quantum circuit. It is an autonomous, quantum-native evolut
 $$ P(0) = \frac{1}{2} \left( 1 + |\langle \psi_{\text{pocket}} | \psi_{\text{ligand}} \rangle|^2 \right) $$
 - **The Blindfolded Referee:** The trapped-ion ancilla evaluates wave overlap without ever reading, storing, or transmitting 3D atomic coordinates.
 - **Why biopharma refuses the cloud:** Corporate espionage, subpoena risk, and multi-billion-dollar scaffold theft.
-- **The Zero-Share Reality:**
+- **The Reduced-Exposure Reality:**
   * Constructive resonance ($P(0) \to 1.0$): Perfect lock-and-key fit verified.
   * Destructive interference ($P(0) \to 0.5$): Clashing candidate identified.
   * **Zero raw coordinates ever cross the wire.**
@@ -202,7 +202,7 @@ It is an auto-tuning quantum radio. It sweeps, tests, adapts, and locks, converg
   5. **Azobenzene Photoswitch** (`PubChem 2272`, 14 atoms): Photopharmacology switch
   6. **Hydrogen Ground State ($H_2$)** (`QM`, 2 atoms): Exact analytical reference
 
-| Target Complex | Initial Error | RUS Cycles | Final $P(0)$ | Classical Speedup |
+| Target Complex | Initial Error | RUS Cycles | Final $P(0)$ | Grid-Step Reduction |
 | :--- | :---: | :---: | :---: | :---: |
 | **Retinal / Rhodopsin** | $+45.0^\circ$ | **2 loops** | **0.980** | **$1,920\times$** |
 | **GFP Chromophore** | $+35.0^\circ$ | **4 loops** | **0.990** | **$1,056\times$** |
@@ -216,13 +216,13 @@ To prove that this is not theoretical mathematics, we stress-tested Q-Rotate acr
 We did not use synthetic point clouds or toy models. Every single benchmark was extracted directly from experimental crystallographic coordinates deposited in the RCSB Protein Data Bank.
 
 Look at the results:
-For **11-cis Retinal in Rhodopsin** (PDB 1U19)—the foundational biological mechanism of human vision—the loop recovered the active binding pose from a forty-five degree misalignment in just two iterations, achieving a one-thousand-nine-hundred-and-twenty times speedup over classical grid search.
+For **11-cis Retinal in Rhodopsin** (PDB 1U19)—the foundational biological mechanism of human vision—the loop recovered the active binding pose from a forty-five degree misalignment in just two iterations, a one-thousand-nine-hundred-and-twenty times reduction in search steps versus a classical grid, in simulation.
 
-For the **SARS-CoV-2 Main Protease bound to Nirmatrelvir** (PDB 7VH8)—the core antiviral target of Paxlovid—the system locked onto the crystallographic catalytic dyad with a perfect P-of-zero score of one point zero in just two loops, delivering an astonishing **three-thousand-three-hundred-and-sixty times acceleration**.
+For the **SARS-CoV-2 Main Protease bound to Nirmatrelvir** (PDB 7VH8)—the core antiviral target of Paxlovid—the system locked onto the crystallographic catalytic dyad with a perfect P-of-zero score of one point zero in just two loops, a **three-thousand-three-hundred-and-sixty times reduction in search steps** versus a classical grid, in simulation.
 
 Even on **Azobenzene**, starting from a massive one-hundred-and-fifteen degree conformational inversion, the continuous Lie-algebraic trajectory guided the molecule home in five cycles.
 
-This is Level 5 evidence on the Quantinuum Grand Challenge scale: empirical validation against real crystallographic benchmarks, executed on native trapped-ion gate sets, demonstrating unassailable computational acceleration.
+This is simulation-based evidence: real crystallographic coordinates and H2-native gate compilation, with emulated measurements. Resampled over 180 trials, the pose is recovered 93.3% of the time. Physical H2 runs are the next step, and we will report them alongside these numbers.
 
 # The Resonance Constellation: Visualizing Hilbert Space
 - Making Invisible Quantum Physics Tangible to Human Intuition
@@ -249,8 +249,8 @@ You don't just calculate quantum resonance; you see it. You feel the physical re
 - **The Core Breakthrough:** Replaced $O(N^3)$ Cartesian grid docking with continuous Lie algebra $SU(2)^{\otimes n}$ geodesic evolution.
 - **The Noodle to String Principle:** Rotating the reference frame continuously collapses complex 3D volume collisions into a 1D phase alignment.
 - **The Agentic Paradigm:** Inspired by Google DeepMind's *AlphaEvolve*, executing mid-circuit Repeat-Until-Success (RUS) feedback on trapped ions.
-- **Zero-Share Confidentiality:** Non-destructive Blind Parity evaluates target resonance without exposing proprietary 3D coordinates ($120M–$280M TAM).
-- **Physical Hardware Exploitation:** Native compilation on Quantinuum H2 with 0 SWAPs, depth 68, and up to 3,360× real-world speedup.
+- **Reduced-Exposure Screening:** Blind Parity evaluates target resonance while exchanging only a phase fingerprint, not raw 3D coordinates (not a cryptographic zero-knowledge guarantee). The $120M-$280M figure is an illustrative scenario model.
+- **H2-Native Compilation:** 0 SWAPs, depth 68, ~13.6 estimated HQCs; up to 3,360x fewer search steps than a classical grid (a step-count ratio, emulated).
 ---
 To conclude our masterclass on Project Q-Rotate, let us summarize what we have accomplished:
 

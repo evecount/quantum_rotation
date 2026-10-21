@@ -133,7 +133,8 @@ The table above reports one RUS run per system (one shot-noise seed). To answer 
 ## 4. Submission Artifacts Included
 
 1. **`PROJECT_QROTATE_SUBMISSION_RELEASE.md`**: This formal executive summary and rubric cross-reference.
-2. **`qrotate_solution.zip`**: Complete reproducible solution bundle including `src/qrotate/` package, Pytket compilation scripts, Guppy RUS definitions, and tests.
+2. **`src/qrotate/`, `tests/`, `pyproject.toml`**: The full source package, Pytket compilation, Guppy RUS definitions and tests, in the repository itself (the old `qrotate_solution.zip` bundle was removed from `main` and would have gone stale).
+2b. **`Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf`**: The one-page summary the criteria require, regenerated from `generate_one_page_summary.py` so its claims match this document (simulation-based evidence, step-count reduction rather than wall-clock speedup, scenario-model market figure).
 3. **`Linked Workspace`**: Official Marimo interactive workspace version `v1.0.1` (`readme.py`).
 4. **`benchmarks/molecular_showdown.json`** / **`benchmarks/statistical_robustness.json`**: Raw single-seed and 180-trial benchmark data, regenerable with `python -m src.qrotate.metrics`.
 5. **`tests/test_qrotate.py`**: 19-case `pytest` suite covering circuit compilation, phase encoding, RUS convergence, and the statistical-robustness confidence interval — run with `pytest tests/`.
