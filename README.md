@@ -131,6 +131,7 @@ Simulated on experimental coordinates from the **RCSB Protein Data Bank (PDB)** 
 
 * **The Problem:** Biopharma giants (Pfizer, Novartis, Roche) are cautious about sending unpatented scaffold coordinates to external cloud platforms because of leak and subpoena risk.
 * **The Solution:** Our **Coordinate-Free Blind Parity** protocol evaluates wave interference ($P(0)$) on an ancilla referee while exchanging only a compressed phase fingerprint rather than raw 3D coordinates. This reduces exposure; it is not a cryptographic zero-knowledge guarantee (see `docs/03_the_blind_parity_test.md`).
+* **As software:** the split exists as a client and a node. `qrotate fingerprint` encodes a structure locally; `qrotate screen --node URL` sends only the fingerprint to a `qrotate serve` node, which runs the SWAP test and returns $P(0)$ with a Wilson interval and an HQC estimate. What crosses the wire, what the node learns and what it does not are spelled out in `docs/10_client_node_protocol.md`; `examples/demo_client_node.py` runs the six benchmark systems through it.
 * **Commercial Impact:** Could support confidential multi-party screening. The $120M-$280M figure is an illustrative scenario model, not a market-validated TAM; see `workspaces/JAMES_VENTURE_GTM_BRIEF.md`.
 
 ---
@@ -196,9 +197,15 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 │   ├── operators.py                 # Continuous Lie algebra SU(2) Hamiltonians
 │   ├── structures.py                # RCSB PDB coordinate parser & geometry
 │   ├── metrics.py                   # Blind Parity P(0) & overlap fidelity
-│   └── hpc_bridge.py                # HPC classical-quantum hybrid pipeline
+│   ├── hpc_bridge.py                # HPC classical-quantum hybrid pipeline
+│   ├── client.py                    # Lab side: fingerprint() + Client (no coordinates leave)
+│   ├── node.py                      # Node side: FastAPI /v1/screen, /v1/jobs, /v1/cost, /v1/health
+│   └── cli.py                       # `qrotate fingerprint | compile | screen | serve`
+├── examples/
+│   └── demo_client_node.py          # In-process node, six systems, 6 x 6 P(0) matrix
 ├── tests/                           # Complete pytest verification suite
-│   └── test_qrotate.py              # unit & integration tests
+│   ├── test_qrotate.py              # unit & integration tests
+│   └── test_client_node.py          # client/node protocol, no-coordinates assertion, CLI
 ├── Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf # Official 1-Page Summary PDF
 ├── WHY_QROTATE_MATTERS.md           # Standalone architectural treatise
 ├── pyproject.toml                   # Modern packaging metadata
