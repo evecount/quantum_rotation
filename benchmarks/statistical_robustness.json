@@ -1,0 +1,115 @@
+{
+  "n_sites": 4,
+  "n_qubits": 9,
+  "n_trials_per_system": 30,
+  "per_system": [
+    {
+      "system_id": "rhodopsin",
+      "system_name": "11-cis Retinal / Rhodopsin",
+      "structure_source": "RCSB 1U19",
+      "encoding_degenerate": false,
+      "n_trials": 30,
+      "n_locked": 30,
+      "lock_rate": 1.0,
+      "lock_rate_95ci": [
+        0.8865,
+        1.0
+      ],
+      "iterations_mean": 3.5,
+      "iterations_std": 1.77,
+      "pose_error_deg_mean": 11.83,
+      "pose_error_deg_std": 6.09
+    },
+    {
+      "system_id": "gfp",
+      "system_name": "GFP Chromophore",
+      "structure_source": "RCSB 1EMA",
+      "encoding_degenerate": false,
+      "n_trials": 30,
+      "n_locked": 30,
+      "lock_rate": 1.0,
+      "lock_rate_95ci": [
+        0.8865,
+        1.0
+      ],
+      "iterations_mean": 3.6,
+      "iterations_std": 1.45,
+      "pose_error_deg_mean": 12.19,
+      "pose_error_deg_std": 10.04
+    },
+    {
+      "system_id": "mpro",
+      "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+      "structure_source": "RCSB 7VH8",
+      "encoding_degenerate": false,
+      "n_trials": 30,
+      "n_locked": 30,
+      "lock_rate": 1.0,
+      "lock_rate_95ci": [
+        0.8865,
+        1.0
+      ],
+      "iterations_mean": 3.1,
+      "iterations_std": 1.27,
+      "pose_error_deg_mean": 10.7,
+      "pose_error_deg_std": 3.06
+    },
+    {
+      "system_id": "cox2",
+      "system_name": "COX-2 + Celecoxib",
+      "structure_source": "RCSB 3LN1",
+      "encoding_degenerate": false,
+      "n_trials": 30,
+      "n_locked": 26,
+      "lock_rate": 0.8667,
+      "lock_rate_95ci": [
+        0.7032,
+        0.9469
+      ],
+      "iterations_mean": 4.23,
+      "iterations_std": 3.13,
+      "pose_error_deg_mean": 17.54,
+      "pose_error_deg_std": 6.31
+    },
+    {
+      "system_id": "azobenzene",
+      "system_name": "Azobenzene Molecular Switch",
+      "structure_source": "PubChem 2272",
+      "encoding_degenerate": false,
+      "n_trials": 30,
+      "n_locked": 22,
+      "lock_rate": 0.7333,
+      "lock_rate_95ci": [
+        0.5555,
+        0.8582
+      ],
+      "iterations_mean": 6.14,
+      "iterations_std": 3.25,
+      "pose_error_deg_mean": 10.2,
+      "pose_error_deg_std": 5.81
+    },
+    {
+      "system_id": "h2bench",
+      "system_name": "H2 Hardware Benchmark",
+      "structure_source": "exact H2",
+      "encoding_degenerate": false,
+      "n_trials": 30,
+      "n_locked": 30,
+      "lock_rate": 1.0,
+      "lock_rate_95ci": [
+        0.8865,
+        1.0
+      ],
+      "iterations_mean": 1.0,
+      "iterations_std": 0.0,
+      "pose_error_deg_mean": 15.0,
+      "pose_error_deg_std": 0.0
+    }
+  ],
+  "overall_lock_rate": 0.9333,
+  "overall_lock_rate_95ci": [
+    0.8871,
+    0.9615
+  ],
+  "generated_at": "2026-09-21 18:00:42"
+}

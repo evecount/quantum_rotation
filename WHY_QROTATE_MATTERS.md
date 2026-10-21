@@ -1,9 +1,9 @@
 # Why Q-Rotate Matters: The End of Cartesian Grid Docking & The Rise of Quantum-Native Agentic Biology
 
-> **An Architectural & Commercial Treatise on Autonomous Continuous Lie-Algebraic Pose Optimization and Zero-Share Blind Parity on Trapped-Ion Hardware**  
+> **An Architectural & Commercial Treatise on Autonomous Continuous Lie-Algebraic Pose Optimization and Coordinate-Free Blind Parity for Trapped-Ion Hardware**  
 > *Quantinuum Singapore Grand Challenge 2026 — Track: Chemistry & Biomolecular Simulation*  
 > **Authors:** Gwendalynn Lim (Founder & CTO, Eve Count) • Benjamin Lim (Cybrdeck) • James Sun (Mamba Partners)  
-> **Release Version:** v3.0.0 (Evidence Level 5/5)
+> **Release Version:** v3.0.0 (simulation-based evidence; no physical H2 run yet)
 
 ---
 
@@ -15,9 +15,9 @@ When quantum computing arrived, early practitioners made a second mistake: attem
 
 **Project Q-Rotate fundamentally rejects both paradigms.**
 
-Instead of hiking across a discrete Cartesian grid, Q-Rotate maps molecular rotational degrees of freedom directly into continuous Lie algebra $SU(2)^{\otimes n}$, steering orientation state vectors along geodesics in Hilbert space. Instead of running a static, blind quantum circuit, it executes an **autonomous, agentic Repeat-Until-Success (RUS) loop** on Quantinuum H2 trapped-ion hardware, using mid-circuit ancilla measurements to referee active-site binding in real time. And crucially, it introduces **Zero-Share Blind Parity**, solving biopharma’s greatest adoption barrier: the existential fear of cloud IP theft.
+Instead of hiking across a discrete Cartesian grid, Q-Rotate maps molecular rotational degrees of freedom directly into continuous Lie algebra $SU(2)^{\otimes n}$, steering orientation state vectors along geodesics in Hilbert space. Instead of running a static, blind quantum circuit, it is designed to execute an **autonomous, agentic Repeat-Until-Success (RUS) loop** on Quantinuum H2 trapped-ion hardware (emulated so far), using mid-circuit ancilla measurements to referee active-site binding in real time. And crucially, it introduces **Coordinate-Free Blind Parity**, solving biopharma’s greatest adoption barrier: the existential fear of cloud IP theft.
 
-Below is the definitive analysis of why classical docking fails, why generic quantum approaches fall short, and how Q-Rotate achieves up to **3,360× acceleration across real crystallographic protein-ligand complexes**.
+Below is the definitive analysis of why classical docking fails, why generic quantum approaches fall short, and how Q-Rotate reduces grid-search steps by up to 3,360x (a step-count ratio, not wall-clock time) in simulation on real crystallographic ligand structures.
 
 ---
 
@@ -118,14 +118,14 @@ Because the system only iterates when necessary (Repeat-Until-Success), it achie
 
 ---
 
-## 4. Zero-Share Blind Parity: The Multi-Billion Dollar Enterprise Moat
+## 4. Blind Parity: Reduced-Exposure Screening
 
 Wet-lab scientists and academic quantum teams frequently assume that biopharma companies avoid cloud quantum computing due to insufficient qubit counts. **This is completely false.**
 
 ### The Commercial Reality: Corporate Espionage Terror
 When a biopharma company spends $500 million designing a novel, unpatented macrocyclic scaffold or oncology candidate, **they will never upload raw 3D atomic coordinates to a third-party cloud server**. Doing so exposes their crown-jewel trade secrets to subpoena risk, platform breach, rogue insider exfiltration, and competitive front-running.
 
-Until today, this corporate IP terror has locked cloud quantum platforms out of the **$120M–$280M enterprise confidential drug screening TAM**.
+This IP concern is a real barrier to cloud quantum platforms in confidential drug screening. The $120M-$280M figure in our materials is an illustrative scenario model, not a market-validated TAM.
 
 ### The Solution: Non-Destructive Coordinate-Free Blind Parity
 Q-Rotate completely resolves this impasse through **Coordinate-Free Blind Parity**:
@@ -143,9 +143,9 @@ In this protocol:
 
 ## 5. Empirical Benchmark Showdown on Real Crystallographic Systems
 
-Q-Rotate is not a theoretical whitepaper; it is empirically validated across 6 crystallographic structures retrieved directly from the **RCSB Protein Data Bank (PDB)** and simulated on the Quantinuum H2 native gate architecture:
+Q-Rotate is not a theoretical whitepaper; it is benchmarked in simulation across 6 crystallographic structures retrieved directly from the **RCSB Protein Data Bank (PDB)** and simulated on the Quantinuum H2 native gate architecture:
 
-| Target System | PDB ID | Biological Function | Atoms | Initial Misalignment | RUS Loops to Lock | Final Parity $P(0)$ | Pose Error | Classical Speedup |
+| Target System | PDB ID | Biological Function | Atoms | Initial Misalignment | RUS Loops to Lock | Final Parity $P(0)$ | Pose Error | Grid-Step Reduction |
 | :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **11-cis Retinal / Rhodopsin** | `1U19` | GPCR Visual Transduction | 20 | $+45.0^\circ$ | **2 loops** | **0.980** | $15.0^\circ$ | **$1,920\times$** |
 | **GFP Chromophore** | `1EMA` | Fluorescent Reporter | 22 | $+35.0^\circ$ | **4 loops** | **0.990** | $0.4^\circ$ | **$1,056\times$** |
@@ -155,7 +155,7 @@ Q-Rotate is not a theoretical whitepaper; it is empirically validated across 6 c
 | **Hydrogen Ground State ($H_2$)** | QM | Molecular Reference Benchmark | 2 | $+15.0^\circ$ | **1 loop** | **0.990** | $15.0^\circ$ | **$384\times$** |
 
 ### Benchmark Takeaways:
-1. **Unprecedented Speedup:** Demonstrates between **$384\times$ and $3,360\times$ computational acceleration** compared to classical Cartesian grid stepping.
+1. **Search-Step Reduction:** Between **$384\times$ and $3,360\times$ fewer search steps** than classical Cartesian grid stepping in simulation (not a wall-clock or quantum-advantage claim). Resampled over 30 trials per system, the pose is recovered in 93.3% of 180 trials (95% CI 88.7-96.1%).
 2. **Robust Convergence:** Regardless of whether the initial misalignment was $+35^\circ$ or $-115^\circ$, the agentic RUS loop successfully steers the state to $P(0) \ge 0.94$ in **at most 5 cycles**.
 3. **Hardware Efficiency:** Executes on 9 to 17 trapped-ion qubits with zero SWAP gates, staying well within Quantinuum H2 coherence envelopes.
 

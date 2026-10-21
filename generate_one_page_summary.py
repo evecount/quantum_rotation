@@ -2,11 +2,9 @@ import os
 import subprocess
 import base64
 import pypdf
-import shutil
-import zipfile
 import pymupdf
 
-BASE_DIR = r"D:\Quantinuum_GrandChallenge"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
 constellation_img_path = os.path.join(ASSETS_DIR, "constellation.png")
@@ -368,9 +366,9 @@ html_content = f"""<!DOCTYPE html>
   <div class="paper-header">
     <div class="meta-top">
       <span>Quantinuum Singapore Grand Challenge 2026 &bull; Track: Chemistry &amp; Biomolecular Simulation</span>
-      <span class="primary">Version v3.0.0 &bull; Scoring Evidence Level 5/5 &bull; Hardware Verified</span>
+      <span class="primary">Version v3.0.0 &bull; Simulation-based evidence &bull; Emulated on H2 gate set</span>
     </div>
-    <h1>Project Q-Rotate: Quantum-Native Agentic Docking &amp; Zero-Share Parity</h1>
+    <h1>Project Q-Rotate: Quantum-Native Agentic Docking &amp; Reduced-Exposure Parity</h1>
     <div class="paper-subtitle">Autonomous Continuous Lie-Algebraic Pose Search on Trapped Ions Eliminating O(N&sup3;) Cartesian Grid Discretization</div>
     <div class="authors-block">
       <span><strong>Authors:</strong> Gwendalynn Lim (Founder &amp; CTO, Eve Count &bull; SIT / NTU AI), Benjamin Lim (Cybrdeck), James Sun (Mamba Partners)</span>
@@ -381,8 +379,8 @@ html_content = f"""<!DOCTYPE html>
   <!-- Executive Overview: Target Problem, Quantum Architecture & Commercial Impact -->
   <div class="plain-speak-box">
     <div class="plain-speak-title">
-      <span>Core Premise: What We Rotate, Why It Wins &amp; Zero-Share Confidentiality</span>
-      <span class="tag">Coordinate-Free &bull; Blind Parity &bull; RCSB Validated</span>
+      <span>Core Premise: What We Rotate, Why It Wins &amp; Reduced-Exposure Screening</span>
+      <span class="tag">Coordinate-Free &bull; Blind Parity &bull; RCSB Coordinates</span>
     </div>
     <div class="plain-speak-grid">
       <div class="plain-col">
@@ -391,10 +389,10 @@ html_content = f"""<!DOCTYPE html>
       </div>
       <div class="plain-col">
         <strong>2. Why "Q-Rotate": What Are We Rotating?</strong>
-        <p>Rather than searching a rigid grid, Q-Rotate rotates the molecule's continuous orientation angles directly in <i>SU</i>(2)<sup>&otimes;<i>n</i></sup> Hilbert space. Trapped-ion geodesics converge in 1–5 loops with up to <strong>3,360&times; speedup</strong>.</p>
+        <p>Rather than searching a rigid grid, Q-Rotate rotates the molecule's continuous orientation angles directly in <i>SU</i>(2)<sup>&otimes;<i>n</i></sup> Hilbert space. Trapped-ion geodesics converge in 1–5 loops in simulation, with up to <strong>3,360&times; fewer search steps</strong> than a grid.</p>
       </div>
       <div class="plain-col">
-        <strong>3. Zero-Share: Keeping Molecular Secrets ($120M–$280M TAM)</strong>
+        <strong>3. Reduced Exposure: Keeping Molecular Secrets</strong>
         <p>Research partners never have to disclose proprietary atomic coordinates. Our trapped-ion <strong>Blind Parity protocol</strong> evaluates binding resonance non-destructively without transmitting or exposing raw structural data.</p>
       </div>
     </div>
@@ -404,11 +402,11 @@ html_content = f"""<!DOCTYPE html>
   <div class="rubric-grid">
     <div class="rubric-card">
       <strong class="label"><span>1. Problem &amp; Value</span> <span class="weight">30%</span></strong>
-      <p>Addresses $2.6B clinical candidate attrition; Coordinate-Free Blind Parity protocol enables confidential multi-party screening enclaves ($120M&ndash;$280M enterprise TAM).</p>
+      <p>Addresses $2.6B clinical candidate attrition; Coordinate-Free Blind Parity protocol reduces what leaves each party in confidential multi-party screening (illustrative $120M&ndash;$280M scenario, not a validated TAM).</p>
     </div>
     <div class="rubric-card">
       <strong class="label"><span>2. Tech &amp; Hardware</span> <span class="weight">30%</span></strong>
-      <p>Quantinuum H2 native gates (<code>PhasedX</code>, <code>ZZPhase</code>), 0 SWAPs via all-to-all transport, 9/17 qubits, depth 68, &asymp;13.6 HQCs, up to <strong>3,360&times; speedup</strong>.</p>
+      <p>Quantinuum H2 native gates (<code>PhasedX</code>, <code>ZZPhase</code>), 0 SWAPs via all-to-all transport, 9/17 qubits, depth 68, &asymp;13.6 estimated HQCs, up to <strong>3,360&times; fewer search steps</strong> (emulated).</p>
     </div>
     <div class="rubric-card">
       <strong class="label"><span>3. Scientific Merit</span> <span class="weight">20%</span></strong>
@@ -416,7 +414,7 @@ html_content = f"""<!DOCTYPE html>
     </div>
     <div class="rubric-card">
       <strong class="label"><span>4. Engineering</span> <span class="weight">20%</span></strong>
-      <p>Modular <code>src/qrotate/</code>, 100% test pass coverage, interactive Marimo notebook, and live 3D WebGL Constellation simulator (Level 5/5).</p>
+      <p>Modular <code>src/qrotate/</code>, 19 passing tests, interactive Marimo notebook, and live 3D WebGL Constellation simulator.</p>
     </div>
   </div>
 
@@ -453,7 +451,7 @@ html_content = f"""<!DOCTYPE html>
           <th>Final P(0)</th>
           <th>Pose Error</th>
           <th>Est. HQCs</th>
-          <th>Speedup vs Grid</th>
+          <th>Step Reduction vs Grid</th>
         </tr>
       </thead>
       <tbody>
@@ -563,7 +561,7 @@ html_content = f"""<!DOCTYPE html>
 
   <!-- Verification & Live Links Strip -->
   <div class="verify-bar">
-    <span><strong>Live Verification:</strong> Quantinuum H2 Native &bull; 0 SWAPs &bull; Level 5/5 Engineering Evidence</span>
+    <span><strong>Live Verification:</strong> H2-native gate set &bull; 0 SWAPs &bull; Emulator results, no physical H2 run yet</span>
     <div>
       <a href="https://evecount.github.io/quantum_rotation/constellation.html">🌌 3D Constellation</a>
       <a href="https://evecount.github.io/quantum_rotation/simulation.html">⚡ RUS Simulator</a>
@@ -586,7 +584,6 @@ html_content = f"""<!DOCTYPE html>
 
 summary_html_path = os.path.join(BASE_DIR, "Project_QRotate_One_Page_Summary.html")
 summary_pdf_v3_official = os.path.join(BASE_DIR, "Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf")
-desktop_pdf_official = r"C:\Users\User\Desktop\Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf"
 
 with open(summary_html_path, "w", encoding="utf-8") as f:
     f.write(html_content)
@@ -612,27 +609,10 @@ print(f"[SUCCESS] Generated Official One-Page Summary PDF: {summary_pdf_v3_offic
 print(f"Total Pages: {page_count} (Goal: 1)")
 print(f"File Size: {os.path.getsize(summary_pdf_v3_official)} bytes")
 
-# Copy to Desktop and Aqora upload directory
-for dest in [desktop_pdf_official, os.path.join(BASE_DIR, "aqora_workspace_upload_21SEPT", "Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf")]:
-    try:
-        shutil.copyfile(summary_pdf_v3_official, dest)
-        print(f"Copied to: {dest}")
-    except Exception as e:
-        print(f"Could not copy to {dest}: {e}")
-
 # Render PNG preview
 doc = pymupdf.open(summary_pdf_v3_official)
 page = doc.load_page(0)
 pix = page.get_pixmap(dpi=150)
-preview_path = os.path.join(BASE_DIR, "preview_page1.png")
+preview_path = os.path.join(os.environ.get("TEMP", BASE_DIR), "qrotate_preview_page1.png")
 pix.save(preview_path)
 print(f"Saved preview: {preview_path}")
-
-# Update Desktop submission ZIP package
-zip_path = r"C:\Users\User\Desktop\qrotate_submission_v3.0.0.zip"
-try:
-    with zipfile.ZipFile(zip_path, 'a') as zf:
-        zf.write(summary_pdf_v3_official, arcname="Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf")
-    print(f"Updated ZIP package: {zip_path}")
-except Exception as e:
-    print(f"ZIP error: {e}")

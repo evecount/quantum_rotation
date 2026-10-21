@@ -1,11 +1,11 @@
-# 🌌 Project Q-Rotate: Quantum-Native Agentic Docking & Zero-Share Parity
+# 🌌 Project Q-Rotate: Quantum-Native Agentic Docking & Reduced-Exposure Parity
 
-**Continuous Lie-Algebraic Molecular Pose Search & Zero-Knowledge Active-Site Parity on Quantinuum Trapped Ions.**
+**Continuous Lie-Algebraic Molecular Pose Search & Coordinate-Free Active-Site Parity, Compiled for Quantinuum Trapped Ions.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Hardware: Quantinuum H2](https://img.shields.io/badge/hardware-Quantinuum_H2-4285F4.svg)](https://www.quantinuum.com/)
-[![Evidence: Level 5/5](https://img.shields.io/badge/evidence-Level_5%2F5_Validated-brightgreen.svg)](#official-jury-scoring-rubric-alignment)
+[![Target: Quantinuum H2 (emulated)](https://img.shields.io/badge/target-Quantinuum_H2_(emulated)-4285F4.svg)](https://www.quantinuum.com/)
+[![Evidence: simulated, 180-trial CI](https://img.shields.io/badge/evidence-simulated_%C2%B7_180--trial_CI-yellow.svg)](#evidence-status--rubric-alignment)
 [![Version: v3.0.0](https://img.shields.io/badge/release-v3.0.0_Official-blueviolet.svg)](Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf)
 
 <p align="center">
@@ -13,9 +13,9 @@
   <br><em>Figure 1: Project Q-Rotate 3D WebGL Constellation Engine steering molecular orientation trajectories into trapped-ion quantum resonance.</em>
 </p>
 
-Project Q-Rotate is an autonomous, quantum-native biomolecular docking engine engineered for **Quantinuum System Model H2 trapped-ion hardware**. In the vein of **Google DeepMind's [AlphaEvolve](https://arxiv.org/abs/2506.13131)**, Q-Rotate replaces forty years of classical $\mathcal{O}(N^3)$ Cartesian grid discretization with continuous Lie-algebraic ($SU(2)^{\otimes n}$) geodesic flow, coupled with real-time mid-circuit **Repeat-Until-Success (RUS)** feedback and **Zero-Share Blind Parity**.
+Project Q-Rotate is an autonomous, quantum-native biomolecular docking engine designed and compiled for **Quantinuum System Model H2 trapped-ion hardware** (all results come from statevector simulation with shot-noise sampling; there has been no physical H2 run yet). In the vein of **Google DeepMind's [AlphaEvolve](https://arxiv.org/abs/2506.13131)**, Q-Rotate replaces forty years of classical $\mathcal{O}(N^3)$ Cartesian grid discretization with continuous Lie-algebraic ($SU(2)^{\otimes n}$) geodesic flow, coupled with real-time mid-circuit **Repeat-Until-Success (RUS)** feedback and **Coordinate-Free Blind Parity**.
 
-Validated across 6 experimental crystallographic structures from the **RCSB Protein Data Bank (PDB)**, Q-Rotate achieves up to **3,360× acceleration** with **0 SWAP gates** and $\approx 13.6$ HQCs per circuit.
+Benchmarked in simulation on 6 experimental structures from the **RCSB Protein Data Bank (PDB)** and PubChem, Q-Rotate recovers the deposited pose in 168 of 180 resampled trials (93.3%, 95% CI 88.7-96.1%), with **0 SWAP gates** and ~13.6 estimated HQCs per circuit. The reduction in search steps versus a classical grid reaches up to 3,360x; that counts steps, not wall-clock time, and is not a demonstrated quantum advantage.
 
 ---
 
@@ -25,10 +25,10 @@ Validated across 6 experimental crystallographic structures from the **RCSB Prot
 - [The Core Breakthrough: The Noodle & The String](#the-core-breakthrough-the-noodle--the-string)
 - [How Q-Rotate Works (The Quantum-Native Agentic Loop)](#how-q-rotate-works-the-quantum-native-agentic-loop)
 - [Empirical Benchmarks (6 Real RCSB Crystallographic Systems)](#empirical-benchmarks-6-real-rcsb-crystallographic-systems)
-- [Zero-Share Blind Parity: The Enterprise IP Moat ($120M–$280M TAM)](#zero-share-blind-parity-the-enterprise-ip-moat-120m280m-tam)
+- [Blind Parity: Reduced-Exposure Screening](#blind-parity-reduced-exposure-screening)
 - [Compiling to Quantinuum Trapped Ions (0 SWAPs)](#compiling-to-quantinuum-trapped-ions-0-swaps)
 - [Interactive Telemetry & 3D WebGL Constellation](#interactive-telemetry--3d-webgl-constellation)
-- [Official Jury Scoring Rubric Alignment (Level 5/5)](#official-jury-scoring-rubric-alignment-level-55)
+- [Evidence Status & Rubric Alignment](#evidence-status--rubric-alignment)
 - [Repository Structure](#repository-structure)
 - [Deep Dives & Research Documentation](#deep-dives--research-documentation)
 - [Team & Contact](#team--contact)
@@ -53,7 +53,7 @@ uv pip install -e .
 
 ### 2. Run Verification Test Suite
 ```bash
-# Run all unit and integration tests (100% pass coverage)
+# Run all unit and integration tests
 pytest tests/ -v
 ```
 
@@ -112,9 +112,9 @@ In Google DeepMind's *AlphaEvolve* paradigm, discovery is driven by an autonomou
 
 ## Empirical Benchmarks (6 Real RCSB Crystallographic Systems)
 
-Validated on experimental crystallographic structures from the **RCSB Protein Data Bank (PDB)** and **PubChem**, compiled to Quantinuum H2 native gates:
+Simulated on experimental coordinates from the **RCSB Protein Data Bank (PDB)** and **PubChem**; circuits are compiled to Quantinuum H2 native gates but outcomes are emulated, not measured on hardware. Single-seed run:
 
-| Target Complex | PDB ID | Biological Function | Atoms | Initial Error | RUS Cycles | Final $P(0)$ | Pose Error | Classical Speedup |
+| Target Complex | PDB ID | Biological Function | Atoms | Initial Error | RUS Cycles | Final $P(0)$ | Pose Error | Grid-Step Reduction |
 | :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **11-cis Retinal / Rhodopsin** | `1U19` | GPCR Visual Sensor | 20 | $+45.0^\circ$ | **2 loops** | **0.980** | $15.0^\circ$ | **$1,920\times$** |
 | **GFP Chromophore** | `1EMA` | Fluorescent Reporter | 22 | $+35.0^\circ$ | **4 loops** | **0.990** | $0.4^\circ$ | **$1,056\times$** |
@@ -123,15 +123,15 @@ Validated on experimental crystallographic structures from the **RCSB Protein Da
 | **Azobenzene Photoswitch** | `2272` | Photopharmacology Switch | 14 | $-115.0^\circ$ | **5 loops** | **0.940** | $17.4^\circ$ | **$538\times$** |
 | **Molecular Hydrogen ($H_2$)** | QM | Analytical Reference | 2 | $+15.0^\circ$ | **1 loop** | **0.990** | $15.0^\circ$ | **$384\times$** |
 
-*All benchmarks executed against real experimental coordinates with 100% pose recovery verification.*
+*Real experimental coordinates; emulator only. This single-seed table locked 6/6, but resampling 30 independent shot-noise trials per system gives lock rates of 100% (rhodopsin, GFP, Mpro, H2), 86.7% (COX-2) and 73.3% (azobenzene); see `benchmarks/statistical_robustness.json`. "Grid-Step Reduction" compares search-step counts, not runtime.*
 
 ---
 
-## Zero-Share Blind Parity: The Enterprise IP Moat ($120M–$280M TAM)
+## Blind Parity: Reduced-Exposure Screening
 
-* **The Problem:** Biopharma giants (Pfizer, Novartis, Roche) avoid cloud quantum platforms due to **corporate espionage terror**. Uploading raw 3D atomic coordinates of unpatented, $500M scaffolds creates unacceptable leak and subpoena risks.
-* **The Solution:** Our **Coordinate-Free Blind Parity** protocol evaluates wave interference ($P(0)$) on an ancilla referee without ever transmitting, logging, or exposing the raw 3D coordinates.
-* **Commercial Impact:** Unlocks confidential multi-party screening enclaves across enterprise pharma and CROs ($120M–$280M TAM).
+* **The Problem:** Biopharma giants (Pfizer, Novartis, Roche) are cautious about sending unpatented scaffold coordinates to external cloud platforms because of leak and subpoena risk.
+* **The Solution:** Our **Coordinate-Free Blind Parity** protocol evaluates wave interference ($P(0)$) on an ancilla referee while exchanging only a compressed phase fingerprint rather than raw 3D coordinates. This reduces exposure; it is not a cryptographic zero-knowledge guarantee (see `docs/03_the_blind_parity_test.md`).
+* **Commercial Impact:** Could support confidential multi-party screening. The $120M-$280M figure is an illustrative scenario model, not a market-validated TAM; see `workspaces/JAMES_VENTURE_GTM_BRIEF.md`.
 
 ---
 
@@ -166,14 +166,18 @@ Explore the live visual bridge connecting high-dimensional quantum states to hum
 
 ---
 
-## Official Jury Scoring Rubric Alignment (Level 5/5)
+## Evidence Status & Rubric Alignment
 
-| Scoring Dimension & Weight | Evidence Level & Realization |
-| :--- | :--- |
-| **Problem & Value (30%)** | **Level 5/5:** Solves $2.6B false-positive wall; Zero-Share confidential screening moat ($120M–$280M TAM). |
-| **Tech Performance & Hardware (30%)** | **Level 5/5:** Quantinuum H2 native gates (`PhasedX`, `ZZPhase`), 0 SWAPs, depth 68, $\approx 13.6$ HQCs, up to **3,360× speedup**. |
-| **Scientific Merit (20%)** | **Level 5/5:** Continuous Lie algebra $SU(2)^{\otimes n}$ replaces $O(N^3)$ grid search; DeepMind AlphaEvolve agentic closed loop. |
-| **Engineering & Reproducibility (20%)** | **Level 5/5:** Modular `src/qrotate/`, 100% test pass coverage, Marimo notebook, and live 3D WebGL simulator. |
+We score ourselves conservatively against the 0-5 Evidence Scale in `Competition.md`. Nothing here has run on physical H2 hardware.
+
+| Scoring Dimension & Weight | Current evidence | What would raise it |
+| :--- | :--- | :--- |
+| **Problem & Value (30%)** | Scenario model ($120M-$280M) checked against 5 cited 2024-2025 AI-drug-discovery licensing deals. No signed pilot or LOI. | Signed pilot/LOI, TAM/SAM/SOM breakdown |
+| **Tech Performance & Hardware (30%)** | H2-native compilation (62 `PhasedX`, 32 `ZZPhase`, 0 SWAPs, depth 68, ~13.6 est. HQCs); 6 systems, 180 simulated trials, 93.3% lock rate. Emulator only. | Noisy-emulator and physical H2 runs |
+| **Scientific Merit (20%)** | Lie-algebra pose search vs a classical grid baseline, with confidence intervals and per-system failure analysis. | External reference data, hardware noise analysis |
+| **Engineering & Reproducibility (20%)** | Modular `src/qrotate/`, 19 passing `pytest` cases, regenerable benchmarks (`python -m src.qrotate.metrics`), Marimo notebook, 3D WebGL demo. | CI, pinned environment |
+
+See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware disclosure.
 
 ---
 
@@ -194,7 +198,7 @@ Explore the live visual bridge connecting high-dimensional quantum states to hum
 │   ├── metrics.py                   # Blind Parity P(0) & overlap fidelity
 │   └── hpc_bridge.py                # HPC classical-quantum hybrid pipeline
 ├── tests/                           # Complete pytest verification suite
-│   └── test_qrotate.py              # 100% pass unit & integration tests
+│   └── test_qrotate.py              # unit & integration tests
 ├── Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf # Official 1-Page Summary PDF
 ├── WHY_QROTATE_MATTERS.md           # Standalone architectural treatise
 ├── pyproject.toml                   # Modern packaging metadata
@@ -205,7 +209,7 @@ Explore the live visual bridge connecting high-dimensional quantum states to hum
 
 ## Deep Dives & Research Documentation
 
-* 📖 **Architectural Treatise:** [`WHY_QROTATE_MATTERS.md`](WHY_QROTATE_MATTERS.md) *(Why Classical Docking Fails, Why Q-Rotate Wins & The Zero-Share Moat)*
+* 📖 **Architectural Treatise:** [`WHY_QROTATE_MATTERS.md`](WHY_QROTATE_MATTERS.md) *(Why Classical Docking Fails, Why Q-Rotate Wins & Reduced-Exposure Screening)*
 * 📄 **Official One-Page Summary (PDF):** [`Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf`](Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf)
 * 🤖 **Foundational Agentic Paradigm:** [Google DeepMind AlphaEvolve (arXiv:2506.13131)](https://arxiv.org/abs/2506.13131)
 * 🧬 **Eve Count Agentic Ecosystem:** [github.com/evecount/alphaevolve-on-googlecloud](https://github.com/evecount/alphaevolve-on-googlecloud)
