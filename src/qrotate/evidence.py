@@ -139,12 +139,15 @@ def _git(*args: str) -> Optional[str]:
 
 
 def git_state() -> dict:
-    status = _git("status", "--porcelain")
+    """Commit, branch and whether any *tracked* file differs from it.
+    Untracked files (an evidence directory being written, say) do not make
+    the code dirty, so they are excluded."""
+    status = _git("status", "--porcelain", "--untracked-files=no")
     return {
         "commit": _git("rev-parse", "HEAD"),
         "branch": _git("rev-parse", "--abbrev-ref", "HEAD"),
         "dirty": bool(status) if status is not None else None,
-        "describe": _git("describe", "--always", "--dirty"),
+        "dirty_means": "a tracked file differs from the commit; untracked files are ignored",
     }
 
 
