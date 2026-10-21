@@ -30,6 +30,17 @@ from .metrics import (
     estimate_qrotate_hqc_cost,
     compute_circuit_hqc_cost,
 )
+from .runner import (
+    Backend,
+    RunResult,
+    SwapTestProgram,
+    StatevectorBackend,
+    SeleneBackend,
+    NexusBackend,
+    CredentialsRequired,
+    BackendUnavailable,
+    get_backend,
+)
 
 __all__ = [
     "HTubeHamiltonian",
@@ -50,4 +61,13 @@ __all__ = [
     "compute_overlap_fidelity",
     "estimate_qrotate_hqc_cost",
     "compute_circuit_hqc_cost",
+    "Backend",
+    "RunResult",
+    "SwapTestProgram",
+    "StatevectorBackend",
+    "SeleneBackend",
+    "NexusBackend",
+    "CredentialsRequired",
+    "BackendUnavailable",
+    "get_backend",
 ]
