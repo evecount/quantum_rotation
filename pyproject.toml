@@ -1,31 +1,61 @@
 [project]
-name = "sg-grand-challenge"
+name = "qrotate"
 version = "0.1.0"
+description = "Project Q-Rotate: coordinate-free molecular pose search as a quantum blind parity check with adaptive repeat-until-success loops, compiled for Quantinuum H-series."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Eve Count" }]
 requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
 dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
     "aqora>=0.29.0",
     "guppylang>=0.21.16",
     "hugr-qir>=0.1.2",
     "pytket>=2.18.1",
 ]
 
-[dependency-groups]
+[project.urls]
+Repository = "https://github.com/evecount/quantum_rotation"
+
+[project.optional-dependencies]
+# Marimo notebooks (notebook.py, readme.py, guppy_example.py, pytket_example.py)
+# and the Altair charts they render.
+notebook = ["marimo", "altair"]
+# Everything CI needs: the test runner, the notebook stack (tests/ imports the
+# root-level utils.py marimo module), linting, type checking and the helper
+# SDKs used by the authoring scripts.
 dev = [
-  "ruff",
-  "ty",
-  "watchdog",
-  "nbconvert",
-  "google-genai",
-  "anthropic",
-  "openai",
+    "qrotate[notebook]",
+    "pytest>=8",
+    "ruff",
+    "ty",
+    "watchdog",
+    "nbconvert",
+    "google-genai",
+    "anthropic",
+    "openai",
 ]
 
 [build-system]
-requires = ["pdm-backend"]
+requires = ["pdm-backend>=2.4"]
 build-backend = "pdm.backend"
+# pdm-backend auto-detects the src/ layout: `pip install -e .` installs the
+# `qrotate` package from src/qrotate/. No [tool.pdm] block is needed.
 
-[tool.marimo.venv]
-path = "/home/me/venv"
-# marimo is already installed here; setting this true reinstalls it on every
-# kernel start. `uv add` works either way.
-writable = false
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: takes more than a second (real-structure shell encodings, Guppy/Pytket compilation); skipped by the CI fast tier, run on pushes to main",
+]
