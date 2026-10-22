@@ -33,11 +33,16 @@ Repository = "https://github.com/evecount/quantum_rotation"
 # Marimo notebooks (notebook.py, readme.py, guppy_example.py, pytket_example.py)
 # and the Altair charts they render.
 notebook = ["marimo", "altair"]
+# Client/node product split (src/qrotate/client.py, node.py, cli.py).
+client = ["httpx>=0.27"]
+node = ["fastapi>=0.110", "uvicorn>=0.27"]
+cli = ["typer>=0.12"]
+product = ["httpx>=0.27", "fastapi>=0.110", "uvicorn>=0.27", "typer>=0.12"]
 # Everything CI needs: the test runner, the notebook stack (tests/ imports the
-# root-level utils.py marimo module), linting, type checking and the helper
-# SDKs used by the authoring scripts.
+# root-level utils.py marimo module), the product stack, linting, type
+# checking and the helper SDKs used by the authoring scripts.
 dev = [
-    "qrotate[notebook]",
+    "qrotate[notebook,product]",
     "pytest>=8",
     "ruff",
     "ty",
@@ -47,6 +52,9 @@ dev = [
     "anthropic",
     "openai",
 ]
+
+[project.scripts]
+qrotate = "qrotate.cli:main"
 
 [build-system]
 requires = ["pdm-backend>=2.4"]
