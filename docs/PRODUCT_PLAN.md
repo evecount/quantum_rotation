@@ -31,13 +31,19 @@
 | 8 | **Pricing is underwater.** The team's own doc shows a $50–$250 screen costs $140–$850 of QPU time at list HQC rates. | Problem & Value (30%) wants ROI. The unit economics as written disprove the margin claim. | `DECENTRALIZED_QUANTUM_TESTING_FACILITY.md` §4. |
 | 9 | **Repo sprawl.** `workbook.html` exists in four places; `index.html`, `constellation.html`, `simulation.html` are duplicated in root and `docs/`; an 830 KB HTML one-pager and 10 MB of PDFs are committed. | Confuses judges and makes the "clean repository" claim hard to defend. | `ls`. |
 
-### The honest framing to adopt
-Q-Rotate is **a quantum shape-fingerprint matcher with a privacy-preserving execution model**, compiled for trapped ions. It is not a docking engine and not a quantum advantage. Its defensible value today is:
-1. A hardware-realistic, fully costed, end-to-end workflow on Quantinuum systems (exactly what the track exists to build).
-2. A blind-evaluation protocol where the node never receives coordinates.
-3. A Helios-ready register design (9 → 17 qubits, 0 SWAPs) that scales fingerprint resolution.
+### What the Phase 0 studies found (22 Oct 2026)
+The fair-baseline and noise workstreams (`docs/08_classical_baseline.md`, `docs/09_noise_study.md`) settled gaps 4 and 5 with results that must shape the product:
+- **Classical wins every axis.** A ROCS-style Gaussian-overlap search recovers every deposited pose exactly in 8–32 evaluations and milliseconds; USR identifies the shape in under a millisecond with no search. The quantum blind RUS lands 10–50° off on average and needs 430–560 shots across 4–6 circuits. The step-count "speedups" must not be quoted again.
+- **The fingerprint does not rank like a chemist.** Across 30 ligand pairs the quantum P(0) has no rank correlation with USR or Gaussian Tanimoto (|ρ| ≤ 0.14), while the two classical scores agree with each other (ρ = +0.77). The 4- or 8-angle encoder is too lossy to carry chemistry.
+- **Noise ceiling.** At the H2 two-qubit spec (p2 = 1e-3 to 2e-3) the 9-qubit search keeps a 91.7% lock rate; it drops below 80% near p2 = 4e-3. The 17-qubit register loses a third of its locks at 2e-3 and should not be presented as hardware-ready.
 
-Every doc, pitch and UI label should say this. Everything else is roadmap.
+### The honest framing to adopt
+Q-Rotate is **an end-to-end, costed, privacy-preserving quantum execution workflow on trapped ions, demonstrated on a shape-matching toy problem.** It is not a docking engine, not a quantum advantage, and, per Chapter 8, not yet a competitive similarity method. Its defensible value today is:
+1. A hardware-realistic, fully costed, end-to-end workflow on Quantinuum systems (exactly what the track exists to build), now with a noise model that predicts what the finale hardware run should show.
+2. A blind-evaluation protocol where the node never receives coordinates, implemented as a client/node split with a CLI.
+3. A reproducible benchmark harness (six real structures, fair classical comparators, noise sweep) that any richer encoder can be dropped into.
+
+Every doc, pitch and UI label should say this. The pitch must stop leading with docking speedups; it should lead with the workflow, the protocol, and the open scaling question (an encoding rich enough to carry chemistry, compared on hardware against a classical score of the same richness). Everything else is roadmap.
 
 ---
 
@@ -91,10 +97,11 @@ qrotate serve                                                  -> node API on :8
 5. **Written report** (no page limit) restructured around the checklist: problem, approach, implementation, assumptions, validation, results, execution evidence.
 
 ### Phase 1 — Scientific credibility (Nov – Dec)
-6. **SO(3) search**: three Euler angles (and optionally translation via centroid alignment) instead of z-only; report pose error as RMSD in Å, not degrees.
-7. **Fair classical baseline**: implement USR and a Gaussian-overlap (ROCS-style) scorer on the same six systems; report where quantum overlap agrees, disagrees, and what it costs. Publish the result even if classical wins, and reframe the value as privacy + hardware workflow.
-8. **Noise and depth study**: CCX decomposition cost on H2, lock-rate vs two-qubit error rate, and the register size where the signal dies.
-9. **Preprint** (arXiv) with Kentaro Yamamoto / CQT as potential co-reviewers.
+6. **SO(3) search**: three Euler angles (and optionally translation via centroid alignment) instead of z-only; report pose error as RMSD in Å, not degrees. Chapter 8 already scores RMSD; extend the quantum side to match.
+7. ~~Fair classical baseline~~ **Done** (`docs/08_classical_baseline.md`). Next: rewrite README, pitch and one-pager so the baseline result is the quoted comparison and the step-count speedups are removed.
+8. ~~Noise study~~ **Done** (`docs/09_noise_study.md`). Next: compare its prediction with the real H2-2E and hardware runs from Phase 0 and report the gap.
+8b. **Richer encoder** (the real scientific question): design an encoding with enough angular moments or amplitude structure to correlate with Gaussian Tanimoto (target ρ > 0.6 on the 30-pair test), then re-run Chapter 8 and Chapter 9. If no encoder reaches that bar within the HQC budget, say so and position the product purely as workflow and protocol.
+9. **Preprint** (arXiv) with Kentaro Yamamoto / CQT as potential co-reviewers, including the negative result.
 
 ### Phase 2 — Product (Dec – Feb)
 10. `qrotate.client` + `qrotate.node` + CLI, pip-installable, versioned, with an OpenAPI spec.
