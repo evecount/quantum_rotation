@@ -13,7 +13,7 @@ import warnings
 import zlib
 import numpy as np
 from dataclasses import dataclass, asdict
-from typing import Sequence, Optional
+from typing import Callable, Sequence, Optional
 
 try:
     from .hpc_bridge import (
@@ -857,6 +857,7 @@ def run_blind_rus_pose_recovery(
     step_deg: float = 60.0,
     seed: Optional[int] = None,
     elements: Optional[Sequence[str]] = None,
+    sampler: Optional[Callable] = None,
 ) -> BlindRusResult:
     """Blind RUS over the POSE rather than over free phase values.
 
@@ -868,6 +869,11 @@ def run_blind_rus_pose_recovery(
     Constellation page runs, and the thing the method actually claims to do.
 
     Still blind: the target phases are never read, only the sampled parity.
+
+    `sampler(target_phases, probe_phases, shots, seed) -> (p0_true, shot_res)`
+    replaces the ideal statevector + binomial measurement; the noise study
+    passes one that runs the compiled circuit under a hardware noise model.
+    The search logic is identical either way.
     """
     rng = np.random.default_rng(seed)
     probe_elements = list(elements) if elements else []
@@ -876,8 +882,11 @@ def run_blind_rus_pose_recovery(
         rotated = _rotate_z(probe_coords, angle_deg)
         geom = MolecularGeometry("probe", probe_elements or ["C"] * len(rotated), rotated)
         phases = pocket_ligand_to_qubit_phases(geom, n_qubits=n_qubits)
+        measurement_seed = int(rng.integers(1 << 31))
+        if sampler is not None:
+            return sampler(target_phases, phases, shots, measurement_seed)
         p0_true = simulate_swap_test_statevector(target_phases, phases, tau, omega)
-        shot_res = simulate_shot_sampling(p0_true, n_shots=shots, seed=int(rng.integers(1 << 31)))
+        shot_res = simulate_shot_sampling(p0_true, n_shots=shots, seed=measurement_seed)
         return p0_true, shot_res
 
     angle = 0.0

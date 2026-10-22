@@ -175,7 +175,7 @@ We score ourselves conservatively against the 0-5 Evidence Scale in `Competition
 | :--- | :--- | :--- |
 | **Problem & Value (30%)** | Scenario model ($120M-$280M) checked against 5 cited 2024-2025 AI-drug-discovery licensing deals. No signed pilot or LOI. | Signed pilot/LOI, TAM/SAM/SOM breakdown |
 | **Tech Performance & Hardware (30%)** | H2-native compilation (62 `PhasedX`, 32 `ZZPhase`, 0 SWAPs, depth 68, ~13.6 est. HQCs); 6 systems, 180 simulated trials, 93.3% lock rate. Emulator only. | Noisy-emulator and physical H2 runs |
-| **Scientific Merit (20%)** | Lie-algebra pose search vs a classical grid baseline, with confidence intervals and per-system failure analysis. | External reference data, hardware noise analysis |
+| **Scientific Merit (20%)** | Fair classical baseline (`docs/08_classical_baseline.md`): USR and ROCS-style Gaussian overlap recover every pose exactly in 8-32 evaluations and milliseconds, versus 94% within 2 A for the quantum search, and the quantum fingerprint's pair ranking has no correlation with either classical score. Depolarizing-noise study on the compiled H2 circuit (`docs/09_noise_study.md`): 9-qubit lock rate 91.7% at the H2 two-qubit spec (p2 = 1e-3 to 2e-3), falling below 80% near p2 = 4e-3; 17 qubits falls below 80% near 1.3e-3. | External reference data, physical H2 run |
 | **Engineering & Reproducibility (20%)** | Modular `src/qrotate/`, 19 passing `pytest` cases, regenerable benchmarks (`python -m src.qrotate.metrics`), Marimo notebook, 3D WebGL demo. | CI, pinned environment |
 
 See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware disclosure.
@@ -220,6 +220,8 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 * 📄 **Official One-Page Summary (PDF):** [`Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf`](Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf)
 * 🤖 **Foundational Agentic Paradigm:** [Google DeepMind AlphaEvolve (arXiv:2506.13131)](https://arxiv.org/abs/2506.13131)
 * 🧬 **Eve Count Agentic Ecosystem:** [github.com/evecount/alphaevolve-on-googlecloud](https://github.com/evecount/alphaevolve-on-googlecloud)
+* 📐 **Fair Classical Baseline (USR, Gaussian overlap vs Q-Rotate):** [`docs/08_classical_baseline.md`](docs/08_classical_baseline.md)
+* 🔊 **Hardware-Noise Study (depolarizing model on the compiled H2 circuit):** [`docs/09_noise_study.md`](docs/09_noise_study.md)
 
 ---
 
