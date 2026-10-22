@@ -157,8 +157,8 @@ comma list; `--as-entity <org>` attributes Nexus jobs to a team organisation.
 
 | Backend | Status | Where |
 | :--- | :--- | :--- |
-| `statevector` | executed, all six systems, 4 and 8 sites | `evidence/*_statevector/` |
-| `selene` | executed locally where recorded | `evidence/*_selene/` |
+| `statevector` | executed, all six systems, 4 sites (9 qubits) and 8 sites (17 qubits), 100 shots | `evidence/20261021T201443Z_statevector/`, `evidence/20261021T201525Z_statevector/` |
+| `selene` | executed locally, all six systems, 4 sites, 100 shots; agrees with the exact P(0) within shot noise (11 of 12 inside the 95 % interval; no bias at 20 000 shots) | `evidence/20261021T201406Z_selene/` |
 | `nexus:H2-2SC` (syntax check) | pending team login | run the syntax-check command above |
 | `nexus:H2-2E` | pending team login and hardware window (Oct 21 to Nov 14) | run the H2-2E command above |
 

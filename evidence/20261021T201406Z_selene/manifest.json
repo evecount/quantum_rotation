@@ -1,0 +1,446 @@
+{
+  "schema_version": 1,
+  "project": "Q-Rotate (Team Eve Count, Quantinuum Singapore Grand Challenge 2026)",
+  "generated_at_utc": "2026-10-21T20:14:06.090906+00:00",
+  "backend": {
+    "name": "selene",
+    "kind": "local_emulator",
+    "is_h_series": false
+  },
+  "syntax_check": false,
+  "git": {
+    "commit": "b5c1fffd2b518871c423c899a0360731cd3e2878",
+    "branch": "claude/hardware-evidence-runner-3f3bb2",
+    "dirty": false,
+    "dirty_means": "a tracked file differs from the commit; untracked files are ignored"
+  },
+  "environment": {
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.22621-SP0",
+    "packages": {
+      "numpy": "2.5.2",
+      "pytket": "2.18.3",
+      "guppylang": "1.1.1",
+      "hugr": "0.18.6",
+      "tket": "0.15.9",
+      "aqora": "0.32.0",
+      "selene-sim": "0.3.2",
+      "selene-core": "0.3.2",
+      "hugr-qir": "0.3.0"
+    }
+  },
+  "parameters": {
+    "n_sites": 4,
+    "n_qubits": 9,
+    "shots": 100,
+    "base_seed": 20261022,
+    "tau": 0.25,
+    "omega": [
+      1.0,
+      0.5,
+      0.25
+    ],
+    "systems": [
+      "rhodopsin",
+      "gfp",
+      "mpro",
+      "cox2",
+      "azobenzene",
+      "h2bench"
+    ],
+    "poses": [
+      "deposited",
+      "start"
+    ]
+  },
+  "what_the_poses_mean": {
+    "deposited": "ligand register vs its own deposited-pose register: the state the RUS loop locks onto",
+    "start": "ligand register vs the benchmark's start misalignment: metrics.run_molecular_showdown start_p0"
+  },
+  "runs": [
+    {
+      "file": "rhodopsin_deposited.json",
+      "system_id": "rhodopsin",
+      "pose": "deposited",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.99402,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 100,
+        "1": 0
+      },
+      "prob_zero": 1.0,
+      "ci95_wilson": [
+        0.9630051925239981,
+        0.9999999999999999
+      ],
+      "job_id": null,
+      "wall_time_s": 8.165,
+      "hqc": null
+    },
+    {
+      "file": "rhodopsin_start.json",
+      "system_id": "rhodopsin",
+      "pose": "start",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.790675,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 73,
+        "1": 27
+      },
+      "prob_zero": 0.73,
+      "ci95_wilson": [
+        0.6356769977376873,
+        0.8073053908233518
+      ],
+      "job_id": null,
+      "wall_time_s": 6.664,
+      "hqc": null
+    },
+    {
+      "file": "gfp_deposited.json",
+      "system_id": "gfp",
+      "pose": "deposited",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.991507,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 100,
+        "1": 0
+      },
+      "prob_zero": 1.0,
+      "ci95_wilson": [
+        0.9630051925239981,
+        0.9999999999999999
+      ],
+      "job_id": null,
+      "wall_time_s": 12.221,
+      "hqc": null
+    },
+    {
+      "file": "gfp_start.json",
+      "system_id": "gfp",
+      "pose": "start",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.864388,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 84,
+        "1": 16
+      },
+      "prob_zero": 0.84,
+      "ci95_wilson": [
+        0.7557955544110557,
+        0.8990479765052628
+      ],
+      "job_id": null,
+      "wall_time_s": 8.668,
+      "hqc": null
+    },
+    {
+      "file": "mpro_deposited.json",
+      "system_id": "mpro",
+      "pose": "deposited",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.994323,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 100,
+        "1": 0
+      },
+      "prob_zero": 1.0,
+      "ci95_wilson": [
+        0.9630051925239981,
+        0.9999999999999999
+      ],
+      "job_id": null,
+      "wall_time_s": 7.862,
+      "hqc": null
+    },
+    {
+      "file": "mpro_start.json",
+      "system_id": "mpro",
+      "pose": "start",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.700904,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 64,
+        "1": 36
+      },
+      "prob_zero": 0.64,
+      "ci95_wilson": [
+        0.542352199811621,
+        0.7272892540950986
+      ],
+      "job_id": null,
+      "wall_time_s": 8.0,
+      "hqc": null
+    },
+    {
+      "file": "cox2_deposited.json",
+      "system_id": "cox2",
+      "pose": "deposited",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.994316,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 99,
+        "1": 1
+      },
+      "prob_zero": 0.99,
+      "ci95_wilson": [
+        0.9455124752390652,
+        0.9982326134344527
+      ],
+      "job_id": null,
+      "wall_time_s": 6.395,
+      "hqc": null
+    },
+    {
+      "file": "cox2_start.json",
+      "system_id": "cox2",
+      "pose": "start",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.57285,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 52,
+        "1": 48
+      },
+      "prob_zero": 0.52,
+      "ci95_wilson": [
+        0.4231640509017654,
+        0.6153561567991945
+      ],
+      "job_id": null,
+      "wall_time_s": 6.274,
+      "hqc": null
+    },
+    {
+      "file": "azobenzene_deposited.json",
+      "system_id": "azobenzene",
+      "pose": "deposited",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.990331,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 99,
+        "1": 1
+      },
+      "prob_zero": 0.99,
+      "ci95_wilson": [
+        0.9455124752390652,
+        0.9982326134344527
+      ],
+      "job_id": null,
+      "wall_time_s": 6.462,
+      "hqc": null
+    },
+    {
+      "file": "azobenzene_start.json",
+      "system_id": "azobenzene",
+      "pose": "start",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.502372,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 40,
+        "1": 60
+      },
+      "prob_zero": 0.4,
+      "ci95_wilson": [
+        0.3093997461136028,
+        0.4979992153815976
+      ],
+      "job_id": null,
+      "wall_time_s": 6.111,
+      "hqc": null
+    },
+    {
+      "file": "h2bench_deposited.json",
+      "system_id": "h2bench",
+      "pose": "deposited",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.990331,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 99,
+        "1": 1
+      },
+      "prob_zero": 0.99,
+      "ci95_wilson": [
+        0.9455124752390652,
+        0.9982326134344527
+      ],
+      "job_id": null,
+      "wall_time_s": 7.132,
+      "hqc": null
+    },
+    {
+      "file": "h2bench_start.json",
+      "system_id": "h2bench",
+      "pose": "start",
+      "n_qubits": 9,
+      "prob_zero_exact": 0.986001,
+      "hqc_estimate": {
+        "n_qubits": 9,
+        "single_qubit_count": 62,
+        "two_qubit_count": 32,
+        "measure_count": 1,
+        "reset_count": 0,
+        "depth": 68,
+        "shots": 100,
+        "hqc_cost": 13.64
+      },
+      "status": "ok",
+      "shots": 100,
+      "counts": {
+        "0": 98,
+        "1": 2
+      },
+      "prob_zero": 0.98,
+      "ci95_wilson": [
+        0.9299868370580063,
+        0.9944981477650318
+      ],
+      "job_id": null,
+      "wall_time_s": 5.595,
+      "hqc": null
+    }
+  ],
+  "status": "complete",
+  "finished_at_utc": "2026-10-21T20:15:43.083900+00:00",
+  "summary": {
+    "runs_total": 12,
+    "runs_ok": 12,
+    "runs_errored": 0,
+    "job_ids": [],
+    "hqc_estimate_total": 163.68,
+    "runs_executed": 12,
+    "max_abs_deviation_from_exact": 0.1024,
+    "exact_inside_wilson_ci": "11/12"
+  }
+}
