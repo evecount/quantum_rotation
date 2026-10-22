@@ -28,6 +28,15 @@ _EXPORTS = {
     "compute_overlap_fidelity": ".metrics",
     "estimate_qrotate_hqc_cost": ".metrics",
     "compute_circuit_hqc_cost": ".metrics",
+    "Backend": ".runner",
+    "RunResult": ".runner",
+    "SwapTestProgram": ".runner",
+    "StatevectorBackend": ".runner",
+    "SeleneBackend": ".runner",
+    "NexusBackend": ".runner",
+    "CredentialsRequired": ".runner",
+    "BackendUnavailable": ".runner",
+    "get_backend": ".runner",
 }
 
 
@@ -65,4 +74,13 @@ __all__ = [
     "compute_overlap_fidelity",
     "estimate_qrotate_hqc_cost",
     "compute_circuit_hqc_cost",
+    "Backend",
+    "RunResult",
+    "SwapTestProgram",
+    "StatevectorBackend",
+    "SeleneBackend",
+    "NexusBackend",
+    "CredentialsRequired",
+    "BackendUnavailable",
+    "get_backend",
 ]

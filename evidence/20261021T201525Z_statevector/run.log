@@ -1,0 +1,28 @@
+20:15:26Z backend statevector (local_simulator); 6 systems x 2 poses; 8 sites = 17 qubits; 100 shots
+20:15:26Z git b5c1fffd2b518871c423c899a0360731cd3e2878 (claude/hardware-evidence-runner-3f3bb2)
+20:15:26Z packages numpy=2.5.2, pytket=2.18.3, guppylang=1.1.1, hugr=0.18.6, tket=0.15.9, aqora=0.32.0, selene-sim=0.3.2, selene-core=0.3.2, hugr-qir=0.3.0
+20:15:30Z [rhodopsin/deposited] RCSB 1U19 | 17 qubits | exact statevector P(0)=0.9894 | seed 958042876
+20:15:31Z [rhodopsin/deposited] counts {'0': 98, '1': 2} -> P(0)=0.980 [0.930, 0.994] 95% Wilson | 1.34s
+20:15:33Z [rhodopsin/start] RCSB 1U19 | 17 qubits | exact statevector P(0)=0.6690 | seed 1370725184
+20:15:34Z [rhodopsin/start] counts {'0': 78, '1': 22} -> P(0)=0.780 [0.689, 0.850] 95% Wilson | 1.30s
+20:15:37Z [gfp/deposited] RCSB 1EMA | 17 qubits | exact statevector P(0)=0.9837 | seed 1323495578
+20:15:38Z [gfp/deposited] counts {'0': 100, '1': 0} -> P(0)=1.000 [0.963, 1.000] 95% Wilson | 0.90s
+20:15:39Z [gfp/start] RCSB 1EMA | 17 qubits | exact statevector P(0)=0.7660 | seed 1500000019
+20:15:40Z [gfp/start] counts {'0': 79, '1': 21} -> P(0)=0.790 [0.700, 0.858] 95% Wilson | 1.12s
+20:15:42Z [mpro/deposited] RCSB 7VH8 | 17 qubits | exact statevector P(0)=0.9884 | seed 1349416609
+20:15:44Z [mpro/deposited] counts {'0': 100, '1': 0} -> P(0)=1.000 [0.963, 1.000] 95% Wilson | 1.52s
+20:15:45Z [mpro/start] RCSB 7VH8 | 17 qubits | exact statevector P(0)=0.5805 | seed 1496588357
+20:15:47Z [mpro/start] counts {'0': 65, '1': 35} -> P(0)=0.650 [0.553, 0.736] 95% Wilson | 1.61s
+20:15:49Z [cox2/deposited] RCSB 3LN1 | 17 qubits | exact statevector P(0)=0.9905 | seed 1369385100
+20:15:50Z [cox2/deposited] counts {'0': 100, '1': 0} -> P(0)=1.000 [0.963, 1.000] 95% Wilson | 1.07s
+20:15:51Z [cox2/start] RCSB 3LN1 | 17 qubits | exact statevector P(0)=0.5106 | seed 1732643305
+20:15:52Z [cox2/start] counts {'0': 51, '1': 49} -> P(0)=0.510 [0.413, 0.606] 95% Wilson | 1.08s
+20:15:55Z [azobenzene/deposited] PubChem 2272 | 17 qubits | exact statevector P(0)=0.9808 | seed 1516910744
+20:15:56Z [azobenzene/deposited] counts {'0': 95, '1': 5} -> P(0)=0.950 [0.888, 0.978] 95% Wilson | 1.31s
+20:15:57Z [azobenzene/start] PubChem 2272 | 17 qubits | exact statevector P(0)=0.5000 | seed 176925859
+20:15:58Z [azobenzene/start] counts {'0': 54, '1': 46} -> P(0)=0.540 [0.443, 0.634] 95% Wilson | 1.36s
+20:16:01Z [h2bench/deposited] exact H2 | 17 qubits | exact statevector P(0)=0.9808 | seed 49378037
+20:16:02Z [h2bench/deposited] counts {'0': 98, '1': 2} -> P(0)=0.980 [0.930, 0.994] 95% Wilson | 1.51s
+20:16:04Z [h2bench/start] exact H2 | 17 qubits | exact statevector P(0)=0.9766 | seed 334714572
+20:16:05Z [h2bench/start] counts {'0': 100, '1': 0} -> P(0)=1.000 [0.963, 1.000] 95% Wilson | 1.11s
+20:16:05Z 12/12 runs ok -> evidence\20261021T201525Z_statevector
