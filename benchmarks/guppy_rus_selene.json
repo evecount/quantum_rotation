@@ -1,0 +1,957 @@
+{
+  "generated_by": "python -m qrotate.guppy_kernel",
+  "environment": {
+    "python": "3.14.7",
+    "platform": "win32",
+    "guppylang": "1.1.1",
+    "hugr": "0.18.6",
+    "hugr-qir": "0.3.0",
+    "selene-sim": "0.3.2",
+    "selene-core": "0.3.2",
+    "pytket": "2.18.3",
+    "tket": "0.15.9",
+    "pyqir": "0.12.6"
+  },
+  "settings": {
+    "n_sites": 4,
+    "shots": 200,
+    "max_iters": 12,
+    "tau": 0.25,
+    "omega": [
+      1.0,
+      0.5,
+      0.25
+    ],
+    "seed": 7,
+    "kick_mode": "deterministic",
+    "kick_step_deg": 30.0,
+    "reprepare_on_failure": true,
+    "emulator": "selene (guppylang emulator, statevector)"
+  },
+  "op_counts": [
+    {
+      "n_sites": 1,
+      "guppy_single_test": {
+        "Qubits": 3,
+        "PhasedX": 17,
+        "ZZMax": 0,
+        "ZZPhase": 7,
+        "Measure": 3,
+        "Reset": 0
+      },
+      "guppy_rus_static": {
+        "Qubits": 3,
+        "PhasedX": 20,
+        "ZZMax": 0,
+        "ZZPhase": 7,
+        "Measure": 3,
+        "Reset": 3
+      },
+      "pytket_single_shot": {
+        "Qubits": 3,
+        "PhasedX": 17,
+        "ZZMax": 0,
+        "ZZPhase": 8,
+        "Measure": 1,
+        "Reset": 0
+      },
+      "qir_bytes_single_test": 4204,
+      "qir_bytes_rus": 11924,
+      "qir_validation": "unvalidated (quantinuum_qircheck has no CPython >= 3.13 release; stubbed)",
+      "qir_external_validation": {
+        "ok": true,
+        "detail": "qircheck 0.9.0 ok",
+        "python": "C:/Users/SIT EUC/AppData/Roaming/uv/python/cpython-3.12.14-windows-x86_64-none/python.exe"
+      }
+    },
+    {
+      "n_sites": 2,
+      "guppy_single_test": {
+        "Qubits": 5,
+        "PhasedX": 31,
+        "ZZMax": 0,
+        "ZZPhase": 14,
+        "Measure": 5,
+        "Reset": 0
+      },
+      "guppy_rus_static": {
+        "Qubits": 5,
+        "PhasedX": 37,
+        "ZZMax": 0,
+        "ZZPhase": 14,
+        "Measure": 5,
+        "Reset": 5
+      },
+      "pytket_single_shot": {
+        "Qubits": 5,
+        "PhasedX": 32,
+        "ZZMax": 0,
+        "ZZPhase": 16,
+        "Measure": 1,
+        "Reset": 0
+      },
+      "qir_bytes_single_test": 4612,
+      "qir_bytes_rus": 18268,
+      "qir_validation": "unvalidated (quantinuum_qircheck has no CPython >= 3.13 release; stubbed)",
+      "qir_external_validation": {
+        "ok": true,
+        "detail": "qircheck 0.9.0 ok",
+        "python": "C:/Users/SIT EUC/AppData/Roaming/uv/python/cpython-3.12.14-windows-x86_64-none/python.exe"
+      }
+    },
+    {
+      "n_sites": 4,
+      "guppy_single_test": {
+        "Qubits": 9,
+        "PhasedX": 59,
+        "ZZMax": 0,
+        "ZZPhase": 28,
+        "Measure": 9,
+        "Reset": 0
+      },
+      "guppy_rus_static": {
+        "Qubits": 9,
+        "PhasedX": 71,
+        "ZZMax": 0,
+        "ZZPhase": 28,
+        "Measure": 9,
+        "Reset": 9
+      },
+      "pytket_single_shot": {
+        "Qubits": 9,
+        "PhasedX": 62,
+        "ZZMax": 0,
+        "ZZPhase": 32,
+        "Measure": 1,
+        "Reset": 0
+      },
+      "qir_bytes_single_test": 5444,
+      "qir_bytes_rus": 31060,
+      "qir_validation": "unvalidated (quantinuum_qircheck has no CPython >= 3.13 release; stubbed)",
+      "qir_external_validation": {
+        "ok": true,
+        "detail": "qircheck 0.9.0 ok",
+        "python": "C:/Users/SIT EUC/AppData/Roaming/uv/python/cpython-3.12.14-windows-x86_64-none/python.exe"
+      }
+    },
+    {
+      "n_sites": 8,
+      "guppy_single_test": {
+        "Qubits": 17,
+        "PhasedX": 115,
+        "ZZMax": 0,
+        "ZZPhase": 56,
+        "Measure": 17,
+        "Reset": 0
+      },
+      "guppy_rus_static": {
+        "Qubits": 17,
+        "PhasedX": 139,
+        "ZZMax": 0,
+        "ZZPhase": 56,
+        "Measure": 17,
+        "Reset": 17
+      },
+      "pytket_single_shot": {
+        "Qubits": 17,
+        "PhasedX": 122,
+        "ZZMax": 0,
+        "ZZPhase": 64,
+        "Measure": 1,
+        "Reset": 0
+      },
+      "qir_bytes_single_test": 7292,
+      "qir_bytes_rus": 56556,
+      "qir_validation": "unvalidated (quantinuum_qircheck has no CPython >= 3.13 release; stubbed)",
+      "qir_external_validation": {
+        "ok": true,
+        "detail": "qircheck 0.9.0 ok",
+        "python": "C:/Users/SIT EUC/AppData/Roaming/uv/python/cpython-3.12.14-windows-x86_64-none/python.exe"
+      }
+    }
+  ],
+  "systems": [
+    {
+      "id": "rhodopsin",
+      "name": "11-cis Retinal / Rhodopsin",
+      "seed": 1830174482,
+      "n_atoms": 20,
+      "optimal_angle_deg": 45.0,
+      "target_phases": [
+        1.5997812766008024,
+        1.0413242115323798,
+        -0.3547934140293648,
+        0.27841871452349143
+      ],
+      "probe_phases": [
+        0.8143831132033564,
+        0.2559260481349412,
+        -1.140191577426808,
+        -0.5069794488739608
+      ],
+      "single_test": {
+        "p0_exact": 0.7906746819121049,
+        "p0_hat": 0.755,
+        "p0_stderr": 0.030411757594719844,
+        "within_2sigma": true,
+        "n_shots": 200
+      },
+      "rus_sweep": {
+        "summary": {
+          "n_shots": 200,
+          "lock_rate": 1.0,
+          "mean_iterations": 1.165,
+          "first_test_p0_hat": 0.84,
+          "first_test_p0_stderr": 0.025922962793631443,
+          "iterations_hist": {
+            "1": 168,
+            "2": 31,
+            "3": 1
+          },
+          "kick_index_hist": {
+            "0": 168,
+            "1": 31,
+            "2": 1
+          },
+          "final_parity_hist": {
+            "0": 200
+          }
+        },
+        "rows": [
+          {
+            "kick_index": 0,
+            "kick_deg": 0.0,
+            "p0_exact": 0.7906746819121049,
+            "shots_stopped_here": 168
+          },
+          {
+            "kick_index": 1,
+            "kick_deg": 29.999999999999996,
+            "p0_exact": 0.976481006560843,
+            "shots_stopped_here": 31
+          },
+          {
+            "kick_index": 2,
+            "kick_deg": 59.99999999999999,
+            "p0_exact": 0.9464856745899575,
+            "shots_stopped_here": 1
+          },
+          {
+            "kick_index": 3,
+            "kick_deg": 90.0,
+            "p0_exact": 0.7369118820802532,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 4,
+            "kick_deg": 119.99999999999999,
+            "p0_exact": 0.5643280582347364,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 5,
+            "kick_deg": 149.99999999999997,
+            "p0_exact": 0.5068114708209681,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 6,
+            "kick_deg": 180.0,
+            "p0_exact": 0.500129266081531,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 7,
+            "kick_deg": 210.0,
+            "p0_exact": 0.5000000099732398,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 8,
+            "kick_deg": 239.99999999999997,
+            "p0_exact": 0.5000003010924321,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 9,
+            "kick_deg": 270.0,
+            "p0_exact": 0.500420798062047,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 10,
+            "kick_deg": 299.99999999999994,
+            "p0_exact": 0.5129403530730064,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 11,
+            "kick_deg": 330.0,
+            "p0_exact": 0.5939331674864169,
+            "shots_stopped_here": 0
+          }
+        ]
+      },
+      "self_overlap_control": {
+        "tau": 0.0,
+        "p0_hat": 1.0,
+        "n_shots": 200
+      }
+    },
+    {
+      "id": "gfp",
+      "name": "GFP Chromophore",
+      "seed": 1367062961,
+      "n_atoms": 22,
+      "optimal_angle_deg": 35.0,
+      "target_phases": [
+        2.665161409088828,
+        3.05145374078039,
+        -3.1036050034419405,
+        -2.462348795559148
+      ],
+      "probe_phases": [
+        2.0542961708908205,
+        2.4405885025823877,
+        2.5687150655396414,
+        -3.073214033757155
+      ],
+      "single_test": {
+        "p0_exact": 0.8643875377548842,
+        "p0_hat": 0.845,
+        "p0_stderr": 0.02559052559053839,
+        "within_2sigma": true,
+        "n_shots": 200
+      },
+      "rus_sweep": {
+        "summary": {
+          "n_shots": 200,
+          "lock_rate": 1.0,
+          "mean_iterations": 1.145,
+          "first_test_p0_hat": 0.855,
+          "first_test_p0_stderr": 0.02489728900904675,
+          "iterations_hist": {
+            "1": 171,
+            "2": 29
+          },
+          "kick_index_hist": {
+            "0": 171,
+            "1": 29
+          },
+          "final_parity_hist": {
+            "0": 200
+          }
+        },
+        "rows": [
+          {
+            "kick_index": 0,
+            "kick_deg": 0.0,
+            "p0_exact": 0.8643875377548842,
+            "shots_stopped_here": 171
+          },
+          {
+            "kick_index": 1,
+            "kick_deg": 29.999999999999996,
+            "p0_exact": 0.9931476860311309,
+            "shots_stopped_here": 29
+          },
+          {
+            "kick_index": 2,
+            "kick_deg": 59.99999999999999,
+            "p0_exact": 0.8839527868757846,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 3,
+            "kick_deg": 90.0,
+            "p0_exact": 0.6657672263502266,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 4,
+            "kick_deg": 119.99999999999999,
+            "p0_exact": 0.5344024133896423,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 5,
+            "kick_deg": 149.99999999999997,
+            "p0_exact": 0.5023650404928857,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 6,
+            "kick_deg": 180.0,
+            "p0_exact": 0.5000167221768317,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 7,
+            "kick_deg": 210.0,
+            "p0_exact": 0.5000000000666374,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 8,
+            "kick_deg": 239.99999999999997,
+            "p0_exact": 0.5000083273848325,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 9,
+            "kick_deg": 270.0,
+            "p0_exact": 0.5016919546561261,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 10,
+            "kick_deg": 299.99999999999994,
+            "p0_exact": 0.5283185933842248,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 11,
+            "kick_deg": 330.0,
+            "p0_exact": 0.6481144733691933,
+            "shots_stopped_here": 0
+          }
+        ]
+      },
+      "self_overlap_control": {
+        "tau": 0.0,
+        "p0_hat": 1.0,
+        "n_shots": 200
+      }
+    },
+    {
+      "id": "mpro",
+      "name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+      "seed": 2097020726,
+      "n_atoms": 35,
+      "optimal_angle_deg": -50.0,
+      "target_phases": [
+        -2.5002033195792173,
+        -3.101643637503495,
+        -1.9681589602625142,
+        -1.252001342899098
+      ],
+      "probe_phases": [
+        -1.6275386935820542,
+        -2.228979011506332,
+        -1.0954943342653523,
+        -0.37933671690193516
+      ],
+      "single_test": {
+        "p0_exact": 0.7009039762843635,
+        "p0_hat": 0.75,
+        "p0_stderr": 0.030618621784789725,
+        "within_2sigma": true,
+        "n_shots": 200
+      },
+      "rus_sweep": {
+        "summary": {
+          "n_shots": 200,
+          "lock_rate": 1.0,
+          "mean_iterations": 1.635,
+          "first_test_p0_hat": 0.625,
+          "first_test_p0_stderr": 0.03423265984407288,
+          "iterations_hist": {
+            "1": 125,
+            "2": 43,
+            "3": 23,
+            "4": 2,
+            "5": 5,
+            "7": 2
+          },
+          "kick_index_hist": {
+            "0": 125,
+            "1": 43,
+            "2": 23,
+            "3": 2,
+            "4": 5,
+            "6": 2
+          },
+          "final_parity_hist": {
+            "0": 200
+          }
+        },
+        "rows": [
+          {
+            "kick_index": 0,
+            "kick_deg": 0.0,
+            "p0_exact": 0.7009039762843635,
+            "shots_stopped_here": 125
+          },
+          {
+            "kick_index": 1,
+            "kick_deg": 29.999999999999996,
+            "p0_exact": 0.5478699618687306,
+            "shots_stopped_here": 43
+          },
+          {
+            "kick_index": 2,
+            "kick_deg": 59.99999999999999,
+            "p0_exact": 0.504118775290865,
+            "shots_stopped_here": 23
+          },
+          {
+            "kick_index": 3,
+            "kick_deg": 90.0,
+            "p0_exact": 0.500049048052933,
+            "shots_stopped_here": 2
+          },
+          {
+            "kick_index": 4,
+            "kick_deg": 119.99999999999999,
+            "p0_exact": 0.5000000002825218,
+            "shots_stopped_here": 5
+          },
+          {
+            "kick_index": 5,
+            "kick_deg": 149.99999999999997,
+            "p0_exact": 0.5000017503340394,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 6,
+            "kick_deg": 180.0,
+            "p0_exact": 0.5008630292853222,
+            "shots_stopped_here": 2
+          },
+          {
+            "kick_index": 7,
+            "kick_deg": 210.0,
+            "p0_exact": 0.5193864046857668,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 8,
+            "kick_deg": 239.99999999999997,
+            "p0_exact": 0.6191814931419423,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 9,
+            "kick_deg": 270.0,
+            "p0_exact": 0.8287320997171261,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 10,
+            "kick_deg": 299.99999999999994,
+            "p0_exact": 0.9898762884273911,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 11,
+            "kick_deg": 330.0,
+            "p0_exact": 0.91890429805381,
+            "shots_stopped_here": 0
+          }
+        ]
+      },
+      "self_overlap_control": {
+        "tau": 0.0,
+        "p0_hat": 1.0,
+        "n_shots": 200
+      }
+    },
+    {
+      "id": "cox2",
+      "name": "COX-2 + Celecoxib",
+      "seed": 1684908441,
+      "n_atoms": 26,
+      "optimal_angle_deg": 80.0,
+      "target_phases": [
+        -0.1153808715749066,
+        -0.580700111359296,
+        -1.0095766715055192,
+        -1.6958341248222435
+      ],
+      "probe_phases": [
+        -1.511644273170367,
+        -1.9769635129547565,
+        -2.405840073100981,
+        -3.0920975264177013
+      ],
+      "single_test": {
+        "p0_exact": 0.5728503461522206,
+        "p0_hat": 0.61,
+        "p0_stderr": 0.03448912872196107,
+        "within_2sigma": true,
+        "n_shots": 200
+      },
+      "rus_sweep": {
+        "summary": {
+          "n_shots": 200,
+          "lock_rate": 1.0,
+          "mean_iterations": 1.55,
+          "first_test_p0_hat": 0.55,
+          "first_test_p0_stderr": 0.03517811819867572,
+          "iterations_hist": {
+            "1": 110,
+            "2": 71,
+            "3": 18,
+            "4": 1
+          },
+          "kick_index_hist": {
+            "0": 110,
+            "1": 71,
+            "2": 18,
+            "3": 1
+          },
+          "final_parity_hist": {
+            "0": 200
+          }
+        },
+        "rows": [
+          {
+            "kick_index": 0,
+            "kick_deg": 0.0,
+            "p0_exact": 0.5728503461522206,
+            "shots_stopped_here": 110
+          },
+          {
+            "kick_index": 1,
+            "kick_deg": 29.999999999999996,
+            "p0_exact": 0.7537828616553242,
+            "shots_stopped_here": 71
+          },
+          {
+            "kick_index": 2,
+            "kick_deg": 59.99999999999999,
+            "p0_exact": 0.9576237878335321,
+            "shots_stopped_here": 18
+          },
+          {
+            "kick_index": 3,
+            "kick_deg": 90.0,
+            "p0_exact": 0.9688344429165372,
+            "shots_stopped_here": 1
+          },
+          {
+            "kick_index": 4,
+            "kick_deg": 119.99999999999999,
+            "p0_exact": 0.7738568313631474,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 5,
+            "kick_deg": 149.99999999999997,
+            "p0_exact": 0.5838751187703282,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 6,
+            "kick_deg": 180.0,
+            "p0_exact": 0.5106662457540962,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 7,
+            "kick_deg": 210.0,
+            "p0_exact": 0.5002956420866616,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 8,
+            "kick_deg": 239.99999999999997,
+            "p0_exact": 0.5000001141713605,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 9,
+            "kick_deg": 270.0,
+            "p0_exact": 0.5000000318752773,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 10,
+            "kick_deg": 299.99999999999994,
+            "p0_exact": 0.5001905154632308,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 11,
+            "kick_deg": 330.0,
+            "p0_exact": 0.5083997434334595,
+            "shots_stopped_here": 0
+          }
+        ]
+      },
+      "self_overlap_control": {
+        "tau": 0.0,
+        "p0_hat": 1.0,
+        "n_shots": 200
+      }
+    },
+    {
+      "id": "azobenzene",
+      "name": "Azobenzene Molecular Switch",
+      "seed": 1606642855,
+      "n_atoms": 14,
+      "optimal_angle_deg": -115.0,
+      "target_phases": [
+        3.1415774573018855,
+        3.1410283287781935,
+        -3.1391033332667964,
+        -0.0001500907190174414
+      ],
+      "probe_phases": [
+        -1.1344792100842223,
+        -1.1350283386079136,
+        -1.131974693473319,
+        2.0069785490744616
+      ],
+      "single_test": {
+        "p0_exact": 0.5023721133150796,
+        "p0_hat": 0.51,
+        "p0_stderr": 0.03534826728426727,
+        "within_2sigma": true,
+        "n_shots": 200
+      },
+      "rus_sweep": {
+        "summary": {
+          "n_shots": 200,
+          "lock_rate": 1.0,
+          "mean_iterations": 1.945,
+          "first_test_p0_hat": 0.525,
+          "first_test_p0_stderr": 0.035311117229563836,
+          "iterations_hist": {
+            "1": 105,
+            "2": 42,
+            "3": 30,
+            "4": 13,
+            "5": 5,
+            "6": 3,
+            "7": 1,
+            "8": 1
+          },
+          "kick_index_hist": {
+            "0": 105,
+            "1": 42,
+            "2": 30,
+            "3": 13,
+            "4": 5,
+            "5": 3,
+            "6": 1,
+            "7": 1
+          },
+          "final_parity_hist": {
+            "0": 200
+          }
+        },
+        "rows": [
+          {
+            "kick_index": 0,
+            "kick_deg": 0.0,
+            "p0_exact": 0.5023721133150796,
+            "shots_stopped_here": 105
+          },
+          {
+            "kick_index": 1,
+            "kick_deg": 29.999999999999996,
+            "p0_exact": 0.500017125801469,
+            "shots_stopped_here": 42
+          },
+          {
+            "kick_index": 2,
+            "kick_deg": 59.99999999999999,
+            "p0_exact": 0.5000000001321878,
+            "shots_stopped_here": 30
+          },
+          {
+            "kick_index": 3,
+            "kick_deg": 90.0,
+            "p0_exact": 0.5000086309094984,
+            "shots_stopped_here": 13
+          },
+          {
+            "kick_index": 4,
+            "kick_deg": 119.99999999999999,
+            "p0_exact": 0.5017031514810837,
+            "shots_stopped_here": 5
+          },
+          {
+            "kick_index": 5,
+            "kick_deg": 149.99999999999997,
+            "p0_exact": 0.5283459829571664,
+            "shots_stopped_here": 3
+          },
+          {
+            "kick_index": 6,
+            "kick_deg": 180.0,
+            "p0_exact": 0.6479596529609384,
+            "shots_stopped_here": 1
+          },
+          {
+            "kick_index": 7,
+            "kick_deg": 210.0,
+            "p0_exact": 0.8636760410673212,
+            "shots_stopped_here": 1
+          },
+          {
+            "kick_index": 8,
+            "kick_deg": 239.99999999999997,
+            "p0_exact": 0.9919840085775056,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 9,
+            "kick_deg": 270.0,
+            "p0_exact": 0.8830227686514647,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 10,
+            "kick_deg": 299.99999999999994,
+            "p0_exact": 0.6654232593967007,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 11,
+            "kick_deg": 330.0,
+            "p0_exact": 0.5343716364765754,
+            "shots_stopped_here": 0
+          }
+        ]
+      },
+      "self_overlap_control": {
+        "tau": 0.0,
+        "p0_hat": 1.0,
+        "n_shots": 200
+      }
+    },
+    {
+      "id": "h2bench",
+      "name": "H2 Hardware Benchmark",
+      "seed": 1283288937,
+      "n_atoms": 2,
+      "optimal_angle_deg": 15.0,
+      "target_phases": [
+        -6.123233995736766e-17,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "probe_phases": [
+        -0.2617993877991493,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "single_test": {
+        "p0_exact": 0.9860010486823387,
+        "p0_hat": 1.0,
+        "p0_stderr": 1e-06,
+        "within_2sigma": true,
+        "n_shots": 200
+      },
+      "rus_sweep": {
+        "summary": {
+          "n_shots": 200,
+          "lock_rate": 1.0,
+          "mean_iterations": 1.015,
+          "first_test_p0_hat": 0.985,
+          "first_test_p0_stderr": 0.008595056718835545,
+          "iterations_hist": {
+            "1": 197,
+            "2": 3
+          },
+          "kick_index_hist": {
+            "0": 197,
+            "1": 3
+          },
+          "final_parity_hist": {
+            "0": 200
+          }
+        },
+        "rows": [
+          {
+            "kick_index": 0,
+            "kick_deg": 0.0,
+            "p0_exact": 0.9860010486823387,
+            "shots_stopped_here": 197
+          },
+          {
+            "kick_index": 1,
+            "kick_deg": 29.999999999999996,
+            "p0_exact": 0.8693945878832197,
+            "shots_stopped_here": 3
+          },
+          {
+            "kick_index": 2,
+            "kick_deg": 59.99999999999999,
+            "p0_exact": 0.6548644379592019,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 3,
+            "kick_deg": 90.0,
+            "p0_exact": 0.5307992152746446,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 4,
+            "kick_deg": 119.99999999999999,
+            "p0_exact": 0.5019561212227013,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 5,
+            "kick_deg": 149.99999999999997,
+            "p0_exact": 0.5000109777171029,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 6,
+            "kick_deg": 180.0,
+            "p0_exact": 0.5000000007886656,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 7,
+            "kick_deg": 210.0,
+            "p0_exact": 0.5000097585296401,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 8,
+            "kick_deg": 239.99999999999997,
+            "p0_exact": 0.5018770878296809,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 9,
+            "kick_deg": 270.0,
+            "p0_exact": 0.5301342733938708,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 10,
+            "kick_deg": 299.99999999999994,
+            "p0_exact": 0.6529868642682768,
+            "shots_stopped_here": 0
+          },
+          {
+            "kick_index": 11,
+            "kick_deg": 330.0,
+            "p0_exact": 0.8673367479523866,
+            "shots_stopped_here": 0
+          }
+        ]
+      },
+      "self_overlap_control": {
+        "tau": 0.0,
+        "p0_hat": 1.0,
+        "n_shots": 200
+      }
+    }
+  ],
+  "notes": [
+    "op counts are static HUGR counts after QSystem rebase; the RUS loop body is counted once (two state preparations: initial and in-loop).",
+    "first_test_p0_hat is a host-side average over shots; one shot cannot estimate P(0).",
+    "lock_rate is the per-shot stopping rule (first ancilla=0), which fires with probability >= 1/2 per test even for orthogonal registers.",
+    "Guppy kernels measure every qubit at the end (release), the Pytket circuit measures only the ancilla, hence Measure = 2n+1 vs 1."
+  ]
+}
