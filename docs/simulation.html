@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#02040a" />
-  <title>Q-Rotate Pipeline Visualizer | Quantinuum H2 Trapped-Ion Simulation</title>
-  <meta name="description" content="Quantum-native molecular rotation and blind parity SWAP test visualizer on Quantinuum H2 trapped-ion hardware." />
+  <title>Q-Rotate Pipeline Visualizer | Trapped-Ion H-Series Trapped-Ion Simulation</title>
+  <meta name="description" content="Quantum-native molecular rotation and blind parity SWAP test visualizer on Trapped-Ion H-Series trapped-ion hardware." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -1049,7 +1049,7 @@
       </div>
 
       <div class="metric-card">
-        <div class="metric-head"><span>2Q Native ZZ</span><span>Quantinuum H2</span></div>
+        <div class="metric-head"><span>2Q Native ZZ</span><span>Trapped-Ion H-Series</span></div>
         <div class="metric-val cyan" id="m-gates">0 <span class="metric-sub">gates</span></div>
       </div>
 
@@ -1084,7 +1084,7 @@
         <div class="sim-modal-title-group">
           <div class="sim-modal-badge">Quantum-HPC Hybrid Simulation</div>
           <h2 class="sim-modal-title" id="sim-modal-title">Project Q-Rotate Architecture &amp; Guide</h2>
-          <p class="sim-modal-subtitle">Continuous Harmonic Lie Algebra Pipeline on Quantinuum H2 Trapped Ions</p>
+          <p class="sim-modal-subtitle">Continuous Harmonic Lie Algebra Pipeline on Trapped-Ion H-Series Trapped Ions</p>
         </div>
         <button class="sim-modal-close" id="btn-close-sim-modal" aria-label="Close Guide">&times;</button>
       </div>
@@ -1095,7 +1095,7 @@
         <button class="sim-tab-btn" data-tab="tab-evolution">3. Continuous Evolution U(&tau;)</button>
         <button class="sim-tab-btn" data-tab="tab-swap">4. Blind Parity SWAP</button>
         <button class="sim-tab-btn" data-tab="tab-rus">5. Repeat-Until-Success (RUS)</button>
-        <button class="sim-tab-btn" data-tab="tab-hardware">6. Quantinuum H2 Mapping</button>
+        <button class="sim-tab-btn" data-tab="tab-hardware">6. Trapped-Ion H-Series Mapping</button>
         <button class="sim-tab-btn" data-tab="tab-guppy" id="btn-tab-guppy">7. Guppy &amp; Hardware Cost</button>
       </div>
 
@@ -1126,7 +1126,7 @@
 
           <div class="sim-guide-callout">
             <h5>Key Takeaway: Dual-Engine Speedup</h5>
-            <p>Classical HPC computes center-of-mass angular distributions in milliseconds. The Quantinuum H2 quantum processor then evaluates the multi-dimensional conformational overlap in a single continuous unitary rotation &mdash; bypassing grid discretization entirely.</p>
+            <p>Classical HPC computes center-of-mass angular distributions in milliseconds. The Trapped-Ion H-Series quantum processor then evaluates the multi-dimensional conformational overlap in a single continuous unitary rotation &mdash; bypassing grid discretization entirely.</p>
           </div>
         </div>
 
@@ -1220,7 +1220,7 @@
         <div class="sim-modal-section" id="tab-rus">
           <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
             <strong style="color: #ffffff;">Adaptive Mid-Circuit Measurement &amp; Feedback:</strong>
-            Quantinuum H2 provides industry-leading mid-circuit measurement, ion shuttling, and qubit reset with ultra-low cross-talk (&lt; 10&supmin;&sup4; error).
+            Trapped-Ion H-Series provides industry-leading mid-circuit measurement, ion shuttling, and qubit reset with ultra-low cross-talk (&lt; 10&supmin;&sup4; error).
             Q-Rotate exploits this through a closed-loop Repeat-Until-Success (RUS) circuit:
           </div>
 
@@ -1247,13 +1247,13 @@
         <!-- TAB 7: Guppy & Native Hardware Gates -->
         <div class="sim-modal-section" id="tab-guppy">
           <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
-            <strong style="color: #ffffff;">Quantinuum H2 QCCD Architecture &amp; Native Compilation:</strong>
-            Unlike fixed-lattice superconducting chips requiring layers of SWAP routing, Quantinuum H-Series utilizes physical ion shuttling across 32 trap zones. Arbitrary single-qubit laser addressing ($R_z, R_y$) and native $ZZ\text{Phase}(\theta)$ gates allow direct parameter mapping without Trotterization bloat.
+            <strong style="color: #ffffff;">Trapped-Ion H-Series QCCD Architecture &amp; Native Compilation:</strong>
+            Unlike fixed-lattice superconducting chips requiring layers of SWAP routing, Trapped-Ion H-Series utilizes physical ion shuttling across 32 trap zones. Arbitrary single-qubit laser addressing ($R_z, R_y$) and native $ZZ\text{Phase}(\theta)$ gates allow direct parameter mapping without Trotterization bloat.
           </div>
 
           <!-- Official HQC Cost Formula Breakdown -->
           <div class="sim-guide-callout" style="border-color: var(--accent-purple);">
-            <h5 style="color: var(--accent-purple);">Quantinuum H-Series HQC Formula (per circuit)</h5>
+            <h5 style="color: var(--accent-purple);">Trapped-Ion H-Series HQC Formula (per circuit)</h5>
             <p style="font-family: var(--font-mono); font-size: 0.76rem; color: #ffffff; margin-top: 4px;">
               \text{HQC} = 5 + \left[ N_{1q} + 10 \times N_{2q} + 5 \times N_m \right] \times \frac{N_{\text{shots}}}{5000}
             </p>
@@ -1310,10 +1310,10 @@
           </div>
         </div>
 
-        <!-- TAB 6: Quantinuum H2 Mapping -->
+        <!-- TAB 6: Trapped-Ion H-Series Mapping -->
         <div class="sim-modal-section" id="tab-hardware">
           <div style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.6;">
-            <strong style="color: #ffffff;">Why Quantinuum H2 Trapped-Ion Architecture is Uniquely Suited:</strong>
+            <strong style="color: #ffffff;">Why Trapped-Ion H-Series Trapped-Ion Architecture is Uniquely Suited:</strong>
           </div>
 
           <div class="sim-guide-grid">

@@ -1,7 +1,7 @@
 # Why Q-Rotate Matters: The End of Cartesian Grid Docking & The Rise of Quantum-Native Agentic Biology
 
 > **An Architectural & Commercial Treatise on Autonomous Continuous Lie-Algebraic Pose Optimization and Coordinate-Free Blind Parity for Trapped-Ion Hardware**  
-> *Quantinuum Singapore Grand Challenge 2026 — Track: Chemistry & Biomolecular Simulation*  
+> *SG Quantum Grand Challenge 2026 — Track: Chemistry & Biomolecular Simulation*  
 > **Authors:** Gwendalynn Lim (Founder & CTO, Eve Count) • Benjamin Lim (Cybrdeck) • James Sun (Mamba Partners)  
 > **Release Version:** v3.0.0 (simulation-based evidence; no physical H2 run yet)
 
@@ -15,7 +15,7 @@ When quantum computing arrived, early practitioners made a second mistake: attem
 
 **Project Q-Rotate fundamentally rejects both paradigms.**
 
-Instead of hiking across a discrete Cartesian grid, Q-Rotate maps molecular rotational degrees of freedom directly into continuous Lie algebra $SU(2)^{\otimes n}$, steering orientation state vectors along geodesics in Hilbert space. Instead of running a static, blind quantum circuit, it is designed to execute an **autonomous, agentic Repeat-Until-Success (RUS) loop** on Quantinuum H2 trapped-ion hardware (emulated so far), using mid-circuit ancilla measurements to referee active-site binding in real time. And crucially, it introduces **Coordinate-Free Blind Parity**, solving biopharma’s greatest adoption barrier: the existential fear of cloud IP theft.
+Instead of hiking across a discrete Cartesian grid, Q-Rotate maps molecular rotational degrees of freedom directly into continuous Lie algebra $SU(2)^{\otimes n}$, steering orientation state vectors along geodesics in Hilbert space. Instead of running a static, blind quantum circuit, it is designed to execute an **autonomous, agentic Repeat-Until-Success (RUS) loop** on Trapped-Ion H-Series trapped-ion hardware (emulated so far), using mid-circuit ancilla measurements to referee active-site binding in real time. And crucially, it introduces **Coordinate-Free Blind Parity**, solving biopharma’s greatest adoption barrier: the existential fear of cloud IP theft.
 
 Below is the definitive analysis of why classical docking fails, why generic quantum approaches fall short, and how Q-Rotate reduces grid-search steps by up to 3,360x (a step-count ratio, not wall-clock time) in simulation on real crystallographic ligand structures.
 
@@ -75,17 +75,17 @@ The resulting time-evolution operator:
 $$\hat{U}_{\text{tube}}(\tau) = \exp\left[-i \tau \left(\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}}\right)\right]$$
 rotates the entire quantum state continuously through Hilbert space along **geodesics (the shortest curved paths on the rotational manifold)**. The molecule does not jump between grid voxels; its state vector flows smoothly toward the binding orientation.
 
-### B. Native Trapped-Ion Compilation (Quantinuum H2, Zero SWAPs)
-Superconducting quantum processors (e.g., IBM, Google) are constrained by fixed 2D planar connectivity. Coupling two non-adjacent qubits requires injecting long cascades of SWAP gates, where each SWAP costs three native two-qubit operations and rapidly degrades fidelity.
+### B. Native Trapped-Ion Compilation (Trapped-Ion H-Series, Zero SWAPs)
+Superconducting quantum processors (2D planar lattices) are constrained by fixed 2D planar connectivity. Coupling two non-adjacent qubits requires injecting long cascades of SWAP gates, where each SWAP costs three native two-qubit operations and rapidly degrades fidelity.
 
-Q-Rotate is architected specifically for **Quantinuum System Model H2 trapped-ion hardware**:
+Q-Rotate is architected specifically for **all-to-all trapped-ion hardware via Nexus**:
 * Trapped ytterbium ions are physically transported across shuttling zones, providing **true all-to-all connectivity**.
-* Circuits compile natively to Quantinuum’s physical basis: single-qubit `PhasedX` gates and two-qubit `ZZPhase` entangling gates.
+* Circuits compile natively to the native trapped-ion physical basis: single-qubit `PhasedX` gates and two-qubit `ZZPhase` entangling gates.
 * **SWAP Overhead:** Exactly **0 SWAPs**.
 * **Circuit Footprint:** 9 to 17 active qubits, circuit depth 68, consuming $\approx 13.6$ Hardware Quantum Credits (HQCs).
 
 ### C. The Autonomous Agentic Loop (Mid-Circuit Guppy Feedback)
-In inspired alignment with **Google DeepMind's *AlphaEvolve* ([arXiv:2506.13131](https://arxiv.org/abs/2506.13131))**—which established that pairing autonomous generative hypothesis generators with real-time evaluators unlocks superhuman discovery—Q-Rotate builds this agentic closed-loop natively into quantum hardware:
+In Eve Count's autonomous quantum-native architecture—pairing continuous Lie-algebraic generators with real-time mid-circuit evaluators—Q-Rotate builds a closed-loop feedback cycle natively into trapped-ion architectures:
 
 ```
        ┌────────────────────────────────────────────────────────┐
@@ -111,7 +111,7 @@ In inspired alignment with **Google DeepMind's *AlphaEvolve* ([arXiv:2506.13131]
 ```
 
 1. **Sense:** An ancilla qubit interacts with the ligand and pocket registers via a non-destructive interferometric verification circuit.
-2. **Decide:** Quantinuum's Guppy real-time controller measures the ancilla mid-circuit without collapsing the unmeasured data qubits.
+2. **Decide:** The Guppy real-time controller measures the ancilla mid-circuit without collapsing the unmeasured data qubits.
 3. **Act:** If the measured parity indicates residual misalignment, Guppy applies an immediate, conditional rotational phase kick $R_y(\delta\theta)$ and repeats the cycle.
 
 Because the system only iterates when necessary (Repeat-Until-Success), it achieves crystallographic convergence in just **1 to 5 adaptive loops**.
@@ -143,7 +143,7 @@ In this protocol:
 
 ## 5. Empirical Benchmark Showdown on Real Crystallographic Systems
 
-Q-Rotate is not a theoretical whitepaper; it is benchmarked in simulation across 6 crystallographic structures retrieved directly from the **RCSB Protein Data Bank (PDB)** and simulated on the Quantinuum H2 native gate architecture:
+Q-Rotate is not a theoretical whitepaper; it is benchmarked in simulation across 6 crystallographic structures retrieved directly from the **RCSB Protein Data Bank (PDB)** and simulated on the Trapped-Ion H-Series native gate architecture:
 
 | Target System | PDB ID | Biological Function | Atoms | Initial Misalignment | RUS Loops to Lock | Final Parity $P(0)$ | Pose Error | Grid-Step Reduction |
 | :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -157,7 +157,7 @@ Q-Rotate is not a theoretical whitepaper; it is benchmarked in simulation across
 ### Benchmark Takeaways:
 1. **Search-Step Reduction:** Between **$384\times$ and $3,360\times$ fewer search steps** than classical Cartesian grid stepping in simulation (not a wall-clock or quantum-advantage claim). Resampled over 30 trials per system, the pose is recovered in 93.3% of 180 trials (95% CI 88.7-96.1%).
 2. **Robust Convergence:** Regardless of whether the initial misalignment was $+35^\circ$ or $-115^\circ$, the agentic RUS loop successfully steers the state to $P(0) \ge 0.94$ in **at most 5 cycles**.
-3. **Hardware Efficiency:** Executes on 9 to 17 trapped-ion qubits with zero SWAP gates, staying well within Quantinuum H2 coherence envelopes.
+3. **Hardware Efficiency:** Executes on 9 to 17 trapped-ion qubits with zero SWAP gates, staying well within Trapped-Ion H-Series coherence envelopes.
 
 ---
 
@@ -172,7 +172,7 @@ History shows that the enduring breakthroughs in computing are never grab-bags o
 
 Instead of hiking across a discrete grid, we rotate through Hilbert space along geodesics. Instead of giving up corporate secrets, biopharma verifies binding with Blind Parity. Instead of open-loop guessing, the circuit acts as an autonomous agent.
 
-That is why Project Q-Rotate is mathematically rigorous, commercially defensible, and uniquely calibrated to win the Quantinuum Singapore Grand Challenge 2026.
+That is why Project Q-Rotate is mathematically rigorous, commercially defensible, and uniquely calibrated to win the SG Quantum Grand Challenge 2026.
 
 ---
 
@@ -181,6 +181,5 @@ That is why Project Q-Rotate is mathematically rigorous, commercially defensible
 * 🌌 **Interactive 3D WebGL Constellation:** [evecount.github.io/quantum_rotation/constellation.html](https://evecount.github.io/quantum_rotation/constellation.html)
 * ⚡ **Live Trapped-Ion Phase Simulator:** [evecount.github.io/quantum_rotation/simulation.html](https://evecount.github.io/quantum_rotation/simulation.html)
 * 🎬 **4K Masterclass Video & Portal:** [evecount.github.io/quantum_rotation](https://evecount.github.io/quantum_rotation/)
-* 🤖 **DeepMind AlphaEvolve Paper:** [arXiv:2506.13131](https://arxiv.org/abs/2506.13131)
-* 🧬 **Eve Count Agentic Cloud Pipeline:** [github.com/evecount/alphaevolve-on-googlecloud](https://github.com/evecount/alphaevolve-on-googlecloud)
+* 🌐 **Eve Count Enterprise & Industrial Combinatorics Practice:** [evecount.com/work](https://evecount.com/work)
 * 🐙 **Complete GitHub Repository:** [github.com/evecount/quantum_rotation](https://github.com/evecount/quantum_rotation)

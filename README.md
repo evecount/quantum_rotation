@@ -13,7 +13,7 @@
   <br><em>Figure 1: Project Q-Rotate 3D WebGL Constellation Engine steering molecular orientation trajectories into trapped-ion quantum resonance.</em>
 </p>
 
-Project Q-Rotate is an autonomous, quantum-native biomolecular docking engine designed and compiled for **Quantinuum System Model H2 trapped-ion hardware** (all results come from statevector simulation with shot-noise sampling; there has been no physical H2 run yet). In the vein of **Google DeepMind's [AlphaEvolve](https://arxiv.org/abs/2506.13131)**, Q-Rotate replaces forty years of classical $\mathcal{O}(N^3)$ Cartesian grid discretization with continuous Lie-algebraic ($SU(2)^{\otimes n}$) geodesic flow, coupled with real-time mid-circuit **Repeat-Until-Success (RUS)** feedback and **Coordinate-Free Blind Parity**.
+Project Q-Rotate is an autonomous, quantum-native biomolecular docking engine designed and compiled for **all-to-all trapped-ion hardware via Nexus** (all results come from statevector simulation with shot-noise sampling; there has been no physical H2 run yet). Q-Rotate replaces forty years of classical $\mathcal{O}(N^3)$ Cartesian grid discretization with continuous Lie-algebraic ($SU(2)^{\otimes n}$) geodesic flow, coupled with real-time mid-circuit **Repeat-Until-Success (RUS)** feedback and **Coordinate-Free Blind Parity**.
 
 Benchmarked in simulation on 6 experimental structures from the **RCSB Protein Data Bank (PDB)** and PubChem, Q-Rotate recovers the deposited pose in 168 of 180 resampled trials (93.3%, 95% CI 88.7-96.1%), with **0 SWAP gates** and ~13.6 estimated HQCs per circuit. The reduction in search steps versus a classical grid reaches up to 3,360x; that counts steps, not wall-clock time, and is not a demonstrated quantum advantage.
 
@@ -193,7 +193,7 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 │   ├── constellation.html           # 3D WebGL interactive orbital engine
 │   └── simulation.html              # Trapped-ion phase synchronization simulator
 ├── src/qrotate/                     # Core Q-Rotate quantum library
-│   ├── circuits.py                  # Pytket & Quantinuum H2 circuit builder
+│   ├── circuits.py                  # Pytket & Trapped-Ion H-Series circuit builder
 │   ├── operators.py                 # Continuous Lie algebra SU(2) Hamiltonians
 │   ├── structures.py                # RCSB PDB coordinate parser & geometry
 │   ├── metrics.py                   # Blind Parity P(0) & overlap fidelity
