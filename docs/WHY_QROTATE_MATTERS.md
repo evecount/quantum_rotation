@@ -164,7 +164,7 @@ Q-Rotate is not a theoretical whitepaper; it is benchmarked in simulation across
 ## 6. "Is One Strong Idea Enough?"
 
 History shows that the enduring breakthroughs in computing are never grab-bags of five unrelated heuristics. They are built on **one profound mathematical insight executed with absolute clarity**:
-* **Google:** Founded on one eigenvector equation on a Markov web graph: **PageRank** ($A x = \lambda x$).
+* **Modern Search & Graph Theory:** Built on spectral eigenvector formulations ($A x = \lambda x$).
 * **RSA Encryption:** Founded on one trapdoor permutation: modular exponentiation of prime products ($m^e \pmod n$).
 * **Shor's Algorithm:** Founded on one operator: the **Quantum Fourier Transform** applied to modular period finding.
 

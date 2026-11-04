@@ -38,7 +38,7 @@ Welcome to Project Q-Rotate. Today, we are taking molecular docking off the grid
 Throughout the history of computing, people always ask: *Is one strong idea enough?*
 
 Think about it:
-Google conquered the web with a single mathematical equation—PageRank—an eigenvector calculation on a Markov web graph. 
+Modern network science was built on a single mathematical equation—a spectral eigenvector calculation on a directed graph. 
 Modern cryptography rests on one single mathematical trapdoor—modular exponentiation of prime numbers.
 Shor’s algorithm cracked factoring with one operator—the Quantum Fourier Transform.
 
@@ -75,10 +75,10 @@ The second operator, H-phase, acts as the electrostatic key teeth. In molecular 
 
 When you evolve under the combined Hamiltonian for time tau, you aren't searching a grid. The quantum state vector flows continuously along the path of least action. If the ligand can satisfy the electrostatic boundary conditions of the pocket, the wave function naturally channels itself straight into constructive resonance.
 
-# The Quantum-Native Agentic Paradigm: DeepMind AlphaEvolve
+# The Quantum-Native Closed-Loop Architecture
 - **The Evolution of Scientific Discovery:**
   * *First Era:* Brute-force calculation (static numerical grids).
-  * *Second Era:* Generative AI agents (Google DeepMind AlphaEvolve, arXiv:2506.13131).
+  * *Second Era:* Autonomous closed-loop hypothesis generation and real-time verification.
   * *The Next Frontier:* **Quantum-Native Agentic Discovery**.
 - **The Closed-Loop Perception-Action Cycle on Hardware:**
   * **Sense:** Ancilla qubit non-destructively referees binding overlap ($P(0)$).
@@ -87,9 +87,9 @@ When you evolve under the combined Hamiltonian for time tau, you aren't searchin
 ---
 To truly understand the architecture of Project Q-Rotate, we must look at how the philosophy of artificial intelligence has evolved over the past twelve months.
 
-Earlier this year, Google DeepMind published a landmark paper titled *AlphaEvolve* (arXiv:2506.13131). DeepMind showed that the future of complex discovery does not belong to static, brute-force algorithms. Real discovery requires an **autonomous agentic closed loop**: pairing a generative proposer that explores possibilities with an automated evaluator that inspects results and updates the search policy in real time.
+The future of complex molecular discovery does not belong to static, brute-force grid search. Real discovery requires an **autonomous closed loop**: pairing a continuous Lie-algebraic proposer that steers state trajectories with a mid-circuit physical evaluator that inspects overlap and updates the search policy in real time.
 
-Project Q-Rotate takes that exact DeepMind paradigm and translates it **natively into quantum mechanics**.
+Project Q-Rotate builds that closed-loop feedback architecture **natively into trapped-ion quantum mechanics**.
 
 In traditional quantum computing, algorithms are open-loop and blind: you prepare a state, apply a massive circuit, measure at the very end, and hope your answer didn't drown in noise.
 
@@ -147,7 +147,7 @@ Now let us bridge theory with physical hardware reality. Why did we build Projec
 
 In quantum software engineering, qubit connectivity is destiny. 
 
-On superconducting processors like IBM or Google, qubits are locked onto a rigid 2D planar chip. If qubit 1 needs to talk to qubit 8, you have to insert a long chain of SWAP gates to physically drag the quantum information across the chip. Each SWAP gate requires three noisy native operations. By the time your circuit finishes routing, the accumulated error has destroyed your biological signal.
+On 2D planar superconducting processors, qubits are locked onto a rigid 2D planar chip. If qubit 1 needs to talk to qubit 8, you have to insert a long chain of SWAP gates to physically drag the quantum information across the chip. Each SWAP gate requires three noisy native operations. By the time your circuit finishes routing, the accumulated error has destroyed your biological signal.
 
 Quantinuum's H-series architecture is completely different. In their vacuum chambers, charged ytterbium ions are physically levitated and shuttled across optical zones using precision RF voltages. Every single ion can be paired directly with any other ion in the machine.
 
@@ -248,7 +248,7 @@ You don't just calculate quantum resonance; you see it. You feel the physical re
 # Key Takeaways
 - **The Core Breakthrough:** Replaced $O(N^3)$ Cartesian grid docking with continuous Lie algebra $SU(2)^{\otimes n}$ geodesic evolution.
 - **The Noodle to String Principle:** Rotating the reference frame continuously collapses complex 3D volume collisions into a 1D phase alignment.
-- **The Agentic Paradigm:** Inspired by Google DeepMind's *AlphaEvolve*, executing mid-circuit Repeat-Until-Success (RUS) feedback on trapped ions.
+- **The Closed-Loop Architecture:** Executing mid-circuit Repeat-Until-Success (RUS) feedback natively on trapped ions.
 - **Reduced-Exposure Screening:** Blind Parity evaluates target resonance while exchanging only a phase fingerprint, not raw 3D coordinates (not a cryptographic zero-knowledge guarantee). The $120M-$280M figure is an illustrative scenario model.
 - **H2-Native Compilation:** 0 SWAPs, depth 68, ~13.6 estimated HQCs; up to 3,360x fewer search steps than a classical grid (a step-count ratio, emulated).
 ---

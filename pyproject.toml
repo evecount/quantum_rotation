@@ -48,7 +48,6 @@ dev = [
     "ty",
     "watchdog",
     "nbconvert",
-    "google-genai",
     "anthropic",
     "openai",
 ]

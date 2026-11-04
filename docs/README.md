@@ -1,10 +1,10 @@
 # 🌌 Project Q-Rotate: Quantum-Native Agentic Docking & Reduced-Exposure Parity
 
-**Continuous Lie-Algebraic Molecular Pose Search & Coordinate-Free Active-Site Parity, Compiled for Quantinuum Trapped Ions.**
+**Continuous Lie-Algebraic Molecular Pose Search & Coordinate-Free Active-Site Parity, Compiled for All-to-All Trapped-Ion Systems via Nexus.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Target: Quantinuum H2 (emulated)](https://img.shields.io/badge/target-Quantinuum_H2_(emulated)-4285F4.svg)](https://www.quantinuum.com/)
+[![Target: Trapped-Ion · Nexus](https://img.shields.io/badge/target-Trapped--Ion_%C2%B7_Nexus-27392b.svg)](https://evecount.com/work)
 [![Evidence: simulated, 180-trial CI](https://img.shields.io/badge/evidence-simulated_%C2%B7_180--trial_CI-yellow.svg)](#evidence-status--rubric-alignment)
 [![Version: v3.0.0](https://img.shields.io/badge/release-v3.0.0_Official-blueviolet.svg)](Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf)
 
@@ -13,7 +13,7 @@
   <br><em>Figure 1: Project Q-Rotate 3D WebGL Constellation Engine steering molecular orientation trajectories into trapped-ion quantum resonance.</em>
 </p>
 
-Project Q-Rotate is an autonomous, quantum-native biomolecular docking engine designed and compiled for **Quantinuum System Model H2 trapped-ion hardware** (all results come from statevector simulation with shot-noise sampling; there has been no physical H2 run yet). In the vein of **Google DeepMind's [AlphaEvolve](https://arxiv.org/abs/2506.13131)**, Q-Rotate replaces forty years of classical $\mathcal{O}(N^3)$ Cartesian grid discretization with continuous Lie-algebraic ($SU(2)^{\otimes n}$) geodesic flow, coupled with real-time mid-circuit **Repeat-Until-Success (RUS)** feedback and **Coordinate-Free Blind Parity**.
+Project Q-Rotate is an autonomous, quantum-native biomolecular docking engine designed and compiled for **all-to-all trapped-ion hardware via Nexus** (all results come from statevector simulation with shot-noise sampling; there has been no physical H2 run yet). Q-Rotate replaces forty years of classical $\mathcal{O}(N^3)$ Cartesian grid discretization with continuous Lie-algebraic ($SU(2)^{\otimes n}$) geodesic flow, coupled with real-time mid-circuit **Repeat-Until-Success (RUS)** feedback and **Coordinate-Free Blind Parity**.
 
 Benchmarked in simulation on 6 experimental structures from the **RCSB Protein Data Bank (PDB)** and PubChem, Q-Rotate recovers the deposited pose in 168 of 180 resampled trials (93.3%, 95% CI 88.7-96.1%), with **0 SWAP gates** and ~13.6 estimated HQCs per circuit. The reduction in search steps versus a classical grid reaches up to 3,360x; that counts steps, not wall-clock time, and is not a demonstrated quantum advantage.
 
@@ -26,7 +26,7 @@ Benchmarked in simulation on 6 experimental structures from the **RCSB Protein D
 - [How Q-Rotate Works (The Quantum-Native Agentic Loop)](#how-q-rotate-works-the-quantum-native-agentic-loop)
 - [Empirical Benchmarks (6 Real RCSB Crystallographic Systems)](#empirical-benchmarks-6-real-rcsb-crystallographic-systems)
 - [Blind Parity: Reduced-Exposure Screening](#blind-parity-reduced-exposure-screening)
-- [Compiling to Quantinuum Trapped Ions (0 SWAPs)](#compiling-to-quantinuum-trapped-ions-0-swaps)
+- [Compiling to All-to-All Trapped Ions (0 SWAPs)](#compiling-to-all-to-all-trapped-ions-0-swaps)
 - [Interactive Telemetry & 3D WebGL Constellation](#interactive-telemetry--3d-webgl-constellation)
 - [Evidence Status & Rubric Alignment](#evidence-status--rubric-alignment)
 - [Repository Structure](#repository-structure)
@@ -79,7 +79,7 @@ $$\hat{U}_{\text{tube}}(\tau) = \exp\left[-i \tau \left(\hat{H}_{\text{rot}} + \
 
 ## How Q-Rotate Works (The Quantum-Native Agentic Loop)
 
-In Google DeepMind's *AlphaEvolve* paradigm, discovery is driven by an autonomous closed-loop agent: a generator proposes candidates, an automated evaluator inspects them, and a policy updates the search. Q-Rotate translates this **natively into quantum mechanics on trapped ions**:
+In Eve Count's closed-loop quantum-native search architecture, discovery is driven by an autonomous mid-circuit feedback cycle: a continuous Lie-algebraic generator proposes candidate orientations, an ancilla referee evaluates active-site overlap non-destructively, and a low-latency classical policy updates the trajectory on trapped ions:
 
 ```
       ┌────────────────────────────────────────────────────────┐
@@ -105,14 +105,14 @@ In Google DeepMind's *AlphaEvolve* paradigm, discovery is driven by an autonomou
 ```
 
 1. **Sense:** An ancilla qubit non-destructively measures active-site overlap ($P(0)$) without collapsing unmeasured data qubits.
-2. **Decide:** Quantinuum Guppy classical FPGA controller evaluates the measurement outcome mid-circuit in microseconds.
+2. **Decide:** A Guppy mid-circuit FPGA controller evaluates the measurement outcome mid-circuit in microseconds.
 3. **Act:** If misaligned, Guppy applies an immediate corrective phase kick ($R_y(\delta\theta)$) along the geodesic and repeats until resonance is locked (**1 to 5 cycles**).
 
 ---
 
 ## Empirical Benchmarks (6 Real RCSB Crystallographic Systems)
 
-Simulated on experimental coordinates from the **RCSB Protein Data Bank (PDB)** and **PubChem**; circuits are compiled to Quantinuum H2 native gates but outcomes are emulated, not measured on hardware. Single-seed run:
+Simulated on experimental coordinates from the **RCSB Protein Data Bank (PDB)** and **PubChem**; circuits are compiled to native trapped-ion gates via Nexus and pytket but outcomes are emulated, not measured on hardware. Single-seed run:
 
 | Target Complex | PDB ID | Biological Function | Atoms | Initial Error | RUS Cycles | Final $P(0)$ | Pose Error | Grid-Step Reduction |
 | :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -131,15 +131,16 @@ Simulated on experimental coordinates from the **RCSB Protein Data Bank (PDB)** 
 
 * **The Problem:** Biopharma giants (Pfizer, Novartis, Roche) are cautious about sending unpatented scaffold coordinates to external cloud platforms because of leak and subpoena risk.
 * **The Solution:** Our **Coordinate-Free Blind Parity** protocol evaluates wave interference ($P(0)$) on an ancilla referee while exchanging only a compressed phase fingerprint rather than raw 3D coordinates. This reduces exposure; it is not a cryptographic zero-knowledge guarantee (see `docs/03_the_blind_parity_test.md`).
+* **As software:** the split exists as a client and a node. `qrotate fingerprint` encodes a structure locally; `qrotate screen --node URL` sends only the fingerprint to a `qrotate serve` node, which runs the SWAP test and returns $P(0)$ with a Wilson interval and an HQC estimate. What crosses the wire, what the node learns and what it does not are spelled out in `docs/10_client_node_protocol.md`; `examples/demo_client_node.py` runs the six benchmark systems through it.
 * **Commercial Impact:** Could support confidential multi-party screening. The $120M-$280M figure is an illustrative scenario model, not a market-validated TAM; see `workspaces/JAMES_VENTURE_GTM_BRIEF.md`.
 
 ---
 
-## Compiling to Quantinuum Trapped Ions (0 SWAPs)
+## Compiling to All-to-All Trapped Ions (0 SWAPs)
 
-Superconducting architectures (IBM, Google) require dozens of SWAP gates to couple non-adjacent qubits on a 2D planar grid. 
+Planar superconducting architectures require dozens of SWAP gates to couple non-adjacent qubits on a 2D grid. 
 
-In Quantinuum’s H-series processors, charged $^{171}\text{Yb}^+$ ions are physically shuttled across optical zones, delivering **true all-to-all connectivity**:
+In all-to-all trapped-ion processors, charged $^{171}\text{Yb}^+$ ions are physically shuttled across optical zones, delivering **true all-to-all connectivity**:
 
 | Hardware Metric | Allocation | Architectural Advantage |
 | :--- | :--- | :--- |
@@ -192,13 +193,19 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 │   ├── constellation.html           # 3D WebGL interactive orbital engine
 │   └── simulation.html              # Trapped-ion phase synchronization simulator
 ├── src/qrotate/                     # Core Q-Rotate quantum library
-│   ├── circuits.py                  # Pytket & Quantinuum H2 circuit builder
+│   ├── circuits.py                  # Pytket & Trapped-Ion H-Series circuit builder
 │   ├── operators.py                 # Continuous Lie algebra SU(2) Hamiltonians
 │   ├── structures.py                # RCSB PDB coordinate parser & geometry
 │   ├── metrics.py                   # Blind Parity P(0) & overlap fidelity
-│   └── hpc_bridge.py                # HPC classical-quantum hybrid pipeline
+│   ├── hpc_bridge.py                # HPC classical-quantum hybrid pipeline
+│   ├── client.py                    # Lab side: fingerprint() + Client (no coordinates leave)
+│   ├── node.py                      # Node side: FastAPI /v1/screen, /v1/jobs, /v1/cost, /v1/health
+│   └── cli.py                       # `qrotate fingerprint | compile | screen | serve`
+├── examples/
+│   └── demo_client_node.py          # In-process node, six systems, 6 x 6 P(0) matrix
 ├── tests/                           # Complete pytest verification suite
-│   └── test_qrotate.py              # unit & integration tests
+│   ├── test_qrotate.py              # unit & integration tests
+│   └── test_client_node.py          # client/node protocol, no-coordinates assertion, CLI
 ├── Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf # Official 1-Page Summary PDF
 ├── WHY_QROTATE_MATTERS.md           # Standalone architectural treatise
 ├── pyproject.toml                   # Modern packaging metadata
@@ -211,10 +218,9 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 
 * 📖 **Architectural Treatise:** [`WHY_QROTATE_MATTERS.md`](WHY_QROTATE_MATTERS.md) *(Why Classical Docking Fails, Why Q-Rotate Wins & Reduced-Exposure Screening)*
 * 📄 **Official One-Page Summary (PDF):** [`Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf`](Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf)
-* 🤖 **Foundational Agentic Paradigm:** [Google DeepMind AlphaEvolve (arXiv:2506.13131)](https://arxiv.org/abs/2506.13131)
-* 🧬 **Eve Count Agentic Ecosystem:** [github.com/evecount/alphaevolve-on-googlecloud](https://github.com/evecount/alphaevolve-on-googlecloud)
-* 📐 **Fair Classical Baseline (USR, Gaussian overlap vs Q-Rotate):** [`08_classical_baseline.md`](08_classical_baseline.md)
-* 🔊 **Hardware-Noise Study (depolarizing model on the compiled H2 circuit):** [`09_noise_study.md`](09_noise_study.md)
+* 🌐 **Eve Count Enterprise & Industrial Combinatorics Practice:** [evecount.com/work](https://evecount.com/work)
+* 📐 **Fair Classical Baseline (USR, Gaussian overlap vs Q-Rotate):** [`docs/08_classical_baseline.md`](docs/08_classical_baseline.md)
+* 🔊 **Hardware-Noise Study (depolarizing model on the compiled H2 circuit):** [`docs/09_noise_study.md`](docs/09_noise_study.md)
 
 ---
 
@@ -222,7 +228,6 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 
 * **Gwendalynn Lim ("1ightray")** — Founder & CTO, Eve Count ([gwen@evecount.com](mailto:gwen@evecount.com) / [LinkedIn](https://www.linkedin.com/in/gwendalynnlim/))
 * **Benjamin Lim ("Sedilix")** — Co-Founder & Systems Architect, Eve Count & Cybrdeck ([ben@evecount.com](mailto:ben@evecount.com) / [GitHub](https://github.com/sedilix))
-* **James Sun** — Venture Advisor & Global GTM Strategist | Founder @ Mamba Partners (ex. Goldman Sachs, Blackstone, Microsoft)
 
 ---
-*Quantinuum Singapore Grand Challenge 2026 • Finalist Release Version v3.0.0 • Verified on Quantinuum H2 Architecture*
+*SG Quantum Grand Challenge 2026 • Release Version v3.0.0 • Provisioned on Nexus Cloud*

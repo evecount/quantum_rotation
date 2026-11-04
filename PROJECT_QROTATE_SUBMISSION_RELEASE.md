@@ -48,7 +48,7 @@ What *is* real: the circuits are compiled and rebased to the actual H2 native ga
 
 Traditional computational docking models (AutoDock, Schrödinger, DFT) discretize 3D Cartesian space into cubic voxels, forcing supercomputers into an exponential combinatorial search ($O(N^3)$) over translational and rotational degrees of freedom.
 
-In the vein of **Google DeepMind's AlphaEvolve ([arXiv:2506.13131](https://arxiv.org/abs/2506.13131))**, which introduced autonomous agentic coding loops coupling candidate generators with automated execution evaluators, **Project Q-Rotate** translates this agentic paradigm **natively into quantum mechanics**:
+In Eve Count's closed-loop quantum-native architecture, coupling continuous Lie-algebraic candidate generators with mid-circuit physical evaluators, **Project Q-Rotate** executes autonomous Repeat-Until-Success (RUS) feedback **natively on trapped-ion systems**:
 1. **Generator (Continuous Lie Algebra $\hat{U}_{\text{tube}}(\tau)$)**:
    $$\hat{U}_{\text{tube}}(\tau) = \exp\left(-i \tau (\hat{H}_{\text{rot}} + \hat{H}_{\text{phase}})\right)$$
    $$\hat{H}_{\text{rot}} = \vec{\omega} \cdot \sum_{k=1}^N \hat{\vec{\sigma}}_k, \quad \hat{H}_{\text{phase}} = \sum_{m=1}^N \Delta \Phi_m \hat{Z}_m$$
