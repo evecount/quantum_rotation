@@ -59,29 +59,51 @@ To run an RUS loop, your quantum hardware must satisfy three brutal physical req
 
 Normally, programming a dynamic loop on a quantum processor requires low-level pulse sequencers or assembly-level quantum instructions.
 
-Quantinuum built **Guppy**—a Python-embedded quantum programming language—specifically to bridge this gap. The sketch below is the *target* control-flow pattern Guppy makes possible on this hardware:
+Quantinuum built **Guppy**, a Python-embedded quantum programming language, to bridge this gap. Q-Rotate's kernel lives in `src/qrotate/guppy_kernel.py`; `build_rus_kernel(pocket_phases, ligand_phases_init, tau, omega, max_iters, lock_threshold_shots)` returns the compiled program for any number of sites. Stripped of bookkeeping, its loop is:
+
 ```python
-@guppy(module)
-def qrotate_rus_engine(pocket: list[qubit], ligand: list[qubit], ancilla: qubit) -> bool:
-    locked: bool = False
-    while not locked:
-        # Quantum operations
-        apply_u_tube(ligand)
-        parity_fail: bool = swap_test_parity(ancilla, pocket[0], ligand[0])
-        
-        # Real-time classical control flow!
-        if not parity_fail:
-            locked = True
-        else:
-            apply_correction(ligand)
-            reset(ancilla)  # Mid-circuit ion reset!
-            
-    return locked
+@guppy
+def qrotate_rus() -> None:
+    anc = qubit()
+    pocket, ligand = alloc_registers()       # 2n qubits, comptime-unrolled
+    encode(pocket, ligand)                   # Ry(pi/2) Rz(phase) per site, constants baked in
+    apply_u_tube(ligand)                     # Ry(omega_y tau) Rz(omega_z tau) per site
+    locked = False
+    for t in range(max_iters):               # bounded loop (see below)
+        if not locked:
+            if t > 0:                        # failed last time: reset and kick
+                reset(anc)
+                reset_registers(pocket, ligand)
+                encode(pocket, ligand)
+                for m in range(max_iters):   # kick row t = t constant steps
+                    if m < t:
+                        kick_step(ligand)        # Rz(step) on every site
+                apply_u_tube(ligand)
+            swap_test(anc, pocket, ligand)   # H, per site CX / CCX / CX, H
+            bit = project_z(anc).read()      # mid-circuit measurement, read by the controller
+            if not bit:
+                locked = True
+    output("iterations", ...); output("kick_index", ...); output("locked", locked); output("parity", bit)
 ```
 
-When you call `.compile()` on a Guppy function:
-1. Guppy translates the Python `while` and `if/else` branches into a **HUGR (Hierarchical Unified Graph Representation)** control-flow graph.
-2. `hugr-qir` compiles this graph into an **LLVM QIR bitcode** payload.
-3. The Quantinuum control system executes the classical conditional branches in real time right next to the cryostat!
+When you call `.compile()`:
+1. Guppy translates the loop and the `if` branches into a **HUGR (Hierarchical Unified Graph Representation)** control-flow graph; the comptime helpers are unrolled over the sites with every angle a constant.
+2. `hugr-qir` lowers that graph to **LLVM QIR bitcode** for the `quantinuum-hardware` target.
+3. The Quantinuum control system executes the classical branches in real time, next to the trap.
 
-**Current implementation status:** the Guppy kernel shipped today (`guppy_qrotate_rus_demo` in `src/qrotate/circuits.py`) is a single-shot circuit — state preparation, $\hat{U}_{\text{tube}}$ evolution, the blind parity test, and measurement — that compiles cleanly to HUGR, but it does not yet contain the native `while not locked` loop sketched above. The adaptive RUS feedback loop that actually drives convergence today lives in `src/qrotate/metrics.py` (`run_blind_rus_protocol`), which re-simulates the real circuit each iteration on the classical side. Moving that loop natively into the compiled Guppy kernel — so the trapped-ion controller runs it in real time exactly as described above — is the next engineering step, not something already running on hardware.
+**What is implemented today (Oct 2026):**
+
+* The kernel above compiles to HUGR and to hardware-target QIR for n = 1, 2, 4 and 8 sites (3 to 17 qubits), and runs on **Selene**, Quantinuum's emulator, through `kernel.emulate(shots)`. Results for the six benchmark systems are in `benchmarks/guppy_rus_selene.json`; `tests/test_guppy_kernel.py` covers compilation, QIR size, linear scaling of native op counts and the ligand == pocket case.
+* After a failed test the default kernel resets **both** registers and re-prepares them with the kicked ligand phases, so every test is an independent trial with the same P(0) the rest of the project computes. The literal sketch above (reset only the ancilla, kick the live ligand) is available as `reprepare_on_failure=False`; after a failed SWAP test the registers are entangled, so its later tests are not product-state overlaps.
+* The kick is blind: kick row $j$ is $j$ applications of a constant step (default $2\pi/\text{max\_iters}$ on every site, a rotation of the whole ligand about $z$, which is what rotating the molecule does to the shell encoding), or a $\pm$ step random walk whose signs come from the controller's RNG (`kick_mode="rng"`).
+
+**The honest single-shot caveat.** One SWAP test returns one bit with $P(0) = (1 + |\langle\text{pocket}|\text{ligand}\rangle|^2)/2$, which is never below 1/2. A single ancilla $= 0$ is therefore *not* evidence of a match: two orthogonal registers pass half the time. The kernel's `locked` flag means "the per-shot stopping rule fired" (first pass, or `lock_threshold_shots` consecutive passes at the same kick, which drives the false accept rate of an orthogonal pair down to $2^{-t}$), not "the pose is right". The statistical lock the project uses, the lower confidence bound on $P(0)$ across hundreds of shots clearing 0.90, is a property of a *distribution* of shots, so it is computed on the host: `first_parity` across shots estimates $P(0)$ of the starting pose, and the `kick_index` histogram says which rows the shots stopped on. The SPSA-style pose search in `src/qrotate/metrics.py` (`run_blind_rus_protocol`) therefore stays classical; `guppy_kernel.estimate_first_test_p0` lets it read its $P(0)$ estimate from Selene shots instead of the numpy statevector.
+
+**Toolchain limits we hit** (guppylang 1.1.1, hugr-qir 0.3.0, selene-sim 0.3.2):
+
+* `hugr-qir` lowers only loops whose trip count is known at compile time and unrolls them, because the QIR adaptive profile has no backward branches. A `while not locked:` loop is rejected, so the kernel is a static `for` over `max_iters` slots with an `if not locked` guard: the bounded RUS the hardware runs anyway. Selene executes the HUGR with the loop intact.
+* For the hardware target every rotation angle must fold to a constant (a runtime float into `Rz` is rejected as "may panic"), so a kick is a static-bound loop of constant-angle steps, and the RNG kick draws signs with `random_int_bounded` (`RandomFloat` is unsupported).
+* Qubit *arrays* lower to `alloca` instructions that Quantinuum's `qircheck` rejects (and trip hugr-qir's unroller once the loop carries streak or RNG state), so the registers are tuples of qubits threaded through the comptime helpers. With that, every variant (deterministic or RNG kick, any `lock_threshold_shots`) lowers for n = 1 to 8 and validates with qircheck 0.9.0.
+* `quantinuum_qircheck` has no CPython $\geq$ 3.13 release, so on a 3.14 machine QIR is emitted with validation skipped; the benchmark re-validates the same bitcode with qircheck 0.9.0 under a separate CPython 3.12.
+
+Static native op counts after the QSystem rebase, single SWAP test (Guppy twin vs the Pytket circuit): see `op_counts` in `benchmarks/guppy_rus_selene.json`. The loop body of the RUS kernel adds one more state preparation and $2n+1$ resets to those numbers; executed gates per shot grow with the number of tests the shot ran.

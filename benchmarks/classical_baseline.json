@@ -1,0 +1,1358 @@
+{
+  "pose_recovery": [
+    {
+      "system_id": "rhodopsin",
+      "system_name": "11-cis Retinal / Rhodopsin",
+      "n_ligand_atoms": 20,
+      "start_offset_deg": 45.0,
+      "ambiguous_180_deg": false,
+      "start_ligand_rmsd_A": 3.077,
+      "classical": [
+        {
+          "method": "usr",
+          "recovered_2A": null,
+          "recovered_1A": null,
+          "pose_error_deg": null,
+          "ligand_rmsd_A": null,
+          "score_at_start_pose": 1.0,
+          "score_at_true_pose": 1.0,
+          "score_evaluations": 1,
+          "wall_clock_sec": 0.000868,
+          "note": "rotation invariant: identifies the shape without a search and returns no pose"
+        },
+        {
+          "method": "gaussian_z_grid",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 24,
+          "wall_clock_sec": 0.004066,
+          "best_angle_deg": 45.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_z_grid_refined",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 30,
+          "wall_clock_sec": 0.005267,
+          "best_angle_deg": 45.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_euler_unconstrained",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 266,
+          "wall_clock_sec": 0.16087,
+          "start_euler_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "euler_deg": [
+            37.11281048988527,
+            5.125070450209952e-06,
+            7.886858895428576
+          ],
+          "optimizer": "Nelder-Mead",
+          "converged": true
+        },
+        {
+          "method": "gaussian_principal_axes",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 8,
+          "wall_clock_sec": 0.00182,
+          "start_evaluations": 4,
+          "polish_evaluations": 4
+        }
+      ],
+      "quantum": [
+        {
+          "method": "quantum_rus_4_sites",
+          "n_trials": 30,
+          "locked_rate": 1.0,
+          "recovered_2A_rate": 1.0,
+          "recovered_2A_95ci": [
+            0.8865,
+            1.0
+          ],
+          "recovered_1A_rate": 0.3667,
+          "pose_error_deg_mean": 11.73,
+          "pose_error_deg_std": 6.0,
+          "ligand_rmsd_A_mean": 0.82,
+          "ligand_rmsd_A_std": 0.419,
+          "circuit_evaluations_mean": 3.37,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0362,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 15.0,
+            "ligand_rmsd_A": 1.05,
+            "circuit_evaluations": 2,
+            "locked": true
+          }
+        },
+        {
+          "method": "quantum_rus_8_sites",
+          "n_trials": 30,
+          "locked_rate": 1.0,
+          "recovered_2A_rate": 1.0,
+          "recovered_2A_95ci": [
+            0.8865,
+            1.0
+          ],
+          "recovered_1A_rate": 0.6,
+          "pose_error_deg_mean": 9.57,
+          "pose_error_deg_std": 6.49,
+          "ligand_rmsd_A_mean": 0.67,
+          "ligand_rmsd_A_std": 0.454,
+          "circuit_evaluations_mean": 4.6,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0439,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 15.0,
+            "ligand_rmsd_A": 1.05,
+            "circuit_evaluations": 2,
+            "locked": true
+          }
+        }
+      ]
+    },
+    {
+      "system_id": "gfp",
+      "system_name": "GFP Chromophore",
+      "n_ligand_atoms": 22,
+      "start_offset_deg": 35.0,
+      "ambiguous_180_deg": false,
+      "start_ligand_rmsd_A": 1.989,
+      "classical": [
+        {
+          "method": "usr",
+          "recovered_2A": null,
+          "recovered_1A": null,
+          "pose_error_deg": null,
+          "ligand_rmsd_A": null,
+          "score_at_start_pose": 1.0,
+          "score_at_true_pose": 1.0,
+          "score_evaluations": 1,
+          "wall_clock_sec": 0.000689,
+          "note": "rotation invariant: identifies the shape without a search and returns no pose"
+        },
+        {
+          "method": "gaussian_z_grid",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 5.0,
+          "ligand_rmsd_A": 0.288,
+          "score": 0.9474,
+          "score_evaluations": 24,
+          "wall_clock_sec": 0.004605,
+          "best_angle_deg": 30.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_z_grid_refined",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 32,
+          "wall_clock_sec": 0.006505,
+          "best_angle_deg": 34.9999043588283,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_euler_unconstrained",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 269,
+          "wall_clock_sec": 0.192444,
+          "start_euler_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "euler_deg": [
+            13.385478457701907,
+            -0.00015578471240165824,
+            21.614874827820664
+          ],
+          "optimizer": "Nelder-Mead",
+          "converged": true
+        },
+        {
+          "method": "gaussian_principal_axes",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 8,
+          "wall_clock_sec": 0.002489,
+          "start_evaluations": 4,
+          "polish_evaluations": 4
+        }
+      ],
+      "quantum": [
+        {
+          "method": "quantum_rus_4_sites",
+          "n_trials": 30,
+          "locked_rate": 1.0,
+          "recovered_2A_rate": 1.0,
+          "recovered_2A_95ci": [
+            0.8865,
+            1.0
+          ],
+          "recovered_1A_rate": 0.6,
+          "pose_error_deg_mean": 11.88,
+          "pose_error_deg_std": 10.25,
+          "ligand_rmsd_A_mean": 0.681,
+          "ligand_rmsd_A_std": 0.584,
+          "circuit_evaluations_mean": 3.6,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.041,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 0.36,
+            "ligand_rmsd_A": 0.021,
+            "circuit_evaluations": 4,
+            "locked": true
+          }
+        },
+        {
+          "method": "quantum_rus_8_sites",
+          "n_trials": 30,
+          "locked_rate": 1.0,
+          "recovered_2A_rate": 1.0,
+          "recovered_2A_95ci": [
+            0.8865,
+            1.0
+          ],
+          "recovered_1A_rate": 0.9333,
+          "pose_error_deg_mean": 7.08,
+          "pose_error_deg_std": 5.13,
+          "ligand_rmsd_A_mean": 0.408,
+          "ligand_rmsd_A_std": 0.295,
+          "circuit_evaluations_mean": 5.1,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0462,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 0.36,
+            "ligand_rmsd_A": 0.021,
+            "circuit_evaluations": 4,
+            "locked": true
+          }
+        }
+      ]
+    },
+    {
+      "system_id": "mpro",
+      "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+      "n_ligand_atoms": 35,
+      "start_offset_deg": -50.0,
+      "ambiguous_180_deg": false,
+      "start_ligand_rmsd_A": 2.756,
+      "classical": [
+        {
+          "method": "usr",
+          "recovered_2A": null,
+          "recovered_1A": null,
+          "pose_error_deg": null,
+          "ligand_rmsd_A": null,
+          "score_at_start_pose": 1.0,
+          "score_at_true_pose": 1.0,
+          "score_evaluations": 1,
+          "wall_clock_sec": 0.000608,
+          "note": "rotation invariant: identifies the shape without a search and returns no pose"
+        },
+        {
+          "method": "gaussian_z_grid",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 5.0,
+          "ligand_rmsd_A": 0.284,
+          "score": 0.9673,
+          "score_evaluations": 24,
+          "wall_clock_sec": 0.007288,
+          "best_angle_deg": -45.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_z_grid_refined",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 32,
+          "wall_clock_sec": 0.016376,
+          "best_angle_deg": -50.000098971563716,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_euler_unconstrained",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 255,
+          "wall_clock_sec": 0.276575,
+          "start_euler_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "euler_deg": [
+            -2.4179391886627455,
+            -0.0004140309761958667,
+            -47.581662989197795
+          ],
+          "optimizer": "Nelder-Mead",
+          "converged": true
+        },
+        {
+          "method": "gaussian_principal_axes",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 8,
+          "wall_clock_sec": 0.003435,
+          "start_evaluations": 4,
+          "polish_evaluations": 4
+        }
+      ],
+      "quantum": [
+        {
+          "method": "quantum_rus_4_sites",
+          "n_trials": 30,
+          "locked_rate": 1.0,
+          "recovered_2A_rate": 1.0,
+          "recovered_2A_95ci": [
+            0.8865,
+            1.0
+          ],
+          "recovered_1A_rate": 1.0,
+          "pose_error_deg_mean": 10.7,
+          "pose_error_deg_std": 3.06,
+          "ligand_rmsd_A_mean": 0.608,
+          "ligand_rmsd_A_std": 0.173,
+          "circuit_evaluations_mean": 3.1,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0332,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 10.0,
+            "ligand_rmsd_A": 0.568,
+            "circuit_evaluations": 2,
+            "locked": true
+          }
+        },
+        {
+          "method": "quantum_rus_8_sites",
+          "n_trials": 30,
+          "locked_rate": 0.9333,
+          "recovered_2A_rate": 0.9333,
+          "recovered_2A_95ci": [
+            0.7868,
+            0.9815
+          ],
+          "recovered_1A_rate": 0.9333,
+          "pose_error_deg_mean": 17.56,
+          "pose_error_deg_std": 27.03,
+          "ligand_rmsd_A_mean": 0.919,
+          "ligand_rmsd_A_std": 1.217,
+          "circuit_evaluations_mean": 4.5,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0403,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 10.0,
+            "ligand_rmsd_A": 0.568,
+            "circuit_evaluations": 2,
+            "locked": true
+          }
+        }
+      ]
+    },
+    {
+      "system_id": "cox2",
+      "system_name": "COX-2 + Celecoxib",
+      "n_ligand_atoms": 26,
+      "start_offset_deg": 80.0,
+      "ambiguous_180_deg": false,
+      "start_ligand_rmsd_A": 4.275,
+      "classical": [
+        {
+          "method": "usr",
+          "recovered_2A": null,
+          "recovered_1A": null,
+          "pose_error_deg": null,
+          "ligand_rmsd_A": null,
+          "score_at_start_pose": 1.0,
+          "score_at_true_pose": 1.0,
+          "score_evaluations": 1,
+          "wall_clock_sec": 0.000788,
+          "note": "rotation invariant: identifies the shape without a search and returns no pose"
+        },
+        {
+          "method": "gaussian_z_grid",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 5.0,
+          "ligand_rmsd_A": 0.29,
+          "score": 0.9649,
+          "score_evaluations": 24,
+          "wall_clock_sec": 0.006097,
+          "best_angle_deg": 75.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_z_grid_refined",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 32,
+          "wall_clock_sec": 0.007359,
+          "best_angle_deg": 80.00012768764543,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_euler_unconstrained",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 251,
+          "wall_clock_sec": 0.215406,
+          "start_euler_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "euler_deg": [
+            50.168955834178796,
+            -0.00031872984045811165,
+            29.83077683350652
+          ],
+          "optimizer": "Nelder-Mead",
+          "converged": true
+        },
+        {
+          "method": "gaussian_principal_axes",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 8,
+          "wall_clock_sec": 0.003399,
+          "start_evaluations": 4,
+          "polish_evaluations": 4
+        }
+      ],
+      "quantum": [
+        {
+          "method": "quantum_rus_4_sites",
+          "n_trials": 30,
+          "locked_rate": 0.8667,
+          "recovered_2A_rate": 0.9,
+          "recovered_2A_95ci": [
+            0.7438,
+            0.9654
+          ],
+          "recovered_1A_rate": 0.3,
+          "pose_error_deg_mean": 24.62,
+          "pose_error_deg_std": 24.28,
+          "ligand_rmsd_A_mean": 1.357,
+          "ligand_rmsd_A_std": 1.177,
+          "circuit_evaluations_mean": 5.8,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0493,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 20.0,
+            "ligand_rmsd_A": 1.155,
+            "circuit_evaluations": 2,
+            "locked": true
+          }
+        },
+        {
+          "method": "quantum_rus_8_sites",
+          "n_trials": 30,
+          "locked_rate": 0.7333,
+          "recovered_2A_rate": 0.7333,
+          "recovered_2A_95ci": [
+            0.5555,
+            0.8582
+          ],
+          "recovered_1A_rate": 0.5,
+          "pose_error_deg_mean": 45.06,
+          "pose_error_deg_std": 55.97,
+          "ligand_rmsd_A_mean": 2.125,
+          "ligand_rmsd_A_std": 2.38,
+          "circuit_evaluations_mean": 8.0,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0305,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 8.04,
+            "ligand_rmsd_A": 0.466,
+            "circuit_evaluations": 8,
+            "locked": true
+          }
+        }
+      ]
+    },
+    {
+      "system_id": "azobenzene",
+      "system_name": "Azobenzene Molecular Switch",
+      "n_ligand_atoms": 14,
+      "start_offset_deg": -115.0,
+      "ambiguous_180_deg": false,
+      "start_ligand_rmsd_A": 5.255,
+      "classical": [
+        {
+          "method": "usr",
+          "recovered_2A": null,
+          "recovered_1A": null,
+          "pose_error_deg": null,
+          "ligand_rmsd_A": null,
+          "score_at_start_pose": 1.0,
+          "score_at_true_pose": 1.0,
+          "score_evaluations": 1,
+          "wall_clock_sec": 0.000794,
+          "note": "rotation invariant: identifies the shape without a search and returns no pose"
+        },
+        {
+          "method": "gaussian_z_grid",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 5.0,
+          "ligand_rmsd_A": 0.272,
+          "score": 0.9807,
+          "score_evaluations": 24,
+          "wall_clock_sec": 0.010396,
+          "best_angle_deg": -120.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_z_grid_refined",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 32,
+          "wall_clock_sec": 0.004807,
+          "best_angle_deg": -114.99997131629272,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_euler_unconstrained",
+          "recovered_2A": false,
+          "recovered_1A": false,
+          "pose_error_deg": 180.0,
+          "ligand_rmsd_A": 6.231,
+          "score": 0.9239,
+          "score_evaluations": 254,
+          "wall_clock_sec": 0.090087,
+          "start_euler_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "euler_deg": [
+            24.50477650179932,
+            0.6882943108418054,
+            40.49490934389263
+          ],
+          "optimizer": "Nelder-Mead",
+          "converged": true
+        },
+        {
+          "method": "gaussian_principal_axes",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 8,
+          "wall_clock_sec": 0.002051,
+          "start_evaluations": 4,
+          "polish_evaluations": 4
+        }
+      ],
+      "quantum": [
+        {
+          "method": "quantum_rus_4_sites",
+          "n_trials": 30,
+          "locked_rate": 0.7333,
+          "recovered_2A_rate": 0.7667,
+          "recovered_2A_95ci": [
+            0.5907,
+            0.8821
+          ],
+          "recovered_1A_rate": 0.6333,
+          "pose_error_deg_mean": 48.24,
+          "pose_error_deg_std": 66.83,
+          "ligand_rmsd_A_mean": 1.924,
+          "ligand_rmsd_A_std": 2.37,
+          "circuit_evaluations_mean": 8.7,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0546,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 17.43,
+            "ligand_rmsd_A": 0.944,
+            "circuit_evaluations": 5,
+            "locked": true
+          }
+        },
+        {
+          "method": "quantum_rus_8_sites",
+          "n_trials": 30,
+          "locked_rate": 0.6,
+          "recovered_2A_rate": 0.6333,
+          "recovered_2A_95ci": [
+            0.4551,
+            0.7813
+          ],
+          "recovered_1A_rate": 0.5667,
+          "pose_error_deg_mean": 54.56,
+          "pose_error_deg_std": 61.69,
+          "ligand_rmsd_A_mean": 2.354,
+          "ligand_rmsd_A_std": 2.448,
+          "circuit_evaluations_mean": 10.5,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0448,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 7.07,
+            "ligand_rmsd_A": 0.384,
+            "circuit_evaluations": 7,
+            "locked": true
+          }
+        }
+      ]
+    },
+    {
+      "system_id": "h2bench",
+      "system_name": "H2 Hardware Benchmark",
+      "n_ligand_atoms": 2,
+      "start_offset_deg": 15.0,
+      "ambiguous_180_deg": true,
+      "start_ligand_rmsd_A": 0.097,
+      "classical": [
+        {
+          "method": "usr",
+          "recovered_2A": null,
+          "recovered_1A": null,
+          "pose_error_deg": null,
+          "ligand_rmsd_A": null,
+          "score_at_start_pose": 1.0,
+          "score_at_true_pose": 1.0,
+          "score_evaluations": 1,
+          "wall_clock_sec": 0.000754,
+          "note": "rotation invariant: identifies the shape without a search and returns no pose"
+        },
+        {
+          "method": "gaussian_z_grid",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 24,
+          "wall_clock_sec": 0.002222,
+          "best_angle_deg": -165.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_z_grid_refined",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 30,
+          "wall_clock_sec": 0.002996,
+          "best_angle_deg": -165.0,
+          "grid_step_deg": 15.0,
+          "grid_points": 24
+        },
+        {
+          "method": "gaussian_euler_unconstrained",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 240,
+          "wall_clock_sec": 0.068107,
+          "start_euler_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "euler_deg": [
+            6.918730995839201,
+            -5.062531329617546e-05,
+            8.081719038413336
+          ],
+          "optimizer": "Nelder-Mead",
+          "converged": true
+        },
+        {
+          "method": "gaussian_principal_axes",
+          "recovered_2A": true,
+          "recovered_1A": true,
+          "pose_error_deg": 0.0,
+          "ligand_rmsd_A": 0.0,
+          "score": 1.0,
+          "score_evaluations": 8,
+          "wall_clock_sec": 0.001602,
+          "start_evaluations": 4,
+          "polish_evaluations": 4
+        }
+      ],
+      "quantum": [
+        {
+          "method": "quantum_rus_4_sites",
+          "n_trials": 30,
+          "locked_rate": 1.0,
+          "recovered_2A_rate": 1.0,
+          "recovered_2A_95ci": [
+            0.8865,
+            1.0
+          ],
+          "recovered_1A_rate": 1.0,
+          "pose_error_deg_mean": 15.0,
+          "pose_error_deg_std": 0.0,
+          "ligand_rmsd_A_mean": 0.097,
+          "ligand_rmsd_A_std": 0.0,
+          "circuit_evaluations_mean": 1.0,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0033,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 15.0,
+            "ligand_rmsd_A": 0.097,
+            "circuit_evaluations": 1,
+            "locked": true
+          }
+        },
+        {
+          "method": "quantum_rus_8_sites",
+          "n_trials": 30,
+          "locked_rate": 1.0,
+          "recovered_2A_rate": 1.0,
+          "recovered_2A_95ci": [
+            0.8865,
+            1.0
+          ],
+          "recovered_1A_rate": 1.0,
+          "pose_error_deg_mean": 15.41,
+          "pose_error_deg_std": 2.23,
+          "ligand_rmsd_A_mean": 0.099,
+          "ligand_rmsd_A_std": 0.014,
+          "circuit_evaluations_mean": 1.07,
+          "shots_per_evaluation": 100,
+          "simulator_wall_clock_sec_mean": 0.0015,
+          "showdown_seed_trial": {
+            "recovered_2A": true,
+            "pose_error_deg": 15.0,
+            "ligand_rmsd_A": 0.097,
+            "circuit_evaluations": 1,
+            "locked": true
+          }
+        }
+      ]
+    }
+  ],
+  "cross_method_agreement": {
+    "pairs": [
+      {
+        "reference": "rhodopsin",
+        "probe": "rhodopsin",
+        "self_pair": true,
+        "quantum_p0_4_sites": 0.9959,
+        "quantum_p0_8_sites": 0.993,
+        "quantum_p0_4_sites_deposited_frame": 0.994,
+        "usr_similarity": 1.0,
+        "gaussian_tanimoto_z": 1.0,
+        "gaussian_tanimoto_3d": 1.0
+      },
+      {
+        "reference": "rhodopsin",
+        "probe": "gfp",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6506,
+        "quantum_p0_8_sites": 0.5092,
+        "quantum_p0_4_sites_deposited_frame": 0.5003,
+        "usr_similarity": 0.6142,
+        "gaussian_tanimoto_z": 0.5308,
+        "gaussian_tanimoto_3d": 0.5706
+      },
+      {
+        "reference": "rhodopsin",
+        "probe": "mpro",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5862,
+        "quantum_p0_8_sites": 0.5087,
+        "quantum_p0_4_sites_deposited_frame": 0.5055,
+        "usr_similarity": 0.5176,
+        "gaussian_tanimoto_z": 0.3286,
+        "gaussian_tanimoto_3d": 0.4377
+      },
+      {
+        "reference": "rhodopsin",
+        "probe": "cox2",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.8835,
+        "quantum_p0_8_sites": 0.6324,
+        "quantum_p0_4_sites_deposited_frame": 0.5352,
+        "usr_similarity": 0.5312,
+        "gaussian_tanimoto_z": 0.3204,
+        "gaussian_tanimoto_3d": 0.4083
+      },
+      {
+        "reference": "rhodopsin",
+        "probe": "azobenzene",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5558,
+        "quantum_p0_8_sites": 0.5758,
+        "quantum_p0_4_sites_deposited_frame": 0.5025,
+        "usr_similarity": 0.4284,
+        "gaussian_tanimoto_z": 0.4276,
+        "gaussian_tanimoto_3d": 0.5343
+      },
+      {
+        "reference": "rhodopsin",
+        "probe": "h2bench",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.8646,
+        "quantum_p0_8_sites": 0.5564,
+        "quantum_p0_4_sites_deposited_frame": 0.6884,
+        "usr_similarity": 0.2483,
+        "gaussian_tanimoto_z": 0.0295,
+        "gaussian_tanimoto_3d": 0.0295
+      },
+      {
+        "reference": "gfp",
+        "probe": "rhodopsin",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6498,
+        "quantum_p0_8_sites": 0.5091,
+        "quantum_p0_4_sites_deposited_frame": 0.5001,
+        "usr_similarity": 0.6142,
+        "gaussian_tanimoto_z": 0.5308,
+        "gaussian_tanimoto_3d": 0.5707
+      },
+      {
+        "reference": "gfp",
+        "probe": "gfp",
+        "self_pair": true,
+        "quantum_p0_4_sites": 0.9934,
+        "quantum_p0_8_sites": 0.9875,
+        "quantum_p0_4_sites_deposited_frame": 0.9915,
+        "usr_similarity": 1.0,
+        "gaussian_tanimoto_z": 1.0,
+        "gaussian_tanimoto_3d": 1.0
+      },
+      {
+        "reference": "gfp",
+        "probe": "mpro",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.9038,
+        "quantum_p0_8_sites": 0.7557,
+        "quantum_p0_4_sites_deposited_frame": 0.6496,
+        "usr_similarity": 0.5662,
+        "gaussian_tanimoto_z": 0.4268,
+        "gaussian_tanimoto_3d": 0.4893
+      },
+      {
+        "reference": "gfp",
+        "probe": "cox2",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6678,
+        "quantum_p0_8_sites": 0.5161,
+        "quantum_p0_4_sites_deposited_frame": 0.5002,
+        "usr_similarity": 0.6206,
+        "gaussian_tanimoto_z": 0.5232,
+        "gaussian_tanimoto_3d": 0.6784
+      },
+      {
+        "reference": "gfp",
+        "probe": "azobenzene",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6623,
+        "quantum_p0_8_sites": 0.5167,
+        "quantum_p0_4_sites_deposited_frame": 0.5435,
+        "usr_similarity": 0.4821,
+        "gaussian_tanimoto_z": 0.4299,
+        "gaussian_tanimoto_3d": 0.608
+      },
+      {
+        "reference": "gfp",
+        "probe": "h2bench",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5,
+        "quantum_p0_8_sites": 0.5,
+        "quantum_p0_4_sites_deposited_frame": 0.5,
+        "usr_similarity": 0.2808,
+        "gaussian_tanimoto_z": 0.0441,
+        "gaussian_tanimoto_3d": 0.0444
+      },
+      {
+        "reference": "mpro",
+        "probe": "rhodopsin",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5867,
+        "quantum_p0_8_sites": 0.5085,
+        "quantum_p0_4_sites_deposited_frame": 0.5068,
+        "usr_similarity": 0.5176,
+        "gaussian_tanimoto_z": 0.3286,
+        "gaussian_tanimoto_3d": 0.4377
+      },
+      {
+        "reference": "mpro",
+        "probe": "gfp",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.9055,
+        "quantum_p0_8_sites": 0.7574,
+        "quantum_p0_4_sites_deposited_frame": 0.6925,
+        "usr_similarity": 0.5662,
+        "gaussian_tanimoto_z": 0.4268,
+        "gaussian_tanimoto_3d": 0.4893
+      },
+      {
+        "reference": "mpro",
+        "probe": "mpro",
+        "self_pair": true,
+        "quantum_p0_4_sites": 0.9961,
+        "quantum_p0_8_sites": 0.9921,
+        "quantum_p0_4_sites_deposited_frame": 0.9943,
+        "usr_similarity": 1.0,
+        "gaussian_tanimoto_z": 1.0,
+        "gaussian_tanimoto_3d": 1.0
+      },
+      {
+        "reference": "mpro",
+        "probe": "cox2",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.599,
+        "quantum_p0_8_sites": 0.515,
+        "quantum_p0_4_sites_deposited_frame": 0.5035,
+        "usr_similarity": 0.7726,
+        "gaussian_tanimoto_z": 0.4217,
+        "gaussian_tanimoto_3d": 0.4696
+      },
+      {
+        "reference": "mpro",
+        "probe": "azobenzene",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.7064,
+        "quantum_p0_8_sites": 0.5462,
+        "quantum_p0_4_sites_deposited_frame": 0.7057,
+        "usr_similarity": 0.4654,
+        "gaussian_tanimoto_z": 0.2291,
+        "gaussian_tanimoto_3d": 0.3527
+      },
+      {
+        "reference": "mpro",
+        "probe": "h2bench",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5003,
+        "quantum_p0_8_sites": 0.5,
+        "quantum_p0_4_sites_deposited_frame": 0.5,
+        "usr_similarity": 0.2559,
+        "gaussian_tanimoto_z": 0.0261,
+        "gaussian_tanimoto_3d": 0.0266
+      },
+      {
+        "reference": "cox2",
+        "probe": "rhodopsin",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.8849,
+        "quantum_p0_8_sites": 0.633,
+        "quantum_p0_4_sites_deposited_frame": 0.5212,
+        "usr_similarity": 0.5312,
+        "gaussian_tanimoto_z": 0.3204,
+        "gaussian_tanimoto_3d": 0.4083
+      },
+      {
+        "reference": "cox2",
+        "probe": "gfp",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6701,
+        "quantum_p0_8_sites": 0.5163,
+        "quantum_p0_4_sites_deposited_frame": 0.5002,
+        "usr_similarity": 0.6206,
+        "gaussian_tanimoto_z": 0.5232,
+        "gaussian_tanimoto_3d": 0.6791
+      },
+      {
+        "reference": "cox2",
+        "probe": "mpro",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5991,
+        "quantum_p0_8_sites": 0.515,
+        "quantum_p0_4_sites_deposited_frame": 0.5071,
+        "usr_similarity": 0.7726,
+        "gaussian_tanimoto_z": 0.4217,
+        "gaussian_tanimoto_3d": 0.4696
+      },
+      {
+        "reference": "cox2",
+        "probe": "cox2",
+        "self_pair": true,
+        "quantum_p0_4_sites": 0.9963,
+        "quantum_p0_8_sites": 0.9946,
+        "quantum_p0_4_sites_deposited_frame": 0.9943,
+        "usr_similarity": 1.0,
+        "gaussian_tanimoto_z": 1.0,
+        "gaussian_tanimoto_3d": 1.0
+      },
+      {
+        "reference": "cox2",
+        "probe": "azobenzene",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6947,
+        "quantum_p0_8_sites": 0.5195,
+        "quantum_p0_4_sites_deposited_frame": 0.5001,
+        "usr_similarity": 0.4736,
+        "gaussian_tanimoto_z": 0.389,
+        "gaussian_tanimoto_3d": 0.4767
+      },
+      {
+        "reference": "cox2",
+        "probe": "h2bench",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6342,
+        "quantum_p0_8_sites": 0.5501,
+        "quantum_p0_4_sites_deposited_frame": 0.6332,
+        "usr_similarity": 0.2619,
+        "gaussian_tanimoto_z": 0.0375,
+        "gaussian_tanimoto_3d": 0.0376
+      },
+      {
+        "reference": "azobenzene",
+        "probe": "rhodopsin",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5558,
+        "quantum_p0_8_sites": 0.5742,
+        "quantum_p0_4_sites_deposited_frame": 0.5018,
+        "usr_similarity": 0.4284,
+        "gaussian_tanimoto_z": 0.4276,
+        "gaussian_tanimoto_3d": 0.5343
+      },
+      {
+        "reference": "azobenzene",
+        "probe": "gfp",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6613,
+        "quantum_p0_8_sites": 0.5165,
+        "quantum_p0_4_sites_deposited_frame": 0.5635,
+        "usr_similarity": 0.4821,
+        "gaussian_tanimoto_z": 0.4299,
+        "gaussian_tanimoto_3d": 0.608
+      },
+      {
+        "reference": "azobenzene",
+        "probe": "mpro",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.7065,
+        "quantum_p0_8_sites": 0.5461,
+        "quantum_p0_4_sites_deposited_frame": 0.6983,
+        "usr_similarity": 0.4654,
+        "gaussian_tanimoto_z": 0.2291,
+        "gaussian_tanimoto_3d": 0.3527
+      },
+      {
+        "reference": "azobenzene",
+        "probe": "cox2",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.6947,
+        "quantum_p0_8_sites": 0.5194,
+        "quantum_p0_4_sites_deposited_frame": 0.5,
+        "usr_similarity": 0.4736,
+        "gaussian_tanimoto_z": 0.389,
+        "gaussian_tanimoto_3d": 0.4767
+      },
+      {
+        "reference": "azobenzene",
+        "probe": "azobenzene",
+        "self_pair": true,
+        "quantum_p0_4_sites": 0.9923,
+        "quantum_p0_8_sites": 0.9846,
+        "quantum_p0_4_sites_deposited_frame": 0.9903,
+        "usr_similarity": 1.0,
+        "gaussian_tanimoto_z": 1.0,
+        "gaussian_tanimoto_3d": 1.0
+      },
+      {
+        "reference": "azobenzene",
+        "probe": "h2bench",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5,
+        "quantum_p0_8_sites": 0.5,
+        "quantum_p0_4_sites_deposited_frame": 0.5,
+        "usr_similarity": 0.3299,
+        "gaussian_tanimoto_z": 0.0701,
+        "gaussian_tanimoto_3d": 0.0707
+      },
+      {
+        "reference": "h2bench",
+        "probe": "rhodopsin",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.7787,
+        "quantum_p0_8_sites": 0.5223,
+        "quantum_p0_4_sites_deposited_frame": 0.655,
+        "usr_similarity": 0.2483,
+        "gaussian_tanimoto_z": 0.0295,
+        "gaussian_tanimoto_3d": 0.0295
+      },
+      {
+        "reference": "h2bench",
+        "probe": "gfp",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.9133,
+        "quantum_p0_8_sites": 0.8105,
+        "quantum_p0_4_sites_deposited_frame": 0.5,
+        "usr_similarity": 0.2808,
+        "gaussian_tanimoto_z": 0.0441,
+        "gaussian_tanimoto_3d": 0.0444
+      },
+      {
+        "reference": "h2bench",
+        "probe": "mpro",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.8051,
+        "quantum_p0_8_sites": 0.6387,
+        "quantum_p0_4_sites_deposited_frame": 0.5001,
+        "usr_similarity": 0.2559,
+        "gaussian_tanimoto_z": 0.0261,
+        "gaussian_tanimoto_3d": 0.0266
+      },
+      {
+        "reference": "h2bench",
+        "probe": "cox2",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.8484,
+        "quantum_p0_8_sites": 0.6212,
+        "quantum_p0_4_sites_deposited_frame": 0.6718,
+        "usr_similarity": 0.2619,
+        "gaussian_tanimoto_z": 0.0375,
+        "gaussian_tanimoto_3d": 0.0376
+      },
+      {
+        "reference": "h2bench",
+        "probe": "azobenzene",
+        "self_pair": false,
+        "quantum_p0_4_sites": 0.5528,
+        "quantum_p0_8_sites": 0.5025,
+        "quantum_p0_4_sites_deposited_frame": 0.5,
+        "usr_similarity": 0.3299,
+        "gaussian_tanimoto_z": 0.0701,
+        "gaussian_tanimoto_3d": 0.0707
+      },
+      {
+        "reference": "h2bench",
+        "probe": "h2bench",
+        "self_pair": true,
+        "quantum_p0_4_sites": 0.9908,
+        "quantum_p0_8_sites": 0.9813,
+        "quantum_p0_4_sites_deposited_frame": 0.9903,
+        "usr_similarity": 1.0,
+        "gaussian_tanimoto_z": 1.0,
+        "gaussian_tanimoto_3d": 1.0
+      }
+    ],
+    "spearman": {
+      "quantum_p0_4_sites__vs__usr_similarity": {
+        "all_36_ordered_pairs": {
+          "rho": 0.4373,
+          "p_value": 0.0077,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": 0.0325,
+          "p_value": 0.8644,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_4_sites__vs__gaussian_tanimoto_z": {
+        "all_36_ordered_pairs": {
+          "rho": 0.3624,
+          "p_value": 0.0299,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": -0.0967,
+          "p_value": 0.611,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_4_sites__vs__gaussian_tanimoto_3d": {
+        "all_36_ordered_pairs": {
+          "rho": 0.3778,
+          "p_value": 0.0231,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": -0.07,
+          "p_value": 0.7133,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_8_sites__vs__usr_similarity": {
+        "all_36_ordered_pairs": {
+          "rho": 0.3374,
+          "p_value": 0.0442,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": -0.14,
+          "p_value": 0.4605,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_8_sites__vs__gaussian_tanimoto_z": {
+        "all_36_ordered_pairs": {
+          "rho": 0.3544,
+          "p_value": 0.0339,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": -0.1106,
+          "p_value": 0.5607,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_8_sites__vs__gaussian_tanimoto_3d": {
+        "all_36_ordered_pairs": {
+          "rho": 0.3709,
+          "p_value": 0.026,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": -0.082,
+          "p_value": 0.6665,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_4_sites_deposited_frame__vs__usr_similarity": {
+        "all_36_ordered_pairs": {
+          "rho": 0.4459,
+          "p_value": 0.0064,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": 0.0457,
+          "p_value": 0.8106,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_4_sites_deposited_frame__vs__gaussian_tanimoto_z": {
+        "all_36_ordered_pairs": {
+          "rho": 0.4086,
+          "p_value": 0.0134,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": -0.0188,
+          "p_value": 0.9214,
+          "n_pairs": 30
+        }
+      },
+      "quantum_p0_4_sites_deposited_frame__vs__gaussian_tanimoto_3d": {
+        "all_36_ordered_pairs": {
+          "rho": 0.4093,
+          "p_value": 0.0132,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": -0.0175,
+          "p_value": 0.9271,
+          "n_pairs": 30
+        }
+      },
+      "classical_consistency__usr_vs_gaussian_3d": {
+        "all_36_ordered_pairs": {
+          "rho": 0.8693,
+          "p_value": 0.0,
+          "n_pairs": 36
+        },
+        "30_off_diagonal_pairs": {
+          "rho": 0.7748,
+          "p_value": 0.0,
+          "n_pairs": 30
+        }
+      }
+    },
+    "closed_form_vs_statevector_max_abs_gap": 7.771561172376096e-16,
+    "note": "Scores are symmetric in (reference, probe), so the 36 ordered pairs carry 15 distinct off-diagonal values plus 6 self pairs that every method scores at its maximum."
+  },
+  "settings": {
+    "z_grid_step_deg": 15.0,
+    "quantum_effective_step_deg": 15.49,
+    "rmsd_success_A": 2.0,
+    "rmsd_strict_A": 1.0,
+    "gaussian_p": 2.7,
+    "quantum_trials_per_system": 30,
+    "quantum_shots_per_circuit": 100,
+    "quantum_max_iterations": 15,
+    "tau": 0.25,
+    "omega": [
+      1.0,
+      0.5,
+      0.25
+    ]
+  },
+  "machine": {
+    "platform": "Windows-11-10.0.22621-SP0",
+    "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+    "python": "3.14.7",
+    "numpy": "2.5.2",
+    "cpu_count": 8
+  },
+  "total_wall_clock_sec": 84.1,
+  "generated_by": "src/qrotate/classical_baseline.py::run_classical_baseline",
+  "generated_at": "2026-10-22 04:06:57"
+}

@@ -131,6 +131,7 @@ Simulated on experimental coordinates from the **RCSB Protein Data Bank (PDB)** 
 
 * **The Problem:** Biopharma giants (Pfizer, Novartis, Roche) are cautious about sending unpatented scaffold coordinates to external cloud platforms because of leak and subpoena risk.
 * **The Solution:** Our **Coordinate-Free Blind Parity** protocol evaluates wave interference ($P(0)$) on an ancilla referee while exchanging only a compressed phase fingerprint rather than raw 3D coordinates. This reduces exposure; it is not a cryptographic zero-knowledge guarantee (see `docs/03_the_blind_parity_test.md`).
+* **As software:** the split exists as a client and a node. `qrotate fingerprint` encodes a structure locally; `qrotate screen --node URL` sends only the fingerprint to a `qrotate serve` node, which runs the SWAP test and returns $P(0)$ with a Wilson interval and an HQC estimate. What crosses the wire, what the node learns and what it does not are spelled out in `docs/10_client_node_protocol.md`; `examples/demo_client_node.py` runs the six benchmark systems through it.
 * **Commercial Impact:** Could support confidential multi-party screening. The $120M-$280M figure is an illustrative scenario model, not a market-validated TAM; see `workspaces/JAMES_VENTURE_GTM_BRIEF.md`.
 
 ---
@@ -174,7 +175,7 @@ We score ourselves conservatively against the 0-5 Evidence Scale in `Competition
 | :--- | :--- | :--- |
 | **Problem & Value (30%)** | Scenario model ($120M-$280M) checked against 5 cited 2024-2025 AI-drug-discovery licensing deals. No signed pilot or LOI. | Signed pilot/LOI, TAM/SAM/SOM breakdown |
 | **Tech Performance & Hardware (30%)** | H2-native compilation (62 `PhasedX`, 32 `ZZPhase`, 0 SWAPs, depth 68, ~13.6 est. HQCs); 6 systems, 180 simulated trials, 93.3% lock rate. Emulator only. | Noisy-emulator and physical H2 runs |
-| **Scientific Merit (20%)** | Lie-algebra pose search vs a classical grid baseline, with confidence intervals and per-system failure analysis. | External reference data, hardware noise analysis |
+| **Scientific Merit (20%)** | Fair classical baseline (`docs/08_classical_baseline.md`): USR and ROCS-style Gaussian overlap recover every pose exactly in 8-32 evaluations and milliseconds, versus 94% within 2 A for the quantum search, and the quantum fingerprint's pair ranking has no correlation with either classical score. Depolarizing-noise study on the compiled H2 circuit (`docs/09_noise_study.md`): 9-qubit lock rate 91.7% at the H2 two-qubit spec (p2 = 1e-3 to 2e-3), falling below 80% near p2 = 4e-3; 17 qubits falls below 80% near 1.3e-3. | External reference data, physical H2 run |
 | **Engineering & Reproducibility (20%)** | Modular `src/qrotate/`, 19 passing `pytest` cases, regenerable benchmarks (`python -m src.qrotate.metrics`), Marimo notebook, 3D WebGL demo. | CI, pinned environment |
 
 See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware disclosure.
@@ -196,9 +197,15 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 │   ├── operators.py                 # Continuous Lie algebra SU(2) Hamiltonians
 │   ├── structures.py                # RCSB PDB coordinate parser & geometry
 │   ├── metrics.py                   # Blind Parity P(0) & overlap fidelity
-│   └── hpc_bridge.py                # HPC classical-quantum hybrid pipeline
+│   ├── hpc_bridge.py                # HPC classical-quantum hybrid pipeline
+│   ├── client.py                    # Lab side: fingerprint() + Client (no coordinates leave)
+│   ├── node.py                      # Node side: FastAPI /v1/screen, /v1/jobs, /v1/cost, /v1/health
+│   └── cli.py                       # `qrotate fingerprint | compile | screen | serve`
+├── examples/
+│   └── demo_client_node.py          # In-process node, six systems, 6 x 6 P(0) matrix
 ├── tests/                           # Complete pytest verification suite
-│   └── test_qrotate.py              # unit & integration tests
+│   ├── test_qrotate.py              # unit & integration tests
+│   └── test_client_node.py          # client/node protocol, no-coordinates assertion, CLI
 ├── Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf # Official 1-Page Summary PDF
 ├── WHY_QROTATE_MATTERS.md           # Standalone architectural treatise
 ├── pyproject.toml                   # Modern packaging metadata
@@ -213,6 +220,8 @@ See `PROJECT_QROTATE_SUBMISSION_RELEASE.md` for the full Emulator vs. Hardware d
 * 📄 **Official One-Page Summary (PDF):** [`Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf`](Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf)
 * 🤖 **Foundational Agentic Paradigm:** [Google DeepMind AlphaEvolve (arXiv:2506.13131)](https://arxiv.org/abs/2506.13131)
 * 🧬 **Eve Count Agentic Ecosystem:** [github.com/evecount/alphaevolve-on-googlecloud](https://github.com/evecount/alphaevolve-on-googlecloud)
+* 📐 **Fair Classical Baseline (USR, Gaussian overlap vs Q-Rotate):** [`docs/08_classical_baseline.md`](docs/08_classical_baseline.md)
+* 🔊 **Hardware-Noise Study (depolarizing model on the compiled H2 circuit):** [`docs/09_noise_study.md`](docs/09_noise_study.md)
 
 ---
 

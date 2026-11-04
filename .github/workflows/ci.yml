@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    name: pytest (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install package with dev extras
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Import smoke test
+        run: python -c "import qrotate, numpy, scipy; print(qrotate.__file__)"
+
+      # Every push and pull request: the fast tier (tests not marked `slow`).
+      - name: Fast tier
+        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+        run: pytest -m "not slow" -q
+
+      # Pushes to main: the full suite, slow tests included.
+      - name: Full suite
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: pytest -q

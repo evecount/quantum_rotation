@@ -1,0 +1,2110 @@
+{
+  "noise_model": {
+    "two_qubit_depolarizing_after_each_ZZPhase": "p2",
+    "one_qubit_depolarizing_after_each_PhasedX": "p1 = p2 / 10",
+    "readout_flip_on_ancilla": 0.002,
+    "rz_is_virtual_and_noiseless": true,
+    "pauli_convention": "with probability p a uniformly random non-identity Pauli is applied; for a two-qubit gate p equals the average gate infidelity, for a one-qubit gate the infidelity is 2p/3",
+    "simulation": {
+      "rus_runs": "one Pauli-trajectory sample per shot at both register sizes (structured branch simulator, validated against a dense statevector per error pattern and against the exact density matrix in the mean)",
+      "noisy_p0_at_true_pose": "exact 512x512 density matrix at 9 qubits; 1000-trajectory mean at 17 qubits"
+    },
+    "shots_per_circuit": 100,
+    "max_rus_iterations": 15,
+    "lock_rule": "lower one-sided 95% bound on the measured P(0) >= 0.90"
+  },
+  "h2_spec": {
+    "source": "Quantinuum System Model H2 Product Data Sheet v2.00 (October 2024), docs.quantinuum.com",
+    "two_qubit_gate_infidelity": {
+      "min": 0.0013,
+      "typical": 0.0015,
+      "max": 0.003
+    },
+    "one_qubit_gate_infidelity_typical": 3e-05,
+    "spam_error": {
+      "min": 0.001,
+      "typical": 0.0015,
+      "max": 0.005
+    },
+    "device_validation_two_qubit_2025": "0.8e-3 to 1.1e-3 (H2-1 / H2-2 performance-validation pages)"
+  },
+  "p2_sweep": [
+    0.0,
+    0.001,
+    0.002,
+    0.005,
+    0.01
+  ],
+  "lock_rate_floor": 0.8,
+  "by_register_size": {
+    "4": {
+      "n_sites": 4,
+      "n_qubits": 9,
+      "n_trials_per_system": 30,
+      "gate_counts_per_circuit": {
+        "Rz": 82,
+        "PhasedX": 62,
+        "ZZPhase": 32
+      },
+      "sweep": [
+        {
+          "p2": 0.0,
+          "p1": 0.0,
+          "p_ro": 0.002,
+          "n_trials": 180,
+          "n_locked": 168,
+          "overall_lock_rate": 0.9333,
+          "overall_lock_rate_95ci": [
+            0.8871,
+            0.9615
+          ],
+          "iterations_mean_locked": 3.51,
+          "circuit_evaluations_mean": 4.34,
+          "noisy_p0_at_true_pose_mean": 0.9905,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.994,
+              "noisy_p0_at_true_pose": 0.992,
+              "noisy_p0_method": "ideal",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 3.6,
+              "circuit_evaluations_mean": 3.6,
+              "pose_error_deg_mean_locked": 12.06,
+              "wall_clock_sec": 3.6
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9915,
+              "noisy_p0_at_true_pose": 0.9895,
+              "noisy_p0_method": "ideal",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 3.73,
+              "circuit_evaluations_mean": 3.73,
+              "pose_error_deg_mean_locked": 11.71,
+              "wall_clock_sec": 3.3
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.9923,
+              "noisy_p0_method": "ideal",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 3.1,
+              "circuit_evaluations_mean": 3.1,
+              "pose_error_deg_mean_locked": 10.7,
+              "wall_clock_sec": 2.2
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.9923,
+              "noisy_p0_method": "ideal",
+              "n_trials": 30,
+              "n_locked": 26,
+              "lock_rate": 0.8667,
+              "lock_rate_95ci": [
+                0.7032,
+                0.9469
+              ],
+              "iterations_mean_locked": 4.27,
+              "circuit_evaluations_mean": 5.83,
+              "pose_error_deg_mean_locked": 17.56,
+              "wall_clock_sec": 4.4
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9884,
+              "noisy_p0_method": "ideal",
+              "n_trials": 30,
+              "n_locked": 22,
+              "lock_rate": 0.7333,
+              "lock_rate_95ci": [
+                0.5555,
+                0.8582
+              ],
+              "iterations_mean_locked": 6.14,
+              "circuit_evaluations_mean": 8.8,
+              "pose_error_deg_mean_locked": 10.2,
+              "wall_clock_sec": 6.1
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9884,
+              "noisy_p0_method": "ideal",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 1.0,
+              "circuit_evaluations_mean": 1.0,
+              "pose_error_deg_mean_locked": 15.0,
+              "wall_clock_sec": 1.2
+            }
+          ]
+        },
+        {
+          "p2": 0.001,
+          "p1": 0.0001,
+          "p_ro": 0.002,
+          "n_trials": 180,
+          "n_locked": 165,
+          "overall_lock_rate": 0.9167,
+          "overall_lock_rate_95ci": [
+            0.8671,
+            0.9489
+          ],
+          "iterations_mean_locked": 3.75,
+          "circuit_evaluations_mean": 4.77,
+          "noisy_p0_at_true_pose_mean": 0.9763,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.994,
+              "noisy_p0_at_true_pose": 0.9778,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 3.9,
+              "circuit_evaluations_mean": 3.9,
+              "pose_error_deg_mean_locked": 11.47,
+              "wall_clock_sec": 8.2
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9915,
+              "noisy_p0_at_true_pose": 0.9754,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 4.27,
+              "circuit_evaluations_mean": 4.27,
+              "pose_error_deg_mean_locked": 6.99,
+              "wall_clock_sec": 7.3
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.978,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 3.1,
+              "circuit_evaluations_mean": 3.1,
+              "pose_error_deg_mean_locked": 10.7,
+              "wall_clock_sec": 8.2
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.978,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 25,
+              "lock_rate": 0.8333,
+              "lock_rate_95ci": [
+                0.6644,
+                0.9266
+              ],
+              "iterations_mean_locked": 4.6,
+              "circuit_evaluations_mean": 6.5,
+              "pose_error_deg_mean_locked": 14.61,
+              "wall_clock_sec": 16.1
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9743,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 20,
+              "lock_rate": 0.6667,
+              "lock_rate_95ci": [
+                0.4878,
+                0.8077
+              ],
+              "iterations_mean_locked": 6.8,
+              "circuit_evaluations_mean": 9.87,
+              "pose_error_deg_mean_locked": 9.23,
+              "wall_clock_sec": 14.2
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9743,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 1.0,
+              "circuit_evaluations_mean": 1.0,
+              "pose_error_deg_mean_locked": 15.0,
+              "wall_clock_sec": 3.8
+            }
+          ]
+        },
+        {
+          "p2": 0.002,
+          "p1": 0.0002,
+          "p_ro": 0.002,
+          "n_trials": 180,
+          "n_locked": 165,
+          "overall_lock_rate": 0.9167,
+          "overall_lock_rate_95ci": [
+            0.8671,
+            0.9489
+          ],
+          "iterations_mean_locked": 4.33,
+          "circuit_evaluations_mean": 5.32,
+          "noisy_p0_at_true_pose_mean": 0.9625,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.994,
+              "noisy_p0_at_true_pose": 0.9639,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 4.77,
+              "circuit_evaluations_mean": 4.77,
+              "pose_error_deg_mean_locked": 9.02,
+              "wall_clock_sec": 17.8
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9915,
+              "noisy_p0_at_true_pose": 0.9616,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 5.23,
+              "circuit_evaluations_mean": 5.23,
+              "pose_error_deg_mean_locked": 7.2,
+              "wall_clock_sec": 19.5
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.9642,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 3.77,
+              "circuit_evaluations_mean": 3.77,
+              "pose_error_deg_mean_locked": 10.74,
+              "wall_clock_sec": 14.0
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.9642,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 27,
+              "lock_rate": 0.9,
+              "lock_rate_95ci": [
+                0.7438,
+                0.9654
+              ],
+              "iterations_mean_locked": 5.52,
+              "circuit_evaluations_mean": 6.6,
+              "pose_error_deg_mean_locked": 14.12,
+              "wall_clock_sec": 21.9
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9606,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 18,
+              "lock_rate": 0.6,
+              "lock_rate_95ci": [
+                0.4232,
+                0.7541
+              ],
+              "iterations_mean_locked": 6.83,
+              "circuit_evaluations_mean": 10.53,
+              "pose_error_deg_mean_locked": 11.14,
+              "wall_clock_sec": 37.3
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9606,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 1.0,
+              "circuit_evaluations_mean": 1.0,
+              "pose_error_deg_mean_locked": 15.0,
+              "wall_clock_sec": 4.9
+            }
+          ]
+        },
+        {
+          "p2": 0.005,
+          "p1": 0.0005,
+          "p_ro": 0.002,
+          "n_trials": 180,
+          "n_locked": 137,
+          "overall_lock_rate": 0.7611,
+          "overall_lock_rate_95ci": [
+            0.6938,
+            0.8175
+          ],
+          "iterations_mean_locked": 8.58,
+          "circuit_evaluations_mean": 10.4,
+          "noisy_p0_at_true_pose_mean": 0.9234,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.994,
+              "noisy_p0_at_true_pose": 0.9246,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 26,
+              "lock_rate": 0.8667,
+              "lock_rate_95ci": [
+                0.7032,
+                0.9469
+              ],
+              "iterations_mean_locked": 9.69,
+              "circuit_evaluations_mean": 10.63,
+              "pose_error_deg_mean_locked": 7.75,
+              "wall_clock_sec": 83.6
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9915,
+              "noisy_p0_at_true_pose": 0.9226,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 22,
+              "lock_rate": 0.7333,
+              "lock_rate_95ci": [
+                0.5555,
+                0.8582
+              ],
+              "iterations_mean_locked": 8.45,
+              "circuit_evaluations_mean": 10.47,
+              "pose_error_deg_mean_locked": 7.39,
+              "wall_clock_sec": 121.7
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.9248,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 21,
+              "lock_rate": 0.7,
+              "lock_rate_95ci": [
+                0.5212,
+                0.8334
+              ],
+              "iterations_mean_locked": 8.43,
+              "circuit_evaluations_mean": 10.7,
+              "pose_error_deg_mean_locked": 7.33,
+              "wall_clock_sec": 65.1
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.9248,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 20,
+              "lock_rate": 0.6667,
+              "lock_rate_95ci": [
+                0.4878,
+                0.8077
+              ],
+              "iterations_mean_locked": 10.5,
+              "circuit_evaluations_mean": 12.5,
+              "pose_error_deg_mean_locked": 9.15,
+              "wall_clock_sec": 103.1
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9217,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 18,
+              "lock_rate": 0.6,
+              "lock_rate_95ci": [
+                0.4232,
+                0.7541
+              ],
+              "iterations_mean_locked": 9.39,
+              "circuit_evaluations_mean": 12.03,
+              "pose_error_deg_mean_locked": 8.34,
+              "wall_clock_sec": 78.8
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.9217,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 30,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.8865,
+                1.0
+              ],
+              "iterations_mean_locked": 6.07,
+              "circuit_evaluations_mean": 6.1,
+              "pose_error_deg_mean_locked": 16.86,
+              "wall_clock_sec": 52.3
+            }
+          ]
+        },
+        {
+          "p2": 0.01,
+          "p1": 0.001,
+          "p_ro": 0.002,
+          "n_trials": 180,
+          "n_locked": 11,
+          "overall_lock_rate": 0.0611,
+          "overall_lock_rate_95ci": [
+            0.0345,
+            0.1061
+          ],
+          "iterations_mean_locked": 9.64,
+          "circuit_evaluations_mean": 15.61,
+          "noisy_p0_at_true_pose_mean": 0.8653,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.994,
+              "noisy_p0_at_true_pose": 0.8662,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.1135
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 212.9
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9915,
+              "noisy_p0_at_true_pose": 0.8647,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 1,
+              "lock_rate": 0.0333,
+              "lock_rate_95ci": [
+                0.0059,
+                0.1667
+              ],
+              "iterations_mean_locked": 10.0,
+              "circuit_evaluations_mean": 15.8,
+              "pose_error_deg_mean_locked": 7.68,
+              "wall_clock_sec": 170.3
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.8664,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 1,
+              "lock_rate": 0.0333,
+              "lock_rate_95ci": [
+                0.0059,
+                0.1667
+              ],
+              "iterations_mean_locked": 12.0,
+              "circuit_evaluations_mean": 15.87,
+              "pose_error_deg_mean_locked": 3.45,
+              "wall_clock_sec": 178.0
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9943,
+              "noisy_p0_at_true_pose": 0.8664,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 2,
+              "lock_rate": 0.0667,
+              "lock_rate_95ci": [
+                0.0185,
+                0.2132
+              ],
+              "iterations_mean_locked": 10.5,
+              "circuit_evaluations_mean": 15.63,
+              "pose_error_deg_mean_locked": 5.03,
+              "wall_clock_sec": 160.5
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.864,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 1,
+              "lock_rate": 0.0333,
+              "lock_rate_95ci": [
+                0.0059,
+                0.1667
+              ],
+              "iterations_mean_locked": 15.0,
+              "circuit_evaluations_mean": 15.97,
+              "pose_error_deg_mean_locked": 9.07,
+              "wall_clock_sec": 191.2
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 4,
+              "n_qubits": 9,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 82,
+                "PhasedX": 62,
+                "ZZPhase": 32
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9903,
+              "noisy_p0_at_true_pose": 0.864,
+              "noisy_p0_method": "density_matrix",
+              "n_trials": 30,
+              "n_locked": 6,
+              "lock_rate": 0.2,
+              "lock_rate_95ci": [
+                0.095,
+                0.3731
+              ],
+              "iterations_mean_locked": 8.0,
+              "circuit_evaluations_mean": 14.4,
+              "pose_error_deg_mean_locked": 9.75,
+              "wall_clock_sec": 157.2
+            }
+          ]
+        }
+      ],
+      "lock_threshold": {
+        "first_p2_below_floor": 0.005,
+        "interpolated_crossing_p2": 0.004249999999999999,
+        "floor": 0.8,
+        "last_p2_at_or_above_floor": 0.002
+      }
+    },
+    "8": {
+      "n_sites": 8,
+      "n_qubits": 17,
+      "n_trials_per_system": 10,
+      "gate_counts_per_circuit": {
+        "Rz": 162,
+        "PhasedX": 122,
+        "ZZPhase": 64
+      },
+      "sweep": [
+        {
+          "p2": 0.0,
+          "p1": 0.0,
+          "p_ro": 0.002,
+          "n_trials": 60,
+          "n_locked": 53,
+          "overall_lock_rate": 0.8833,
+          "overall_lock_rate_95ci": [
+            0.7782,
+            0.9423
+          ],
+          "iterations_mean_locked": 4.3,
+          "circuit_evaluations_mean": 5.67,
+          "noisy_p0_at_true_pose_mean": 0.9837,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9894,
+              "noisy_p0_at_true_pose": 0.9874,
+              "noisy_p0_method": "ideal",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 4.7,
+              "circuit_evaluations_mean": 4.7,
+              "pose_error_deg_mean_locked": 11.97,
+              "wall_clock_sec": 2.4
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9837,
+              "noisy_p0_at_true_pose": 0.9818,
+              "noisy_p0_method": "ideal",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 4.4,
+              "circuit_evaluations_mean": 4.4,
+              "pose_error_deg_mean_locked": 11.25,
+              "wall_clock_sec": 2.5
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9884,
+              "noisy_p0_at_true_pose": 0.9865,
+              "noisy_p0_method": "ideal",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 3.8,
+              "circuit_evaluations_mean": 3.8,
+              "pose_error_deg_mean_locked": 10.8,
+              "wall_clock_sec": 2.8
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9905,
+              "noisy_p0_at_true_pose": 0.9886,
+              "noisy_p0_method": "ideal",
+              "n_trials": 10,
+              "n_locked": 7,
+              "lock_rate": 0.7,
+              "lock_rate_95ci": [
+                0.3968,
+                0.8922
+              ],
+              "iterations_mean_locked": 6.43,
+              "circuit_evaluations_mean": 9.3,
+              "pose_error_deg_mean_locked": 5.47,
+              "wall_clock_sec": 8.6
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.9789,
+              "noisy_p0_method": "ideal",
+              "n_trials": 10,
+              "n_locked": 6,
+              "lock_rate": 0.6,
+              "lock_rate_95ci": [
+                0.3127,
+                0.8318
+              ],
+              "iterations_mean_locked": 7.33,
+              "circuit_evaluations_mean": 10.8,
+              "pose_error_deg_mean_locked": 9.65,
+              "wall_clock_sec": 9.4
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.0,
+              "p1": 0.0,
+              "p_ro": 0.002,
+              "noise_method": "ideal_plus_readout_flip",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.9789,
+              "noisy_p0_method": "ideal",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 1.0,
+              "circuit_evaluations_mean": 1.0,
+              "pose_error_deg_mean_locked": 15.0,
+              "wall_clock_sec": 0.7
+            }
+          ]
+        },
+        {
+          "p2": 0.001,
+          "p1": 0.0001,
+          "p_ro": 0.002,
+          "n_trials": 60,
+          "n_locked": 52,
+          "overall_lock_rate": 0.8667,
+          "overall_lock_rate_95ci": [
+            0.7583,
+            0.9309
+          ],
+          "iterations_mean_locked": 6.0,
+          "circuit_evaluations_mean": 7.35,
+          "noisy_p0_at_true_pose_mean": 0.9576,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9894,
+              "noisy_p0_at_true_pose": 0.9638,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 6.1,
+              "circuit_evaluations_mean": 6.1,
+              "pose_error_deg_mean_locked": 9.95,
+              "wall_clock_sec": 14.1
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9837,
+              "noisy_p0_at_true_pose": 0.9516,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 7.3,
+              "circuit_evaluations_mean": 7.4,
+              "pose_error_deg_mean_locked": 6.49,
+              "wall_clock_sec": 14.0
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9884,
+              "noisy_p0_at_true_pose": 0.9588,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 6.4,
+              "circuit_evaluations_mean": 6.4,
+              "pose_error_deg_mean_locked": 9.31,
+              "wall_clock_sec": 20.0
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9905,
+              "noisy_p0_at_true_pose": 0.9628,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 6,
+              "lock_rate": 0.6,
+              "lock_rate_95ci": [
+                0.3127,
+                0.8318
+              ],
+              "iterations_mean_locked": 7.0,
+              "circuit_evaluations_mean": 10.6,
+              "pose_error_deg_mean_locked": 8.58,
+              "wall_clock_sec": 17.9
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.9531,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 6,
+              "lock_rate": 0.6,
+              "lock_rate_95ci": [
+                0.3127,
+                0.8318
+              ],
+              "iterations_mean_locked": 9.33,
+              "circuit_evaluations_mean": 12.0,
+              "pose_error_deg_mean_locked": 5.2,
+              "wall_clock_sec": 26.4
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.001,
+              "p1": 0.0001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.9555,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 1.6,
+              "circuit_evaluations_mean": 1.6,
+              "pose_error_deg_mean_locked": 15.78,
+              "wall_clock_sec": 5.5
+            }
+          ]
+        },
+        {
+          "p2": 0.002,
+          "p1": 0.0002,
+          "p_ro": 0.002,
+          "n_trials": 60,
+          "n_locked": 37,
+          "overall_lock_rate": 0.6167,
+          "overall_lock_rate_95ci": [
+            0.4902,
+            0.7291
+          ],
+          "iterations_mean_locked": 8.43,
+          "circuit_evaluations_mean": 11.4,
+          "noisy_p0_at_true_pose_mean": 0.9298,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9894,
+              "noisy_p0_at_true_pose": 0.9406,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 7,
+              "lock_rate": 0.7,
+              "lock_rate_95ci": [
+                0.3968,
+                0.8922
+              ],
+              "iterations_mean_locked": 8.43,
+              "circuit_evaluations_mean": 10.8,
+              "pose_error_deg_mean_locked": 6.48,
+              "wall_clock_sec": 45.0
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9837,
+              "noisy_p0_at_true_pose": 0.9208,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 7,
+              "lock_rate": 0.7,
+              "lock_rate_95ci": [
+                0.3968,
+                0.8922
+              ],
+              "iterations_mean_locked": 11.57,
+              "circuit_evaluations_mean": 13.1,
+              "pose_error_deg_mean_locked": 8.9,
+              "wall_clock_sec": 35.7
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9884,
+              "noisy_p0_at_true_pose": 0.9329,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 8,
+              "lock_rate": 0.8,
+              "lock_rate_95ci": [
+                0.4902,
+                0.9433
+              ],
+              "iterations_mean_locked": 8.12,
+              "circuit_evaluations_mean": 9.7,
+              "pose_error_deg_mean_locked": 7.87,
+              "wall_clock_sec": 40.0
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9905,
+              "noisy_p0_at_true_pose": 0.938,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 3,
+              "lock_rate": 0.3,
+              "lock_rate_95ci": [
+                0.1078,
+                0.6032
+              ],
+              "iterations_mean_locked": 12.67,
+              "circuit_evaluations_mean": 15.1,
+              "pose_error_deg_mean_locked": 9.31,
+              "wall_clock_sec": 46.1
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.9138,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 2,
+              "lock_rate": 0.2,
+              "lock_rate_95ci": [
+                0.0567,
+                0.5098
+              ],
+              "iterations_mean_locked": 10.0,
+              "circuit_evaluations_mean": 14.8,
+              "pose_error_deg_mean_locked": 4.03,
+              "wall_clock_sec": 57.8
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.002,
+              "p1": 0.0002,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.9325,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 10,
+              "lock_rate": 1.0,
+              "lock_rate_95ci": [
+                0.7225,
+                1.0
+              ],
+              "iterations_mean_locked": 4.9,
+              "circuit_evaluations_mean": 4.9,
+              "pose_error_deg_mean_locked": 18.35,
+              "wall_clock_sec": 22.3
+            }
+          ]
+        },
+        {
+          "p2": 0.005,
+          "p1": 0.0005,
+          "p_ro": 0.002,
+          "n_trials": 60,
+          "n_locked": 1,
+          "overall_lock_rate": 0.0167,
+          "overall_lock_rate_95ci": [
+            0.0029,
+            0.0886
+          ],
+          "iterations_mean_locked": 15.0,
+          "circuit_evaluations_mean": 16.0,
+          "noisy_p0_at_true_pose_mean": 0.8636,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9894,
+              "noisy_p0_at_true_pose": 0.8712,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 98.3
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9837,
+              "noisy_p0_at_true_pose": 0.8656,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 91.6
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9884,
+              "noisy_p0_at_true_pose": 0.8662,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 1,
+              "lock_rate": 0.1,
+              "lock_rate_95ci": [
+                0.0179,
+                0.4042
+              ],
+              "iterations_mean_locked": 15.0,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": 1.43,
+              "wall_clock_sec": 214.6
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9905,
+              "noisy_p0_at_true_pose": 0.8606,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 139.0
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.8545,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 135.5
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.005,
+              "p1": 0.0005,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.8636,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 200.4
+            }
+          ]
+        },
+        {
+          "p2": 0.01,
+          "p1": 0.001,
+          "p_ro": 0.002,
+          "n_trials": 60,
+          "n_locked": 0,
+          "overall_lock_rate": 0.0,
+          "overall_lock_rate_95ci": [
+            0.0,
+            0.0602
+          ],
+          "iterations_mean_locked": null,
+          "circuit_evaluations_mean": 16.0,
+          "noisy_p0_at_true_pose_mean": 0.7677,
+          "per_system": [
+            {
+              "system_id": "rhodopsin",
+              "system_name": "11-cis Retinal / Rhodopsin",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9894,
+              "noisy_p0_at_true_pose": 0.7861,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 371.8
+            },
+            {
+              "system_id": "gfp",
+              "system_name": "GFP Chromophore",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9837,
+              "noisy_p0_at_true_pose": 0.7705,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 247.1
+            },
+            {
+              "system_id": "mpro",
+              "system_name": "SARS-CoV-2 Mpro + Nirmatrelvir",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9884,
+              "noisy_p0_at_true_pose": 0.7704,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 340.8
+            },
+            {
+              "system_id": "cox2",
+              "system_name": "COX-2 + Celecoxib",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9905,
+              "noisy_p0_at_true_pose": 0.7581,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 291.8
+            },
+            {
+              "system_id": "azobenzene",
+              "system_name": "Azobenzene Molecular Switch",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": false,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.7482,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 291.7
+            },
+            {
+              "system_id": "h2bench",
+              "system_name": "H2 Hardware Benchmark",
+              "n_sites": 8,
+              "n_qubits": 17,
+              "p2": 0.01,
+              "p1": 0.001,
+              "p_ro": 0.002,
+              "noise_method": "one_trajectory_per_shot",
+              "gate_counts": {
+                "Rz": 162,
+                "PhasedX": 122,
+                "ZZPhase": 64
+              },
+              "encoding_degenerate": false,
+              "ambiguous_180_deg": true,
+              "ideal_p0_at_true_pose": 0.9808,
+              "noisy_p0_at_true_pose": 0.7731,
+              "noisy_p0_method": "trajectories_1000",
+              "n_trials": 10,
+              "n_locked": 0,
+              "lock_rate": 0.0,
+              "lock_rate_95ci": [
+                0.0,
+                0.2775
+              ],
+              "iterations_mean_locked": null,
+              "circuit_evaluations_mean": 16.0,
+              "pose_error_deg_mean_locked": null,
+              "wall_clock_sec": 287.0
+            }
+          ]
+        }
+      ],
+      "lock_threshold": {
+        "first_p2_below_floor": 0.002,
+        "interpolated_crossing_p2": 0.0012668,
+        "floor": 0.8,
+        "last_p2_at_or_above_floor": 0.001
+      }
+    }
+  },
+  "total_wall_clock_sec": 883.4,
+  "generated_by": "src/qrotate/noise_study.py::run_noise_sweep",
+  "generated_at": "2026-10-22 04:14:32"
+}

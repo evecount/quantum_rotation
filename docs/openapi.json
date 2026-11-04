@@ -1,0 +1,782 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Q-Rotate node",
+    "description": "Runs the Q-Rotate blind parity (SWAP) test on phase fingerprints. Clients send fingerprints, never coordinates; the node returns P(0). The fingerprint is derived from the structure and is information about it: this is coordinate-free, reduced exposure, not zero-knowledge (see docs/10_client_node_protocol.md).",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "tags": [
+          "node"
+        ],
+        "summary": "Health",
+        "operationId": "health_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/cost": {
+      "get": {
+        "tags": [
+          "node"
+        ],
+        "summary": "Cost",
+        "operationId": "cost_v1_cost_get",
+        "parameters": [
+          {
+            "name": "sites",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "description": "Shells per register: 4 (9 qubits) or 8 (17 qubits)",
+              "default": 4,
+              "title": "Sites"
+            },
+            "description": "Shells per register: 4 (9 qubits) or 8 (17 qubits)"
+          },
+          {
+            "name": "shots",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 1,
+              "default": 200,
+              "title": "Shots"
+            }
+          },
+          {
+            "name": "n_ligands",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 1,
+              "default": 1,
+              "title": "N Ligands"
+            }
+          },
+          {
+            "name": "tau",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "description": "U_tube evolution time the screen would use",
+              "default": 0.0,
+              "title": "Tau"
+            },
+            "description": "U_tube evolution time the screen would use"
+          },
+          {
+            "name": "omega",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "description": "U_tube angular velocity (3 values)",
+              "default": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "title": "Omega"
+            },
+            "description": "U_tube angular velocity (3 values)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostEstimate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/screen": {
+      "post": {
+        "tags": [
+          "screen"
+        ],
+        "summary": "Screen",
+        "operationId": "screen_v1_screen_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScreenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScreenAccepted"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "screen"
+        ],
+        "summary": "Get Job",
+        "operationId": "get_job_v1_jobs__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BackendInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "ready": {
+            "type": "boolean",
+            "title": "Ready"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "ready"
+        ],
+        "title": "BackendInfo"
+      },
+      "CostEstimate": {
+        "properties": {
+          "sites": {
+            "type": "integer",
+            "title": "Sites"
+          },
+          "n_qubits": {
+            "type": "integer",
+            "title": "N Qubits"
+          },
+          "shots": {
+            "type": "integer",
+            "title": "Shots"
+          },
+          "n_ligands": {
+            "type": "integer",
+            "title": "N Ligands"
+          },
+          "tau": {
+            "type": "number",
+            "title": "Tau"
+          },
+          "omega": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Omega"
+          },
+          "single_qubit_count": {
+            "type": "integer",
+            "title": "Single Qubit Count"
+          },
+          "two_qubit_count": {
+            "type": "integer",
+            "title": "Two Qubit Count"
+          },
+          "measure_count": {
+            "type": "integer",
+            "title": "Measure Count"
+          },
+          "reset_count": {
+            "type": "integer",
+            "title": "Reset Count"
+          },
+          "depth": {
+            "type": "integer",
+            "title": "Depth"
+          },
+          "hqc_per_circuit": {
+            "type": "number",
+            "title": "Hqc Per Circuit"
+          },
+          "hqc_total": {
+            "type": "number",
+            "title": "Hqc Total"
+          },
+          "formula": {
+            "type": "string",
+            "title": "Formula",
+            "default": "HQC = 5 + (N_1q + 10 N_2q + 5 N_m) * shots / 5000"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": "Estimate from Quantinuum's published formula on the rebased circuit; the backend's own cost query is authoritative. Nothing was executed."
+          }
+        },
+        "type": "object",
+        "required": [
+          "sites",
+          "n_qubits",
+          "shots",
+          "n_ligands",
+          "tau",
+          "omega",
+          "single_qubit_count",
+          "two_qubit_count",
+          "measure_count",
+          "reset_count",
+          "depth",
+          "hqc_per_circuit",
+          "hqc_total"
+        ],
+        "title": "CostEstimate"
+      },
+      "FingerprintModel": {
+        "properties": {
+          "phases": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Phases",
+            "description": "One phase per shell, radians in [-pi, pi]"
+          },
+          "sites": {
+            "type": "integer",
+            "title": "Sites",
+            "description": "Number of shells (qubits per register)"
+          },
+          "element_summary": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Element Summary",
+            "description": "Heavy-atom census"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256",
+            "description": "sha256 of the canonical rounded phases"
+          },
+          "qrotate_version": {
+            "type": "string",
+            "title": "Qrotate Version",
+            "default": "0.1.0"
+          },
+          "encoder": {
+            "type": "string",
+            "title": "Encoder",
+            "default": "molecular_shell_phases/v1"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "default": ""
+          },
+          "moment_orders": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Moment Orders"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "phases",
+          "sites",
+          "sha256"
+        ],
+        "title": "FingerprintModel",
+        "description": "A fingerprint as the node accepts it. Extra fields are rejected, so a\nbody carrying ``coords`` or ``xyz`` is a 422, never silently accepted."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "service": {
+            "type": "string",
+            "title": "Service"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "pytket": {
+            "type": "boolean",
+            "title": "Pytket"
+          },
+          "backends": {
+            "items": {
+              "$ref": "#/components/schemas/BackendInfo"
+            },
+            "type": "array",
+            "title": "Backends"
+          },
+          "jobs": {
+            "type": "integer",
+            "title": "Jobs"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "service",
+          "version",
+          "pytket",
+          "backends",
+          "jobs"
+        ],
+        "title": "Health"
+      },
+      "JobView": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "done",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "backend": {
+            "type": "string",
+            "title": "Backend"
+          },
+          "shots": {
+            "type": "integer",
+            "title": "Shots"
+          },
+          "sites": {
+            "type": "integer",
+            "title": "Sites"
+          },
+          "target_sha256": {
+            "type": "string",
+            "title": "Target Sha256"
+          },
+          "target_label": {
+            "type": "string",
+            "title": "Target Label"
+          },
+          "n_ligands": {
+            "type": "integer",
+            "title": "N Ligands"
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/LigandResult"
+            },
+            "type": "array",
+            "title": "Results"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status",
+          "backend",
+          "shots",
+          "sites",
+          "target_sha256",
+          "target_label",
+          "n_ligands",
+          "created_at"
+        ],
+        "title": "JobView"
+      },
+      "LigandResult": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "p0": {
+            "type": "number",
+            "title": "P0",
+            "description": "Estimated P(ancilla = 0) = (1 + |<pocket|ligand>|^2) / 2"
+          },
+          "ci95_low": {
+            "type": "number",
+            "title": "Ci95 Low",
+            "description": "Wilson 95% interval, lower"
+          },
+          "ci95_high": {
+            "type": "number",
+            "title": "Ci95 High",
+            "description": "Wilson 95% interval, upper"
+          },
+          "shots": {
+            "type": "integer",
+            "title": "Shots"
+          },
+          "counts_0": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Counts 0"
+          },
+          "counts_1": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Counts 1"
+          },
+          "ideal_p0": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ideal P0",
+            "description": "Exact value, when the backend is a simulator"
+          },
+          "mode": {
+            "type": "string",
+            "title": "Mode"
+          },
+          "hqc": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Hqc",
+            "description": "Compiled gate counts and HQC estimate"
+          },
+          "backend_job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Backend Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "sha256",
+          "p0",
+          "ci95_low",
+          "ci95_high",
+          "shots",
+          "mode"
+        ],
+        "title": "LigandResult"
+      },
+      "ScreenAccepted": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "done",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "n_ligands": {
+            "type": "integer",
+            "title": "N Ligands"
+          },
+          "backend": {
+            "type": "string",
+            "title": "Backend"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status",
+          "n_ligands",
+          "backend"
+        ],
+        "title": "ScreenAccepted"
+      },
+      "ScreenRequest": {
+        "properties": {
+          "target": {
+            "$ref": "#/components/schemas/FingerprintModel"
+          },
+          "ligands": {
+            "items": {
+              "$ref": "#/components/schemas/FingerprintModel"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Ligands"
+          },
+          "backend": {
+            "type": "string",
+            "title": "Backend",
+            "default": "statevector"
+          },
+          "shots": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Shots",
+            "description": "0 = ideal probability, no sampling",
+            "default": 200
+          },
+          "tau": {
+            "type": "number",
+            "title": "Tau",
+            "description": "U_tube evolution time applied to the ligand register",
+            "default": 0.0
+          },
+          "omega": {
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Omega",
+            "default": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "seed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed",
+            "description": "Sampling seed for reproducible shot noise"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "target",
+          "ligands"
+        ],
+        "title": "ScreenRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

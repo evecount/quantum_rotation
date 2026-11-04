@@ -3,6 +3,7 @@
 import sys
 import os
 import numpy as np
+import pytest
 from pathlib import Path
 
 # Ensure repo root and src/ are on the python path, relative to this file,
@@ -82,6 +83,7 @@ def test_pytket_circuit():
     print(f"PASS: test_pytket_circuit (Rebased Op counts: {stats}, Estimated HQC: {cost:.2f})")
 
 
+@pytest.mark.slow
 def test_guppy_circuit_compilation():
     print("Compiling guppy_qrotate_rus_demo to HUGR...")
     hugr = guppy_qrotate_rus_demo.compile()
@@ -260,6 +262,7 @@ def test_phase_encoding_sees_chirality():
     print(f"PASS: test_phase_encoding_sees_chirality (mirror P(0)={overlap:.3f})")
 
 
+@pytest.mark.slow
 def test_radial_shells_leave_no_qubit_empty():
     """Every shell must get atoms whenever the molecule has at least as many
     distinct radii as there are shells, and shell sizes may differ by no more
@@ -299,6 +302,7 @@ def test_radial_shells_leave_no_qubit_empty():
     print("PASS: test_radial_shells_leave_no_qubit_empty (6 ligands x 2 sizes, 2000 tie-heavy random molecules)")
 
 
+@pytest.mark.slow
 def test_soft_shells_make_the_register_continuous():
     """A hard shell boundary makes the register jump whenever coordinate error
     carries an atom across it, and a count-balanced split sometimes puts a
@@ -416,6 +420,7 @@ def test_active_sites_are_real_structures():
           f"({len(sites)} sites, catalytic residues present)")
 
 
+@pytest.mark.slow
 def test_hqc_cost_counts_compiled_circuit():
     """The HQC estimate must come from the rebased circuit's real gate counts,
     and a multi-run screen must cost exactly runs x one circuit."""
