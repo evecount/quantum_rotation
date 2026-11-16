@@ -9,6 +9,11 @@
 [![Version: v3.0.0](https://img.shields.io/badge/release-v3.0.0_Official-blueviolet.svg)](Project_QRotate_One_Page_Summary_v3_OFFICIAL.pdf)
 
 <p align="center">
+  <img src="assets/qrotate_poster_16x9.png" alt="Project Q-Rotate 16:9 Presentation Poster" width="960">
+  <br><em>Project Q-Rotate — 16:9 Presentation Poster: Continuous Lie-Algebraic Docking, Mid-Circuit RUS Feedback, and Empirical Benchmarks.</em>
+</p>
+
+<p align="center">
   <img src="assets/constellation.png" alt="Project Q-Rotate 3D WebGL Constellation Engine" width="780">
   <br><em>Figure 1: Project Q-Rotate 3D WebGL Constellation Engine steering molecular orientation trajectories into trapped-ion quantum resonance.</em>
 </p>
